@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>订单详情</title>
+</head>
+<body style="display: none;">
+
+<div class="header ui-row-flex">
+    <div class="ui-col ui-row-flex header-icon ui-flex-align-center backBtn">
+        <i class="ui-img-cover"></i>
+    </div>
+    <div class="ui-col ui-row-flex ui-flex-align-center ui-flex-pack-center header-name">订单详情</div>
+    <div class="ui-col header-icon"></div>
+</div>
+
+<div class="order_detail_content">
+
+    <!--订单列表-->
+    <ul class="order-list">
+        <li>
+            <div class="order-list-title">
+                <img class="statusIcon"/>
+                <div class="order-list-title-text">
+                    订单号：<span class="orderId"></span>
+                </div>
+            </div>
+            <div class="order-item-list"></div>
+        </li>
+    </ul>
+
+    <div class="custom ui-row-flex" id="address">
+        <div class="ui-col ui-row-flex ui-flex-align-center icon"><i class="ui-img-cover"></i></div>
+        <div class="ui-col info">
+        </div>
+    </div>
+
+    <ul class="order-way">
+        <li class="ui-row-flex">
+            <div class="ui-col ui-row-flex ui-flex-align-center">配送方式</div>
+            <div class="ui-col rg">
+                <p class="deliveryWay"></p>
+                <p class="color fee"></p>
+            </div>
+        </li>
+    </ul>
+
+    <div class="order-remark">
+        <div class="order-remark-title ui-row-flex ui-flex-align-center">订单备注</div>
+        <div class="order-remark-input">
+            <span class="userRemark"></span>
+        </div>
+    </div>
+
+    <ul class="order-mess" style="display: none;">
+        <li class="ui-row-flex list-line">
+            <div class="ui-col ui-row-flex ui-flex-align-center invoice-title">发票信息</div>
+        </li>
+        <li class="list-line">
+            <div class="ui-col order-mess-icon ui-row-flex ui-flex-align-center taitou">公司名称</div>
+            <div class="ui-col order-mess-value  ui-row-flex ui-flex-align-center ui-flex-pack-end" id="companyName"></div>
+        </li>
+        <li class="list-line zhuanpiao">
+            <div class="ui-col order-mess-icon ui-row-flex ui-flex-align-center">税务登记号</div>
+            <div class="ui-col order-mess-value  ui-row-flex ui-flex-align-center ui-flex-pack-end" id="companyTfn"></div>
+        </li>
+        <li class="list-line zhuanpiao">
+            <div class="ui-col order-mess-icon ui-row-flex ui-flex-align-center">开户行</div>
+            <div class="ui-col order-mess-value  ui-row-flex ui-flex-align-center ui-flex-pack-end" id="bankName"></div>
+        </li>
+        <li class="list-line zhuanpiao">
+            <div class="ui-col order-mess-icon ui-row-flex ui-flex-align-center">开户行账号</div>
+            <div class="ui-col order-mess-value  ui-row-flex ui-flex-align-center ui-flex-pack-end" id="bankNumber"></div>
+        </li>
+        <li class="list-line">
+            <div class="ui-col order-mess-icon ui-row-flex ui-flex-align-center">发票项目</div>
+            <div class="ui-col order-mess-value  ui-row-flex ui-flex-align-center ui-flex-pack-end" id="invoiceUse"></div>
+        </li>
+    </ul>
+
+    <div class="order-confirm-bottom ui-row-flex">
+        <div class="ui-col text ui-row-flex ui-flex-align-center">合计<span class="totalPrice"></span></div>
+        <div class="ui-col ui-row-flex ui-flex-align-center ui-flex-pack-end btns">
+            <!--<a class="border">取消订单</a>
+            <a class="solid">去支付</a>-->
+        </div>
+    </div>
+</div>
+
+<div class="include header" data-src="../module/header.html"></div>
+<div class="include" data-src="../module/order.template.html"></div>
+
+<script type="text/javascript" src="../js/jquery-2.1.4.js" charset="utf-8"></script>
+<script type="text/javascript" src="../js/boot.js" charset="utf-8"></script>
+<!--我的页面业务代码-->
+<script type="text/javascript">
+    $.include(['css/ui.order.confirm.css', 'js/order/order_detail.js']);
+</script>
+</body>
+</html>

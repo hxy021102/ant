@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- 引入项目配置文件 -->
+	<!-- <context:property-placeholder location="classpath:config.properties" 
+		/> -->
+
+
+	<!-- 自动扫描dao和service包(自动注入) -->
+	<context:component-scan base-package="com.mobian.dao,com.mobian.service,com.camel.front.service" />
+
+	<!-- 引入同文件夹下的redis配置文件 -->
+	<import resource="spring-redis.xml"/>
+	<!--<beans profile="produce">
+		<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" >
+			<property name="locations">
+				<list>
+					&lt;!&ndash;<value>classpath:config.properties</value>&ndash;&gt;
+					<value>file:/data/webapps/camel/config.properties</value>
+					<value>file:/data/webapps/camel/redis.properties</value>
+				</list>
+			</property>
+		</bean>
+	</beans>
+	<beans profile="qa">
+		<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" >
+			<property name="locations">
+				<list>
+					<value>classpath:config.properties</value>
+					<value>classpath:redis.properties</value>
+				</list>
+			</property>
+		</bean>
+	</beans>-->
+	<bean id="tokenManage" class="com.mobian.interceptors.TokenManage"
+		  init-method="init" />
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" >
+		<property name="locations">
+			<list>
+				<value>classpath:config.properties</value>
+				<value>classpath:redis.properties</value>
+			</list>
+		</property>
+	</bean>
+</beans>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>我的</title>
+</head>
+<body style="display: none;">
+
+<div class="ucenter_content">
+    <!--头部-->
+    <div class="ui-mine-header">
+        <div class="ui-mine-icon">
+            <i class="ui-img-cover headImage"></i>
+        </div>
+        <p class="nickName"></p>
+    </div>
+
+    <ul class="line ui-mine-list">
+        <li class="list-line-bl ui-mine-list-item ui-row-flex toBalance">
+            <div class="ui-col ui-icon ui-row-flex ui-flex-align-center">
+                <img src="../images/mine-1.png" />
+            </div>
+            <div class="ui-col ui-text ui-row-flex ui-flex-align-center">钱包</div>
+            <div class="ui-col ui-value ui-row-flex ui-flex-align-center ui-flex-pack-end balance"></div>
+            <div class="ui-col ui-rg ui-row-flex ui-flex-align-center">
+                <i class="ui-img-cover"></i>
+            </div>
+        </li>
+        <li class="list-line-bl ui-mine-list-item toBalance cash" style="display: none;">
+            <div class="ui-col ui-icon ui-row-flex ui-flex-align-center">
+                <img src="../images/mine-8.png" />
+            </div>
+            <div class="ui-col ui-text ui-row-flex ui-flex-align-center">桶账余额</div>
+            <div class="ui-col ui-value ui-row-flex ui-flex-align-center ui-flex-pack-end cashBalance"></div>
+            <div class="ui-col ui-rg ui-row-flex ui-flex-align-center">
+                <i class="ui-img-cover"></i>
+            </div>
+        </li>
+        <li class="list-line-bl ui-mine-list-item ui-row-flex" onclick="window.location.href = '../ucenter/bindPhone.html?editable=1'">
+            <div class="ui-col ui-icon ui-row-flex ui-flex-align-center">
+                <img src="../images/mine-2.png" />
+            </div>
+            <div class="ui-col ui-text ui-row-flex ui-flex-align-center">手机号</div>
+            <div class="ui-col ui-value ui-row-flex ui-flex-align-center ui-flex-pack-end phone"></div>
+            <div class="ui-col ui-rg ui-row-flex ui-flex-align-center">
+                <i class="ui-img-cover"></i>
+            </div>
+        </li>
+        <li class="list-line-bl ui-mine-list-item ui-row-flex shopAuth">
+            <div class="ui-col ui-icon ui-row-flex ui-flex-align-center">
+                <img src="../images/mine-3.png" />
+            </div>
+            <div class="ui-col ui-text ui-row-flex ui-flex-align-center">门店名称</div>
+            <div class="ui-col ui-value ui-row-flex ui-flex-align-center ui-flex-pack-end shopName"></div>
+            <div class="ui-col ui-rg ui-row-flex ui-flex-align-center">
+                <i class="ui-img-cover"></i>
+            </div>
+        </li>
+        <li class="list-line-bl ui-mine-list-pd ui-row-flex shopAuth">
+            <div class="ui-col ui-icon ui-row-flex ui-flex-align-center">
+                <img src="../images/mine-4.png" />
+            </div>
+            <div class="ui-col ui-text ui-row-flex ui-flex-align-center">门店地址</div>
+            <div class="ui-col ui-value ui-row-flex ui-flex-align-center ui-flex-pack-end">
+            	<p class="shopAddress"></p>
+            </div>
+            <div class="ui-col ui-rg ui-row-flex ui-flex-align-center">
+                <i class="ui-img-cover"></i>
+            </div>
+        </li>
+        <li class="list-line-bl ui-mine-list-item ui-row-flex shopAuth">
+            <div class="ui-col ui-icon ui-row-flex ui-flex-align-center">
+                <img src="../images/mine-5.png" />
+            </div>
+            <div class="ui-col ui-text ui-row-flex ui-flex-align-center">联系人</div>
+            <div class="ui-col ui-value ui-row-flex ui-flex-align-center ui-flex-pack-end contact"></div>
+            <div class="ui-col ui-rg ui-row-flex ui-flex-align-center">
+                <i class="ui-img-cover"></i>
+            </div>
+        </li>
+        <li class="list-line-bl ui-mine-list-pd receiptAddress" style="display: none;">
+            <div class="ui-col ui-icon ui-row-flex ui-flex-align-center">
+                <img src="../images/mine-6.png" />
+            </div>
+            <div class="ui-col ui-text ui-row-flex ui-flex-align-center">收货地址</div>
+            <div class="ui-col ui-value">
+                <p class="pd userInfo"></p>
+                <p class="address"></p>
+            </div>
+            <div class="ui-col ui-rg ui-row-flex ui-flex-align-center">
+                <i class="ui-img-cover"></i>
+            </div>
+        </li>
+        <li class="list-line-bl ui-mine-list-item ui-row-flex">
+            <div class="ui-col ui-icon ui-row-flex ui-flex-align-center">
+                <img src="../images/mine-7.png" />
+            </div>
+            <div class="ui-col ui-text ui-row-flex ui-flex-align-center">最新合同编号</div>
+            <div class="ui-col ui-value ui-row-flex ui-flex-align-center ui-flex-pack-end mbContract"></div>
+            <div class="ui-col ui-rg ui-row-flex ui-flex-align-center">
+                <i class="ui-img-cover"></i>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<div class="include header" data-src="../module/header.html"></div>
+<div class="include" data-src="../module/module.bottom.html" data-index="3"></div>
+
+<script type="text/javascript" src="../js/jquery-2.1.4.js" charset="utf-8"></script>
+<script type="text/javascript" src="../js/boot.js" charset="utf-8"></script>
+<!--我的页面业务代码-->
+<script type="text/javascript">
+    $.include(['css/ui.mine.css', 'js/jweixin-1.2.0.js', 'js/jweixin-common.js', 'js/ucenter/index.js']);
+</script>
+</body>
+</html>

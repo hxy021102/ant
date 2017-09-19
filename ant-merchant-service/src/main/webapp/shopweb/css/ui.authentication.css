@@ -1,0 +1,58 @@
+@charset "utf-8";
+
+body{
+	padding-top: 50px;
+}
+
+.list{
+	position: relative;
+	margin-top: 10px;
+	background-color: #fff;
+}
+
+.list li{
+	position: relative;
+	color: #333;
+}
+
+.list li:focus{
+	outline: none;
+}
+
+.list li input{
+	border: 0;
+	width: 100%;
+	padding: 15px 12px;
+	font-size: 14px;
+}
+
+.list li span{
+	padding: 15px 12px;
+	display: block;
+	color: #757575;
+}
+
+.list .icon{
+	position: absolute;
+	right: 12px;
+	top: 10px;
+	width: 100px;
+}
+
+.list .icon img{
+	display: block;
+	width: 100%;
+}
+
+.btn-reg {
+	margin: 30px 20px 0px 20px;
+	height: 50px;
+	background-color: #05C0AB;
+	font-size: 18px;
+	color: #fff;
+	border-radius: 4px;
+}
+
+.gray {
+	background-color: #aaa;
+}

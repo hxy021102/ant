@@ -1,0 +1,88 @@
+package com.mobian.service;
+
+import com.mobian.model.TmbContractItem;
+import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.MbContractItem;
+import com.mobian.pageModel.PageHelper;
+
+import java.util.List;
+
+/**
+ * @author John
+ */
+public interface MbContractItemServiceI {
+
+    /**
+     * 获取MbContractItem数据表格
+     *
+     * @param mbContractItem 参数
+     * @param ph             分页帮助类
+     * @return
+     */
+    DataGrid dataGrid(MbContractItem mbContractItem, PageHelper ph);
+
+    /**
+     * 添加MbContractItem
+     *
+     * @param mbContractItem
+     */
+    void add(MbContractItem mbContractItem);
+
+    /**
+     * 获得MbContractItem对象
+     *
+     * @param id
+     * @return
+     */
+    MbContractItem get(Integer id);
+
+    /**
+     * 修改MbContractItem
+     *
+     * @param mbContractItem
+     */
+    void edit(MbContractItem mbContractItem);
+
+    /**
+     * 修改并保存历史
+     *
+     * @param mbContractItem
+     */
+    void editAndHistory(MbContractItem mbContractItem);
+
+    /**
+     * 批量添加修改
+     *
+     * @param mbContractItemList
+     */
+    void addBatchAndOverride(List<MbContractItem> mbContractItemList);
+
+    /**
+     * 删除MbContractItem
+     *
+     * @param id
+     */
+    void delete(Integer id);
+
+    /**
+     * 获得List<TmbContractItem>对象
+     */
+    List<TmbContractItem> queryMbContractItemByShopId(Integer contractId);
+
+    /**
+     * 获取合同明细信息
+     *
+     * @param mbContractItem
+     * @param ph
+     * @return
+     */
+    public DataGrid queryContractItem(MbContractItem mbContractItem, PageHelper ph);
+
+    /**
+     * 批量修改合同价格
+     *
+     * @param mbContractItemList
+     * @param newPrice
+     */
+    public void updateBatchContractPrice(String mbContractItemList, Integer newPrice);
+}

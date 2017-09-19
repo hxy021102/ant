@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <OBJECT  ID="jatoolsPrinter" CLASSID="CLSID:B43D3361-D075-4BE2-87FE-057188254255"
+             codebase="jatoolsPrinter.cab#version=8,6,0,0"></OBJECT>
+    <script>
+
+        //参考api http://printfree.jatools.com/document.html
+        function doPrint() {
+            var myDoc = {
+                settings:{paperName:'a5',orientation:1,topMargin:100,
+                    leftMargin:100,
+                    bottomMargin:100,
+                    rightMargin:100},
+                documents: document,
+                /*
+                 要打印的div 对象在本文档中，控件将从本文档中的 id 为 'page1' 的div对象，
+                 作为首页打印id 为'page2'的作为第二页打印            */
+                copyrights: '杰创软件拥有版权  www.jatools.com' // 版权声明,必须
+            };
+            document.getElementById("jatoolsPrinter").print(myDoc,false); // 直接打印，不弹出打印机设置对话框
+        }
+        function doPreview() {
+            var myDoc = {
+                settings:{paperName:'a5',orientation:1,topMargin:100,
+                    leftMargin:100,
+                    bottomMargin:100,
+                    rightMargin:100},
+                documents: document,
+                /*
+                 要打印的div 对象在本文档中，控件将从本文档中的 id 为 'page1' 的div对象，
+                 作为首页打印id 为'page2'的作为第二页打印            */
+                copyrights: '杰创软件拥有版权  www.jatools.com' // 版权声明,必须
+            };
+            document.getElementById("jatoolsPrinter").printPreview(myDoc); // 直接打印，不弹出打印机设置对话框
+        }
+    </script>
+</head>
+<body>
+<input type="button" value="预览" onClick='doPreview()'>&nbsp;<input type="button" value="打印" onClick='doPrint()'>
+<div id='page1'>
+    <table width="100%">
+        <tr>
+            <td align="right" width="25%">订单时间：</td>
+            <td width="25%"></td>
+            <td align="right" width="25%">配送员：</td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td align="right" width="25%">送货单号：</td>
+            <td width="25%"></td>
+            <td align="right" width="25%">业务员：</td>
+            <td width="25%"></td>
+        </tr>
+    </table>
+    <table border="1" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td>客户编号</td>
+            <td>12343</td>
+            <td>客户名称</td>
+            <td colspan="6">测试</td>
+            <td>电话</td>
+            <td colspan="3">13818680753</td>
+        </tr>
+        <tr>
+            <td>配送地址</td>
+            <td colspan="8">上海市长宁区安化路492号</td>
+            <td>所属区域</td>
+            <td colspan="3">长宁区</td>
+        </tr>
+        <tr>
+            <td>订单备注</td>
+            <td colspan="8"></td>
+            <td>录入人</td>
+            <td colspan="3">李宇</td>
+        </tr>
+        <tr>
+            <td colspan="5">品名</td>
+            <td>单位</td>
+            <td>结算</td>
+            <td>数量</td>
+            <td>单价</td>
+            <td>金额</td>
+            <td>回桶</td>
+            <td>回票</td>
+            <td>实送量</td>
+        </tr>
+        <tr style="height: 150px;" valign="top">
+            <td colspan="5">测试</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1</td>
+            <td>1</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="5">总计</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>付款方式</td>
+            <td>现金</td>
+            <td>支票</td>
+            <td>水票抵/元</td>
+            <td>内扣</td>
+            <td>转账</td>
+            <td>欠桶数</td>
+            <td>还桶数</td>
+            <td colspan="2">累计欠桶量</td>
+            <td>&nbsp;</td>
+            <td>当日欠款</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>本次支付金额</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td colspan="2">累计欠结</td>
+            <td></td>
+            <td>累计欠款</td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

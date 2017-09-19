@@ -1,0 +1,210 @@
+package com.mobian.service.impl;
+
+import com.mobian.absx.F;
+import com.mobian.dao.MbBalanceDaoI;
+import com.mobian.exception.ServiceException;
+import com.mobian.model.TmbBalance;
+import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.MbBalance;
+import com.mobian.pageModel.MbShop;
+import com.mobian.pageModel.PageHelper;
+import com.mobian.service.MbBalanceServiceI;
+import com.mobian.service.MbShopServiceI;
+import com.mobian.util.MyBeanUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class MbBalanceServiceImpl extends BaseServiceImpl<MbBalance> implements MbBalanceServiceI {
+
+	@Autowired
+	private MbBalanceDaoI mbBalanceDao;
+
+	@Autowired
+	private MbShopServiceI mbShopService;
+
+	@Override
+	public DataGrid dataGrid(MbBalance mbBalance, PageHelper ph) {
+		List<MbBalance> ol = new ArrayList<MbBalance>();
+		String hql = " from TmbBalance t ";
+		DataGrid dg = dataGridQuery(hql, ph, mbBalance, mbBalanceDao);
+		@SuppressWarnings("unchecked")
+		List<TmbBalance> l = dg.getRows();
+		if (l != null && l.size() > 0) {
+			for (TmbBalance t : l) {
+				MbBalance o = new MbBalance();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		dg.setRows(ol);
+		return dg;
+	}
+	
+
+	protected String whereHql(MbBalance mbBalance, Map<String, Object> params) {
+		String whereHql = "";	
+		if (mbBalance != null) {
+			whereHql += " where t.isdeleted = 0 ";
+			if (!F.empty(mbBalance.getTenantId())) {
+				whereHql += " and t.tenantId = :tenantId";
+				params.put("tenantId", mbBalance.getTenantId());
+			}		
+			if (!F.empty(mbBalance.getIsdeleted())) {
+				whereHql += " and t.isdeleted = :isdeleted";
+				params.put("isdeleted", mbBalance.getIsdeleted());
+			}		
+			if (!F.empty(mbBalance.getAmount())) {
+				whereHql += " and t.amount = :amount";
+				params.put("amount", mbBalance.getAmount());
+			}		
+			if (!F.empty(mbBalance.getRefId())) {
+				whereHql += " and t.refId = :refId";
+				params.put("refId", mbBalance.getRefId());
+			}		
+			if (!F.empty(mbBalance.getRefType())) {
+				whereHql += " and t.refType = :refType";
+				params.put("refType", mbBalance.getRefType());
+			}		
+		}	
+		return whereHql;
+	}
+
+	@Override
+	public void add(MbBalance mbBalance) {
+		TmbBalance t = new TmbBalance();
+		BeanUtils.copyProperties(mbBalance, t);
+		//t.setId(jb.absx.UUID.uuid());
+		t.setIsdeleted(false);
+		mbBalanceDao.save(t);
+		mbBalance.setId(t.getId());
+	}
+
+	@Override
+	public MbBalance get(Integer id) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", id);
+		TmbBalance t = mbBalanceDao.get("from TmbBalance t  where t.id = :id", params);
+		MbBalance o = new MbBalance();
+		BeanUtils.copyProperties(t, o);
+		return o;
+	}
+
+	@Override
+	public void edit(MbBalance mbBalance) {
+		TmbBalance t = mbBalanceDao.get(TmbBalance.class, mbBalance.getId());
+		if (t != null) {
+			MyBeanUtils.copyProperties(mbBalance, t, new String[]{"id", "addtime", "isdeleted", "updatetime"}, true);
+		}
+	}
+
+	@Override
+	public void delete(Integer id) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", id);
+		mbBalanceDao.executeHql("update TmbBalance t set t.isdeleted = 1 where t.id = :id",params);
+		//mbBalanceDao.delete(mbBalanceDao.get(TmbBalance.class, id));
+	}
+
+	@Override
+	public MbBalance addOrGetMbBalance(Integer refId) {
+		MbShop mbShop = mbShopService.getFromCache(refId);
+		if (mbShop != null && !F.empty(mbShop.getParentId()) && mbShop.getParentId() != -1) {
+			refId = mbShop.getParentId();
+		}
+		MbBalance o;
+		TmbBalance t = mbBalanceDao.get("from TmbBalance t where t.isdeleted = 0 and t.refType = 1 and refId=" + refId);
+		if(t != null && t.getId() != null) {
+			o = new MbBalance();
+			BeanUtils.copyProperties(t, o);
+		} else {
+			if(refId == null)
+				throw new ServiceException("shopId 不能为空");
+			o = new MbBalance();
+			o.setAmount(0);
+			o.setRefId(refId);
+			o.setRefType(1);
+			add(o);
+		}
+		return o;
+	}
+
+	@Override
+	public MbBalance queryByShopId(Integer shopId) {
+		MbShop mbShop = mbShopService.getFromCache(shopId);
+		if (mbShop != null && !F.empty(mbShop.getParentId()) && mbShop.getParentId() != -1) {
+			shopId = mbShop.getParentId();
+		}
+		TmbBalance tmbBalance = mbBalanceDao.get("from TmbBalance t where t.refType = 1 and t.refId=" + shopId);
+		if (tmbBalance != null) {
+		    MbBalance mbBalance = new MbBalance();
+		    BeanUtils.copyProperties(tmbBalance, mbBalance);
+		    return mbBalance;
+        }
+		return null;
+	}
+
+	@Override
+	public MbBalance addOrGetMbBalanceCash(Integer shopId) {
+		MbShop mbShop = mbShopService.getFromCache(shopId);
+		if (mbShop != null && !F.empty(mbShop.getParentId()) && mbShop.getParentId() != -1) {
+			shopId = mbShop.getParentId();
+		}
+		MbBalance o;
+		TmbBalance t = mbBalanceDao.get("from TmbBalance t where t.isdeleted = 0 and t.refType = 4 and refId=" + shopId);
+		if(t != null && t.getId() != null) {
+			o = new MbBalance();
+			BeanUtils.copyProperties(t, o);
+		} else {
+			if(shopId == null)
+				throw new ServiceException("shopId 不能为空");
+			o = new MbBalance();
+			o.setAmount(-10000000);
+			o.setRefId(shopId);
+			o.setRefType(4);
+			add(o);
+		}
+		return o;
+	}
+
+	@Override
+	public MbBalance getCashByShopId(Integer shopId) {
+		MbShop mbShop = mbShopService.getFromCache(shopId);
+		if (mbShop != null && !F.empty(mbShop.getParentId()) && mbShop.getParentId() != -1) {
+			shopId = mbShop.getParentId();
+		}
+		TmbBalance tmbBalance = mbBalanceDao.get("from TmbBalance t where t.refType = 4 and t.refId=" + shopId);
+		if (tmbBalance != null) {
+			MbBalance mbBalance = new MbBalance();
+			BeanUtils.copyProperties(tmbBalance, mbBalance);
+			return mbBalance;
+		}
+		return null;
+	}
+
+	@Override
+	public List<MbBalance> queryByrefTypeAndAmount(Integer refType, Integer amount) {
+		Map<String,Object> params=new HashMap<String,Object>();
+		List<MbBalance> mbBalanceList=new ArrayList<MbBalance>();
+		params.put("refType",refType);
+		params.put("amount",amount);
+		List<TmbBalance> tmbBalances=mbBalanceDao.find("from TmbBalance t  where  t.isdeleted = 0 and t.refType = :refType and t.amount <:amount",params);
+		if(!CollectionUtils.isEmpty(tmbBalances)){
+           for(TmbBalance tmbBalance : tmbBalances){
+			   MbBalance mbBalance = new MbBalance();
+			   BeanUtils.copyProperties(tmbBalance, mbBalance);
+			   mbBalanceList.add(mbBalance);
+		   }
+		   return  mbBalanceList;
+		}
+		return null;
+	}
+
+}
