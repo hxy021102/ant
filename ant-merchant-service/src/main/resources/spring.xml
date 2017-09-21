@@ -14,7 +14,6 @@
 
 	<!-- 引入同文件夹下的redis配置文件 -->
 	<import resource="spring-redis.xml"/>
-	<import resource="spring-dubbo-registry.xml"/>
 	<import resource="spring-dubbo.xml"/>
 
 	<bean id="tokenManage" class="com.mobian.interceptors.TokenManage"
