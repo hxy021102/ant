@@ -4,6 +4,7 @@ import com.mobian.interceptors.TokenManage;
 import com.mobian.pageModel.BaseData;
 import com.mobian.service.BasedataServiceI;
 import com.mobian.thirdpart.wx.AccessTokenInstance;
+import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.FileUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -31,6 +32,7 @@ public class Application implements ServletContextListener {
 
 		// 启动刷新微信access_token
 		AccessTokenInstance.getInstance();
+		FileUtil.updateCommonJs();
 	}
 
 	private static void initAppVariable(){
@@ -41,7 +43,7 @@ public class Application implements ServletContextListener {
 			context.setAttribute(PREFIX+key, map.get(key));
 		}
 		TokenManage.DEFAULT_TOKEN = getString("SV010","89");
-		FileUtil.updateCommonJs();
+		ConvertNameUtil.setContext(context);
 	}
 	
 	/**
