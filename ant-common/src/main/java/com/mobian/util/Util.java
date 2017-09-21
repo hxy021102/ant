@@ -1,6 +1,6 @@
 package com.mobian.util;
 
-import com.mobian.absx.F;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -43,7 +43,7 @@ public class Util {
 	 * @return
 	 */
 	public static String filterEmoji(String source) {
-		if(F.empty(source)) return source;
+		if(StringUtils.isEmpty(source)) return source;
 
 		int len = source.length();
 		StringBuilder buf = new StringBuilder(len);
@@ -71,7 +71,7 @@ public class Util {
 	 */
 	public static boolean isUserName(String str) {
 		boolean result = false;
-		if(!F.empty(str) && str.length() > 5 && str.length() < 12) {
+		if(!StringUtils.isEmpty(str) && str.length() > 5 && str.length() < 12) {
 			result = true;
 		}
 		return result;

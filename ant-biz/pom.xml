@@ -18,6 +18,12 @@
             <artifactId>ant-api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.bx.ant</groupId>
+            <artifactId>ant-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
         <!-- 加入spring mvc依赖包 -->
         <dependency>
             <groupId>org.springframework</groupId>

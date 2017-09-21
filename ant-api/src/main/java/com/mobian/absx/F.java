@@ -28,6 +28,9 @@ public final class F {
 	public static boolean empty(Integer value) {
 		return value == null || value == 0;
 	}
+	public static boolean empty(Long value) {
+		return value == null || value == 0;
+	}
 	
 	public static boolean empty(Boolean value) {
 		return value == null;

@@ -1,6 +1,6 @@
 package com.mobian.util;
 
-import com.mobian.absx.F;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 
@@ -23,7 +23,7 @@ public final class DateUtil {
 	 */
 	public static Date parse(String date, String fmt) {
 		try {
-			if(F.empty(date)) return null;
+			if(StringUtils.isEmpty(date)) return null;
 			SimpleDateFormat sdf = new SimpleDateFormat(fmt);
 			Date newdate = sdf.parse(date);
 			return newdate;
