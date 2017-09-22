@@ -53,11 +53,11 @@ public class TmbItem implements java.io.Serializable,IEntity{
 	private Integer id;
 	//
 	private Integer tenantId;
-	//@NotNull
+	//@NotNull 
 	private java.util.Date addtime;
 	//@NotNull
 	private java.util.Date updatetime;
-	//@NotNull
+	//@NotNull 
 	private Boolean isdeleted;
 	private Boolean isShelves;
 
@@ -92,98 +92,98 @@ public class TmbItem implements java.io.Serializable,IEntity{
 		public TmbItem(Integer id) {
 			this.id = id;
 		}
-
+	
 
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id", unique = true, nullable = false, length = 10)
 	public Integer getId() {
 		return this.id;
 	}
-
+	
 	@Column(name = "tenant_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getTenantId() {
 		return this.tenantId;
 	}
-
+	
 	public void setTenantId(Integer tenantId) {
 		this.tenantId = tenantId;
 	}
-
+	
 
 	@Column(name = "addtime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public java.util.Date getAddtime() {
 		return this.addtime;
 	}
-
+	
 	public void setAddtime(java.util.Date addtime) {
 		this.addtime = addtime;
 	}
-
+	
 
 	@Column(name = "updatetime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public java.util.Date getUpdatetime() {
 		return this.updatetime;
 	}
-
+	
 	public void setUpdatetime(java.util.Date updatetime) {
 		this.updatetime = updatetime;
 	}
-
+	
 	@Column(name = "isdeleted", unique = false, nullable = false, insertable = true, updatable = true, length = 0)
 	public Boolean getIsdeleted() {
 		return this.isdeleted;
 	}
-
+	
 	public void setIsdeleted(Boolean isdeleted) {
 		this.isdeleted = isdeleted;
 	}
-
+	
 	@Column(name = "code", unique = false, nullable = false, insertable = true, updatable = true, length = 32)
 	public String getCode() {
 		return this.code;
 	}
-
+	
 	public void setCode(String code) {
 		this.code = code;
 	}
-
+	
 	@Column(name = "name", unique = false, nullable = false, insertable = true, updatable = true, length = 128)
 	public String getName() {
 		return this.name;
 	}
-
+	
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
 	@Column(name = "category_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getCategoryId() {
 		return this.categoryId;
 	}
-
+	
 	public void setCategoryId(Integer categoryId) {
 		this.categoryId = categoryId;
 	}
-
+	
 	@Column(name = "quantity_unit_name", unique = false, nullable = true, insertable = true, updatable = true, length = 100)
 	public String getQuantityUnitName() {
 		return this.quantityUnitName;
 	}
-
+	
 	public void setQuantityUnitName(String quantityUnitName) {
 		this.quantityUnitName = quantityUnitName;
 	}
-
+	
 	@Column(name = "market_price", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getMarketPrice() {
 		return this.marketPrice;
 	}
-
+	
 	public void setMarketPrice(Integer marketPrice) {
 		this.marketPrice = marketPrice;
 	}

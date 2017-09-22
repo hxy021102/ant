@@ -5,18 +5,19 @@
 
 package com.mobian.model;
 
+import javax.persistence.*;
+
+import java.util.Date;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
-import javax.persistence.*;
-import java.util.Date;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "mb_supplier_contract_item")
 @DynamicInsert(true)
 @DynamicUpdate(true)
-public class TmbSupplierContractItem implements java.io.Serializable,IEntity {
+public class TmbSupplierContractItem implements java.io.Serializable,IEntity{
 	private static final long serialVersionUID = 5454155825314635342L;
 	
 	//alias

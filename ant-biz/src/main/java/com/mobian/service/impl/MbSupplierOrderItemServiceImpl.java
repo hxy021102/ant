@@ -292,12 +292,14 @@ public class MbSupplierOrderItemServiceImpl extends BaseServiceImpl<MbSupplierOr
 
             // 合计
             if(CollectionUtils.isNotEmpty(ol)) {
+                List<MbSupplierOrderReport> footer = new ArrayList<MbSupplierOrderReport>();
                 MbSupplierOrderReport totalRow = new MbSupplierOrderReport();
-                totalRow.setItemCode("合计");
+                totalRow.setItemName("合计");
                 totalRow.setQuantity(totalQuantity);
                 totalRow.setStockInQuantity(totalStockInQuantity);
                 totalRow.setTotalPrice(totalPrice);
-                ol.add(totalRow);
+                footer.add(totalRow);
+                dataGrid.setFooter(footer);
             }
         }
 

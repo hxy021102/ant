@@ -162,6 +162,20 @@
                     parent.$.messager.progress('close');
                 }
             });
+              $('#dataTotal').datagrid({
+                  pagination:false,
+                  fit: true,
+                  columns: [[{
+                    field: 'totalQuantity',
+                    title: '商品总数',
+                    width: 100,
+                }, {
+                    field: 'totalPrice',
+                    title: '商品总金额',
+					align:"right",
+                    width: 100,
+                }]],
+            });
 		});
 
 		function clearOrderForm(){
@@ -300,18 +314,22 @@
 					</table>
 				</form>
 			</div>
-		<div data-options="region:'center',border:false">
+		    <div data-options="region:'center',border:false">
+		<div class="easyui-layout" data-options="fit : true,border : false">
+		   <div data-options="region:'center',border:false">
+		    <table id="dg" class="easyui-datagrid"  style="width:700px;height:auto"></table>
+		   </div>
 
-		<table id="dg" class="easyui-datagrid"  style="width:700px;height:auto"></table>
+			<div id="tb" style="height:auto;display: none;">
+				<a href="javascript:void(0)" class="easyui-linkbutton item_add" data-options="iconCls:'pencil_add',disabled:true,plain:true" onclick="append()">添加</a>
+				<a href="javascript:void(0)" class="easyui-linkbutton item_add" data-options="iconCls:'pencil_delete',disabled:true,plain:true" onclick="removeit()">删除</a>
+				<a href="javascript:void(0)" class="easyui-linkbutton item_add" data-options="iconCls:'disk',disabled:true,plain:true" onclick="accept()">保存</a>
+				&nbsp;&nbsp;&nbsp;<input type="checkbox" name="checkPayByVoucher" id="checkPayByVoucher" checked/><a class="easyui-linkbutton item_add" data-options="disabled:true,plain:true" >使用水票</a>
 
-		<div id="tb" style="height:auto;display: none;">
-			<a href="javascript:void(0)" class="easyui-linkbutton item_add" data-options="iconCls:'pencil_add',disabled:true,plain:true" onclick="append()">添加</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton item_add" data-options="iconCls:'pencil_delete',disabled:true,plain:true" onclick="removeit()">删除</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton item_add" data-options="iconCls:'disk',disabled:true,plain:true" onclick="accept()">保存</a>
-			&nbsp;&nbsp;&nbsp;<input type="checkbox" name="checkPayByVoucher" id="checkPayByVoucher" checked/><a class="easyui-linkbutton item_add" data-options="disabled:true,plain:true" >使用水票</a>
-
-		</div>
-
+			</div>
+			<div data-options="region:'south',border:false" style="height: 50px;">
+				<table id="dataTotal" class="easyui-datagrid"></table>
+			</div>
 		<script type="text/javascript">
 			var editIndex = undefined;
 			var dgItem;
@@ -475,7 +493,22 @@
 					}
 				});
 			});
-
+			/*计算购买的商品总数量和总金额*/
+            function computerQuantity() {
+                var sumQuantity = 0, sumPrice = 0;
+                var dgArr = $("#dg").datagrid("getRows");
+                for (var i = 0; i < dgArr.length; i++) {
+                    sumQuantity += parseInt(dgArr[i].quantity);
+                    sumPrice += parseInt(dgArr[i].quantity) * dgArr[i].buyPrice;
+                }
+				sumPrice = $.formatMoney(sumPrice);
+                var arr = $("#dataTotal").datagrid("getRows");
+                if (arr.length == 0) {
+                    $('#dataTotal').datagrid('appendRow', {totalQuantity: sumQuantity, totalPrice:sumPrice});
+                } else {
+                    $('#dataTotal').datagrid('updateRow', {index: 0, row: {totalQuantity: sumQuantity, totalPrice: sumPrice}});
+                }
+            }
 			function onClickCell(index, field){
                 $('#dg').datagrid('endEdit', index);
 				if (editIndex != index){
@@ -525,6 +558,7 @@
                 } else {
                     row.voucherQuantityTotal = 0;
                 }
+                computerQuantity();
 				console.log(row);
 			}
 			function append(){
@@ -661,12 +695,13 @@
 				return total;
             }
 		</script>
+	 </div>
 	</div>
 			<div  data-options="region:'east'"  style="width: 220px; overflow: hidden;">
 				<table id="dataOrder"></table>
 			</div>
-	</div>
-</div>
+	    </div>
+    </div>
 </div>
 <div id="toolbar" style="display: none;">
 	<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>

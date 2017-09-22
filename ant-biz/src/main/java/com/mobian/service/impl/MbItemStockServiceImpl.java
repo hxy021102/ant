@@ -5,10 +5,7 @@ import com.mobian.dao.MbItemStockDaoI;
 import com.mobian.exception.ServiceException;
 import com.mobian.model.TmbItemStock;
 import com.mobian.pageModel.*;
-import com.mobian.service.MbItemServiceI;
-import com.mobian.service.MbItemStockLogServiceI;
-import com.mobian.service.MbItemStockServiceI;
-import com.mobian.service.MbWarehouseServiceI;
+import com.mobian.service.*;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -36,6 +33,10 @@ public class MbItemStockServiceImpl extends BaseServiceImpl<MbItemStock> impleme
 	private MbItemServiceI mbItemService;
 	@Autowired
 	private RedisUserServiceImpl redisUserService;
+	@Autowired
+	private MbBalanceServiceI mbBalanceService;
+	@Autowired
+	private MbBalanceLogServiceI mbBalanceLogService;
 
 	@Override
 	public DataGrid dataGrid(MbItemStock mbItemStock, PageHelper ph) {
@@ -69,6 +70,7 @@ public class MbItemStockServiceImpl extends BaseServiceImpl<MbItemStock> impleme
 				orderQuantity = redisUserService.getOrderQuantity(stock.getWarehouseId() + ":" + stock.getItemId());
 				stock.setOrderQuantity(orderQuantity);
 				stock.setOd15Quantity(redisUserService.getOrderQuantity(stock.getWarehouseId() + ":" + stock.getItemId() + ":OD15"));
+				stock.setWarehouseType("WT03");
 			}
 			MbItem mbItem = mbItemService.getFromCache(stock.getItemId());
 			if (mbItem != null) {
@@ -131,7 +133,18 @@ public class MbItemStockServiceImpl extends BaseServiceImpl<MbItemStock> impleme
 				whereHql += " and t.itemId in (:itemIds)  ";
 				params.put("itemIds", itemIds);
 			}
-		}	
+			if (mbItemStock.getItemIdNumbers() != null) {
+				whereHql += " and t.itemId in (:itemIds)  ";
+				params.put("itemIds", mbItemStock.getItemIdNumbers());
+			}
+			if (!F.empty(mbItemStock.getSafe())) {
+				if(!mbItemStock.getSafe()) {
+					whereHql += " and t.quantity < t.safeQuantity ";
+				}else {
+					whereHql += " and t.quantity >= t.safeQuantity ";
+				}
+			}
+		}
 		return whereHql;
 	}
 
@@ -154,7 +167,7 @@ public class MbItemStockServiceImpl extends BaseServiceImpl<MbItemStock> impleme
 		insertLog(mbItemStockId, mbItemStock.getQuantity(), loginId, mbItemStock.getLogType(), mbItemStock.getReason());
 	}
 
-	private void insertLog(Integer mbItemStockId, Integer quantity, String loginId,String logType,String reason) {
+	private int insertLog(Integer mbItemStockId, Integer quantity, String loginId,String logType,String reason) {
 		MbItemStockLog mbItemStockLog = new MbItemStockLog();
 		mbItemStockLog.setItemStockId(mbItemStockId);
 		mbItemStockLog.setQuantity(quantity);
@@ -162,6 +175,7 @@ public class MbItemStockServiceImpl extends BaseServiceImpl<MbItemStock> impleme
 		mbItemStockLog.setLogType(logType);
 		mbItemStockLog.setReason(reason);
 		mbItemStockLogService.add(mbItemStockLog);
+		return mbItemStockLog.getId();
 	}
 
 	@Override
@@ -208,11 +222,11 @@ public class MbItemStockServiceImpl extends BaseServiceImpl<MbItemStock> impleme
 	}
 
 	@Override
-	public boolean editAndInsertLog(MbItemStock mbItemStock, String loginId) {
+	public Integer editAndInsertLog(MbItemStock mbItemStock, String loginId) {
 		if (mbItemStock.getAdjustment() == null) {
 			throw new ServiceException("调整量不能为null");
 		} else if (mbItemStock.getAdjustment() == 0) {
-			return true;
+			return null;
 		}
 		/**
 		 * 库存修改存在并发场景，一定要考虑并发情况
@@ -222,9 +236,10 @@ public class MbItemStockServiceImpl extends BaseServiceImpl<MbItemStock> impleme
 		params.put("id", mbItemStock.getId());
 		int i = mbItemStockDao.executeHql("update TmbItemStock t set t.quantity = t.quantity+:adjustment where t.id = :id", params);
 		if (i > 0) {
-			insertLog(mbItemStock.getId(), mbItemStock.getAdjustment(), loginId, mbItemStock.getLogType(), mbItemStock.getReason());
+			int logId = insertLog(mbItemStock.getId(), mbItemStock.getAdjustment(), loginId, mbItemStock.getLogType(), mbItemStock.getReason());
+			return logId;
 		}
-		return i > 0;
+		return null;
 	}
 
 	@Override
@@ -288,5 +303,47 @@ public class MbItemStockServiceImpl extends BaseServiceImpl<MbItemStock> impleme
 			dataGrid.setRows(mbItemStocks);
 		}
 		return dataGrid;
+	}
+
+	@Override
+	public DataGrid dataGridEmptyBucket(MbItemStock mbItemStock, PageHelper ph) {
+		MbItem mbItem = new MbItem();
+		mbItem.setIspack(true);
+		List<MbItem> mbItems = mbItemService.query(mbItem);
+		Integer[] itemIds = new Integer[mbItems.size()];
+		Integer i = 0;
+		for (MbItem item : mbItems) {
+			itemIds[i] = item.getId();
+			i++;
+		}
+		mbItemStock.setItemIdNumbers(itemIds);
+		DataGrid dataGrid = dataGridWithOrderSum(mbItemStock, ph);
+		return dataGrid;
+	}
+
+	@Override
+	public void editStockAndBalance(MbItemStock mbItemStock, String loginId) {
+		Integer logId = editAndInsertLog(mbItemStock, loginId);
+		MbItem mbItem = mbItemService.getFromCache(mbItemStock.getItemId());
+		Integer adjustment = mbItem.getMarketPrice() * mbItemStock.getAdjustment();
+		MbBalance mbBalance = mbBalanceService.addOrGetMbBalanceCash(mbItemStock.getShopId());
+		MbBalanceLog log = new MbBalanceLog();
+		log.setBalanceId(mbBalance.getId());
+		log.setAmount(-adjustment);
+		log.setRefType("BT019"); // 绑定主店-余额转出
+		if(logId!=null) {
+			log.setRefId(logId + "");
+		}
+		log.setReason(mbItemStock.getReason());
+		mbBalanceLogService.addAndUpdateBalance(log);
+	}
+
+
+	@Override
+	public List<TmbItemStock> queryItemStockListByWarehouseId(Integer warehouseId) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("warehouseId", warehouseId);
+		List<TmbItemStock> tmbItemStockList = mbItemStockDao.find("from TmbItemStock t  where t.isdeleted = 0 and t.warehouseId = :warehouseId", params);
+		return tmbItemStockList;
 	}
 }

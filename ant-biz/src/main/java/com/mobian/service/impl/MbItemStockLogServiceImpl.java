@@ -2,12 +2,10 @@ package com.mobian.service.impl;
 
 import com.mobian.absx.F;
 import com.mobian.dao.MbItemStockLogDaoI;
+import com.mobian.model.TmbItemStock;
 import com.mobian.model.TmbItemStockLog;
 import com.mobian.pageModel.*;
-import com.mobian.service.MbItemServiceI;
-import com.mobian.service.MbItemStockLogServiceI;
-import com.mobian.service.MbItemStockServiceI;
-import com.mobian.service.UserServiceI;
+import com.mobian.service.*;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -31,6 +29,8 @@ public class MbItemStockLogServiceImpl extends BaseServiceImpl<MbItemStockLog> i
 	private MbItemServiceI mbItemService;
 	@Autowired
 	private MbItemStockServiceI mbItemStockService;
+	@Autowired
+	private MbWarehouseServiceI mbWarehouseService;
 
 	@Override
 	public DataGrid dataGrid(MbItemStockLog mbItemStockLog, PageHelper ph) {
@@ -99,13 +99,17 @@ public class MbItemStockLogServiceImpl extends BaseServiceImpl<MbItemStockLog> i
 				whereHql += " and t.remark = :remark";
 				params.put("remark", mbItemStockLog.getRemark());
 			}
-			if(mbItemStockLog.getStockLogStartTime()!=null) {
-				whereHql +=" and t.addtime >= :stockLogStartTime";
-				params.put("stockLogStartTime",mbItemStockLog.getStockLogStartTime());
+			if (mbItemStockLog.getStockLogStartTime() != null) {
+				whereHql += " and t.addtime >= :stockLogStartTime";
+				params.put("stockLogStartTime", mbItemStockLog.getStockLogStartTime());
 			}
-			if(mbItemStockLog.getStockLogEndTime()!=null) {
-				whereHql +=" and t.addtime <= :stockLogEndTime";
-				params.put("stockLogEndTime",mbItemStockLog.getStockLogEndTime());
+			if (mbItemStockLog.getStockLogEndTime() != null) {
+				whereHql += " and t.addtime <= :stockLogEndTime";
+				params.put("stockLogEndTime", mbItemStockLog.getStockLogEndTime());
+			}
+			if (mbItemStockLog.getItemStockIds() != null) {
+				whereHql += " and t.itemStockId in (:itemStockIds) ";
+				params.put("itemStockIds", mbItemStockLog.getItemStockIds());
 			}
 		}	
 		return whereHql;
@@ -118,6 +122,7 @@ public class MbItemStockLogServiceImpl extends BaseServiceImpl<MbItemStockLog> i
 		//t.setId(jb.absx.UUID.uuid());
 		t.setIsdeleted(false);
 		mbItemStockLogDao.save(t);
+		mbItemStockLog.setId(t.getId());
 	}
 
 	@Override
@@ -148,18 +153,33 @@ public class MbItemStockLogServiceImpl extends BaseServiceImpl<MbItemStockLog> i
 
 	@Override
 	public DataGrid dataGridStockInLog(MbItemStockLog mbItemStockLog, PageHelper ph) {
-		DataGrid dataGrid=dataGrid(mbItemStockLog,ph);
-		List<MbItemStockLog>  mbItemStockLogs=dataGrid.getRows();
-		if(!CollectionUtils.isEmpty(mbItemStockLogs)) {
-			for(MbItemStockLog stockLog : mbItemStockLogs){
-			MbItemStock mbItemStock=mbItemStockService.get(stockLog.getItemStockId());
-			if (mbItemStock!=null) {
-				MbItem mbItem=mbItemService.getFromCache(mbItemStock.getItemId());
-				if(mbItem!=null) {
-					stockLog.setItemName(mbItem.getName());
+		List<TmbItemStock> tmbItemStocks = mbItemStockService.queryItemStockListByWarehouseId(mbItemStockLog.getWarehouseId());
+		int i = 0;
+		Integer[] itemStockIds;
+		if (!CollectionUtils.isEmpty(tmbItemStocks)) {
+			itemStockIds = new Integer[tmbItemStocks.size()];
+			for (TmbItemStock mbItemStock : tmbItemStocks) {
+				itemStockIds[i] = mbItemStock.getId();
+				i++;
+			}
+			mbItemStockLog.setItemStockIds(itemStockIds);
+		}
+		DataGrid dataGrid = dataGrid(mbItemStockLog, ph);
+		List<MbItemStockLog> mbItemStockLogs = dataGrid.getRows();
+		if (!CollectionUtils.isEmpty(mbItemStockLogs)) {
+			for (MbItemStockLog stockLog : mbItemStockLogs) {
+				MbItemStock mbItemStock = mbItemStockService.get(stockLog.getItemStockId());
+				if (mbItemStock != null) {
+					MbItem mbItem = mbItemService.getFromCache(mbItemStock.getItemId());
+					if (mbItem != null) {
+						stockLog.setItemName(mbItem.getName());
+					}
+					MbWarehouse warehouse = mbWarehouseService.getFromCache(mbItemStock.getWarehouseId());
+					if (warehouse != null) {
+						stockLog.setWarehouseName(warehouse.getName());
+					}
 				}
 			}
-		 }
 		}
 		dataGrid.setRows(mbItemStockLogs);
 		return dataGrid;

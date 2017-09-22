@@ -1091,11 +1091,11 @@
     }
 
     function viewShop(id) {
-        var href = '${pageContext.request.contextPath}/mbShopController/manager?id=' + id;
+        var href = '${pageContext.request.contextPath}/mbShopController/view?id=' + id;
         parent.$("#index_tabs").tabs('add', {
-            title : '门店查询' + id,
-            content : '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:100%;"></iframe>',
-            closable : true
+            title: '门店详情-' + id,
+            content: '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            closable: true
         });
     }
     function addOrderProblem(id) {

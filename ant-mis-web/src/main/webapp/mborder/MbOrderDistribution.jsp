@@ -66,12 +66,88 @@
             contentType: "application/json;charset=UTF-8",
             success:function(data){//data即为后台反馈回来的json数据；
                 showChart(data,"订单分布汇总")
+                showPointChart(data,"订单分布趋势图","订单分布汇总")
             }
         });
     }
     function cleanFun() {
         $('#searchForm input').val('');
-        showChart(0,"");
+        window.location.reload();
+    }
+
+    function showPointChart(chartData, titleName, subtitleName) {
+        var data = eval(chartData);
+        var categories = [], server_data = [], public_data = [];
+        for (var j = 0; j < data[0].orderDayName.length; j++) {
+            if (data[0].orderDayName[j] == null)
+                break;
+            categories.push(data[0].orderDayName[j]);
+            if (data[0].orderDayNumber != null) {
+                server_data.push(data[0].orderDayNumber[j]);
+            } else {
+                server_data.push(0);
+            }
+            if (data[1].orderDayNumber != null) {
+                public_data.push(data[1].orderDayNumber[j]);
+            } else {
+                public_data.push(0);
+            }
+        }
+
+        $('#containerPoint').highcharts({
+            chart: {
+                type: 'spline'
+            },
+            title: {
+                text: titleName
+            },
+            subtitle: {
+                text: subtitleName
+            },
+            xAxis: {
+                categories: categories
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '订单数(单)'
+                },
+                labels: {
+                    formatter: function () {
+                        return this.value;
+                    }
+                }
+            },
+            tooltip: {
+                crosshairs: true,
+                shared: true
+            },
+            credits: {
+                enabled: false
+            },
+            plotOptions: {
+                spline: {
+                    marker: {
+                        radius: 3,
+                        lineColor: '#666666',
+                        lineWidth: 1
+                    }
+                }
+            },
+            series: [{
+                name: '公众号',
+                marker: {
+                    symbol: 'square'
+                },
+                data: server_data
+            }, {
+                name: '客服',
+                marker: {
+                    symbol: 'diamond'
+                },
+                data: public_data
+            }]
+        })
     }
 
 </script>
@@ -95,7 +171,14 @@
 			</div>
 		</div>
 		<div data-options="region:'center',border:false" style=" overflow: hidden;">
-			<div id="container"></div>
+			<div class="easyui-layout" data-options="fit : true,border : false">
+				<div data-options="region:'west',border:false" style="width:450px; overflow: hidden;">
+		     	<div id="container"></div>
+				</div>
+				<div data-options="region:'center',border:false" style=" overflow: hidden;">
+					<div id="containerPoint"></div>
+				</div>
+			</div>
 		</div>
 	</div>
 </body>

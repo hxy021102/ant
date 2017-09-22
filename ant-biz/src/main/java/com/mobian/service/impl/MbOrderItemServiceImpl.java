@@ -40,6 +40,18 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 	public DataGrid dataGrid(MbOrderItem mbOrderItem, PageHelper ph) {
 		List<MbOrderItem> ol = new ArrayList<MbOrderItem>();
 		String hql = " from TmbOrderItem t ";
+		if(mbOrderItem.getShopId() !=null) {
+			MbOrder mbOrder =new MbOrder();
+			mbOrder.setOrderTimeBegin(mbOrderItem.getUpdatetimeBegin());
+			mbOrder.setOrderTimeEnd(mbOrderItem.getUpdatetimeEnd());
+			mbOrder.setShopId(mbOrderItem.getShopId());
+			List<MbOrder> list = mbOrderService.query(mbOrder);
+			Integer[] orderIds= new Integer[list.size()];
+			for (int i = 0; i < list.size(); i++) {
+				orderIds[i] = list.get(i).getId();
+			}
+			mbOrderItem.setOrderIds(orderIds);
+		}
 		DataGrid dg = dataGridQuery(hql, ph, mbOrderItem, mbOrderItemDao);
 		@SuppressWarnings("unchecked")
 		List<TmbOrderItem> l = dg.getRows();
@@ -151,6 +163,10 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 			if(mbOrderItem.getUpdatetimeEnd()!=null){
 				whereHql += " and t.updatetime <= :updatetimeEnd";
 				params.put("updatetimeEnd", mbOrderItem.getUpdatetimeEnd());
+			}
+			if(mbOrderItem.getOrderIds() !=null) {
+				whereHql += " and t.orderId in (:alist)";
+				params.put("alist", mbOrderItem.getOrderIds());
 			}
 		}	
 		return whereHql;
@@ -378,5 +394,22 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 			}
 		}
 		return ol;
+	}
+	@Override
+	public void addOffSet(MbOrder mbOrder, Integer itemId, Integer quantity) {
+		MbOrderItem mbOrderItem = new MbOrderItem();
+		mbOrderItem.setOrderId(mbOrder.getId());
+		mbOrderItem.setItemId(itemId);
+		mbOrderItem.setQuantity(quantity);
+		MbOrder newMbOrder = mbOrderService.get(mbOrderItem.getOrderId());
+		Integer contractPrice = redisUserService.getContractPrice(newMbOrder.getShopId(), mbOrderItem.getItemId());
+		if (contractPrice == null) {
+			MbItem mbItem = mbItemService.getFromCache(mbOrderItem.getItemId());
+			mbOrderItem.setMarketPrice(mbItem.getMarketPrice());
+		}else{
+			mbOrderItem.setMarketPrice(contractPrice);
+		}
+		mbOrderItem.setBuyPrice(0);
+		add(mbOrderItem);
 	}
 }

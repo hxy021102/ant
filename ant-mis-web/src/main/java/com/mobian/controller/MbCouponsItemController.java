@@ -1,18 +1,26 @@
 package com.mobian.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.mobian.pageModel.*;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.mobian.pageModel.Colum;
+import com.mobian.pageModel.MbCouponsItem;
+import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.Json;
+import com.mobian.pageModel.PageHelper;
 import com.mobian.service.MbCouponsItemServiceI;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
+import com.alibaba.fastjson.JSON;
 
 /**
  * MbCouponsItem管理控制器
@@ -63,7 +71,7 @@ public class MbCouponsItemController extends BaseController {
 	 */
 	@RequestMapping("/download")
 	public void download(MbCouponsItem mbCouponsItem, PageHelper ph,String downloadFields,HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException{
-		DataGrid dg = dataGrid(mbCouponsItem,ph);
+		DataGrid dg = dataGrid(mbCouponsItem,ph);		
 		downloadFields = downloadFields.replace("&quot;", "\"");
 		downloadFields = downloadFields.substring(1,downloadFields.length()-1);
 		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
@@ -89,7 +97,7 @@ public class MbCouponsItemController extends BaseController {
 	@RequestMapping("/add")
 	@ResponseBody
 	public Json add(MbCouponsItem mbCouponsItem) {
-		Json j = new Json();
+		Json j = new Json();		
 		mbCouponsItemService.add(mbCouponsItem);
 		j.setSuccess(true);
 		j.setMsg("添加成功！");		
@@ -129,7 +137,7 @@ public class MbCouponsItemController extends BaseController {
 	@RequestMapping("/edit")
 	@ResponseBody
 	public Json edit(MbCouponsItem mbCouponsItem) {
-		Json j = new Json();
+		Json j = new Json();		
 		mbCouponsItemService.edit(mbCouponsItem);
 		j.setSuccess(true);
 		j.setMsg("编辑成功！");		

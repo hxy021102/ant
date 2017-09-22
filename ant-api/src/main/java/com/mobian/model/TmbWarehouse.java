@@ -5,19 +5,20 @@
 
 package com.mobian.model;
 
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-
 import javax.persistence.*;
+
 import java.math.BigDecimal;
 import java.util.Date;
+
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "mb_warehouse")
 @DynamicInsert(true)
 @DynamicUpdate(true)
-public class TmbWarehouse implements java.io.Serializable,IEntity {
+public class TmbWarehouse implements java.io.Serializable,IEntity{
 	private static final long serialVersionUID = 5454155825314635342L;
 	
 	//alias
@@ -44,11 +45,11 @@ public class TmbWarehouse implements java.io.Serializable,IEntity {
 	private Integer id;
 	//
 	private Integer tenantId;
-	//@NotNull
+	//@NotNull 
 	private Date addtime;
-	//@NotNull
+	//@NotNull 
 	private Date updatetime;
-	//@NotNull
+	//@NotNull 
 	private Boolean isdeleted;
 	//@NotBlank @Length(max=32)
 	private String code;
@@ -70,98 +71,98 @@ public class TmbWarehouse implements java.io.Serializable,IEntity {
 		public TmbWarehouse(Integer id) {
 			this.id = id;
 		}
-
+	
 
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id", unique = true, nullable = false, length = 10)
 	public Integer getId() {
 		return this.id;
 	}
-
+	
 	@Column(name = "tenant_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getTenantId() {
 		return this.tenantId;
 	}
-
+	
 	public void setTenantId(Integer tenantId) {
 		this.tenantId = tenantId;
 	}
-
+	
 
 	@Column(name = "addtime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public Date getAddtime() {
 		return this.addtime;
 	}
-
+	
 	public void setAddtime(Date addtime) {
 		this.addtime = addtime;
 	}
-
+	
 
 	@Column(name = "updatetime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public Date getUpdatetime() {
 		return this.updatetime;
 	}
-
+	
 	public void setUpdatetime(Date updatetime) {
 		this.updatetime = updatetime;
 	}
-
+	
 	@Column(name = "isdeleted", unique = false, nullable = false, insertable = true, updatable = true, length = 0)
 	public Boolean getIsdeleted() {
 		return this.isdeleted;
 	}
-
+	
 	public void setIsdeleted(Boolean isdeleted) {
 		this.isdeleted = isdeleted;
 	}
-
+	
 	@Column(name = "code", unique = false, nullable = false, insertable = true, updatable = true, length = 32)
 	public String getCode() {
 		return this.code;
 	}
-
+	
 	public void setCode(String code) {
 		this.code = code;
 	}
-
+	
 	@Column(name = "name", unique = false, nullable = false, insertable = true, updatable = true, length = 128)
 	public String getName() {
 		return this.name;
 	}
-
+	
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
 	@Column(name = "region_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getRegionId() {
 		return this.regionId;
 	}
-
+	
 	public void setRegionId(Integer regionId) {
 		this.regionId = regionId;
 	}
-
+	
 	@Column(name = "address", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
 	public String getAddress() {
 		return this.address;
 	}
-
+	
 	public void setAddress(String address) {
 		this.address = address;
 	}
-
+	
 	@Column(name = "warehouse_type", unique = false, nullable = false, insertable = true, updatable = true, length = 4)
 	public String getWarehouseType() {
 		return this.warehouseType;
 	}
-
+	
 	public void setWarehouseType(String warehouseType) {
 		this.warehouseType = warehouseType;
 	}

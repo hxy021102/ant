@@ -80,7 +80,7 @@ public interface MbItemStockServiceI {
 	 * @param mbItemStock
 	 * @param loginId
 	 */
-	boolean editAndInsertLog(MbItemStock mbItemStock, String loginId);
+	Integer editAndInsertLog(MbItemStock mbItemStock, String loginId);
 
 	/**
 	 * 删除MbItemStock
@@ -127,4 +127,24 @@ public interface MbItemStockServiceI {
 	 */
 	DataGrid dataGridReport(MbItemStock mbItemStock, PageHelper ph);
 
+	/**
+	 * 查询带有空桶的库存数据
+	 * @param mbItemStock
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridEmptyBucket(MbItemStock mbItemStock, PageHelper ph);
+
+	/**
+	 * 修改库存和余额信息
+	 * @param mbItemStock
+	 * @param  loginId
+	 */
+    void editStockAndBalance(MbItemStock mbItemStock, String loginId);
+	/**
+	 * 通过仓库I获取库存列表
+	 * @param warehouseId
+	 * @return
+	 */
+	List<TmbItemStock> queryItemStockListByWarehouseId(Integer warehouseId);
 }

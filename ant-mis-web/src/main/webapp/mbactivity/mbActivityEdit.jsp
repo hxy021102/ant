@@ -70,6 +70,18 @@
 
                 </tr>
                 <tr>
+                    <th>活动类型
+                    </th>
+                    <td>
+                        <jb:select name="type" dataType="AT" required="true" value="${mbActivity.type}"></jb:select>
+                    </td>
+                    <th>代码类型
+                    </th>
+                    <td>
+                        <jb:select name="languageType" dataType="CS" required="true" value="${mbActivity.languageType}"></jb:select>
+                    </td>
+                </tr>
+                <tr>
                     <th><%=TmbActivity.ALIAS_REMARK%>
                     </th>
                     <td colspan="3">

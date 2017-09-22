@@ -20,16 +20,25 @@
 					</td>
 				</tr>		
 				<tr>
+					<th>活动类型</th>
+					<td>
+						${mbActivity.typeName}
+					</td>
+					<th>代码类型</th>
+					<td>
+						${mbActivity.languageTypeName}
+					</td>
+				</tr>
+				<tr>
 					<th><%=TmbActivity.ALIAS_EXPIRY_DATE_START%></th>
 					<td>
 						${mbActivity.expiryDateStart}
 					</td>
-					<th><%=TmbActivity.ALIAS_EXPIRY_DATE_END%></th>	
+					<th><%=TmbActivity.ALIAS_EXPIRY_DATE_END%></th>
 					<td>
-						${mbActivity.expiryDateEnd}							
-					</td>							
-
-				</tr>		
+						${mbActivity.expiryDateEnd}
+					</td>
+			</tr>
 				<tr>	
 					<th><%=TmbActivity.ALIAS_REMARK%></th>	
 					<td colspan="3">

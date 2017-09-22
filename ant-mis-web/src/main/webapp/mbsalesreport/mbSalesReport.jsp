@@ -51,6 +51,10 @@
                     field : 'itemName',
                     title : '商品名称',
                     width : 80
+                },{
+                    field : 'warehouseName',
+                    title : '发货仓库',
+                    width : 80
                 },  {
                     field : 'quantity',
                     title : '销售数量',
@@ -143,6 +147,10 @@
                             <option value="OD35,OD30">已签收</option>
                             <option value="OD40">未付款</option>
                         </select>
+                    </td>
+                    <th>发货仓库</th>
+                    <td>
+                        <jb:selectSql dataType="SQ004" name="warehouseId"></jb:selectSql>
                     </td>
                 </tr>
 

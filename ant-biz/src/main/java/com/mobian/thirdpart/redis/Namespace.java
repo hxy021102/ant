@@ -12,7 +12,7 @@ public interface Namespace {
     String USER_CONTRACT_PRICE = "user_contract_price";
     String WX_CONFIG = "wx_config";
     String USER_BALANCE_PAY_VALIDATE_CODE = "user_balance_pay_validate_code";
-    String  ORDER_QUANTITY="order_quantity";
-    String  REMIND_DRIVERS="remind_drivers";
-
+    String ORDER_QUANTITY="order_quantity";
+    String REMIND_DRIVERS="remind_drivers";
+    String ACTIVITY_TYPE_REFID = "activity_type_refid";
 }

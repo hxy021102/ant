@@ -100,6 +100,10 @@ public class MbItemServiceImpl extends BaseServiceImpl<MbItem> implements MbItem
 				whereHql += " and t.isShelves = :isShelves";
 				params.put("isShelves", mbItem.getIsShelves());
 			}
+			if (!F.empty(mbItem.getIspack())) {
+				whereHql += " and t.ispack = :ispack";
+				params.put("ispack", mbItem.getIspack());
+			}
 		}	
 		return whereHql;
 	}

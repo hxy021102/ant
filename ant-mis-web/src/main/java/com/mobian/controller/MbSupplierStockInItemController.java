@@ -1,22 +1,28 @@
 package com.mobian.controller;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.mobian.absx.F;
 import com.mobian.concurrent.ThreadCache;
 import com.mobian.listener.Application;
 import com.mobian.pageModel.*;
 import com.mobian.service.*;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
+import com.alibaba.fastjson.JSON;
 
 /**
  * MbSupplierStockInItem管理控制器
@@ -148,6 +154,7 @@ public class MbSupplierStockInItemController extends BaseController {
 			}
 		};
 		List<MbSupplierStockInItemExport> mbSupplierStockInItemExports = new ArrayList<MbSupplierStockInItemExport>();
+		Integer total = 0;
 		try {
 			for (MbSupplierStockInItem itemExport : mbSupplierStockInItems) {
 				MbSupplierStockIn mbSupplierStockIn = mbStockInCache.getValue(itemExport.getSupplierStockInId());
@@ -193,10 +200,21 @@ public class MbSupplierStockInItemController extends BaseController {
 				if(mbSupplierFinanceLog!=null){
 					//invoiceNo
 				}
+				if(itemExport.getQuantity() !=null) {
+					total += itemExport.getQuantity();
+				}
+
 
 			}
 		} finally {
 			ThreadCache.clear();
+		}
+		//合计
+		if(!CollectionUtils.isEmpty(mbSupplierStockInItemExports)){
+			MbSupplierStockInItemExport mbSupplierStockInItemExport = new MbSupplierStockInItemExport();
+			mbSupplierStockInItemExport.setSupplierName("合计");
+			mbSupplierStockInItemExport.setQuantity(total);
+			mbSupplierStockInItemExports.add(mbSupplierStockInItemExport);
 		}
 		dg.setRows(mbSupplierStockInItemExports);
 		List<Colum> colums = new ArrayList<Colum>();
@@ -276,7 +294,7 @@ public class MbSupplierStockInItemController extends BaseController {
 	@RequestMapping("/add")
 	@ResponseBody
 	public Json add(MbSupplierStockInItem mbSupplierStockInItem) {
-		Json j = new Json();
+		Json j = new Json();		
 		mbSupplierStockInItemService.add(mbSupplierStockInItem);
 		j.setSuccess(true);
 		j.setMsg("添加成功！");		
@@ -316,7 +334,7 @@ public class MbSupplierStockInItemController extends BaseController {
 	@RequestMapping("/edit")
 	@ResponseBody
 	public Json edit(MbSupplierStockInItem mbSupplierStockInItem) {
-		Json j = new Json();
+		Json j = new Json();		
 		mbSupplierStockInItemService.edit(mbSupplierStockInItem);
 		j.setSuccess(true);
 		j.setMsg("编辑成功！");		

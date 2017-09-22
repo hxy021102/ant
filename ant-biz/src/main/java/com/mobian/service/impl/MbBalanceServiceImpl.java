@@ -8,6 +8,7 @@ import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbBalance;
 import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.PageHelper;
+import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.util.MyBeanUtils;
@@ -29,6 +30,8 @@ public class MbBalanceServiceImpl extends BaseServiceImpl<MbBalance> implements 
 
 	@Autowired
 	private MbShopServiceI mbShopService;
+	@Autowired
+	private MbBalanceLogServiceI mbBalanceLogService;
 
 	@Override
 	public DataGrid dataGrid(MbBalance mbBalance, PageHelper ph) {
@@ -195,7 +198,7 @@ public class MbBalanceServiceImpl extends BaseServiceImpl<MbBalance> implements 
 		List<MbBalance> mbBalanceList=new ArrayList<MbBalance>();
 		params.put("refType",refType);
 		params.put("amount",amount);
-		List<TmbBalance> tmbBalances=mbBalanceDao.find("from TmbBalance t  where  t.isdeleted = 0 and t.refType = :refType and t.amount <:amount",params);
+		List<TmbBalance> tmbBalances=mbBalanceDao.find("from TmbBalance t  where  t.isdeleted = 0 and t.refType = :refType and t.amount <:amount", params);
 		if(!CollectionUtils.isEmpty(tmbBalances)){
            for(TmbBalance tmbBalance : tmbBalances){
 			   MbBalance mbBalance = new MbBalance();
@@ -203,6 +206,25 @@ public class MbBalanceServiceImpl extends BaseServiceImpl<MbBalance> implements 
 			   mbBalanceList.add(mbBalance);
 		   }
 		   return  mbBalanceList;
+		}
+		return null;
+	}
+
+	@Override
+	public List<MbBalance> queryBalanceListByShopId(Integer shopId) {
+		MbShop mbShop = mbShopService.getFromCache(shopId);
+		if (mbShop != null && !F.empty(mbShop.getParentId()) && mbShop.getParentId() != -1) {
+			shopId = mbShop.getParentId();
+		}
+		List<TmbBalance> balances = mbBalanceDao.find("from TmbBalance t where t.isdeleted = 0 and refId=" + shopId);
+		List<MbBalance> mbBalances = new ArrayList<MbBalance>();
+		if (!CollectionUtils.isEmpty(balances)) {
+			for (TmbBalance t : balances) {
+				MbBalance o = new MbBalance();
+				BeanUtils.copyProperties(t, o);
+				mbBalances.add(o);
+			}
+			return mbBalances;
 		}
 		return null;
 	}

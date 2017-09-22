@@ -44,13 +44,13 @@ public class TmbItemStockLog implements java.io.Serializable,IEntity{
 	private Integer id;
 	//
 	private Integer tenantId;
-	//@NotNull
+	//@NotNull 
 	private java.util.Date addtime;
-	//@NotNull
+	//@NotNull 
 	private java.util.Date updatetime;
-	//@NotNull
+	//@NotNull 
 	private Boolean isdeleted;
-	//@NotNull
+	//@NotNull 
 	private Integer itemStockId;
 	//
 	private Integer quantity;
@@ -70,107 +70,107 @@ public class TmbItemStockLog implements java.io.Serializable,IEntity{
 		public TmbItemStockLog(Integer id) {
 			this.id = id;
 		}
-
+	
 
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id", unique = true, nullable = false, length = 10)
 	public Integer getId() {
 		return this.id;
 	}
-
+	
 	@Column(name = "tenant_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getTenantId() {
 		return this.tenantId;
 	}
-
+	
 	public void setTenantId(Integer tenantId) {
 		this.tenantId = tenantId;
 	}
-
+	
 
 	@Column(name = "addtime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public java.util.Date getAddtime() {
 		return this.addtime;
 	}
-
+	
 	public void setAddtime(java.util.Date addtime) {
 		this.addtime = addtime;
 	}
-
+	
 
 	@Column(name = "updatetime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public java.util.Date getUpdatetime() {
 		return this.updatetime;
 	}
-
+	
 	public void setUpdatetime(java.util.Date updatetime) {
 		this.updatetime = updatetime;
 	}
-
+	
 	@Column(name = "isdeleted", unique = false, nullable = false, insertable = true, updatable = true, length = 0)
 	public Boolean getIsdeleted() {
 		return this.isdeleted;
 	}
-
+	
 	public void setIsdeleted(Boolean isdeleted) {
 		this.isdeleted = isdeleted;
 	}
-
+	
 	@Column(name = "item_stock_id", unique = false, nullable = false, insertable = true, updatable = true, length = 10)
 	public Integer getItemStockId() {
 		return this.itemStockId;
 	}
-
+	
 	public void setItemStockId(Integer itemStockId) {
 		this.itemStockId = itemStockId;
 	}
-
+	
 	@Column(name = "quantity", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getQuantity() {
 		return this.quantity;
 	}
-
+	
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
-
+	
 	@Column(name = "login_id", unique = false, nullable = true, insertable = true, updatable = true, length = 36)
 	public String getLoginId() {
 		return this.loginId;
 	}
-
+	
 	public void setLoginId(String loginId) {
 		this.loginId = loginId;
 	}
-
+	
 	@Column(name = "log_type", unique = false, nullable = true, insertable = true, updatable = true, length = 4)
 	public String getLogType() {
 		return this.logType;
 	}
-
+	
 	public void setLogType(String logType) {
 		this.logType = logType;
 	}
-
+	
 	@Column(name = "reason", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
 	public String getReason() {
 		return this.reason;
 	}
-
+	
 	public void setReason(String reason) {
 		this.reason = reason;
 	}
-
+	
 	@Column(name = "remark", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
 	public String getRemark() {
 		return this.remark;
 	}
-
+	
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}

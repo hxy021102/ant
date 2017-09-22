@@ -155,7 +155,7 @@ public class MbItemStockLogController extends BaseController {
 	@RequestMapping("/dataGridChange")
 	@ResponseBody
 	public DataGrid dataGridChange(MbItemStockLog mbItemStockLog, PageHelper ph) {
-		if (mbItemStockLog.getStockLogStartTime()==null||mbItemStockLog.getStockLogEndTime()==null) {
+		if (mbItemStockLog.getStockLogStartTime() == null || mbItemStockLog.getStockLogEndTime() == null) {
 			return new DataGrid();
 		}
 		mbItemStockLog.setLogType("SL04");
@@ -167,12 +167,12 @@ public class MbItemStockLogController extends BaseController {
 	 * 获取MbItemStockLog数据表格excel
 	 */
 	@RequestMapping("/downloadChange")
-	public void downloadChange(MbItemStockLog mbItemStockLog, PageHelper ph,String downloadFields,HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException{
+	public void downloadChange(MbItemStockLog mbItemStockLog, PageHelper ph, String downloadFields, HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
 		mbItemStockLog.setLogType("SL04");
 		mbItemStockLog.setQuantity(0);
-		DataGrid dg = dataGrid(mbItemStockLog,ph);
+		DataGrid dg = mbItemStockLogService.dataGridStockInLog(mbItemStockLog, ph);
 		downloadFields = downloadFields.replace("&quot;", "\"");
-		downloadFields = downloadFields.substring(1,downloadFields.length()-1);
+		downloadFields = downloadFields.substring(1, downloadFields.length() - 1);
 		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
 		downloadTable(colums, dg, response);
 	}

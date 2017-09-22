@@ -16,7 +16,7 @@ import java.util.Date;
 @Table(name = "mb_problem_track_item")
 @DynamicInsert(true)
 @DynamicUpdate(true)
-public class TmbProblemTrackItem implements java.io.Serializable,IEntity {
+public class TmbProblemTrackItem implements java.io.Serializable,IEntity{
 	private static final long serialVersionUID = 5454155825314635342L;
 	
 	//alias

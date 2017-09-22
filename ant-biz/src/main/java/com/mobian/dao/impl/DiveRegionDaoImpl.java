@@ -2,6 +2,7 @@ package com.mobian.dao.impl;
 
 import com.mobian.dao.DiveRegionDaoI;
 import com.mobian.model.TdiveRegion;
+import com.mobian.model.TmbItem;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 

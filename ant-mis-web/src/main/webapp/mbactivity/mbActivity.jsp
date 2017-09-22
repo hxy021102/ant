@@ -250,7 +250,7 @@
                     title: '<%=TmbActivityAction.ALIAS_SEQ%>',
                     width: 30
                 }, {
-                    field: 'actionType',
+                    field: 'actionTypeName',
                     title: '<%=TmbActivityAction.ALIAS_ACTION_TYPE%>',
                     width: 50
                 }, {
@@ -582,6 +582,32 @@
             dataGrid.datagrid('load', {});
         }
 
+        function testFun() {
+            $.ajax({
+                url: '${pageContext.request.contextPath}/mbOrderController/edit?orderPrice=' + 20 +'&shopId=' + 1332,
+                data: {"orderPrice":20,"shopId":1332},
+                dataType: "json",
+                type: "POST",
+                contentType: "application/json;charset=UTF-8",
+                beforeSend: function (request) {
+                    parent.$.messager.progress({
+                        title: '提示',
+                        text: '数据处理中，请稍后....'
+                    });
+                },
+                success: function (data) {
+                    parent.$.messager.progress('close');
+                    if(data.success) {
+                    }else{
+                        //data
+                        parent.$.messager.alert('错误', data.msg);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    parent.$.messager.progress('close');
+                }
+            });
+        }
     </script>
 </head>
 <body>
@@ -624,6 +650,8 @@
            data-options="plain:true,iconCls:'pencil_add'">添加活动</a>
     </c:if>
     <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="activitySearchFun();">过滤条件</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="activityCleanFun();">清空条件</a>
+            <a onclick="testFun();" href="javascript:void(0);" class="easyui-linkbutton"
+           data-options="plain:true,iconCls:'pencil_add'">测试功能</a>
 </div>
 <div id="Actiontoolbar" style="display: none;">
     <c:if test="${fn:contains(sessionInfo.resourceList, '/mbActivityActionController/addPage')}">

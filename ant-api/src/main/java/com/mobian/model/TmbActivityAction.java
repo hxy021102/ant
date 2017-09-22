@@ -5,18 +5,19 @@
 
 package com.mobian.model;
 
+import javax.persistence.*;
+
+import java.util.Date;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
-import javax.persistence.*;
-import java.util.Date;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "mb_activity_action")
 @DynamicInsert(true)
 @DynamicUpdate(true)
-public class TmbActivityAction implements java.io.Serializable,IEntity {
+public class TmbActivityAction implements java.io.Serializable,IEntity{
 	private static final long serialVersionUID = 5454155825314635342L;
 	
 	//alias
@@ -148,7 +149,7 @@ public class TmbActivityAction implements java.io.Serializable,IEntity {
 		this.seq = seq;
 	}
 	
-	@Column(name = "action_type", unique = false, nullable = false, insertable = true, updatable = true, length = 8)
+	@Column(name = "action_type", unique = false, nullable = false, insertable = true, updatable = true, length = 128)
 	public String getActionType() {
 		return this.actionType;
 	}
@@ -157,7 +158,7 @@ public class TmbActivityAction implements java.io.Serializable,IEntity {
 		this.actionType = actionType;
 	}
 	
-	@Column(name = "parameter1", unique = false, nullable = false, insertable = true, updatable = true, length = 32)
+	@Column(name = "parameter1", unique = false, nullable = false, insertable = true, updatable = true, length = 512)
 	public String getParameter1() {
 		return this.parameter1;
 	}
@@ -166,7 +167,7 @@ public class TmbActivityAction implements java.io.Serializable,IEntity {
 		this.parameter1 = parameter1;
 	}
 	
-	@Column(name = "parameter2", unique = false, nullable = false, insertable = true, updatable = true, length = 32)
+	@Column(name = "parameter2", unique = false, nullable = false, insertable = true, updatable = true, length = 512)
 	public String getParameter2() {
 		return this.parameter2;
 	}

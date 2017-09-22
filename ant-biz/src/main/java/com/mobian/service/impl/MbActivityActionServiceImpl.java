@@ -7,6 +7,7 @@ import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbActivityAction;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.MbActivityActionServiceI;
+import com.mobian.service.rulesengine.RedisRuleSetService;
 import com.mobian.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class MbActivityActionServiceImpl extends BaseServiceImpl<MbActivityActio
 
 	@Autowired
 	private MbActivityActionDaoI mbActivityActionDao;
+
+	@Autowired
+	private RedisRuleSetService redisRuleSetService;
 
 	@Override
 	public DataGrid dataGrid(MbActivityAction mbActivityAction, PageHelper ph) {
@@ -104,6 +108,7 @@ public class MbActivityActionServiceImpl extends BaseServiceImpl<MbActivityActio
 		//t.setId(jb.absx.UUID.uuid());
 		t.setIsdeleted(false);
 		mbActivityActionDao.save(t);
+		mbActivityAction.setId(t.getId());
 	}
 
 	@Override
@@ -125,11 +130,29 @@ public class MbActivityActionServiceImpl extends BaseServiceImpl<MbActivityActio
 	}
 
 	@Override
+	public void addActivityActionAndRuleSetAction(MbActivityAction activityAction) {
+		add(activityAction);
+		redisRuleSetService.deleteRuleSetListByActivityActionId(activityAction.getId());
+	}
+
+	@Override
+	public void editActivityActionAndRuleSetAction(MbActivityAction activityAction) {
+		edit(activityAction);
+		redisRuleSetService.deleteRuleSetListByActivityActionId(activityAction.getId());
+	}
+
+	@Override
+	public void deleteActivityActionAndRuleSetAction(Integer id) {
+		redisRuleSetService.deleteRuleSetListByActivityActionId(id);
+		delete(id);
+	}
+	@Override
 	public void delete(Integer id) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
 		mbActivityActionDao.executeHql("update TmbActivityAction t set t.isdeleted = 1 where t.id = :id",params);
 		//mbActivityActionDao.delete(mbActivityActionDao.get(TmbActivityAction.class, id));
 	}
+
 
 }

@@ -51,6 +51,11 @@
             $.viewShopCoupons = true;
         </script>
     </c:if>
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/mbItemStockController/editStock')}">
+        <script type="text/javascript">
+            $.editShopStock = true;
+        </script>
+    </c:if>
     <script type="text/javascript">
         var gridMap = {};
         $(function () {
@@ -81,6 +86,11 @@
                     invoke: function () {
                         gridMap.handle(this, loadBranchShopDataGrid);
                     }, grid: null
+                },
+                4: {
+                    invoke: function () {
+                        gridMap.handle(this, loadEmptyBucketDataGrid);
+                    }, grid: null
                 }
 
             };
@@ -90,11 +100,15 @@
                 }
             });
             gridMap[0].invoke();
+
+            $('.money_input').each(function(){
+                $(this).text($.formatMoney($(this).text().trim()));
+            });
         });
         var dataGrid;
         function dataGrid() {
             return dataGrid = $('#dataGrid').datagrid({
-                url: '${pageContext.request.contextPath}/mbShopInvoiceController/dataGrid?shopId=' +${mbShop.id},
+                url: '${pageContext.request.contextPath}/mbShopInvoiceController/dataGrid?shopId=' +${mbShopExt.id},
                 fit: true,
                 fitColumns: true,
                 border: false,
@@ -178,7 +192,7 @@
         var loadInvoiceDataGrid;
         function loadInvoiceDataGrid() {
             return loadInvoiceDataGrid = $('#invoiceDataGrid').datagrid({
-                url: '${pageContext.request.contextPath}/mbOrderInvoiceController/dataGrid?shopId=${mbShop.id}',
+                url: '${pageContext.request.contextPath}/mbOrderInvoiceController/dataGrid?shopId=${mbShopExt.id}',
                 fitColumns: true,
                 fit: true,
                 border: false,
@@ -262,7 +276,7 @@
         var loadShopCouponsDataGrid;
         function loadShopCouponsDataGrid() {
              return loadShopCouponsDataGrid = $('#shopCouponsDataGrid').datagrid({
-                 url : '${pageContext.request.contextPath}/mbShopCouponsController/dataGrid?shopId=' + ${mbShop.id},
+                 url : '${pageContext.request.contextPath}/mbShopCouponsController/dataGrid?shopId=' + ${mbShopExt.id},
                  queryParams:{'status':'NS001'},
                  fit : true,
                  fitColumns : true,
@@ -366,7 +380,7 @@
 
         function loadBranchShopDataGrid() {
             return $('#branchShopDataGrid').datagrid({
-                url : '${pageContext.request.contextPath}/mbShopController/dataGrid?onlyBranch=true&parentId=' + ${mbShop.id},
+                url : '${pageContext.request.contextPath}/mbShopController/dataGrid?onlyBranch=true&parentId=' + ${mbShopExt.id},
                 fit : true,
                 fitColumns : true,
                 border : false,
@@ -419,10 +433,118 @@
                 ]]
             });
         }
+         var emptyBucketDataGrid;
+        function loadEmptyBucketDataGrid() {
+            return  emptyBucketDataGrid=$('#emptyBucketDataGrid').datagrid({
+                    url : '${pageContext.request.contextPath}/mbItemStockController/emptyBucketDataGrid?warehouseId='+'${mbShopExt.warehouseId}',
+                    fit : true,
+                    fitColumns : true,
+                    border : false,
+                    pagination : true,
+                    idField : 'id',
+                    pageSize : 10,
+                    pageList : [ 10, 20, 30, 40, 50,500 ],
+                    sortName : 'id',
+                    sortOrder : 'desc',
+                    checkOnSelect : false,
+                    selectOnCheck : false,
+                    nowrap : false,
+                    striped : true,
+                    rownumbers : true,
+                    singleSelect : true,
+                    columns : [ [ {
+                        field : 'id',
+                        title : '编号',
+                        width : 150,
+                        hidden : true
+                    }, {
+                        field : 'warehouseCode',
+                        title : '<%=TmbItemStock.ALIAS_WAREHOUSE_CODE%>',
+                        width : 20
+                    }, {
+                        field : 'warehouseName',
+                        title : '<%=TmbItemStock.ALIAS_WAREHOUSE_NAME%>',
+                        width : 50
+                    }, {
+                        field : 'itemCode',
+                        title : '商品编码',
+                        width : 50
+                    }, {
+                        field : 'itemName',
+                        title : '<%=TmbItemStock.ALIAS_ITEM_NAME%>',
+                        width : 50
+                    },{
+                        field : 'averagePrice',
+                        title : '<%=TmbItemStock.ALIAS_AVERAGE_PRICE%>',
+                        width : 25,
+                        align:"right",
+                        formatter:function(value){
+                            return $.formatMoney(value);
+                        }
+                    },{
+                        field : 'quantity',
+                        title : '<%=TmbItemStock.ALIAS_QUANTITY%>',
+                        width : 25,
+                        formatter: function (value, row) {
+                            if (value && row.safeQuantity) {
+                                if (value <= row.safeQuantity) {
+                                    return '<font color="red">'+value+'<font>';
+                                }
+                            }
+                            return value;
+                        }
+                    },{
+                        field : 'orderQuantity',
+                        title : '<%=TmbItemStock.ALIAS_ORDER_QUANTITY%>',
+                        width : 25
+                    },{
+                        field : 'od15Quantity',
+                        title : '捡货中',
+                        width : 20
+                    }, {
+                        field : 'safeQuantity',
+                        title : '<%=TmbItemStock.ALIAS_SAFE_QUANTITY%>',
+                        width : 15
+                    }, {
+                        field : 'action',
+                        title : '操作',
+                        width : 30,
+                        formatter : function(value, row, index) {
+                            var str = '';
+                            if ($.editShopStock) {
+                                str += $.formatString('<img onclick="editStock(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/pencil.png');
+                            }
+                                return str;
+                            }
+                        } ] ],
+                });
+        }
+
         $(function () {
             parent.$.messager.progress('close');
 
         });
+        function editStock(id) {
+            if (id == undefined) {
+                var rows = dataGrid.datagrid('getSelections');
+                id = rows[0].id;
+            }
+            parent.$.modalDialog({
+                title: '编辑数据',
+                width: 780,
+                height: 500,
+                href: '${pageContext.request.contextPath}/mbItemStockController/editStockPage?id=' + id + "&shopId=" +  ${mbShopExt.id},
+                buttons: [{
+                    text: '编辑',
+                    handler: function () {
+                        parent.$.modalDialog.openner_dataGrid = emptyBucketDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                        var f = parent.$.modalDialog.handler.find('#form');
+                        f.submit();
+                    }
+                }]
+            });
+        }
+
         function  viewOrderInvoice(id) {
 
             if (id == undefined) {
@@ -621,7 +743,7 @@
                         title: '提示',
                         text: '数据处理中，请稍后....'
                     });
-                    $.post('${pageContext.request.contextPath}/mbShopInvoiceController/setInvoiceDefault?shopId=' +${mbShop.id}, {
+                    $.post('${pageContext.request.contextPath}/mbShopInvoiceController/setInvoiceDefault?shopId=' +${mbShopExt.id}, {
                         id: id
                     }, function (result) {
                         if (result.success) {
@@ -641,58 +763,123 @@
                 closable: true
             });
         }
+        //余额
+        function viewBalance(id) {
+            var href = '${pageContext.request.contextPath}/mbUserController/viewBalance?shopId=' + id;
+            parent.$("#index_tabs").tabs('add', {
+                title: '余额-' + id,
+                content: '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+                closable: true
+            });
+        }
+        //桶余额
+        function viewCashBalance(balanceId,shopId) {
+            var href = '${pageContext.request.contextPath}/mbBalanceController/viewCash?id=' + balanceId+"&shopId="+shopId;
+            parent.$("#index_tabs").tabs('add', {
+                title: '桶余额-' + shopId,
+                content: '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+                closable: true
+            });
+        }
     </script>
 </head>
 <body>
 <div class="easyui-layout" data-options="fit:true,border:false">
-    <div data-options="region:'north',border:false" style="height: 140px;">
+    <div data-options="region:'north',border:false" style="height: 145px; overflow: hidden;">
         <table class="table table-hover table-condensed">
             <tr>
 
                 <th><%=TmbShop.ALIAS_ADDTIME%>
                 </th>
                 <td>
-                    ${mbShop.addtime}
+                    ${mbShopExt.addtime}
                 </td>
 
                 <th><%=TmbShop.ALIAS_UPDATETIME%>
                 </th>
                 <td>
-                    ${mbShop.updatetime}
+                    ${mbShopExt.updatetime}
                 </td>
-            </tr>
-            <tr>
+
                 <th><%=TmbShop.ALIAS_NAME%>
                 </th>
                 <td>
-                    ${mbShop.name}
+                    ${mbShopExt.name}
                 </td>
                 <th><%=TmbShop.ALIAS_REGION_ID%>
                 </th>
                 <td>
-                    ${mbShop.regionPath}
+                    ${mbShopExt.regionPath}
                 </td>
             </tr>
             <tr>
                 <th><%=TmbShop.ALIAS_CONTACT_PEOPLE%>
                 </th>
                 <td>
-                    ${mbShop.contactPeople}
+                    ${mbShopExt.contactPeople}
                 </td>
                 <th><%=TmbShop.ALIAS_CONTACT_PHONE%>
                 </th>
                 <td>
-                    ${mbShop.contactPhone}
+                    ${mbShopExt.contactPhone}
+                </td>
+                <th><%=TmbShop.ALIAS_SHOP_TYPE%>
+                </th>
+                <td>
+                    ${mbShopExt.shopTypeName}
+                </td>
+                <th>
+                    经纬度
+                </th>
+                <td>
+                    ${mbShopExt.longitude},${mbShopExt.latitude}
+                </td>
+
+            </tr>
+            <tr>
+                <th>余额
+                </th>
+                <td>
+                    <a href="javascript:void(0);" onclick="viewBalance('${mbShopExt.id}')" class="money_input">${mbShopExt.balanceAmount}</a>
+                </td>
+                <th>欠款订单金额
+                </th>
+                <td>
+                    <c:choose>
+                        <c:when test="${debt>0}">
+                            <font color="red" class="money_input">${debt}</font>
+                        </c:when>
+                        <c:otherwise>
+                            ${debt/100.0}
+                        </c:otherwise>
+                    </c:choose>
+                </td>
+                <th>实际余额
+                </th>
+                <td>
+
+                        <c:choose>
+                        <c:when test="${(mbShopExt.balanceAmount-debt)>0}">
+                            <font color="green" class="money_input">${mbShopExt.balanceAmount-debt}</font>
+                        </c:when>
+                        <c:otherwise>
+                            <font color="red" class="money_input">${mbShopExt.balanceAmount-debt}</font>
+                        </c:otherwise>
+                        </c:choose>
+                </td>
+                <th>桶余额
+                </th>
+                <td>
+                    <a href="javascript:void(0);" onclick="viewCashBalance('${mbShopExt.cashBalanceId}','${mbShopExt.id}')" class="money_input">${mbShopExt.cashBalanceAmount}</a>
                 </td>
             </tr>
             <tr>
                 <th><%=TmbShop.ALIAS_ADDRESS%>
                 </th>
-                <td colspan="3">
-                    ${mbShop.address}
+                <td colspan="7">
+                    ${mbShopExt.address}
                 </td>
             </tr>
-
         </table>
     </div>
     <div data-options="region:'center',border:false">
@@ -708,6 +895,9 @@
             </div>
             <div title="分店列表">
                 <table id="branchShopDataGrid"></table>
+            </div>
+            <div title="空桶列表">
+                <table id="emptyBucketDataGrid"></table>
             </div>
         </div>
 
@@ -725,12 +915,12 @@
     </form>
 </div>
 <div id="shopCouponsToolbar">
-    <c:if test="${fn:contains(sessionInfo.resourceList, '/mbShopCouponsController/addPage') and (mbShop.parentId == null or mbShop.parentId == -1) and mbShop.auditStatus == 'AS02' }">
-        <a onclick="addShopCouponsFun(${mbShop.id});" href="javascript:void(0);" class="easyui-linkbutton"
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/mbShopCouponsController/addPage') and mbShop.parentId == null and mbShop.auditStatus == 'AS02' }">
+        <a onclick="addShopCouponsFun(' + ${mbShopExt.id}+ ');" href="javascript:void(0);" class="easyui-linkbutton"
            data-options="plain:true,iconCls:'pencil_add'">添加</a>
     </c:if>
-    <c:if test="${fn:contains(sessionInfo.resourceList, '/mbShopCouponsController/addPage') and mbShop.parentId != null and mbShop.parentId != -1 and mbShop.auditStatus == 'AS02' }">
-        <a  onclick="viewShop( ${mbShop.parentId} )" href="javascript:void(0);" class="easyui-linkbutton"
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/mbShopCouponsController/addPage') and mbShop.parentId != null and mbShop.auditStatus == 'AS02' }">
+        <a  onclick="viewShop( ${mbShopExt.parentId} )" href="javascript:void(0);" class="easyui-linkbutton"
            data-options="plain:true,iconCls:'pencil_add'">转至主门店 - 添加</a>
     </c:if>
     &nbsp;&nbsp;&nbsp;
@@ -745,7 +935,7 @@
 <%--</div>--%>
 <div id="toolbar">
     <c:if test="${fn:contains(sessionInfo.resourceList, '/mbShopInvoiceController/addPage')}">
-        <a onclick="addFun(' + ${mbShop.id}+ ');" href="javascript:void(0);" class="easyui-linkbutton"
+        <a onclick="addFun(' + ${mbShopExt.id}+ ');" href="javascript:void(0);" class="easyui-linkbutton"
            data-options="plain:true,iconCls:'pencil_add'">添加</a>
     </c:if>
 </div>

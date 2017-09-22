@@ -1,5 +1,11 @@
 package com.mobian.pageModel;
 
+import com.mobian.util.ConvertNameUtil;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 @SuppressWarnings("serial")
 public class MbShopCouponsView extends MbShopCoupons {
 

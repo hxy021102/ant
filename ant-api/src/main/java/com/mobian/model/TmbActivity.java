@@ -5,18 +5,19 @@
 
 package com.mobian.model;
 
+import javax.persistence.*;
+
+import java.util.Date;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
-import javax.persistence.*;
-import java.util.Date;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "mb_activity")
 @DynamicInsert(true)
 @DynamicUpdate(true)
-public class TmbActivity implements java.io.Serializable,IEntity {
+public class TmbActivity implements java.io.Serializable,IEntity{
 	private static final long serialVersionUID = 5454155825314635342L;
 	
 	//alias
@@ -61,7 +62,13 @@ public class TmbActivity implements java.io.Serializable,IEntity {
 	private Boolean valid;
 	//@Length(max=512)
 	private String remark;
+
+	private String refId;
+
 	//columns END
+	private String type;
+
+	private String languageType;
 
 
 		public TmbActivity(){
@@ -165,6 +172,32 @@ public class TmbActivity implements java.io.Serializable,IEntity {
 	
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	@Column(name = "type", unique = false, nullable = false, insertable = true, updatable = true, length = 6)
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+	@Column(name = "language_type", unique = false, nullable = false, insertable = true, updatable = true, length = 6)
+	public String getLanguageType() {
+		return languageType;
+	}
+
+	public void setLanguageType(String languageType) {
+		this.languageType = languageType;
+	}
+
+	@Column(name = "ref_id", unique = false, nullable = true, insertable = true, updatable = true, length = 64)
+	public String getRefId() {
+		return refId;
+	}
+
+	public void setRefId(String refId) {
+		this.refId = refId;
 	}
 	
 	

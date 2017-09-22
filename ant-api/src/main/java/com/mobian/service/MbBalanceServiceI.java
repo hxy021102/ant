@@ -89,4 +89,12 @@ public interface MbBalanceServiceI {
 	 */
 	List<MbBalance> queryByrefTypeAndAmount(Integer refType, Integer amount);
 
+
+	/**
+	 * 通过门店Id查询余额集合
+	 * @param shopId
+	 * @return
+	 */
+	List<MbBalance> queryBalanceListByShopId(Integer shopId);
+
 }

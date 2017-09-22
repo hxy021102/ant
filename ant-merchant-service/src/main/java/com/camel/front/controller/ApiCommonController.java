@@ -2,12 +2,10 @@ package com.camel.front.controller;
 
 import com.mobian.absx.F;
 import com.mobian.controller.BaseController;
+import com.mobian.pageModel.*;
+import com.mobian.service.BugServiceI;
 import com.mobian.interceptors.TokenManage;
 import com.mobian.listener.Application;
-import com.mobian.pageModel.BaseData;
-import com.mobian.pageModel.Bug;
-import com.mobian.pageModel.Json;
-import com.mobian.service.BugServiceI;
 import com.mobian.thirdpart.wx.SignUtil;
 import com.mobian.thirdpart.wx.WeixinUtil;
 import com.mobian.util.HttpUtil;

@@ -46,7 +46,13 @@ public interface MbActivityActionServiceI {
 	 */
 	public void edit(MbActivityAction mbActivityAction);
 
-	/**
+    void addActivityActionAndRuleSetAction(MbActivityAction activityAction);
+
+    void editActivityActionAndRuleSetAction(MbActivityAction activityAction);
+
+    void deleteActivityActionAndRuleSetAction(Integer id);
+
+    /**
 	 * 删除MbActivityAction
 	 * 
 	 * @param id

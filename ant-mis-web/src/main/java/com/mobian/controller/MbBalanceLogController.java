@@ -1,5 +1,6 @@
 package com.mobian.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.mobian.concurrent.ThreadCache;
 import com.mobian.listener.Application;
 import com.mobian.pageModel.*;
@@ -58,7 +59,7 @@ public class MbBalanceLogController extends BaseController {
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(MbBalanceLog mbBalanceLog, PageHelper ph) {
-		return mbBalanceLogService.dataGrid(mbBalanceLog, ph);
+		return mbBalanceLogService.dataGrid(mbBalanceLog,ph);
 	}
 	/**
 	 * 获取MbBalanceLog数据表格excel
@@ -168,7 +169,7 @@ public class MbBalanceLogController extends BaseController {
 	@RequestMapping("/add")
 	@ResponseBody
 	public Json add(MbBalanceLog mbBalanceLog) {
-		Json j = new Json();
+		Json j = new Json();		
 		mbBalanceLogService.add(mbBalanceLog);
 		j.setSuccess(true);
 		j.setMsg("添加成功！");		
@@ -230,7 +231,7 @@ public class MbBalanceLogController extends BaseController {
 	@RequestMapping("/edit")
 	@ResponseBody
 	public Json edit(MbBalanceLog mbBalanceLog) {
-		Json j = new Json();
+		Json j = new Json();		
 		mbBalanceLogService.edit(mbBalanceLog);
 		j.setSuccess(true);
 		j.setMsg("编辑成功！");		
@@ -251,6 +252,43 @@ public class MbBalanceLogController extends BaseController {
 		j.setMsg("删除成功！");
 		j.setSuccess(true);
 		return j;
+	}
+
+	/**
+	 *导出mbBalanceLog数据表格
+	 * @param mbBalanceLog
+	 * @param ph
+	 * @param downloadFields
+	 * @param response
+	 * @throws SecurityException
+	 * @throws NoSuchMethodException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 * @throws IOException
+	 */
+	@RequestMapping("/downloadBalanceLog")
+	public void downloadBalanceLog(MbBalanceLog mbBalanceLog, PageHelper ph, String downloadFields, HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
+		ph.setRows(0);
+		DataGrid dg = dataGridFlow(mbBalanceLog, ph);
+		downloadFields = downloadFields.replace("&quot;", "\"");
+		downloadFields = downloadFields.substring(1, downloadFields.length() - 1);
+		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
+		downloadTable(colums, dg, response);
+	}
+
+	/**
+	 * 获取mbBalanceLog数据和名店名称
+	 * @param mbBalanceLog
+	 * @param ph
+	 * @return
+	 */
+	@RequestMapping("/dataGridFlow")
+	@ResponseBody
+	public DataGrid dataGridFlow(MbBalanceLog mbBalanceLog, PageHelper ph) {
+		if (mbBalanceLog.getUpdatetimeBegin() == null || mbBalanceLog.getUpdatetimeEnd() == null)
+			return new DataGrid();
+		return mbBalanceLogService.dataGridWithShopName(mbBalanceLog, ph);
 	}
 
 }

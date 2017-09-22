@@ -46,9 +46,12 @@
 				<tr>	
 
 					<th><%=TmbActivityRule.ALIAS_LEFT_VALUE%></th>	
-					<td>
-											<input class="span2" name="leftValue" type="text" class="easyui-validatebox span2" data-options="required:true" value="${mbActivityRule.leftValue}"/>
+					<td colspan="4">
+											<%--<input class="span2" name="leftValue" type="text" class="easyui-validatebox span2" data-options="required:true" value="${mbActivityRule.leftValue}"/>--%>
+						<textarea style="width: 90%;" name="leftValue" rows="4">${mbActivityRule.leftValue}</textarea>
 					</td>
+				</tr>
+				<tr>
 					<th><%=TmbActivityRule.ALIAS_RIGHT_VALUE%></th>
 					<td>
 						<input class="span2" name="rightValue" type="text" class="easyui-validatebox span2" data-options="required:true" value="${mbActivityRule.rightValue}"/>

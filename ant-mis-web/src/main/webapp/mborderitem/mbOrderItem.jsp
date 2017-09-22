@@ -53,11 +53,11 @@
 				}, {
 				field : 'addtime',
 				title : '<%=TmbOrderItem.ALIAS_ADDTIME%>',
-				width : 50		
+				width : 70
 				}, {
 				field : 'updatetime',
 				title : '<%=TmbOrderItem.ALIAS_UPDATETIME%>',
-				width : 50		
+				width : 70
 				}, {
 				field : 'itemId',
 				title : '<%=TmbOrderItem.ALIAS_ITEM_ID%>',
@@ -65,23 +65,23 @@
 				}, {
 				field : 'quantity',
 				title : '<%=TmbOrderItem.ALIAS_QUANTITY%>',
-				width : 50		
+				width : 60
 				}, {
 				field : 'marketPrice',
 				title : '<%=TmbOrderItem.ALIAS_MARKET_PRICE%>',
-				width : 50		
+				width : 60
 				}, {
 				field : 'buyPrice',
 				title : '<%=TmbOrderItem.ALIAS_BUY_PRICE%>',
-				width : 50		
+				width : 60
 				}, {
 				field : 'orderId',
 				title : '<%=TmbOrderItem.ALIAS_ORDER_ID%>',
-				width : 50		
+				width : 80
 			}, {
 				field : 'action',
 				title : '操作',
-				width : 100,
+				width : 50,
 				formatter : function(value, row, index) {
 					var str = '';
 					if ($.canEdit) {
@@ -212,14 +212,19 @@
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit : true,border : false">
-		<div data-options="region:'north',title:'查询条件',border:false" style="height: 70px; overflow: hidden;">
+		<div data-options="region:'north',title:'查询条件',border:false" style="height: 65px; overflow: hidden;">
 			<form id="searchForm">
 				<table class="table table-hover table-condensed" style="display: none;">
 						<tr>
-							<th>下单时间</th>
+							<th style="width: 50px;">下单时间</th>
 							<td>
 								<input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'<%=TmbOrderItem.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'updatetimeEnd\',{M:-1});}',maxDate:'#F{$dp.$D(\'updatetimeEnd\',{d:-1});}'})" id="updatetimeBegin" name="updatetimeBegin"/>
 								<input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'<%=TmbOrderItem.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'updatetimeBegin\',{d:1});}',maxDate:'#F{$dp.$D(\'updatetimeBegin\',{M:1});}'})" id="updatetimeEnd" name="updatetimeEnd"/>
+							</td>
+							<th style="width: 50px">门店
+							</th>
+							<td>
+							<jb:selectGrid dataType="shopId" name="shopId"></jb:selectGrid>
 							</td>
 						</tr>
 				</table>
@@ -230,16 +235,13 @@
 		</div>
 	</div>
 	<div id="toolbar" style="display: none;">
-		<c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderItemController/addPage')}">
-			<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'pencil_add'">添加</a>
-		</c:if>
-		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
 		<c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderItemController/download')}">
-			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_go',plain:true" onclick="downloadTable();">导出</a>		
+			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_go',plain:true" onclick="downloadTable();">导出</a>
 			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">
 			</form>
 			<iframe id="downloadIframe" name="downloadIframe" style="display: none;"></iframe>
 		</c:if>
+		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
 	</div>	
 </body>
 </html>

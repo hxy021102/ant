@@ -1,18 +1,20 @@
 package com.mobian.controller;
 
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.mobian.pageModel.Bug;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.BugServiceI;
 import com.mobian.service.BugTypeServiceI;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.UUID;
 
 /**
  * BUG管理控制器

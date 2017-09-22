@@ -4,10 +4,7 @@ import com.mobian.absx.F;
 import com.mobian.controller.BaseController;
 import com.mobian.listener.Application;
 import com.mobian.pageModel.*;
-import com.mobian.service.MbBalanceLogServiceI;
-import com.mobian.service.MbBalanceServiceI;
-import com.mobian.service.MbRechargeLogServiceI;
-import com.mobian.service.MbShopServiceI;
+import com.mobian.service.*;
 import com.mobian.util.Constants;
 import com.mobian.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +35,9 @@ public class ApiBalanceController extends BaseController {
     @Autowired
     private MbShopServiceI mbShopService;
 
+    @Autowired
+    private MbOrderServiceI mbOrderService;
+
     /**
      * 获取钱包余额
      */
@@ -55,10 +55,14 @@ public class ApiBalanceController extends BaseController {
                 }
                 if(F.empty(type)) type = 1; // 默认余额
                 MbBalance balance = null;
-                if(type == 1)
+                if(type == 1) {
                     balance = mbBalanceService.addOrGetMbBalance(s.getShopId());
-                else
+                    Integer debt = mbOrderService.getOrderDebtMoney(s.getShopId());
+                    debt = debt == null ? 0 : debt;
+                    balance.setAmount(balance.getAmount() - debt);
+                }else {
                     balance = mbBalanceService.addOrGetMbBalanceCash(s.getShopId());
+                }
                 j.setSuccess(true);
                 j.setMsg("获取余额成功");
                 j.setObj(balance);

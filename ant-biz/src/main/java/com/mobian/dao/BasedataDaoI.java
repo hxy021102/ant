@@ -8,6 +8,6 @@ import com.mobian.model.Tbasedata;
  * @author John
  * 
  */
-public interface BasedataDaoI extends BaseDaoI<Tbasedata> {
+public interface BasedataDaoI extends BaseDaoI<Tbasedata>  {
 
 }

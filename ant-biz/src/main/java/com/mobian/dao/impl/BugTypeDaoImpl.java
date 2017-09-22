@@ -1,7 +1,8 @@
 package com.mobian.dao.impl;
 
-import com.mobian.dao.BugTypeDaoI;
 import com.mobian.model.Tbugtype;
+import com.mobian.dao.BugTypeDaoI;
+
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 

@@ -1,5 +1,5 @@
 ﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="com.mobian.model.TmbItemStockLog" %>
+<%@ page import="com.mobian.model.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%> 
@@ -37,7 +37,11 @@
 				field : 'addtime',
 				title : '<%=TmbItemStockLog.ALIAS_ADDTIME%>',
 				width : 50		
-				},  {
+				},   {
+                field : 'warehouseName',
+                title : '仓库名称',
+                width : 65
+			    },  {
 				field : 'itemName',
 				title : '商品名称',
 				width : 65
@@ -109,6 +113,11 @@
 							<td>
 								<strong><%=TmbItemStockLog.ALIAS_ADDTIME%>&nbsp;&nbsp;</strong><input type="text" class="span2 easyui-validatebox" data-options="required:true"  onclick="WdatePicker({dateFmt:'<%=TmbItemStockLog.FORMAT_ADDTIME%>'})" id="stockLogStartTime" name="stockLogStartTime"/>
 								至<input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'<%=TmbItemStockLog.FORMAT_ADDTIME%>'})" id="stockLogEndTime" name="stockLogEndTime"/>
+							</td>
+							<th style="width: 50px"><%=TmbItemStock.ALIAS_WAREHOUSE_NAME%></th>
+							<td>
+								<jb:selectGrid dataType="warehouseId" name="warehouseId"></jb:selectGrid>
+
 							</td>
 						</tr>
 				</table>

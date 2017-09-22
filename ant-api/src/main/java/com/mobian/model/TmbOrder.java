@@ -5,11 +5,12 @@
 
 package com.mobian.model;
 
+import javax.persistence.*;
+
+import java.util.Date;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
-import javax.persistence.*;
-import java.util.Date;
 
 @SuppressWarnings("serial")
 @Entity
@@ -64,11 +65,11 @@ public class TmbOrder implements java.io.Serializable,IEntity{
 	private Integer id;
 	//
 	private Integer tenantId;
-	//@NotNull
+	//@NotNull 
 	private Date addtime;
-	//@NotNull
+	//@NotNull 
 	private Date updatetime;
-	//@NotNull
+	//@NotNull 
 	private Boolean isdeleted;
 	//
 	private Integer userId;
@@ -120,190 +121,190 @@ public class TmbOrder implements java.io.Serializable,IEntity{
 		public TmbOrder(Integer id) {
 			this.id = id;
 		}
-
+	
 
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id", unique = true, nullable = false, length = 10)
 	public Integer getId() {
 		return this.id;
 	}
-
+	
 	@Column(name = "tenant_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getTenantId() {
 		return this.tenantId;
 	}
-
+	
 	public void setTenantId(Integer tenantId) {
 		this.tenantId = tenantId;
 	}
-
+	
 
 	@Column(name = "addtime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public Date getAddtime() {
 		return this.addtime;
 	}
-
+	
 	public void setAddtime(Date addtime) {
 		this.addtime = addtime;
 	}
-
+	
 
 	@Column(name = "updatetime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public Date getUpdatetime() {
 		return this.updatetime;
 	}
-
+	
 	public void setUpdatetime(Date updatetime) {
 		this.updatetime = updatetime;
 	}
-
+	
 	@Column(name = "isdeleted", unique = false, nullable = false, insertable = true, updatable = true, length = 0)
 	public Boolean getIsdeleted() {
 		return this.isdeleted;
 	}
-
+	
 	public void setIsdeleted(Boolean isdeleted) {
 		this.isdeleted = isdeleted;
 	}
-
+	
 	@Column(name = "user_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getUserId() {
 		return this.userId;
 	}
-
+	
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-
+	
 	@Column(name = "total_price", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getTotalPrice() {
 		return this.totalPrice;
 	}
-
+	
 	public void setTotalPrice(Integer totalPrice) {
 		this.totalPrice = totalPrice;
 	}
-
+	
 	@Column(name = "status", unique = false, nullable = true, insertable = true, updatable = true, length = 4)
 	public String getStatus() {
 		return this.status;
 	}
-
+	
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
+	
 	@Column(name = "delivery_way", unique = false, nullable = true, insertable = true, updatable = true, length = 4)
 	public String getDeliveryWay() {
 		return this.deliveryWay;
 	}
-
+	
 	public void setDeliveryWay(String deliveryWay) {
 		this.deliveryWay = deliveryWay;
 	}
-
+	
 	@Column(name = "delivery_status", unique = false, nullable = true, insertable = true, updatable = true, length = 4)
 	public String getDeliveryStatus() {
 		return this.deliveryStatus;
 	}
-
+	
 	public void setDeliveryStatus(String deliveryStatus) {
 		this.deliveryStatus = deliveryStatus;
 	}
-
+	
 
 	@Column(name = "delivery_require_time", unique = false, nullable = true, insertable = true, updatable = true, length = 19)
 	public Date getDeliveryRequireTime() {
 		return this.deliveryRequireTime;
 	}
-
+	
 	public void setDeliveryRequireTime(Date deliveryRequireTime) {
 		this.deliveryRequireTime = deliveryRequireTime;
 	}
-
+	
 	@Column(name = "delivery_address", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
 	public String getDeliveryAddress() {
 		return this.deliveryAddress;
 	}
-
+	
 	public void setDeliveryAddress(String deliveryAddress) {
 		this.deliveryAddress = deliveryAddress;
 	}
-
+	
 	@Column(name = "delivery_region", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getDeliveryRegion() {
 		return this.deliveryRegion;
 	}
-
+	
 	public void setDeliveryRegion(Integer deliveryRegion) {
 		this.deliveryRegion = deliveryRegion;
 	}
-
+	
 	@Column(name = "pay_status", unique = false, nullable = true, insertable = true, updatable = true, length = 4)
 	public String getPayStatus() {
 		return this.payStatus;
 	}
-
+	
 	public void setPayStatus(String payStatus) {
 		this.payStatus = payStatus;
 	}
-
+	
 	@Column(name = "pay_way", unique = false, nullable = true, insertable = true, updatable = true, length = 4)
 	public String getPayWay() {
 		return this.payWay;
 	}
-
+	
 	public void setPayWay(String payWay) {
 		this.payWay = payWay;
 	}
-
+	
 
 	@Column(name = "pay_time", unique = false, nullable = true, insertable = true, updatable = true, length = 19)
 	public Date getPayTime() {
 		return this.payTime;
 	}
-
+	
 	public void setPayTime(Date payTime) {
 		this.payTime = payTime;
 	}
-
+	
 	@Column(name = "invoice_way", unique = false, nullable = true, insertable = true, updatable = true, length = 4)
 	public String getInvoiceWay() {
 		return this.invoiceWay;
 	}
-
+	
 	public void setInvoiceWay(String invoiceWay) {
 		this.invoiceWay = invoiceWay;
 	}
-
+	
 	@Column(name = "contact_phone", unique = false, nullable = true, insertable = true, updatable = true, length = 32)
 	public String getContactPhone() {
 		return this.contactPhone;
 	}
-
+	
 	public void setContactPhone(String contactPhone) {
 		this.contactPhone = contactPhone;
 	}
-
+	
 	@Column(name = "contact_people", unique = false, nullable = true, insertable = true, updatable = true, length = 32)
 	public String getContactPeople() {
 		return this.contactPeople;
 	}
-
+	
 	public void setContactPeople(String contactPeople) {
 		this.contactPeople = contactPeople;
 	}
-
+	
 	@Column(name = "user_remark", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
 	public String getUserRemark() {
 		return this.userRemark;
 	}
-
+	
 	public void setUserRemark(String userRemark) {
 		this.userRemark = userRemark;
 	}

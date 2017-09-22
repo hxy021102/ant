@@ -5,11 +5,12 @@
 
 package com.mobian.model;
 
+import javax.persistence.*;
+
+import java.util.Date;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
-import javax.persistence.*;
-import java.util.Date;
 
 @SuppressWarnings("serial")
 @Entity

@@ -43,6 +43,7 @@
 			striped : true,
 			rownumbers : true,
 			singleSelect : true,
+			showFooter : true,
 			columns : [ [ {
 				field : 'itemCode',
 				title : '商品代码',
@@ -50,7 +51,12 @@
 			}, {
 				field : 'itemName',
 				title : '商品名称',
-				width : 80
+				width : 80,
+				styler:function(value,row,index){
+					if (value == '合计'){
+						return 'font-weight: bold;';
+					}
+				}
 			},  {
 				field : 'quantity',
 				title : '采购数量',

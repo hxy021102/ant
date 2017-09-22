@@ -8,6 +8,7 @@ import com.mobian.pageModel.PageHelper;
 import com.mobian.service.impl.order.OrderState;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -127,4 +128,26 @@ public interface MbOrderServiceI {
 
 
 	List<MbOrder> query(MbOrder mbOrder);
+	/**
+	 * 查询所有欠款的订单
+	 *
+	 */
+	List<MbOrder> queryDebtOrders();
+
+	/**
+	 * 获取查询区间的每天公众号和客服数据
+	 * @param orderData
+	 * @param params
+	 * @return
+	 */
+	List<MbOrderDistribution> getOrderDistributionDayData(MbOrder mbOrder, List<MbOrderDistribution> orderData, Map<String, Object> params);
+
+	/**
+	 * 设置查询区间的每天订单数和时间
+	 * @param mbOrders
+	 * @param orderDistribution
+	 * @param timeName
+	 * @return
+	 */
+	MbOrderDistribution setOrderDayNumberAndOrderDayNameValue(List<TmbOrder> mbOrders, MbOrderDistribution orderDistribution, String[] timeName);
 }

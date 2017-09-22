@@ -51,6 +51,8 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
 
     @Autowired
     private MbBalanceLogServiceI mbBalanceLogService;
+    @Autowired
+    private MbOrderServiceI mbOrderService;
 
     @Override
     public DataGrid dataGrid(MbShop mbShop, PageHelper ph) {
@@ -523,7 +525,15 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
         for (int i = 0; i < ids.length; i++) {
             ids[i] = mbBalances.get(i).getRefId();
         }
-        mbShop.setIds(ids);
+        List<MbOrder> mbOrders = mbOrderService.queryDebtOrders();
+        Integer[] debtIds = new Integer[mbOrders.size()];
+        for (int i = 0; i < debtIds.length; i++) {
+            debtIds[i] = mbOrders.get(i).getShopId();
+        }
+        Integer[] shopIds = new Integer[mbBalances.size()+mbOrders.size()];
+        System.arraycopy(ids,0,shopIds,0,ids.length);
+        System.arraycopy(debtIds,0,shopIds,ids.length,debtIds.length);
+        mbShop.setIds(shopIds);
         DataGrid dataGrid = dataGrid(mbShop, ph);
         List<MbShop> mbShopList = dataGrid.getRows();
         if (!CollectionUtils.isEmpty(mbShopList)) {
@@ -532,6 +542,7 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
                 MbShopExt mbShopExt = new MbShopExt();
                 BeanUtils.copyProperties(shop, mbShopExt);
                 MbBalance mbBalance = mbBalanceService.queryByShopId(shop.getId());
+                Integer sumDebtMoney= mbOrderService.getOrderDebtMoney(shop.getId());
                 mbShopExtList.add(mbShopExt);
                 if (mbBalance != null) {
                     mbShopExt.setBalanceAmount(mbBalance.getAmount());
@@ -542,6 +553,14 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
                     if (mbBalance != null) {
                         mbShopExt.setCashBalanceId(mbBalance.getId());
                         mbShopExt.setCashBalanceAmount(mbBalance.getAmount());
+                    }
+                }
+                if(sumDebtMoney !=null) {
+                    mbShopExt.setDebt(sumDebtMoney);
+                    if(mbShopExt.getBalanceAmount() < 0) {
+                        mbShopExt.setTotalDebt(mbShopExt.getBalanceAmount() - sumDebtMoney);
+                    }else {
+                        mbShopExt.setTotalDebt(-sumDebtMoney);
                     }
                 }
             }

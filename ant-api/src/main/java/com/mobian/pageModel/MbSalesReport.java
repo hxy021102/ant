@@ -24,6 +24,25 @@ public class MbSalesReport implements java.io.Serializable{
     private Integer backMoney;
     //订单状态
     private String  orderStatus;
+    //发货仓库
+    private Integer warehouseId;
+    private String  warehouseName;
+
+    public String getWarehouseName() {
+        return warehouseName;
+    }
+
+    public void setWarehouseName(String warehouseName) {
+        this.warehouseName = warehouseName;
+    }
+
+    public Integer getWarehouseId() {
+        return warehouseId;
+    }
+
+    public void setWarehouseId(Integer warehouseId) {
+        this.warehouseId = warehouseId;
+    }
 
     public String getOrderStatus() {
         return orderStatus;

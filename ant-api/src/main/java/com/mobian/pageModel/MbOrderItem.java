@@ -1,3 +1,4 @@
+
 package com.mobian.pageModel;
 
 import java.util.Date;
@@ -9,8 +10,8 @@ public class MbOrderItem implements java.io.Serializable {
 
 	private Integer id;
 	private Integer tenantId;
-	private Date addtime;
-	private Date updatetime;
+	private Date addtime;			
+	private Date updatetime;			
 	private Boolean isdeleted;
 	private Integer itemId;
 	private Integer quantity;
@@ -21,7 +22,24 @@ public class MbOrderItem implements java.io.Serializable {
 	private Date updatetimeEnd;
 	private Integer voucherQuantityTotal;
 	private Integer voucherQuantityUsed;
+	private Integer shopId;
+	private Integer orderIds[];
 
+	public Integer[] getOrderIds() {
+		return orderIds;
+	}
+
+	public void setOrderIds(Integer[] orderIds) {
+		this.orderIds = orderIds;
+	}
+
+	public Integer getShopId() {
+		return shopId;
+	}
+
+	public void setShopId(Integer shopId) {
+		this.shopId = shopId;
+	}
 
 	private String usableQuantity;
 	private MbItem item;
@@ -37,72 +55,72 @@ public class MbOrderItem implements java.io.Serializable {
 	public void setId(Integer value) {
 		this.id = value;
 	}
-
+	
 	public Integer getId() {
 		return this.id;
 	}
 
-
+	
 	public void setTenantId(Integer tenantId) {
 		this.tenantId = tenantId;
 	}
-
+	
 	public Integer getTenantId() {
 		return this.tenantId;
 	}
 	public void setAddtime(Date addtime) {
 		this.addtime = addtime;
 	}
-
+	
 	public Date getAddtime() {
 		return this.addtime;
 	}
 	public void setUpdatetime(Date updatetime) {
 		this.updatetime = updatetime;
 	}
-
+	
 	public Date getUpdatetime() {
 		return this.updatetime;
 	}
 	public void setIsdeleted(Boolean isdeleted) {
 		this.isdeleted = isdeleted;
 	}
-
+	
 	public Boolean getIsdeleted() {
 		return this.isdeleted;
 	}
 	public void setItemId(Integer itemId) {
 		this.itemId = itemId;
 	}
-
+	
 	public Integer getItemId() {
 		return this.itemId;
 	}
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
-
+	
 	public Integer getQuantity() {
 		return this.quantity;
 	}
 	public void setMarketPrice(Integer marketPrice) {
 		this.marketPrice = marketPrice;
 	}
-
+	
 	public Integer getMarketPrice() {
 		return this.marketPrice;
 	}
 	public void setBuyPrice(Integer buyPrice) {
 		this.buyPrice = buyPrice;
 	}
-
+	
 	public Integer getBuyPrice() {
 		return this.buyPrice;
 	}
 	public void setOrderId(Integer orderId) {
 		this.orderId = orderId;
 	}
-
+	
 	public Integer getOrderId() {
 		return this.orderId;
 	}

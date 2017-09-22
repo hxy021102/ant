@@ -1,8 +1,16 @@
 package com.mobian.controller;
 
-import com.alibaba.fastjson.JSON;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.mobian.pageModel.*;
 import com.mobian.service.MbStockOutServiceI;
+
 import com.mobian.service.MbWarehouseServiceI;
 import com.mobian.service.UserServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
+import com.alibaba.fastjson.JSON;
 
 /**
  * MbStockOut管理控制器
@@ -69,7 +73,7 @@ public class MbStockOutController extends BaseController {
 	 */
 	@RequestMapping("/download")
 	public void download(MbStockOut mbStockOut, PageHelper ph,String downloadFields,HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException{
-		DataGrid dg = dataGrid(mbStockOut,ph);
+		DataGrid dg = dataGrid(mbStockOut,ph);		
 		downloadFields = downloadFields.replace("&quot;", "\"");
 		downloadFields = downloadFields.substring(1,downloadFields.length()-1);
 		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
@@ -95,7 +99,7 @@ public class MbStockOutController extends BaseController {
 	@RequestMapping("/add")
 	@ResponseBody
 	public Json add(MbStockOut mbStockOut,String dataGrid) {
-		Json j = new Json();
+		Json j = new Json();		
 		mbStockOutService.addStockOut(mbStockOut,dataGrid);
 		j.setSuccess(true);
 		j.setMsg("添加成功！");		
@@ -149,7 +153,7 @@ public class MbStockOutController extends BaseController {
 	@RequestMapping("/edit")
 	@ResponseBody
 	public Json edit(MbStockOut mbStockOut) {
-		Json j = new Json();
+		Json j = new Json();		
 		mbStockOutService.edit(mbStockOut);
 		j.setSuccess(true);
 		j.setMsg("编辑成功！");		

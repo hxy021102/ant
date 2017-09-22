@@ -5,18 +5,19 @@
 
 package com.mobian.model;
 
+import javax.persistence.*;
+
+import java.util.Date;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
-import javax.persistence.*;
-import java.util.Date;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "mb_payment")
 @DynamicInsert(true)
 @DynamicUpdate(true)
-public class TmbPayment implements java.io.Serializable,IEntity {
+public class TmbPayment implements java.io.Serializable,IEntity{
 	private static final long serialVersionUID = 5454155825314635342L;
 	
 	//alias
@@ -45,11 +46,11 @@ public class TmbPayment implements java.io.Serializable,IEntity {
 	private Integer id;
 	//
 	private Integer tenantId;
-	//@NotNull
+	//@NotNull 
 	private Date addtime;
-	//@NotNull
+	//@NotNull 
 	private Date updatetime;
-	//@NotNull
+	//@NotNull 
 	private Boolean isdeleted;
 	//
 	private Integer orderId;
@@ -71,107 +72,107 @@ public class TmbPayment implements java.io.Serializable,IEntity {
 		public TmbPayment(Integer id) {
 			this.id = id;
 		}
-
+	
 
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id", unique = true, nullable = false, length = 10)
 	public Integer getId() {
 		return this.id;
 	}
-
+	
 	@Column(name = "tenant_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getTenantId() {
 		return this.tenantId;
 	}
-
+	
 	public void setTenantId(Integer tenantId) {
 		this.tenantId = tenantId;
 	}
-
+	
 
 	@Column(name = "addtime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public Date getAddtime() {
 		return this.addtime;
 	}
-
+	
 	public void setAddtime(Date addtime) {
 		this.addtime = addtime;
 	}
-
+	
 
 	@Column(name = "updatetime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public Date getUpdatetime() {
 		return this.updatetime;
 	}
-
+	
 	public void setUpdatetime(Date updatetime) {
 		this.updatetime = updatetime;
 	}
-
+	
 	@Column(name = "isdeleted", unique = false, nullable = false, insertable = true, updatable = true, length = 0)
 	public Boolean getIsdeleted() {
 		return this.isdeleted;
 	}
-
+	
 	public void setIsdeleted(Boolean isdeleted) {
 		this.isdeleted = isdeleted;
 	}
-
+	
 	@Column(name = "order_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getOrderId() {
 		return this.orderId;
 	}
-
+	
 	public void setOrderId(Integer orderId) {
 		this.orderId = orderId;
 	}
-
+	
 	@Column(name = "order_type", unique = false, nullable = true, insertable = true, updatable = true, length = 32)
 	public String getOrderType() {
 		return this.orderType;
 	}
-
+	
 	public void setOrderType(String orderType) {
 		this.orderType = orderType;
 	}
-
+	
 	@Column(name = "amount", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getAmount() {
 		return this.amount;
 	}
-
+	
 	public void setAmount(Integer amount) {
 		this.amount = amount;
 	}
-
+	
 	@Column(name = "pay_way", unique = false, nullable = true, insertable = true, updatable = true, length = 4)
 	public String getPayWay() {
 		return this.payWay;
 	}
-
+	
 	public void setPayWay(String payWay) {
 		this.payWay = payWay;
 	}
-
+	
 	@Column(name = "status", unique = false, nullable = true, insertable = true, updatable = true, length = 0)
 	public Boolean getStatus() {
 		return this.status;
 	}
-
+	
 	public void setStatus(Boolean status) {
 		this.status = status;
 	}
-
+	
 	@Column(name = "reason", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
 	public String getReason() {
 		return this.reason;
 	}
-
+	
 	public void setReason(String reason) {
 		this.reason = reason;
 	}

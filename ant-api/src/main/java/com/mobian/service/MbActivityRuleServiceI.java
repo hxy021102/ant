@@ -52,7 +52,12 @@ public interface MbActivityRuleServiceI {
 	 * @param id
 	 */
 	public void delete(Integer id);
-	/**
+
+    void addActivityRuleAndRule(MbActivityRule activityRule);
+
+    void editActivityRuleAndRule(MbActivityRule activityRule);
+
+    /**
 	 *
 	 * 级联删除rule下对应的action
 	 */
@@ -63,4 +68,5 @@ public interface MbActivityRuleServiceI {
 	 */
 	List<MbActivityRule> query(MbActivityRule mbActivityRule);
 
+    MbActivityRule getByActivityActionId(Integer activityActionId);
 }

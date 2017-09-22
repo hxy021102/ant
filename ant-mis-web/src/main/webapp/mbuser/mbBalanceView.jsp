@@ -48,7 +48,7 @@
                 width : 150,
                 hidden : true
             }, {
-                field : 'addtime',
+                field : 'updatetime',
                 title : '<%=TmbBalanceLog.ALIAS_TIME%>',
                 width : 100
             }, {
@@ -66,7 +66,16 @@
             }, {
                 field : 'refId',
                 title : '<%=TmbBalanceLog.ALIAS_REF_ID%>',
-                width : 80
+                width : 80,
+                formatter : function (value, row, index) {
+                    if(row.refType=="BT016" || row.refType =="BT017" || row.refType == "BT018"  || row.refType=="BT005" || row.refType=="BT006" || row.refType=="BT002") {
+                        return '<a onclick="viewOrder('+ row.refId +',\''+row.refType+'\')">' + row.refId + '</a>';
+                    }
+                    else {
+                        return row.refId
+                    }
+
+                }
             }, {
                 field : 'reason',
                 title : '<%=TmbBalanceLog.ALIAS_REASON%>',
@@ -91,6 +100,7 @@
             }]],
             toolbar : '#toolbar',
             onLoadSuccess: function () {
+                $('#searchForm table').show();
                 $('.switch').each(function(){
                     var isShow = $(this).attr('is-show');
                     $(this).linkbutton({
@@ -133,6 +143,14 @@
             } ]
         });
     }
+    function viewOrder(id, type) {
+        var href = '${pageContext.request.contextPath}/mbOrderController/view?id=' + id +"&type=" +type;
+        parent.$("#index_tabs").tabs('add', {
+            title : '订单详情-' + id,
+            content : '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            closable : true
+        });
+    }
     function editShow(id, isShow) {
         isShow = isShow ? 0 : 1;
         $.post('${pageContext.request.contextPath}/mbBalanceLogController/edit', {
@@ -143,15 +161,46 @@
             }
         }, 'JSON');
     }
+    function searchFun() {
+        dataGrid.datagrid('load', $.serializeObject($('#searchForm')));
+    }
+
+
+    function cleanFun() {
+        $('#searchForm input').val('');
+        dataGrid.datagrid('load', {});
+    }
 </script>
 </head>
 <body>
 <div class="easyui-layout" data-options="fit:true,border:false">
+    <div data-options="region:'north',title:'查询条件',border:false" style="height: 65px; overflow: hidden;">
+        <form id="searchForm">
+            <table class="table table-hover table-condensed" style="display: none;">
+                <tr>
+                    <th style="width: 50px;">时间查询</th>
+                    <td>
+                        <input type="text" class="span2" id="updatetimeBegin" name="updatetimeBegin"
+
+                               onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',maxDate:'#F{$dp.$D(\'updatetimeEnd\',{d:-1});}'})"
+                                />
+                        <input type="text" class="span2" id="updatetimeEnd" name="updatetimeEnd"
+
+                               onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'#F{$dp.$D(\'updatetimeBegin\',{d:1});}'})"
+                                />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
     <div data-options="region:'center',border:false">
         <table id="dataGrid"></table>
     </div>
 </div>
 <div id="toolbar" style="display: none;">
+    <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true"
+       onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton"
+                                       data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
     <c:if test="${fn:contains(sessionInfo.resourceList, '/mbRechargeLogController/addShopMoneyPage')}">
         <a onclick="addShopMoney();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'pencil_add'">充值</a>
     </c:if>

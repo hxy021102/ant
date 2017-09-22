@@ -5,18 +5,19 @@
 
 package com.mobian.model;
 
+import javax.persistence.*;
+
+import java.util.Date;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
-import javax.persistence.*;
-import java.util.Date;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "mb_user")
 @DynamicInsert(true)
 @DynamicUpdate(true)
-public class TmbUser implements java.io.Serializable,IEntity {
+public class TmbUser implements java.io.Serializable,IEntity{
 	private static final long serialVersionUID = 5454155825314635342L;
 	
 	//alias
@@ -50,11 +51,11 @@ public class TmbUser implements java.io.Serializable,IEntity {
 	private Integer id;
 	//
 	private Integer tenantId;
-	//@NotNull
+	//@NotNull 
 	private Date addtime;
-	//@NotNull
+	//@NotNull 
 	private Date updatetime;
-	//@NotNull
+	//@NotNull 
 	private Boolean isdeleted;
 	//@NotBlank @Length(max=32)
 	private String userName;
@@ -82,134 +83,134 @@ public class TmbUser implements java.io.Serializable,IEntity {
 		public TmbUser(Integer id) {
 			this.id = id;
 		}
-
+	
 
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id", unique = true, nullable = false, length = 10)
 	public Integer getId() {
 		return this.id;
 	}
-
+	
 	@Column(name = "tenant_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getTenantId() {
 		return this.tenantId;
 	}
-
+	
 	public void setTenantId(Integer tenantId) {
 		this.tenantId = tenantId;
 	}
-
+	
 
 	@Column(name = "addtime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public Date getAddtime() {
 		return this.addtime;
 	}
-
+	
 	public void setAddtime(Date addtime) {
 		this.addtime = addtime;
 	}
-
+	
 
 	@Column(name = "updatetime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public Date getUpdatetime() {
 		return this.updatetime;
 	}
-
+	
 	public void setUpdatetime(Date updatetime) {
 		this.updatetime = updatetime;
 	}
-
+	
 	@Column(name = "isdeleted", unique = false, nullable = false, insertable = true, updatable = true, length = 0)
 	public Boolean getIsdeleted() {
 		return this.isdeleted;
 	}
-
+	
 	public void setIsdeleted(Boolean isdeleted) {
 		this.isdeleted = isdeleted;
 	}
-
+	
 	@Column(name = "user_name", unique = false, nullable = true, insertable = true, updatable = true, length = 32)
 	public String getUserName() {
 		return this.userName;
 	}
-
+	
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-
+	
 	@Column(name = "password", unique = false, nullable = false, insertable = true, updatable = true, length = 32)
 	public String getPassword() {
 		return this.password;
 	}
-
+	
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
+	
 	@Column(name = "nick_name", unique = false, nullable = false, insertable = true, updatable = true, length = 128)
 	public String getNickName() {
 		return this.nickName;
 	}
-
+	
 	public void setNickName(String nickName) {
 		this.nickName = nickName;
 	}
-
+	
 	@Column(name = "phone", unique = false, nullable = true, insertable = true, updatable = true, length = 32)
 	public String getPhone() {
 		return this.phone;
 	}
-
+	
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-
+	
 	@Column(name = "icon", unique = false, nullable = true, insertable = true, updatable = true, length = 256)
 	public String getIcon() {
 		return this.icon;
 	}
-
+	
 	public void setIcon(String icon) {
 		this.icon = icon;
 	}
-
+	
 	@Column(name = "sex", unique = false, nullable = true, insertable = true, updatable = true, length = 4)
 	public String getSex() {
 		return this.sex;
 	}
-
+	
 	public void setSex(String sex) {
 		this.sex = sex;
 	}
-
+	
 	@Column(name = "shop_id", unique = false, nullable = true, insertable = true, updatable = true, length = 11)
 	public Integer getShopId() {
 		return this.shopId;
 	}
-
+	
 	public void setShopId(Integer shopId) {
 		this.shopId = shopId;
 	}
-
+	
 	@Column(name = "ref_id", unique = false, nullable = true, insertable = true, updatable = true, length = 64)
 	public String getRefId() {
 		return this.refId;
 	}
-
+	
 	public void setRefId(String refId) {
 		this.refId = refId;
 	}
-
+	
 	@Column(name = "ref_type", unique = false, nullable = true, insertable = true, updatable = true, length = 4)
 	public String getRefType() {
 		return this.refType;
 	}
-
+	
 	public void setRefType(String refType) {
 		this.refType = refType;
 	}

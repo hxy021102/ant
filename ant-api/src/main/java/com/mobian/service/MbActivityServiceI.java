@@ -50,10 +50,18 @@ public interface MbActivityServiceI {
 	 * @param id
 	 */
 	public void delete(Integer id);
+
+	void addActivityAndRuleSet(MbActivity activity);
+
+	void editActivityAndRuleSet(MbActivity activity);
+
 	/**
 	 *
 	 * 级联删除活动下的rule和action
 	 */
-	void deleteActivity(Integer id);
+	void deleteActivityAndRuleSet(Integer id);
 
+    MbActivity getByActivityRuleId(Integer activityRuleId);
+
+    MbActivity getByActivityActionId(Integer activityActionId);
 }

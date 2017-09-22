@@ -2,6 +2,7 @@ package com.mobian.dao.impl;
 
 import com.mobian.dao.BasetypeDaoI;
 import com.mobian.model.Tbasetype;
+
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 

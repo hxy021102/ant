@@ -29,52 +29,58 @@
 		$('#searchForm table').show();
 		parent.$.messager.progress('close');
 		dataGrid = $('#dataGrid').datagrid({
-			//url : '${pageContext.request.contextPath}/mbBalanceLogController/dataGrid',
+			url : '${pageContext.request.contextPath}/mbBalanceLogController/dataGridFlow',
 			fit : true,
 			fitColumns : true,
 			border : false,
-			pagination : true,
+			pagination : false,
 			idField : 'id',
-			pageSize : 10,
+			/*pageSize : 10,*/
 			pageList : [ 10, 20, 30, 40, 50 ],
 			sortName : 'id',
 			sortOrder : 'desc',
 			checkOnSelect : false,
 			selectOnCheck : false,
-			nowrap : false,
+			nowrap : true,
 			striped : true,
 			rownumbers : true,
 			singleSelect : true,
+            showFooter : true,
 			columns : [ [ {
 				field : 'id',
 				title : '编号',
 				width : 150,
 				hidden : true
 				}, {
-				field : 'balanceId',
-				title : '<%=TmbBalanceLog.ALIAS_BALANCE_ID%>',
-				width : 50		
-				}, {
+				field : 'shopName',
+				title : '门店名称',
+				width : 45,
+                styler:function(value,row,index){
+                    if (value == '合计'){
+                        return 'font-weight: bold;';
+                    }
+                }
+				},{
+                field : 'updatetime',
+                title : '下单时间',
+                width : 40
+			    },{
 				field : 'amount',
 				title : '<%=TmbBalanceLog.ALIAS_AMOUNT%>',
-				width : 50		
-				}, {
-				field : 'refId',
-				title : '<%=TmbBalanceLog.ALIAS_REF_ID%>',
-				width : 50		
-				}, {
-				field : 'refType',
+				width : 20
+				},{
+				field : 'refTypeName',
 				title : '<%=TmbBalanceLog.ALIAS_REF_TYPE%>',
-				width : 50		
+				width : 30
 				}, {
 				field : 'reason',
 				title : '<%=TmbBalanceLog.ALIAS_REASON%>',
-				width : 50		
+				width : 100
 				}, {
 				field : 'remark',
 				title : '<%=TmbBalanceLog.ALIAS_REMARK%>',
 				width : 50		
-			}, {
+			}, /*{
 				field : 'action',
 				title : '操作',
 				width : 100,
@@ -93,18 +99,18 @@
 					}
 					return str;
 				}
-			} ] ],
+			}*/ ] ],
 			toolbar : '#toolbar',
 			onLoadSuccess : function() {
 				$('#searchForm table').show();
 				parent.$.messager.progress('close');
-
 				$(this).datagrid('tooltip');
 			}
 		});
 	});
 
-	function deleteFun(id) {
+
+    function deleteFun(id) {
 		if (id == undefined) {
 			var rows = dataGrid.datagrid('getSelections');
 			id = rows[0].id;
@@ -185,7 +191,7 @@
 		$.merge($colums, options.frozenColumns);
 		var columsStr = JSON.stringify($colums);
 	    $('#downloadTable').form('submit', {
-	        url:'${pageContext.request.contextPath}/mbBalanceLogController/download',
+	        url:'${pageContext.request.contextPath}/mbBalanceLogController/downloadBalanceLog',
 	        onSubmit: function(param){
 				var isValid = $('#searchForm').form('validate');
 	        	$.extend(param, $.serializeObject($('#searchForm')));
@@ -211,10 +217,15 @@
 			<form id="searchForm">
 				<table class="table table-hover table-condensed" style="display: none;">
 					<tr>
-						<th>下单时间</th>
 						<td>
-							<input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'<%=TmbBalanceLog.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'updatetimeEnd\',{M:-1});}',maxDate:'#F{$dp.$D(\'updatetimeEnd\',{d:-1});}'})" id="updatetimeBegin" name="updatetimeBegin"/>
-							<input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'<%=TmbBalanceLog.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'updatetimeBegin\',{d:1});}',maxDate:'#F{$dp.$D(\'updatetimeBegin\',{M:1});}'})" id="updatetimeEnd" name="updatetimeEnd"/>
+							<strong>下单时间&nbsp;&nbsp;</strong><input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'<%=TmbBalanceLog.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'updatetimeEnd\',{M:-1});}',maxDate:'#F{$dp.$D(\'updatetimeEnd\',{d:-1});}'})" id="updatetimeBegin" name="updatetimeBegin"/>
+							至<input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'<%=TmbBalanceLog.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'updatetimeBegin\',{d:1});}',maxDate:'#F{$dp.$D(\'updatetimeBegin\',{M:1});}'})" id="updatetimeEnd" name="updatetimeEnd"/>
+						</td>
+						<td>
+							<strong>门店名称&nbsp;&nbsp;</strong><jb:selectGrid dataType="shopId" name="shopId" params="{onlyMain:true}"></jb:selectGrid>
+						</td>
+						<td>
+							<strong>业务类型&nbsp;&nbsp;</strong><jb:selectSql dataType="SQ016" name="refType" ></jb:selectSql>
 						</td>
 					</tr>
 				</table>
@@ -225,8 +236,9 @@
 		</div>
 	</div>
 	<div id="toolbar" style="display: none;">
+		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a>
 		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
-		<c:if test="${fn:contains(sessionInfo.resourceList, '/mbBalanceLogController/download')}">
+		<c:if test="${fn:contains(sessionInfo.resourceList, '/mbBalanceLogController/downloadBalanceLog')}">
 			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_go',plain:true" onclick="downloadTable();">导出</a>		
 			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">
 			</form>

@@ -1,12 +1,22 @@
 package com.mobian.model;
 
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-
-import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 @SuppressWarnings("serial")
 @Entity
@@ -58,7 +68,7 @@ public class Tuser implements java.io.Serializable {
 	private String email;
 	private String orgName;
 	private String phone;
-
+	
 	public Tuser() {
 	}
 
@@ -129,70 +139,70 @@ public class Tuser implements java.io.Serializable {
 	public String getUtype() {
 		return this.utype;
 	}
-
+	
 	public void setUtype(String utype) {
 		this.utype = utype;
 	}
-
+	
 	@Column(name = "third_user", unique = false, nullable = true, insertable = true, updatable = true, length = 36)
 	public String getThirdUser() {
 		return this.thirdUser;
 	}
-
+	
 	public void setThirdUser(String thirdUser) {
 		this.thirdUser = thirdUser;
 	}
-
+	
 	@Column(name = "head_image", unique = false, nullable = true, insertable = true, updatable = true, length = 256)
 	public String getHeadImage() {
 		return this.headImage;
 	}
-
+	
 	public void setHeadImage(String headImage) {
 		this.headImage = headImage;
 	}
-
+	
 	@Column(name = "nickname", unique = false, nullable = true, insertable = true, updatable = true, length = 36)
 	public String getNickname() {
 		return this.nickname;
 	}
-
+	
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
-
+	
 	@Column(name = "areaCode", unique = false, nullable = true, insertable = true, updatable = true, length = 36)
 	public String getAreaCode() {
 		return this.areaCode;
 	}
-
+	
 	public void setAreaCode(String areaCode) {
 		this.areaCode = areaCode;
 	}
-
+	
 	@Column(name = "birthday", unique = false, nullable = true, insertable = true, updatable = true, length = 18)
 	public String getBirthday() {
 		return this.birthday;
 	}
-
+	
 	public void setBirthday(String birthday) {
 		this.birthday = birthday;
 	}
-
+	
 	@Column(name = "bardian", unique = false, nullable = true, insertable = true, updatable = true, length = 128)
 	public String getBardian() {
 		return this.bardian;
 	}
-
+	
 	public void setBardian(String bardian) {
 		this.bardian = bardian;
 	}
-
+	
 	@Column(name = "member_v", unique = false, nullable = true, insertable = true, updatable = true, length = 4)
 	public String getMemberV() {
 		return this.memberV;
 	}
-
+	
 	public void setMemberV(String memberV) {
 		this.memberV = memberV;
 	}

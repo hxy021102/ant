@@ -5,11 +5,12 @@
 
 package com.mobian.model;
 
+import javax.persistence.*;
+
+import java.util.Date;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
-import javax.persistence.*;
-import java.util.Date;
 
 @SuppressWarnings("serial")
 @Entity
@@ -49,13 +50,13 @@ public class TmbUserAddress implements java.io.Serializable,IEntity{
 	private Integer id;
 	//
 	private Integer tenantId;
-	//@NotNull
+	//@NotNull 
 	private Date addtime;
-	//@NotNull
+	//@NotNull 
 	private Date updatetime;
-	//@NotNull
+	//@NotNull 
 	private Boolean isdeleted;
-	//@NotNull
+	//@NotNull 
 	private Integer userId;
 	//
 	private Integer regionId;

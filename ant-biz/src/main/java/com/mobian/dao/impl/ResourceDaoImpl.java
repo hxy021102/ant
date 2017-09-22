@@ -2,6 +2,8 @@ package com.mobian.dao.impl;
 
 import com.mobian.dao.ResourceDaoI;
 import com.mobian.model.Tresource;
+
+import com.mobian.model.Tresourcetype;
 import org.hibernate.Query;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;

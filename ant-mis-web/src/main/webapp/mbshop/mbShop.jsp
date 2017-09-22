@@ -70,7 +70,7 @@
                     }, {
                         field: 'name',
                         title: '<%=TmbShop.ALIAS_NAME%>',
-                        width: 70,
+                        width: 60,
                         formatter: function (value, row, index) {
                             var str = value;
                             if(row.parentId == -1) str = '<font color="red">(主)</font>' + value;
@@ -79,7 +79,7 @@
                     }, {
                         field: 'parentName',
                         title: '主店名称',
-                        width: 70
+                        width: 60
                     }, {
                         field: 'regionPath',
                         title: '<%=TmbShop.ALIAS_REGION_ID%>',
@@ -103,7 +103,7 @@
                     }, {
                         field: 'balanceAmount',
                         title: '余额',
-                        width: 40,
+                        width: 60,
                         align: 'right',
                         formatter: function (value, row) {
                             if(row.balanceAmount == undefined)return "";
@@ -112,7 +112,7 @@
                     }, {
                         field: 'cashBalanceAmount',
                         title: '桶余额',
-                        width: 35,
+                        width: 50,
                         align: 'right',
                         formatter: function (value, row) {
                             if(row.cashBalanceAmount == undefined)return "";

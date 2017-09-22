@@ -15,6 +15,7 @@ public class DataGrid implements java.io.Serializable {
 	private Long total = 0L;
 	@SuppressWarnings("rawtypes")
 	private List rows = new ArrayList();
+	private List footer = new ArrayList();
 
 	public Long getTotal() {
 		return total;
@@ -34,4 +35,11 @@ public class DataGrid implements java.io.Serializable {
 		this.rows = rows;
 	}
 
+	public List getFooter() {
+		return footer;
+	}
+
+	public void setFooter(List footer) {
+		this.footer = footer;
+	}
 }

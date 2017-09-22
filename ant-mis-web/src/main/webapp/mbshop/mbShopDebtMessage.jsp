@@ -20,7 +20,7 @@
                 pagination: true,
                 idField: 'id',
                 pageSize: 10,
-                pageList: [10, 20, 30, 40, 50],
+                pageList: [100, 200 ],
                 sortName: '',
                 sortOrder: 'desc',
                 checkOnSelect: false,
@@ -71,9 +71,25 @@
                             return '<a onclick="viewBalance(' + row.id + ')">' + $.formatMoney(row.balanceAmount) + '</a>';
                         }
                     }, {
+                        field: 'debt',
+                        title: '欠款',
+                        width: 30,
+                        align: 'right',
+                        formatter: function (value) {
+                            return $.formatMoney(-value);
+                        }
+                    }, {
+                        field: 'totalDebt',
+                        title: '总欠款',
+                        width: 30,
+                        align: 'right',
+                        formatter: function (value) {
+                            return $.formatMoney(value);
+                        }
+                    }, {
                         field: 'cashBalanceAmount',
                         title: '桶余额',
-                        width: 30,
+                        width: 40,
                         align: 'right',
                         formatter: function (value, row) {
                             if(row.cashBalanceAmount == undefined)return "";
@@ -98,7 +114,7 @@
                 pagination: true,
                 idField: 'id',
                 pageSize: 10,
-                pageList: [10, 20, 30, 40, 50],
+                pageList: [100, 200 ],
                 sortName: '',
                 sortOrder: 'desc',
                 checkOnSelect: false,

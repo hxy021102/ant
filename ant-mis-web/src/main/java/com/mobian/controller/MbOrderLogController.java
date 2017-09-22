@@ -1,8 +1,17 @@
 package com.mobian.controller;
 
-import com.alibaba.fastjson.JSON;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import com.mobian.pageModel.*;
 import com.mobian.service.MbOrderLogServiceI;
+
 import com.mobian.service.MbOrderServiceI;
 import com.mobian.util.ConfigUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
+import com.alibaba.fastjson.JSON;
 
 /**
  * MbOrderLog管理控制器
@@ -68,7 +72,7 @@ public class MbOrderLogController extends BaseController {
 	 */
 	@RequestMapping("/download")
 	public void download(MbOrderLog mbOrderLog, PageHelper ph,String downloadFields,HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException{
-		DataGrid dg = dataGrid(mbOrderLog,ph);
+		DataGrid dg = dataGrid(mbOrderLog,ph);		
 		downloadFields = downloadFields.replace("&quot;", "\"");
 		downloadFields = downloadFields.substring(1,downloadFields.length()-1);
 		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
@@ -94,7 +98,7 @@ public class MbOrderLogController extends BaseController {
 	@RequestMapping("/add")
 	@ResponseBody
 	public Json add(MbOrderLog mbOrderLog) {
-		Json j = new Json();
+		Json j = new Json();		
 		mbOrderLogService.add(mbOrderLog);
 		j.setSuccess(true);
 		j.setMsg("添加成功！");		
@@ -134,7 +138,7 @@ public class MbOrderLogController extends BaseController {
 	@RequestMapping("/edit")
 	@ResponseBody
 	public Json edit(MbOrderLog mbOrderLog) {
-		Json j = new Json();
+		Json j = new Json();		
 		mbOrderLogService.edit(mbOrderLog);
 		j.setSuccess(true);
 		j.setMsg("编辑成功！");		

@@ -5,18 +5,19 @@
 
 package com.mobian.model;
 
+import javax.persistence.*;
+
+import java.util.Date;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
-import javax.persistence.*;
-import java.util.Date;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "mb_activity_rule")
 @DynamicInsert(true)
 @DynamicUpdate(true)
-public class TmbActivityRule implements java.io.Serializable,IEntity {
+public class TmbActivityRule implements java.io.Serializable,IEntity{
 	private static final long serialVersionUID = 5454155825314635342L;
 	
 	//alias
@@ -151,7 +152,7 @@ public class TmbActivityRule implements java.io.Serializable,IEntity {
 		this.seq = seq;
 	}
 	
-	@Column(name = "left_value", unique = false, nullable = false, insertable = true, updatable = true, length = 32)
+	@Column(name = "left_value", unique = false, nullable = false, insertable = true, updatable = true, length = 512)
 	public String getLeftValue() {
 		return this.leftValue;
 	}
@@ -160,7 +161,7 @@ public class TmbActivityRule implements java.io.Serializable,IEntity {
 		this.leftValue = leftValue;
 	}
 	
-	@Column(name = "operator", unique = false, nullable = false, insertable = true, updatable = true, length = 4)
+	@Column(name = "operator", unique = false, nullable = false, insertable = true, updatable = true, length = 6)
 	public String getOperator() {
 		return this.operator;
 	}
@@ -169,7 +170,7 @@ public class TmbActivityRule implements java.io.Serializable,IEntity {
 		this.operator = operator;
 	}
 	
-	@Column(name = "right_value", unique = false, nullable = false, insertable = true, updatable = true, length = 32)
+	@Column(name = "right_value", unique = false, nullable = false, insertable = true, updatable = true, length = 512)
 	public String getRightValue() {
 		return this.rightValue;
 	}
@@ -186,7 +187,8 @@ public class TmbActivityRule implements java.io.Serializable,IEntity {
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
-	
+
+
 	
 	/*
 	public String toString() {

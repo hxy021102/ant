@@ -129,6 +129,7 @@
             singleSelect: true,
             toolbar: '#tb',
             method: 'get',
+            fitColumns : true,
             onClickCell: onClickCell,
             onEndEdit: onEndEdit,
             columns: [[{
@@ -284,7 +285,10 @@
 					</td>
 				</tr>
 			</table>
-            <table id="dg" class="easyui-datagrid"  style="height:auto"></table>
+			<div style="overflow: auto;height: 230px">
+            <table id="dg" class="easyui-datagrid"  style="height:auto">
+			</table>
+			</div>
 
             <div id="tb" style="height:auto;display: none;">
                 <a href="javascript:void(0)" class="easyui-linkbutton item_add" data-options="iconCls:'pencil_add',plain:true" onclick="append()">添加</a>

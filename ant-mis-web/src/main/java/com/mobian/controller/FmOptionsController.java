@@ -1,19 +1,26 @@
 package com.mobian.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.mobian.pageModel.*;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.mobian.pageModel.Colum;
+import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.FmOptions;
+import com.mobian.pageModel.Json;
+import com.mobian.pageModel.PageHelper;
 import com.mobian.service.FmOptionsServiceI;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.UUID;
+import com.alibaba.fastjson.JSON;
 
 /**
  * FmOptions管理控制器
@@ -64,7 +71,7 @@ public class FmOptionsController extends BaseController {
 	 */
 	@RequestMapping("/download")
 	public void download(FmOptions fmOptions, PageHelper ph,String downloadFields,HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException{
-		DataGrid dg = dataGrid(fmOptions,ph);
+		DataGrid dg = dataGrid(fmOptions,ph);		
 		downloadFields = downloadFields.replace("&quot;", "\"");
 		downloadFields = downloadFields.substring(1,downloadFields.length()-1);
 		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
@@ -91,7 +98,7 @@ public class FmOptionsController extends BaseController {
 	@RequestMapping("/add")
 	@ResponseBody
 	public Json add(FmOptions fmOptions) {
-		Json j = new Json();
+		Json j = new Json();		
 		fmOptionsService.add(fmOptions);
 		j.setSuccess(true);
 		j.setMsg("添加成功！");		
@@ -131,7 +138,7 @@ public class FmOptionsController extends BaseController {
 	@RequestMapping("/edit")
 	@ResponseBody
 	public Json edit(FmOptions fmOptions) {
-		Json j = new Json();
+		Json j = new Json();		
 		fmOptionsService.edit(fmOptions);
 		j.setSuccess(true);
 		j.setMsg("编辑成功！");		

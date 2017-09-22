@@ -5,11 +5,12 @@
 
 package com.mobian.model;
 
+import javax.persistence.*;
+
+import java.util.Date;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
-import javax.persistence.*;
-import java.util.Date;
 
 @SuppressWarnings("serial")
 @Entity
@@ -42,13 +43,13 @@ public class TmbContractItem implements java.io.Serializable,IEntity{
 	private Integer id;
 	//
 	private Integer tenantId;
-	//@NotNull
+	//@NotNull 
 	private Date addtime;
-	//@NotNull
+	//@NotNull 
 	private Date updatetime;
-	//@NotNull
+	//@NotNull 
 	private Boolean isdeleted;
-	//@NotNull
+	//@NotNull 
 	private Integer contractId;
 	//
 	private Integer itemId;
@@ -62,80 +63,80 @@ public class TmbContractItem implements java.io.Serializable,IEntity{
 		public TmbContractItem(Integer id) {
 			this.id = id;
 		}
-
+	
 
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id", unique = true, nullable = false, length = 10)
 	public Integer getId() {
 		return this.id;
 	}
-
+	
 	@Column(name = "tenant_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getTenantId() {
 		return this.tenantId;
 	}
-
+	
 	public void setTenantId(Integer tenantId) {
 		this.tenantId = tenantId;
 	}
-
+	
 
 	@Column(name = "addtime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public Date getAddtime() {
 		return this.addtime;
 	}
-
+	
 	public void setAddtime(Date addtime) {
 		this.addtime = addtime;
 	}
-
+	
 
 	@Column(name = "updatetime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public Date getUpdatetime() {
 		return this.updatetime;
 	}
-
+	
 	public void setUpdatetime(Date updatetime) {
 		this.updatetime = updatetime;
 	}
-
+	
 	@Column(name = "isdeleted", unique = false, nullable = false, insertable = true, updatable = true, length = 0)
 	public Boolean getIsdeleted() {
 		return this.isdeleted;
 	}
-
+	
 	public void setIsdeleted(Boolean isdeleted) {
 		this.isdeleted = isdeleted;
 	}
-
+	
 	@Column(name = "contract_id", unique = false, nullable = false, insertable = true, updatable = true, length = 10)
 	public Integer getContractId() {
 		return this.contractId;
 	}
-
+	
 	public void setContractId(Integer contractId) {
 		this.contractId = contractId;
 	}
-
+	
 	@Column(name = "item_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getItemId() {
 		return this.itemId;
 	}
-
+	
 	public void setItemId(Integer itemId) {
 		this.itemId = itemId;
 	}
-
+	
 	@Column(name = "price", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getPrice() {
 		return this.price;
 	}
-
+	
 	public void setPrice(Integer price) {
 		this.price = price;
 	}

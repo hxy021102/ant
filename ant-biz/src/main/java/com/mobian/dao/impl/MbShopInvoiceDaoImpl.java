@@ -2,6 +2,7 @@ package com.mobian.dao.impl;
 
 import com.mobian.dao.MbShopInvoiceDaoI;
 import com.mobian.model.TmbShopInvoice;
+
 import org.springframework.stereotype.Repository;
 
 @Repository

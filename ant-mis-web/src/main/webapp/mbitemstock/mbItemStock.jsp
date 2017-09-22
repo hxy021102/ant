@@ -33,6 +33,11 @@
 		$.canView = true;
 	</script>
 </c:if>
+<c:if test="${fn:contains(sessionInfo.resourceList, '/mbItemStockController/editStockQuantityPage')}">
+	<script type="text/javascript">
+        $.canEditStock = true;
+	</script>
+</c:if>
 <script type="text/javascript">
 	var dataGrid;
 	$(function() {
@@ -61,7 +66,14 @@
 				}, {
 				field : 'warehouseCode',
 				title : '<%=TmbItemStock.ALIAS_WAREHOUSE_CODE%>',
-				width : 20
+				width : 20,
+                formatter : function (value, row, index) {
+				    if ($.canView){
+                        return '<a onclick="viewFun(' + row.id + ')">' + row.warehouseCode + '</a>';
+                    }else {
+				        return row.warehouseCode;
+					}
+                }
 				}, {
 				field : 'warehouseName',
 				title : '<%=TmbItemStock.ALIAS_WAREHOUSE_NAME%>',
@@ -119,7 +131,9 @@
 					if ($.canEdit) {
 						str += $.formatString('<img onclick="editFun(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/pencil.png');
 					}
-
+                    if ($.canEditStock && row.warehouseType == "WT03" ) {
+                        str += $.formatString('<img onclick="editStock(\'{0}\');" src="{1}" title="编辑库存"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/pencil_go.png');
+                    }
 					if($.canEditSafe){
 						str += $.formatString('<img onclick="editSafeFun(\'{0}\');" src="{1}" title="编辑安全库存"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/brick_edit.png');
                     }
@@ -129,10 +143,6 @@
 					if ($.canDelete) {
 						str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/cancel.png');
 					}
-					str += "&nbsp;";
-					if ($.canView) {
-					    str += $.formatString('<img onclick="viewFun(\'{0}\');" src="{1}" title="详情"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/map/magnifier.png');
-                    }
 					return str;
 				}
 			} ] ],
@@ -196,6 +206,27 @@
             width : 400,
             height : 250,
             href : '${pageContext.request.contextPath}/mbItemStockController/editAveragePricePage?id=' + id,
+            buttons : [ {
+                text : '编辑',
+                handler : function() {
+                    parent.$.modalDialog.openner_dataGrid = dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                    var f = parent.$.modalDialog.handler.find('#form');
+                    f.submit();
+                }
+            } ]
+        });
+    }
+
+    function editStock(id) {
+        if (id == undefined) {
+            var rows = dataGrid.datagrid('getSelections');
+            id = rows[0].id;
+        }
+        parent.$.modalDialog({
+            title : '编辑数据',
+            width : 780,
+            height : 500,
+            href : '${pageContext.request.contextPath}/mbItemStockController/editStockQuantityPage?id=' + id,
             buttons : [ {
                 text : '编辑',
                 handler : function() {
@@ -319,6 +350,14 @@
 						<td>
 							<jb:selectGrid dataType="itemId" name="itemId"></jb:selectGrid>
 						</td>
+                        <th><%=TmbItemStock.ALIAS_IS_SAFE%></th>
+                        <td>
+                            <select name="safe" class="easyui-combobox" data-options="width:140,height:29">
+                                <option value=""></option>
+                                <option value="1">大于等于安全库存</option>
+                                <option value="0">小于安全库存</option>
+                            </select>
+                        </td>
 					</tr>
 				</table>
 			</form>

@@ -38,35 +38,32 @@
 				<input type="hidden" name="id"/>
 			    <input type="hidden" name="activityRuleId">
 			<table class="table table-hover table-condensed">
-				<tr>	
-
+				<tr>
 					<th style="width: 60px;"><%=TmbActivityAction.ALIAS_NAME%></th>
 					<td colspan="3">
-											<input class="span2" name="name" type="text"/>
+						<input class="span2" name="name" type="text"/>
 					</td>							
-				</tr>	
-				<tr>	
+
 					<th style="width: 50px;"><%=TmbActivityAction.ALIAS_SEQ%></th>
 					<td>
-					
-											<input  name="seq" type="text" class="easyui-validatebox span2" data-options="required:true"/>
+						<input  name="seq" type="text" class="easyui-validatebox span2" data-options="required:true"/>
 					</td>							
-					<th style="width: 50px;"><%=TmbActivityAction.ALIAS_ACTION_TYPE%></th>
-					<td>
-					
-											<jb:select dataType="AT" name="actionType" mustSelect="true"></jb:select>	
-					</td>							
-				</tr>	
+				</tr>
 				<tr>	
 					<th style="width: 50px;"><%=TmbActivityAction.ALIAS_PARAMETER1%></th>
+					<td  colspan="6">
+						<%--<input  name="parameter1" type="text" class="easyui-validatebox span2" data-options="required:true"/>--%>
+                        <textarea style="width: 90%;" name="parameter1"  data-options="required:true" rows="10"></textarea>
+					</td>
+				</tr>
+				<tr>
+				<th style="width: 50px;"><%=TmbActivityAction.ALIAS_PARAMETER2%></th>
 					<td>
-					
-											<input  name="parameter1" type="text" class="easyui-validatebox span2" data-options="required:true"/>
-					</td>							
-					<th style="width: 50px;"><%=TmbActivityAction.ALIAS_PARAMETER2%></th>
+						<input  name="parameter2" type="text" class="easyui-validatebox span2" data-options="required:false"/>
+					</td>
+					<th style="width: 50px;">类型</th>
 					<td>
-
-											<input  name="parameter2" type="text" class="easyui-validatebox span2" data-options="required:true"/>
+						<jb:select name="actionType" dataType="AM" required="true"></jb:select>
 					</td>
 				</tr>	
 			</table>		

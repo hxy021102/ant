@@ -63,4 +63,12 @@ public interface MbBalanceLogServiceI {
 	 */
 	void delete(Integer id);
 
+	/**
+	 * 获取余额列表和门店名称
+	 * @param mbBalanceLog
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridWithShopName(MbBalanceLog mbBalanceLog, PageHelper ph);
+
 }

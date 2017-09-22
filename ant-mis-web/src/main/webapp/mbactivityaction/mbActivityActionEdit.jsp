@@ -48,7 +48,11 @@
 				<tr>
 					<th><%=TmbActivityAction.ALIAS_ACTION_TYPE%></th>	
 					<td>
-											<jb:select dataType="AT" name="actionType" value="${mbActivityAction.actionType}" mustSelect="true"></jb:select>	
+						<jb:select dataType="AM" name="actionType" value="${mbActivityAction.actionType}" required="true"></jb:select>
+                        <%--<select name="actionType" >--%>
+							<%--<option value="-1">参数1为动态代码</option>--%>
+							<%--<option value="shopCouponsService.addByActivity" >赠送券参数1:mbOrder,券ID,数量</option>--%>
+						<%--</select>--%>
 					</td>
 					<th><%=TmbActivityAction.ALIAS_SEQ%></th>
 					<td>
@@ -57,12 +61,15 @@
 				</tr>
 				<tr>	
 					<th><%=TmbActivityAction.ALIAS_PARAMETER1%></th>	
-					<td>
-											<input class="span2" name="parameter1" type="text" class="easyui-validatebox span2" data-options="required:true" value="${mbActivityAction.parameter1}"/>
-					</td>							
+					<td colspan="4">
+											<%--<input class="span2" name="parameter1" type="text" class="easyui-validatebox span2" data-options="required:true" value="${mbActivityAction.parameter1}"/>--%>
+						<textarea name="parameter1" rows="10" style="width: 90%">${mbActivityAction.parameter1}</textarea>
+					</td>
+				</tr>
+				<tr>
 					<th><%=TmbActivityAction.ALIAS_PARAMETER2%></th>	
 					<td>
-											<input class="span2" name="parameter2" type="text" class="easyui-validatebox span2" data-options="required:true" value="${mbActivityAction.parameter2}"/>
+						<input class="span2" name="parameter2" type="text" class="easyui-validatebox span2" data-options="required:true" value="${mbActivityAction.parameter2}"/>
 					</td>							
 			</tr>	
 			</table>				

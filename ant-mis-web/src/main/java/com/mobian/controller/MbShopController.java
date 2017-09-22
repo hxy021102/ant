@@ -156,7 +156,24 @@ public class MbShopController extends BaseController {
     @RequestMapping("/view")
     public String view(HttpServletRequest request, Integer id) {
         MbShop mbShop = mbShopService.get(id);
-        request.setAttribute("mbShop", mbShop);
+        MbShopExt mbShopExt = new MbShopExt();
+        BeanUtils.copyProperties(mbShop, mbShopExt);
+        MbBalance mbBalance = mbBalanceService.queryByShopId(mbShop.getId());
+        if (mbBalance != null) {
+            mbShopExt.setBalanceAmount(mbBalance.getAmount());
+            mbShopExt.setBalanceId(mbBalance.getId());
+        }
+        if ("AS02".equals(mbShopExt.getAuditStatus())) {
+            mbBalance = mbBalanceService.addOrGetMbBalanceCash(mbShop.getId());
+            if (mbBalance != null) {
+                mbShopExt.setCashBalanceId(mbBalance.getId());
+                mbShopExt.setCashBalanceAmount(mbBalance.getAmount());
+            }
+        }
+        Integer debt = mbOrderService.getOrderDebtMoney(id);
+        debt = debt == null ? 0 : debt;
+        request.setAttribute("mbShopExt", mbShopExt);
+        request.setAttribute("debt", debt);
         return "/mbshop/mbShopView";
     }
 

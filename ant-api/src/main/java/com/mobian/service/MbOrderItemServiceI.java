@@ -1,10 +1,7 @@
 package com.mobian.service;
 
 import com.mobian.model.TmbOrderItem;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.MbOrderItem;
-import com.mobian.pageModel.MbSalesReport;
-import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.*;
 
 import java.util.List;
 
@@ -96,4 +93,6 @@ public interface MbOrderItemServiceI {
 	 */
 	DataGrid dataGridSalesReport(MbSalesReport mbSalesReport);
 	List<MbOrderItem> queryListByOrderIds(Integer[] orderIds);
+
+    void addOffSet(MbOrder mbOrder, Integer itemId, Integer quantity);
 }

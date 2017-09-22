@@ -6,6 +6,8 @@ package com.mobian.pageModel;
 public class MbOrderDistribution {
     private String orderKindName;
     private Integer orderTotal;
+    private String[] orderDayName;
+    private Integer[] orderDayNumber;
 
     public String getOrderKindName() {
         return orderKindName;
@@ -21,5 +23,21 @@ public class MbOrderDistribution {
 
     public void setOrderTotal(Integer orderTotal) {
         this.orderTotal = orderTotal;
+    }
+
+    public String[] getOrderDayName() {
+        return orderDayName;
+    }
+
+    public void setOrderDayName(String[] orderDayName) {
+        this.orderDayName = orderDayName;
+    }
+
+    public Integer[] getOrderDayNumber() {
+        return orderDayNumber;
+    }
+
+    public void setOrderDayNumber(Integer[] orderDayNumber) {
+        this.orderDayNumber = orderDayNumber;
     }
 }

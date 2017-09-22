@@ -6,11 +6,12 @@ import com.mobian.dao.MbBalanceLogDaoI;
 import com.mobian.exception.ServiceException;
 import com.mobian.model.TmbBalance;
 import com.mobian.model.TmbBalanceLog;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.MbBalanceLog;
-import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.*;
 import com.mobian.service.MbBalanceLogServiceI;
+import com.mobian.service.MbBalanceServiceI;
+import com.mobian.service.MbShopServiceI;
 import com.mobian.util.MyBeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,10 @@ public class MbBalanceLogServiceImpl extends BaseServiceImpl<MbBalanceLog> imple
 
 	@Autowired
 	private MbBalanceDaoI mbBalanceDao;
+	@Autowired
+	private MbBalanceServiceI mbBalanceService;
+	@Autowired
+	private MbShopServiceI mbShopService;
 
 	@Override
 	public DataGrid dataGrid(MbBalanceLog mbBalanceLog, PageHelper ph) {
@@ -36,13 +41,34 @@ public class MbBalanceLogServiceImpl extends BaseServiceImpl<MbBalanceLog> imple
 		DataGrid dg = dataGridQuery(hql, ph, mbBalanceLog, mbBalanceLogDao);
 		@SuppressWarnings("unchecked")
 		List<TmbBalanceLog> l = dg.getRows();
+		Integer totalAmountOut =0;
+		Integer totalAmountIn =0;
 		if (l != null && l.size() > 0) {
 			for (TmbBalanceLog t : l) {
 				MbBalanceLog o = new MbBalanceLog();
 				BeanUtils.copyProperties(t, o);
 				ol.add(o);
+				if(t.getAmount() !=null && t.getAmount()<0) {
+					o.setAmountOut(t.getAmount());
+                	totalAmountOut +=t.getAmount();
+				}
+				if(t.getAmount() !=null && t.getAmount()>=0) {
+					o.setAmountIn(t.getAmount());
+					totalAmountIn += t.getAmount();
+				}
 			}
+			//合计
+			List<MbBalanceLog> footer = new ArrayList<MbBalanceLog>();
+			MbBalanceLog totalRow = new MbBalanceLog();
+			totalRow.setRefType("合计");
+			totalRow.setAmountOut(totalAmountOut);
+			totalRow.setAmountIn(totalAmountIn);
+			totalRow.setIsShow(true);
+			footer.add(totalRow);
+			dg.setFooter(footer);
 		}
+
+
 		dg.setRows(ol);
 		return dg;
 	}
@@ -96,7 +122,16 @@ public class MbBalanceLogServiceImpl extends BaseServiceImpl<MbBalanceLog> imple
 				whereHql += " and t.isShow = :isShow";
 				params.put("isShow", mbBalanceLog.getIsShow());
 			}
-		}	
+			if (mbBalanceLog.getBalanceIds() != null) {
+				whereHql += " and t.balanceId in (:balanceIds) ";
+				params.put("balanceIds", mbBalanceLog.getBalanceIds());
+			}
+			if(mbBalanceLog.getRefTypes() !=null) {
+				whereHql += " and t.refType in (:refTypes)";
+				params.put("refTypes", mbBalanceLog.getRefTypes().split(","));
+			}
+
+		}
 		return whereHql;
 	}
 
@@ -129,7 +164,12 @@ public class MbBalanceLogServiceImpl extends BaseServiceImpl<MbBalanceLog> imple
 
 	@Override
 	public void updateLogAndBalance(MbBalanceLog mbBalanceLog) {
+		TmbBalanceLog t = mbBalanceLogDao.get(TmbBalanceLog.class, mbBalanceLog.getId());
+		TmbBalance tmbBalance = mbBalanceDao.get(TmbBalance.class, t.getBalanceId());
+		String remark = mbBalanceLog.getRemark() == null ? "" : mbBalanceLog.getRemark();
+		mbBalanceLog.setRemark(String.format(remark + "【期末余额:%s分】", tmbBalance.getAmount() + t.getAmount()));
 		edit(mbBalanceLog);
+
 		if(!mbBalanceLog.getIsdeleted()) {
 			if(mbBalanceLog.getAmount() == null) {
 				throw new ServiceException("余额不允许为null");
@@ -168,5 +208,40 @@ public class MbBalanceLogServiceImpl extends BaseServiceImpl<MbBalanceLog> imple
 		mbBalanceLogDao.executeHql("update TmbBalanceLog t set t.isdeleted = 1 where t.id = :id",params);
 		//mbBalanceLogDao.delete(mbBalanceLogDao.get(TmbBalanceLog.class, id));
 	}
+
+    @Override
+    public DataGrid dataGridWithShopName(MbBalanceLog mbBalanceLog, PageHelper ph) {
+        if (mbBalanceLog.getShopId() != null) {
+            List<MbBalance> mbBalances = mbBalanceService.queryBalanceListByShopId(mbBalanceLog.getShopId());
+            if (!CollectionUtils.isEmpty(mbBalances)) {
+                Integer[] balanceIds = new Integer[mbBalances.size()];
+                Integer i = 0;
+                for (MbBalance mbBalance : mbBalances) {
+                    balanceIds[i] = mbBalance.getId();
+                    i++;
+                }
+                mbBalanceLog.setBalanceIds(balanceIds);
+            }
+        }
+        DataGrid dataGrid = dataGrid(mbBalanceLog, ph);
+        List<MbBalanceLog> mbBalanceLogs = dataGrid.getRows();
+        if (!CollectionUtils.isEmpty(mbBalanceLogs)) {
+            Integer totalPrice = 0;
+            for (MbBalanceLog balanceLog : mbBalanceLogs) {
+                MbBalance mbBalance = mbBalanceService.get(balanceLog.getBalanceId());
+                MbShop mbShop = mbShopService.getFromCache(mbBalance.getRefId());
+                balanceLog.setShopName(mbShop.getName());
+                totalPrice += balanceLog.getAmount();
+            }
+            List<MbBalanceLog> footer = new ArrayList<MbBalanceLog>();
+            MbBalanceLog totalRow = new MbBalanceLog();
+            totalRow.setShopName("合计");
+            totalRow.setAmount(totalPrice);
+            footer.add(totalRow);
+            dataGrid.setFooter(footer);
+            return dataGrid;
+        }
+        return new DataGrid();
+    }
 
 }

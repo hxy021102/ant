@@ -22,12 +22,12 @@ public class MbOrder implements java.io.Serializable {
 	private String status;
 	private String deliveryWay;
 	private String deliveryStatus;
-	private Date deliveryRequireTime;
+	private Date deliveryRequireTime;			
 	private String deliveryAddress;
 	private Integer deliveryRegion;
 	private String payStatus;
 	private String payWay;
-	private Date payTime;
+	private Date payTime;			
 	private String invoiceWay;
 	private String contactPhone;
 	private String contactPeople;
@@ -220,142 +220,142 @@ public class MbOrder implements java.io.Serializable {
     public void setId(Integer value) {
 		this.id = value;
 	}
-
+	
 	public Integer getId() {
 		return this.id;
 	}
 
-
+	
 	public void setTenantId(Integer tenantId) {
 		this.tenantId = tenantId;
 	}
-
+	
 	public Integer getTenantId() {
 		return this.tenantId;
 	}
 	public void setAddtime(Date addtime) {
 		this.addtime = addtime;
 	}
-
+	
 	public Date getAddtime() {
 		return this.addtime;
 	}
 	public void setUpdatetime(Date updatetime) {
 		this.updatetime = updatetime;
 	}
-
+	
 	public Date getUpdatetime() {
 		return this.updatetime;
 	}
 	public void setIsdeleted(Boolean isdeleted) {
 		this.isdeleted = isdeleted;
 	}
-
+	
 	public Boolean getIsdeleted() {
 		return this.isdeleted;
 	}
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-
+	
 	public Integer getUserId() {
 		return this.userId;
 	}
 	public void setTotalPrice(Integer totalPrice) {
 		this.totalPrice = totalPrice;
 	}
-
+	
 	public Integer getTotalPrice() {
 		return this.totalPrice;
 	}
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
+	
 	public String getStatus() {
 		return this.status;
 	}
 	public void setDeliveryWay(String deliveryWay) {
 		this.deliveryWay = deliveryWay;
 	}
-
+	
 	public String getDeliveryWay() {
 		return this.deliveryWay;
 	}
 	public void setDeliveryStatus(String deliveryStatus) {
 		this.deliveryStatus = deliveryStatus;
 	}
-
+	
 	public String getDeliveryStatus() {
 		return this.deliveryStatus;
 	}
 	public void setDeliveryRequireTime(Date deliveryRequireTime) {
 		this.deliveryRequireTime = deliveryRequireTime;
 	}
-
+	
 	public Date getDeliveryRequireTime() {
 		return this.deliveryRequireTime;
 	}
 	public void setDeliveryAddress(String deliveryAddress) {
 		this.deliveryAddress = deliveryAddress;
 	}
-
+	
 	public String getDeliveryAddress() {
 		return this.deliveryAddress;
 	}
 	public void setDeliveryRegion(Integer deliveryRegion) {
 		this.deliveryRegion = deliveryRegion;
 	}
-
+	
 	public Integer getDeliveryRegion() {
 		return this.deliveryRegion;
 	}
 	public void setPayStatus(String payStatus) {
 		this.payStatus = payStatus;
 	}
-
+	
 	public String getPayStatus() {
 		return this.payStatus;
 	}
 	public void setPayWay(String payWay) {
 		this.payWay = payWay;
 	}
-
+	
 	public String getPayWay() {
 		return this.payWay;
 	}
 	public void setPayTime(Date payTime) {
 		this.payTime = payTime;
 	}
-
+	
 	public Date getPayTime() {
 		return this.payTime;
 	}
 	public void setInvoiceWay(String invoiceWay) {
 		this.invoiceWay = invoiceWay;
 	}
-
+	
 	public String getInvoiceWay() {
 		return this.invoiceWay;
 	}
 	public void setContactPhone(String contactPhone) {
 		this.contactPhone = contactPhone;
 	}
-
+	
 	public String getContactPhone() {
 		return this.contactPhone;
 	}
 	public void setContactPeople(String contactPeople) {
 		this.contactPeople = contactPeople;
 	}
-
+	
 	public String getContactPeople() {
 		return this.contactPeople;
 	}
 	public void setUserRemark(String userRemark) {
 		this.userRemark = userRemark;
 	}
-
+	
 	public String getUserRemark() {
 		return this.userRemark;
 	}

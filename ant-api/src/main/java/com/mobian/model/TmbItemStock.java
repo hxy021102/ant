@@ -15,7 +15,7 @@ import javax.persistence.*;
 @Table(name = "mb_item_stock")
 @DynamicInsert(true)
 @DynamicUpdate(true)
-public class TmbItemStock implements java.io.Serializable,IEntity {
+public class TmbItemStock implements java.io.Serializable,IEntity{
 	private static final long serialVersionUID = 5454155825314635342L;
 	
 	//alias
@@ -36,6 +36,7 @@ public class TmbItemStock implements java.io.Serializable,IEntity {
 	public static final String ALIAS_SAFE_QUANTITY = "安全库存";
 	public static final String ALIAS_ORDER_QUANTITY = "订单量";
 	public static final String ALIAS_AVERAGE_PRICE = "单价";
+	public static final String ALIAS_IS_SAFE = "库存量";
 
 	//date formats
 	public static final String FORMAT_ADDTIME = com.mobian.util.Constants.DATE_FORMAT_FOR_ENTITY;
@@ -48,13 +49,13 @@ public class TmbItemStock implements java.io.Serializable,IEntity {
 	private Integer id;
 	//
 	private Integer tenantId;
-	//@NotNull
+	//@NotNull 
 	private java.util.Date addtime;
-	//@NotNull
+	//@NotNull 
 	private java.util.Date updatetime;
-	//@NotNull
+	//@NotNull 
 	private Boolean isdeleted;
-	//@NotNull
+	//@NotNull 
 	private Integer itemId;
 	//
 	private Integer warehouseId;
@@ -70,80 +71,80 @@ public class TmbItemStock implements java.io.Serializable,IEntity {
 		public TmbItemStock(Integer id) {
 			this.id = id;
 		}
-
+	
 
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id", unique = true, nullable = false, length = 10)
 	public Integer getId() {
 		return this.id;
 	}
-
+	
 	@Column(name = "tenant_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getTenantId() {
 		return this.tenantId;
 	}
-
+	
 	public void setTenantId(Integer tenantId) {
 		this.tenantId = tenantId;
 	}
-
+	
 
 	@Column(name = "addtime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public java.util.Date getAddtime() {
 		return this.addtime;
 	}
-
+	
 	public void setAddtime(java.util.Date addtime) {
 		this.addtime = addtime;
 	}
-
+	
 
 	@Column(name = "updatetime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public java.util.Date getUpdatetime() {
 		return this.updatetime;
 	}
-
+	
 	public void setUpdatetime(java.util.Date updatetime) {
 		this.updatetime = updatetime;
 	}
-
+	
 	@Column(name = "isdeleted", unique = false, nullable = false, insertable = true, updatable = true, length = 0)
 	public Boolean getIsdeleted() {
 		return this.isdeleted;
 	}
-
+	
 	public void setIsdeleted(Boolean isdeleted) {
 		this.isdeleted = isdeleted;
 	}
-
+	
 	@Column(name = "item_id", unique = false, nullable = false, insertable = true, updatable = true, length = 10)
 	public Integer getItemId() {
 		return this.itemId;
 	}
-
+	
 	public void setItemId(Integer itemId) {
 		this.itemId = itemId;
 	}
-
+	
 	@Column(name = "warehouse_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getWarehouseId() {
 		return this.warehouseId;
 	}
-
+	
 	public void setWarehouseId(Integer warehouseId) {
 		this.warehouseId = warehouseId;
 	}
-
+	
 	@Column(name = "quantity", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getQuantity() {
 		return this.quantity;
 	}
-
+	
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}

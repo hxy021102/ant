@@ -1,16 +1,19 @@
 package com.mobian.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.mobian.absx.F;
 import com.mobian.absx.Objectx;
+import com.mobian.thirdpart.oss.OSSUtil;
+import com.mobian.pageModel.*;
+import com.mobian.util.Constants;
+import com.mobian.concurrent.CompletionService;
+import com.mobian.concurrent.Task;
 import com.mobian.interceptors.TokenManage;
 import com.mobian.listener.Application;
-import com.mobian.pageModel.Colum;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.Json;
-import com.mobian.pageModel.SessionInfo;
-import com.mobian.thirdpart.oss.OSSUtil;
-import com.mobian.util.Constants;
+import com.mobian.service.impl.CompletionFactory;
+import com.mobian.util.StringEscapeEditor;
 import com.mobian.util.Util;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -109,7 +112,7 @@ public class BaseController extends Objectx {
 	 * @throws IOException
 	 */
 	protected void downloadTable(List<Colum> colums,DataGrid dg,HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-		Iterator<Colum> it = colums.iterator();
+		Iterator<Colum> it = colums.iterator();  
 		while(it.hasNext()) {  
 			Colum c = it.next();
 			if(c.isHidden()||"action".equals(c.getField()))
@@ -126,6 +129,9 @@ public class BaseController extends Objectx {
 		short j = 1;
 		Object invObj = null;
 		String fileName = null;
+		if(CollectionUtils.isNotEmpty(dg.getFooter())) {
+			dg.getRows().addAll(dg.getFooter());
+		}
 		for(Object o : dg.getRows()){					
 			row = sheet.createRow(j);
 			Class<?> _class = o.getClass();
@@ -133,7 +139,7 @@ public class BaseController extends Objectx {
 			fileName = _class.getName();
 			i = 0;
 			for(Colum c: colums){
-				Method method=_class.getMethod("get"+ F.toUpperCaseFirst(c.getField()));
+				Method method=_class.getMethod("get"+F.toUpperCaseFirst(c.getField()));
 				invObj = method.invoke(o);
 				if(invObj==null)
 					row.createCell(i).setCellValue("");
@@ -166,7 +172,7 @@ public class BaseController extends Objectx {
 	public String uploadFile(HttpServletRequest request, String dirName, MultipartFile file,  String fileName){
 		if(file==null||file.isEmpty())
 			return null;
-		String realPath = request.getSession().getServletContext().getRealPath("/"+ Constants.UPLOADFILE+"/"+dirName);
+		String realPath = request.getSession().getServletContext().getRealPath("/"+Constants.UPLOADFILE+"/"+dirName);  
 		File f = new File(realPath);
 		if(!f.exists())
 			f.mkdir();
@@ -175,7 +181,7 @@ public class BaseController extends Objectx {
 			fileName = file.getOriginalFilename();
 		} else {
 			String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-			fileName = fileName + "_" + Util.CreateNoncestr(4) + System.currentTimeMillis() + suffix;
+			fileName = fileName + "_" + Util.CreateNoncestr(4) + System.currentTimeMillis() + suffix;	
 		}
 		try {
 			FileUtils.copyInputStreamToFile(file.getInputStream(), new File(realPath, fileName));

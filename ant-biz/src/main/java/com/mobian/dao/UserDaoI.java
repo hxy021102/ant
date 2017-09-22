@@ -1,8 +1,8 @@
 package com.mobian.dao;
 
-import com.mobian.model.Tuser;
-
 import java.util.List;
+
+import com.mobian.model.Tuser;
 
 /**
  * 用户数据库操作类

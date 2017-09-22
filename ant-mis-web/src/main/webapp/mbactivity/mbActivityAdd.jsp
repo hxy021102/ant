@@ -53,6 +53,12 @@
                     </td>
                 </tr>
                 <tr>
+                    <th>类型</th>
+                    <td><jb:select name="type" dataType="AT" required="true" ></jb:select></td>
+                    <th>代码类型</th>
+                    <td><jb:select name="languageType" dataType="CS" required="true" ></jb:select></td>
+                </tr>
+                <tr>
                     <th style="width: 50px;"><%=TmbActivity.ALIAS_EXPIRY_DATE_START%>
                     </th>
                     <td>

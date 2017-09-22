@@ -1,5 +1,7 @@
 package com.mobian.pageModel;
 
+import com.mobian.util.ConvertNameUtil;
+
 import java.util.Date;
 
 @SuppressWarnings("serial")
@@ -20,7 +22,8 @@ public class MbActivityRule implements java.io.Serializable {
 	private String rightValue;
 	private String remark;
 
-	
+
+
 
 	public void setId(Integer value) {
 		this.id = value;
@@ -108,5 +111,4 @@ public class MbActivityRule implements java.io.Serializable {
 	public String getRemark() {
 		return this.remark;
 	}
-
 }

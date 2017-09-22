@@ -65,7 +65,8 @@ public class MbOrderController extends BaseController {
 	private MbBalanceServiceI mbBalanceService;
 	@Autowired
 	private MbWarehouseServiceI mbWarehouseService;
-
+	@Autowired
+	private MbOrderRefundLogServiceI mbOrderRefundLogService;
 
 
 	@Resource(name = "order02StateImpl")
@@ -218,7 +219,7 @@ public class MbOrderController extends BaseController {
 	@RequestMapping("/add")
 	@ResponseBody
 	public Json add(MbOrder mbOrder) {
-		Json j = new Json();
+		Json j = new Json();		
 		mbOrderService.add(mbOrder);
 		j.setSuccess(true);
 		j.setMsg("添加成功！");		
@@ -343,7 +344,15 @@ public class MbOrderController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/view")
-	public String view(HttpServletRequest request, Integer id) {
+	public String view(HttpServletRequest request, Integer id,String type) {
+		if("BT005".equals(type) || "BT006".equals(type)) {
+			MbOrderRefundLog mbOrderRefundLog = mbOrderRefundLogService.get(id);
+			id = mbOrderRefundLog.getOrderId();
+		}
+		if("BT002".equals(type)) {
+			MbPayment mbPayment = mbPaymentService.get(id);
+			id = mbPayment.getOrderId();
+		}
 		MbOrder mbOrder = mbOrderService.get(id);
         Integer shopId = mbOrder.getShopId();
         if (mbOrder.getUserId() != null) {
@@ -525,8 +534,15 @@ public class MbOrderController extends BaseController {
 	@RequestMapping("/edit")
 	@ResponseBody
 	public Json edit(MbOrder mbOrder) {
-		Json j = new Json();
+		Json j = new Json();		
 		mbOrderService.edit(mbOrder);
+
+//		try {
+//			ruleEngineTest.executeTest2(mbOrder);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+
 		j.setSuccess(true);
 		j.setMsg("编辑成功！");		
 		return j;
@@ -586,7 +602,7 @@ public class MbOrderController extends BaseController {
 		MbOrder mbOrder = mbOrderService.get(id);
 		if(mbOrder.getDeliveryRequireTime()== null){
 			//加一天
-			mbOrder.setDeliveryRequireTime(DateUtil.addDayToDate(mbOrder.getUpdatetime(), 1));
+			mbOrder.setDeliveryRequireTime(DateUtil.addDayToDate(mbOrder.getUpdatetime(),1));
 		}
 		request.setAttribute("mbOrder", mbOrder);
 		return "/mborder/mbOrderAcceptAudit";
@@ -665,7 +681,7 @@ public class MbOrderController extends BaseController {
 		request.setAttribute("mbOrder", mbOrder);
 		request.setAttribute("mbOrderItemList", mbOrderItemList);
 		request.setAttribute("mbPayment", mbPayment);
-		request.setAttribute("printTime", DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+		request.setAttribute("printTime",DateUtil.format(new Date(),"yyyy-MM-dd HH:mm:ss"));
 
 		return "/mborder/mbOrderPrint";
 	}

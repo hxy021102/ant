@@ -5,18 +5,19 @@
 
 package com.mobian.model;
 
+import javax.persistence.*;
+
+import java.util.Date;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
-import javax.persistence.*;
-import java.util.Date;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "mb_recharge_log")
 @DynamicInsert(true)
 @DynamicUpdate(true)
-public class TmbRechargeLog implements java.io.Serializable,IEntity {
+public class TmbRechargeLog implements java.io.Serializable,IEntity{
 	private static final long serialVersionUID = 5454155825314635342L;
 	
 	//alias
@@ -52,15 +53,15 @@ public class TmbRechargeLog implements java.io.Serializable,IEntity {
 	private Integer id;
 	//
 	private Integer tenantId;
-	//@NotNull
+	//@NotNull 
 	private Date addtime;
-	//@NotNull
+	//@NotNull 
 	private Date updatetime;
-	//@NotNull
+	//@NotNull 
 	private Boolean isdeleted;
-	//@NotNull
+	//@NotNull 
 	private Integer balanceId;
-	//@NotNull
+	//@NotNull 
 	private Integer amount;
 	//@Length(max=36)
 	private String applyLoginId;
@@ -93,126 +94,126 @@ public class TmbRechargeLog implements java.io.Serializable,IEntity {
 		public TmbRechargeLog(Integer id) {
 			this.id = id;
 		}
-
+	
 
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id", unique = true, nullable = false, length = 10)
 	public Integer getId() {
 		return this.id;
 	}
-
+	
 	@Column(name = "tenant_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getTenantId() {
 		return this.tenantId;
 	}
-
+	
 	public void setTenantId(Integer tenantId) {
 		this.tenantId = tenantId;
 	}
-
+	
 
 	@Column(name = "addtime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public Date getAddtime() {
 		return this.addtime;
 	}
-
+	
 	public void setAddtime(Date addtime) {
 		this.addtime = addtime;
 	}
-
+	
 
 	@Column(name = "updatetime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public Date getUpdatetime() {
 		return this.updatetime;
 	}
-
+	
 	public void setUpdatetime(Date updatetime) {
 		this.updatetime = updatetime;
 	}
-
+	
 	@Column(name = "isdeleted", unique = false, nullable = false, insertable = true, updatable = true, length = 0)
 	public Boolean getIsdeleted() {
 		return this.isdeleted;
 	}
-
+	
 	public void setIsdeleted(Boolean isdeleted) {
 		this.isdeleted = isdeleted;
 	}
-
+	
 	@Column(name = "balance_id", unique = false, nullable = false, insertable = true, updatable = true, length = 10)
 	public Integer getBalanceId() {
 		return this.balanceId;
 	}
-
+	
 	public void setBalanceId(Integer balanceId) {
 		this.balanceId = balanceId;
 	}
-
+	
 	@Column(name = "amount", unique = false, nullable = false, insertable = true, updatable = true, length = 10)
 	public Integer getAmount() {
 		return this.amount;
 	}
-
+	
 	public void setAmount(Integer amount) {
 		this.amount = amount;
 	}
-
+	
 	@Column(name = "apply_login_id", unique = false, nullable = true, insertable = true, updatable = true, length = 36)
 	public String getApplyLoginId() {
 		return this.applyLoginId;
 	}
-
+	
 	public void setApplyLoginId(String applyLoginId) {
 		this.applyLoginId = applyLoginId;
 	}
-
+	
 	@Column(name = "content", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
 	public String getContent() {
 		return this.content;
 	}
-
+	
 	public void setContent(String content) {
 		this.content = content;
 	}
-
+	
 	@Column(name = "handle_status", unique = false, nullable = true, insertable = true, updatable = true, length = 4)
 	public String getHandleStatus() {
 		return this.handleStatus;
 	}
-
+	
 	public void setHandleStatus(String handleStatus) {
 		this.handleStatus = handleStatus;
 	}
-
+	
 	@Column(name = "handle_login_id", unique = false, nullable = true, insertable = true, updatable = true, length = 36)
 	public String getHandleLoginId() {
 		return this.handleLoginId;
 	}
-
+	
 	public void setHandleLoginId(String handleLoginId) {
 		this.handleLoginId = handleLoginId;
 	}
-
+	
 	@Column(name = "handle_remark", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
 	public String getHandleRemark() {
 		return this.handleRemark;
 	}
-
+	
 	public void setHandleRemark(String handleRemark) {
 		this.handleRemark = handleRemark;
 	}
-
+	
 
 	@Column(name = "handle_time", unique = false, nullable = true, insertable = true, updatable = true, length = 19)
 	public Date getHandleTime() {
 		return this.handleTime;
 	}
-
+	
 	public void setHandleTime(Date handleTime) {
 		this.handleTime = handleTime;
 	}

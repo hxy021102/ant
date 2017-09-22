@@ -87,6 +87,13 @@
 		index = parseInt(index);
 		$('#order_list_tabs').tabs('select', index);
 		if(index == 0) gridMap[index].invoke();
+
+
+        var value = $.cookie('warehouse_value');
+        if(value!=null){
+            $('[comboname=deliveryWarehouseId]').combobox('setValue',value);
+        }
+        setInterval(function(){ searchFun();}, 60000);//每分钟自查询一次
 	});
 
 	// 支付成功-待审核
@@ -98,9 +105,9 @@
 			pagination : true,
 			idField : 'id',
 			pageSize : 10,
-			pageList : [ 10, 20, 30, 40, 50 ],
+			pageList : [ 100, 200 ],
 			sortName : 'addtime',
-			sortOrder : 'desc',
+			sortOrder : 'asc',
 			checkOnSelect : false,
 			selectOnCheck : false,
 			nowrap : false,
@@ -157,7 +164,8 @@
 			}, {
 				field : 'addtime',
 				title : '<%=TmbOrder.ALIAS_ADDTIME%>',
-				width : 50
+				width : 50,
+				sortable:true
 			}
 			] ],
 			toolbar : '#toolbar',
@@ -178,87 +186,8 @@
 			pagination : true,
 			idField : 'id',
 			pageSize : 10,
-			pageList : [ 10, 20, 30, 40, 50 ],
+			pageList : [ 100, 200 ],
 			sortName : 'addtime',
-			sortOrder : 'desc',
-			checkOnSelect : false,
-			selectOnCheck : false,
-			nowrap : false,
-			striped : true,
-			rownumbers : true,
-			singleSelect : true,
-			columns : [ [ {
-				field : 'id',
-				title : '<%=TmbOrder.ALIAS_ID%>',
-				width : 30,
-				formatter : function (value, row, index) {
-					return '<a onclick="viewOrder(' + row.id + ')">' + row.id + '</a>';
-				}
-			}, {
-				field : 'shopId',
-				title : '<%=TmbOrder.ALIAS_SHOP_ID%>',
-				width : 20
-			}, {
-				field : 'shopName',
-				title : '<%=TmbOrder.ALIAS_SHOP_NAME%>',
-				width : 80
-			}, {
-				field: 'orderPrice',
-				title: '<%=TmbOrder.ALIAS_ORDER_PRICE%>',
-				width: 25,
-				align:'right',
-				formatter:function(value){
-					return $.formatMoney(value);
-				}
-			}, {
-				field : 'totalPrice',
-				title : '<%=TmbOrder.ALIAS_TOTAL_PRICE%>',
-				width : 25,
-				align:'right',
-				formatter:function(value){
-					return $.formatMoney(value);
-				}
-			}, {
-				field : 'orderStatusName',
-				title : '<%=TmbOrder.ALIAS_STATUS%>',
-				width : 30
-			}, {
-				field : 'deliveryStatusName',
-				title : '<%=TmbOrder.ALIAS_DELIVERY_STATUS%>',
-				width : 30
-			}, {
-				field : 'deliveryWayName',
-				title : '<%=TmbOrder.ALIAS_DELIVERY_WAY%>',
-				width : 40
-			}, {
-				field : 'deliveryRequireTime',
-				title : '<%=TmbOrder.ALIAS_DELIVERY_REQUIRE_TIME%>',
-				width : 50
-			}, {
-				field : 'addtime',
-				title : '<%=TmbOrder.ALIAS_ADDTIME%>',
-				width : 50
-			}
-			] ],
-			toolbar : '#toolbar',
-			onLoadSuccess : function() {
-				$('#searchForm table').show();
-				parent.$.messager.progress('close');
-			}
-		});
-	}
-
-	// 打单中
-	function loadDataGrid_12() {
-		return $('#dataGrid_12').datagrid({
-			fit : true,
-			fitColumns : true,
-			border : false,
-			pagination : true,
-			idField : 'id',
-			pageSize : 10,
-			pageList : [ 10, 20, 30, 40, 50 ],
-			sortName : 'deliveryRequireTime',
 			sortOrder : 'asc',
 			checkOnSelect : false,
 			selectOnCheck : false,
@@ -316,6 +245,87 @@
 			}, {
 				field : 'addtime',
 				title : '<%=TmbOrder.ALIAS_ADDTIME%>',
+				width : 50,
+				sortable:true
+			}
+			] ],
+			toolbar : '#toolbar',
+			onLoadSuccess : function() {
+				$('#searchForm table').show();
+				parent.$.messager.progress('close');
+			}
+		});
+	}
+
+	// 打单中
+	function loadDataGrid_12() {
+		return $('#dataGrid_12').datagrid({
+			fit : true,
+			fitColumns : true,
+			border : false,
+			pagination : true,
+			idField : 'id',
+			pageSize : 10,
+			pageList : [ 100, 200 ],
+			sortName : 'deliveryRequireTime',
+			sortOrder : 'asc',
+			checkOnSelect : false,
+			selectOnCheck : false,
+			nowrap : false,
+			striped : true,
+			rownumbers : true,
+			singleSelect : true,
+			columns : [ [ {
+				field : 'id',
+				title : '<%=TmbOrder.ALIAS_ID%>',
+				width : 30,
+				formatter : function (value, row, index) {
+					return '<a onclick="viewOrder(' + row.id + ')">' + row.id + '</a>';
+				}
+			}, {
+				field : 'shopId',
+				title : '<%=TmbOrder.ALIAS_SHOP_ID%>',
+				width : 20
+			}, {
+				field : 'shopName',
+				title : '<%=TmbOrder.ALIAS_SHOP_NAME%>',
+				width : 80
+			}, {
+				field: 'orderPrice',
+				title: '<%=TmbOrder.ALIAS_ORDER_PRICE%>',
+				width: 25,
+				align:'right',
+				formatter:function(value){
+					return $.formatMoney(value);
+				}
+			}, {
+				field : 'totalPrice',
+				title : '<%=TmbOrder.ALIAS_TOTAL_PRICE%>',
+				width : 25,
+				align:'right',
+				formatter:function(value){
+					return $.formatMoney(value);
+				}
+			}, {
+				field : 'orderStatusName',
+				title : '<%=TmbOrder.ALIAS_STATUS%>',
+				width : 30
+			}, {
+				field : 'deliveryStatusName',
+				title : '<%=TmbOrder.ALIAS_DELIVERY_STATUS%>',
+				width : 30
+			}, {
+				field : 'deliveryWayName',
+				title : '<%=TmbOrder.ALIAS_DELIVERY_WAY%>',
+				width : 40
+			}, {
+				field : 'deliveryRequireTime',
+				title : '<%=TmbOrder.ALIAS_DELIVERY_REQUIRE_TIME%>',
+				width : 50,
+				sortable:true
+			}, {
+				field : 'addtime',
+				title : '<%=TmbOrder.ALIAS_ADDTIME%>',
 				width : 50
 			}
 			] ],
@@ -336,7 +346,7 @@
 			pagination : true,
 			idField : 'id',
 			pageSize : 10,
-			pageList : [ 10, 20, 30, 40, 50 ],
+			pageList : [ 100, 200 ],
 			sortName : 'deliveryRequireTime',
 			sortOrder : 'asc',
 			checkOnSelect : false,
@@ -392,6 +402,7 @@
 				field : 'deliveryRequireTime',
 				title : '<%=TmbOrder.ALIAS_DELIVERY_REQUIRE_TIME%>',
 				width : 50,
+				sortable:true,
                 styler: function (value) {
                     if (DateDiff(value) > 2) {
                         return 'color: red';
@@ -419,8 +430,8 @@
 			pagination : true,
 			idField : 'id',
 			pageSize : 10,
-			pageList : [ 10, 20, 30, 40, 50 ],
-			sortName : 'deliveryRequireTime',
+			pageList : [ 100, 200 ],
+			sortName : 'deliveryTime',
 			sortOrder : 'asc',
 			checkOnSelect : false,
 			selectOnCheck : false,
@@ -479,6 +490,7 @@
                 field : 'deliveryTime',
                 title : '<%=TmbOrder.ALIAS_DELIVERY_TIME%>',
                 width : 50,
+                sortable: true,
                 styler: function(value){
                     if (DateDiff(value) > 2) {
                         return 'color: red';
@@ -507,8 +519,8 @@
 			pagination : true,
 			idField : 'id',
 			pageSize : 10,
-			pageList : [ 10, 20, 30, 40, 50 ],
-			sortName : 'deliveryRequireTime',
+			pageList : [ 100, 200 ],
+			sortName : 'deliveryTime',
 			sortOrder : 'asc',
 			checkOnSelect : false,
 			selectOnCheck : false,
@@ -567,6 +579,7 @@
                 field : 'deliveryTime',
                 title : '<%=TmbOrder.ALIAS_DELIVERY_TIME%>',
                 width : 50,
+				sortable:true,
                 styler: function(value){
                     if (DateDiff(value) > 2) {
                         return 'color: red';
@@ -595,8 +608,8 @@
 			pagination : true,
 			idField : 'id',
 			pageSize : 10,
-			pageList : [ 10, 20, 30, 40, 50 ],
-			sortName : 'deliveryRequireTime',
+			pageList : [ 100, 200 ],
+			sortName : 'deliveryTime',
 			sortOrder : 'asc',
 			checkOnSelect : false,
 			selectOnCheck : false,
@@ -655,6 +668,7 @@
                 field : 'deliveryTime',
                 title : '<%=TmbOrder.ALIAS_DELIVERY_TIME%>',
                 width : 50,
+				sortable:true,
                 styler: function(value){
                     if (DateDiff(value) > 2) {
                         return 'color: red';
@@ -723,43 +737,51 @@
 		options.queryParams = $.serializeObject($('#searchForm'));
 		selectDatagrid.datagrid(options);
 
-		setTimeout(function(){
-			//$('#order_list_tabs').tabs('getSelected').find('.datagrid-wrap').prepend($('#toolbar'));
-		},100);
 	}
 	function cleanFun() {
 		$('#searchForm input:not(:hidden)').val('');
 		selectDatagrid.datagrid('load', {status:$('#status').val()});
 	}
+
+    function changeWarehouse(selectValue){
+        $.cookie('warehouse_value', selectValue, {expires:7}); // 7天有效期
+    }
+
 </script>
 </head>
 <body>
 
 <div class="easyui-layout" data-options="fit : true,border:false">
-	<div data-options="region:'north',title:'查询条件',border:false" style="height: 80px; overflow: hidden;">
+	<div data-options="region:'north',title:'查询条件',border:false" style="height: 115px; overflow: hidden;">
 		<form id="searchForm">
 			<table class="table table-hover table-condensed">
 				<input type="hidden" name="status" id="status" value="OD05"/>
 				<tr>
-					<th><%=TmbOrder.ALIAS_ID%>
+					<th style="width: 50px;"><%=TmbOrder.ALIAS_ID%>
 					</th>
 					<td>
 						<input type="text" name="id" maxlength="10" class="span2"/>
 					</td>
-					<th><%=TmbOrder.ALIAS_CONTACT_PHONE%>
-					</th>
-					<td>
-						<input type="text" name="contactPhone" maxlength="32" class="span2"/>
-					</td>
-					<th><%=TmbOrder.ALIAS_USER_ID%>
+					<th style="width: 50px;"><%=TmbOrder.ALIAS_USER_ID%>
 					</th>
 					<td>
 						<input type="text" name="userId" maxlength="10" class="span2"/>
 					</td>
-					<th>门店
+					<th style="width: 50px;"><%=TmbOrder.ALIAS_CONTACT_PHONE%>
+					</th>
+					<td>
+						<input type="text" name="contactPhone" maxlength="32" class="span2"/>
+					</td>
+				</tr>
+				<tr>
+					<th style="width: 50px;">门店
 					</th>
 					<td>
 						<jb:selectGrid dataType="shopId" name="shopId"></jb:selectGrid>
+					</td>
+					<th style="width: 50px;">发货仓库</th>
+					<td colspan="3">
+						<jb:selectSql name="deliveryWarehouseId" dataType="SQ004" onselect="changeWarehouse"></jb:selectSql>
 					</td>
 				</tr>
 			</table>

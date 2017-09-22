@@ -1,9 +1,9 @@
 package com.mobian.pageModel;
 
+import java.util.Date;
+
 import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.PathUtil;
-
-import java.util.Date;
 
 @SuppressWarnings("serial")
 public class User implements java.io.Serializable {
@@ -30,18 +30,18 @@ public class User implements java.io.Serializable {
 	private String birthday;
 	private String bardian;
 	private String memberV;
-
+	
 	private String attred; //是否被关注过
-
+	
 	private Boolean isStar;
 	private Boolean isTarento;
-
+	
 	private String headImageAbsolute;
 
 	private String email;
 	private String orgName;
 	private String phone;
-
+	
 	public Date getCreatedatetimeStart() {
 		return createdatetimeStart;
 	}

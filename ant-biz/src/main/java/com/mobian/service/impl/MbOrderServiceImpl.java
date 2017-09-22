@@ -14,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -311,6 +312,10 @@ public class MbOrderServiceImpl extends BaseServiceImpl<MbOrder> implements MbOr
 				whereHql += " and t.deliveryTime <= :deliveryTimeEnd";
 				params.put("deliveryTimeEnd", mbOrder.getDeliveryTimeEnd());
 			}
+			if(mbOrder.getDeliveryWarehouseId() != null){
+				whereHql +=" and t.deliveryWarehouseId = :deliveryWarehouseId";
+				params.put("deliveryWarehouseId",mbOrder.getDeliveryWarehouseId());
+			}
 		}
 		return whereHql;
 	}
@@ -424,6 +429,63 @@ public class MbOrderServiceImpl extends BaseServiceImpl<MbOrder> implements MbOr
 	}
 
 	@Override
+	public List<MbOrderDistribution> getOrderDistributionDayData(MbOrder mbOrder, List<MbOrderDistribution> orderData, Map<String, Object> params) {
+		String[] timeName = new String[31];
+		SimpleDateFormat sdf = new SimpleDateFormat(" MM-dd");
+		String endTimeName = sdf.format(mbOrder.getOrderTimeEnd());
+		for (int i = 0; i < 31; i++) {
+			String key = sdf.format(mbOrder.getOrderTimeBegin().getTime() + i * 24 * 60 * 60 * 1000L);
+			timeName[i] = key;
+			if (key.equals(endTimeName))
+				break;
+		}
+		//公众号下单数据
+		List<TmbOrder> mbOrdersPublic = mbOrderDao.find("from TmbOrder t where t.addtime >=:orderTimeBegin and t.addtime <=:orderTimeEnd " +
+				"and t.addLoginId is  null  and t.isdeleted = 0 and t.status not in (:status)", params);
+		MbOrderDistribution distributionPublic = setOrderDayNumberAndOrderDayNameValue(mbOrdersPublic, orderData.get(0), timeName);
+		//客服下单数据
+		List<TmbOrder> mbOrdersServer = mbOrderDao.find("from TmbOrder t where t.addtime >=:orderTimeBegin and t.addtime <=:orderTimeEnd " +
+				"and t.addLoginId is not null  and t.isdeleted = 0 and t.status not in (:status)", params);
+		MbOrderDistribution distributionServer = setOrderDayNumberAndOrderDayNameValue(mbOrdersServer, orderData.get(1), timeName);
+		List<MbOrderDistribution> distributions = new ArrayList<MbOrderDistribution>();
+		distributions.add(distributionPublic);
+		distributions.add(distributionServer);
+		return distributions;
+	}
+
+	@Override
+	public MbOrderDistribution setOrderDayNumberAndOrderDayNameValue(List<TmbOrder> mbOrders, MbOrderDistribution orderDistribution, String[] timeName) {
+		SimpleDateFormat sdf = new SimpleDateFormat(" MM-dd");
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		Integer[] orderNumber = new Integer[31];
+		if (CollectionUtils.isNotEmpty(mbOrders)) {
+			for (TmbOrder tmbOrder : mbOrders) {
+				String key = sdf.format(tmbOrder.getAddtime());
+				Integer orderValue = map.get(key);
+				if (orderValue == null) {
+					map.put(key, 1);
+				} else {
+					map.put(key, orderValue += 1);
+				}
+			}
+			for (int i = 0; i < 31; i++) {
+				if (timeName[i] != null) {
+					if (map.get(timeName[i]) == null) {
+						orderNumber[i] = 0;
+					} else {
+						orderNumber[i] = map.get(timeName[i]);
+					}
+				} else {
+					break;
+				}
+			}
+			orderDistribution.setOrderDayNumber(orderNumber);
+		}
+		orderDistribution.setOrderDayName(timeName);
+		return orderDistribution;
+	}
+
+	@Override
 	public List<MbOrderDistribution> getOrderDistributionData(MbOrder mbOrder) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		String[] status = {"OD01","OD05","OD06", "OD31", "OD32",};
@@ -447,6 +509,23 @@ public class MbOrderServiceImpl extends BaseServiceImpl<MbOrder> implements MbOr
 		orderService.setOrderTotal(kfCount.intValue());
 		orders.add(orderService);
 
-		return orders;
+		return getOrderDistributionDayData(mbOrder,orders,params);
 	}
+
+	@Override
+	public List<MbOrder> queryDebtOrders() {
+		List<MbOrder> mbOrders = new ArrayList<>();
+		//查出所有欠款订单
+		List<TmbOrder> mbOrderList = mbOrderDao.find("from TmbOrder where isdeleted=0 and status in ('OD09','OD10','OD12','OD15','OD20','OD30','OD35','OD40') and payStatus='PS01'");
+		for(TmbOrder m:mbOrderList) {
+			MbOrder o = new MbOrder();
+			BeanUtils.copyProperties(m,o);
+			mbOrders.add(o);
+		}
+		return mbOrders;
+	}
+//	@Override
+//	public void addItemByActivity(MbOrder mbOrder, Integer itemId, Integer quantity) {
+//
+//	}
 }

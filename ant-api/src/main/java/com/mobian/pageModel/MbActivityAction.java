@@ -1,5 +1,7 @@
 package com.mobian.pageModel;
 
+import com.mobian.util.ConvertNameUtil;
+
 import java.util.Date;
 
 @SuppressWarnings("serial")
@@ -18,7 +20,8 @@ public class MbActivityAction implements java.io.Serializable {
 	private String actionType;
 	private String parameter1;
 	private String parameter2;
-
+	private String actionTypeName;
+	private String actionTypeDescription;
 	
 
 	public void setId(Integer value) {
@@ -86,6 +89,7 @@ public class MbActivityAction implements java.io.Serializable {
 	public String getActionType() {
 		return this.actionType;
 	}
+
 	public void setParameter1(String parameter1) {
 		this.parameter1 = parameter1;
 	}
@@ -101,4 +105,19 @@ public class MbActivityAction implements java.io.Serializable {
 		return this.parameter2;
 	}
 
+	public String getActionTypeName() {
+		return ConvertNameUtil.getString(this.actionType);
+	}
+
+	public void setActionTypeName(String actionTypeName) {
+		this.actionTypeName = actionTypeName;
+	}
+
+	public String getActionTypeDescription() {
+		return ConvertNameUtil.getString(this.actionType);
+	}
+
+	public void setActionTypeDescription(String actionTypeDescription) {
+		this.actionTypeDescription = actionTypeDescription;
+	}
 }

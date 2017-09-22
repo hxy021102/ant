@@ -29,6 +29,18 @@ public class MbItemStock implements java.io.Serializable {
 	private Integer averagePrice;
 	private Integer totalPrice;
 	private String itemIds;
+	private Integer[] itemIdNumbers;
+	private String warehouseType;
+	private Integer shopId;
+	private Boolean safe;
+
+	public Boolean getSafe() {
+		return safe;
+	}
+
+	public void setSafe(Boolean safe) {
+		this.safe = safe;
+	}
 
 	public Integer getOrderQuantity() {
 		return orderQuantity;
@@ -190,5 +202,29 @@ public class MbItemStock implements java.io.Serializable {
 
 	public void setItemIds(String itemIds) {
 		this.itemIds = itemIds;
+	}
+
+	public Integer[] getItemIdNumbers() {
+		return itemIdNumbers;
+	}
+
+	public void setItemIdNumbers(Integer[] itemIdNumbers) {
+		this.itemIdNumbers = itemIdNumbers;
+	}
+
+	public String getWarehouseType() {
+		return warehouseType;
+	}
+
+	public void setWarehouseType(String warehouseType) {
+		this.warehouseType = warehouseType;
+	}
+
+	public Integer getShopId() {
+		return shopId;
+	}
+
+	public void setShopId(Integer shopId) {
+		this.shopId = shopId;
 	}
 }

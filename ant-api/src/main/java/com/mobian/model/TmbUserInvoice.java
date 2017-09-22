@@ -5,18 +5,19 @@
 
 package com.mobian.model;
 
+import javax.persistence.*;
+
+import java.util.Date;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
-import javax.persistence.*;
-import java.util.Date;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "mb_user_invoice")
 @DynamicInsert(true)
 @DynamicUpdate(true)
-public class TmbUserInvoice implements java.io.Serializable,IEntity {
+public class TmbUserInvoice implements java.io.Serializable,IEntity{
 	private static final long serialVersionUID = 5454155825314635342L;
 	
 	//alias
@@ -46,13 +47,13 @@ public class TmbUserInvoice implements java.io.Serializable,IEntity {
 	private Integer id;
 	//
 	private Integer tenantId;
-	//@NotNull
+	//@NotNull 
 	private Date addtime;
-	//@NotNull
+	//@NotNull 
 	private Date updatetime;
-	//@NotNull
+	//@NotNull 
 	private Boolean isdeleted;
-	//@NotNull
+	//@NotNull 
 	private Integer userId;
 	//@Length(max=128)
 	private String companyName;
@@ -76,125 +77,125 @@ public class TmbUserInvoice implements java.io.Serializable,IEntity {
 		public TmbUserInvoice(Integer id) {
 			this.id = id;
 		}
-
+	
 
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id", unique = true, nullable = false, length = 10)
 	public Integer getId() {
 		return this.id;
 	}
-
+	
 	@Column(name = "tenant_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getTenantId() {
 		return this.tenantId;
 	}
-
+	
 	public void setTenantId(Integer tenantId) {
 		this.tenantId = tenantId;
 	}
-
+	
 
 	@Column(name = "addtime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public Date getAddtime() {
 		return this.addtime;
 	}
-
+	
 	public void setAddtime(Date addtime) {
 		this.addtime = addtime;
 	}
-
+	
 
 	@Column(name = "updatetime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public Date getUpdatetime() {
 		return this.updatetime;
 	}
-
+	
 	public void setUpdatetime(Date updatetime) {
 		this.updatetime = updatetime;
 	}
-
+	
 	@Column(name = "isdeleted", unique = false, nullable = false, insertable = true, updatable = true, length = 0)
 	public Boolean getIsdeleted() {
 		return this.isdeleted;
 	}
-
+	
 	public void setIsdeleted(Boolean isdeleted) {
 		this.isdeleted = isdeleted;
 	}
-
+	
 	@Column(name = "user_id", unique = false, nullable = false, insertable = true, updatable = true, length = 10)
 	public Integer getUserId() {
 		return this.userId;
 	}
-
+	
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-
+	
 	@Column(name = "company_name", unique = false, nullable = true, insertable = true, updatable = true, length = 128)
 	public String getCompanyName() {
 		return this.companyName;
 	}
-
+	
 	public void setCompanyName(String companyName) {
 		this.companyName = companyName;
 	}
-
+	
 	@Column(name = "company_tfn", unique = false, nullable = true, insertable = true, updatable = true, length = 128)
 	public String getCompanyTfn() {
 		return this.companyTfn;
 	}
-
+	
 	public void setCompanyTfn(String companyTfn) {
 		this.companyTfn = companyTfn;
 	}
-
+	
 	@Column(name = "register_address", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
 	public String getRegisterAddress() {
 		return this.registerAddress;
 	}
-
+	
 	public void setRegisterAddress(String registerAddress) {
 		this.registerAddress = registerAddress;
 	}
-
+	
 	@Column(name = "register_phone", unique = false, nullable = true, insertable = true, updatable = true, length = 32)
 	public String getRegisterPhone() {
 		return this.registerPhone;
 	}
-
+	
 	public void setRegisterPhone(String registerPhone) {
 		this.registerPhone = registerPhone;
 	}
-
+	
 	@Column(name = "bank_name", unique = false, nullable = true, insertable = true, updatable = true, length = 128)
 	public String getBankName() {
 		return this.bankName;
 	}
-
+	
 	public void setBankName(String bankName) {
 		this.bankName = bankName;
 	}
-
+	
 	@Column(name = "bank_number", unique = false, nullable = true, insertable = true, updatable = true, length = 64)
 	public String getBankNumber() {
 		return this.bankNumber;
 	}
-
+	
 	public void setBankNumber(String bankNumber) {
 		this.bankNumber = bankNumber;
 	}
-
+	
 	@Column(name = "invoice_use", unique = false, nullable = true, insertable = true, updatable = true, length = 4)
 	public String getInvoiceUse() {
 		return this.invoiceUse;
 	}
-
+	
 	public void setInvoiceUse(String invoiceUse) {
 		this.invoiceUse = invoiceUse;
 	}

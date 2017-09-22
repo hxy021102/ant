@@ -310,7 +310,7 @@ public class ApiPayController extends BaseController {
 
 
 		response.getWriter().write(PayCommonUtil.setXML("SUCCESS", ""));   //告诉微信服务器，我收到信息了，不要在调用回调action了
-		System.out.println("-------------"+ PayCommonUtil.setXML("SUCCESS", ""));
+		System.out.println("-------------"+PayCommonUtil.setXML("SUCCESS", ""));
 	}
 
 	/**

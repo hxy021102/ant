@@ -3,12 +3,11 @@ package com.mobian.service.impl;
 import com.mobian.absx.F;
 import com.mobian.dao.MbActivityDaoI;
 import com.mobian.model.TmbActivity;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.MbActivity;
-import com.mobian.pageModel.MbActivityRule;
-import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.*;
+import com.mobian.service.MbActivityActionServiceI;
 import com.mobian.service.MbActivityRuleServiceI;
 import com.mobian.service.MbActivityServiceI;
+import com.mobian.service.rulesengine.RedisRuleSetService;
 import com.mobian.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +25,10 @@ public class MbActivityServiceImpl extends BaseServiceImpl<MbActivity> implement
 	private MbActivityDaoI mbActivityDao;
 	@Autowired
 	private MbActivityRuleServiceI mbActivityRuleService;
+	@Autowired
+	private RedisRuleSetService redisRuleSetService;
+	@Autowired
+	private MbActivityActionServiceI mbActivityActionService;
 
 	@Override
 	public DataGrid dataGrid(MbActivity mbActivity, PageHelper ph) {
@@ -86,6 +89,7 @@ public class MbActivityServiceImpl extends BaseServiceImpl<MbActivity> implement
 		//t.setId(jb.absx.UUID.uuid());
 		t.setIsdeleted(false);
 		mbActivityDao.save(t);
+		mbActivity.setId(t.getId());
 	}
 
 	@Override
@@ -113,9 +117,20 @@ public class MbActivityServiceImpl extends BaseServiceImpl<MbActivity> implement
 		mbActivityDao.executeHql("update TmbActivity t set t.isdeleted = 1 where t.id = :id",params);
 		//mbActivityDao.delete(mbActivityDao.get(TmbActivity.class, id));
 	}
-
 	@Override
-	public void deleteActivity(Integer id) {
+	public void addActivityAndRuleSet(MbActivity activity) {
+		add(activity);
+		redisRuleSetService.deleteRuleSetListByActivityId(activity.getId());
+	}
+	@Override
+	public void editActivityAndRuleSet(MbActivity activity) {
+		edit(activity);
+		redisRuleSetService.deleteRuleSetListByActivityId(activity.getId());
+	}
+	@Override
+	public void deleteActivityAndRuleSet(Integer id) {
+	    //删除redis上ruleSet
+		redisRuleSetService.deleteRuleSetListByActivityId(id);
 		delete(id);
 		MbActivityRule mbActivityRule = new MbActivityRule();
 		mbActivityRule.setActivityId(id);
@@ -123,5 +138,23 @@ public class MbActivityServiceImpl extends BaseServiceImpl<MbActivity> implement
 		for (MbActivityRule m : list) {
 			mbActivityRuleService.deleteRule(m.getId());
 		}
+	}
+	@Override
+	public MbActivity getByActivityRuleId(Integer activityRuleId) {
+	    MbActivity activity = new MbActivity();
+		MbActivityRule activityRule = mbActivityRuleService.get(activityRuleId);
+		if (activityRule != null && !F.empty(activityRule.getActivityId())) {
+			activity = get(activityRule.getActivityId());
+		}
+		return activity;
+	}
+	@Override
+	public MbActivity getByActivityActionId(Integer activityActionId) {
+		MbActivity activity = new MbActivity();
+		MbActivityAction activityAction = mbActivityActionService.get(activityActionId);
+		if (activityAction != null && !F.empty(activityAction.getActivityRuleId())) {
+			activity = getByActivityRuleId(activityAction.getActivityRuleId());
+		}
+		return activity;
 	}
 }

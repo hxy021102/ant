@@ -18,7 +18,6 @@ import java.util.*;
 @Service
 public class MbShopCouponsServiceImpl extends BaseServiceImpl<MbShopCoupons> implements MbShopCouponsServiceI {
 
-
     @Autowired
     private MbShopCouponsDaoI mbShopCouponsDao;
     @Autowired
@@ -489,5 +488,24 @@ public class MbShopCouponsServiceImpl extends BaseServiceImpl<MbShopCoupons> imp
             mbShopCouponsLog.setReason(reason);
             mbShopCouponsLogService.add(mbShopCouponsLog);
         }
+    }
+    @Override
+    public void addByActivity(Object object, Integer couponsId, Integer quantity) {
+        MbOrder order = new MbOrder();
+        if (object instanceof MbOrder) {
+            order = (MbOrder) object;
+        }else {
+            throw new ServiceException("活动行为参数格式填写错误,请修改参数1为:mbOrder,券ID,券数量");
+        }
+        if (order.getShopId() == null) throw new ServiceException("MbShopCouponsService.addByActivity参数mbOrder无shopId");
+        MbShopCoupons shopCoupons = new MbShopCoupons();
+        shopCoupons.setCouponsId(couponsId);
+        shopCoupons.setShopId(order.getShopId());
+        shopCoupons.setQuantityTotal(quantity);
+        shopCoupons.setStatus("NS001");
+        shopCoupons.setPayType("PT05");
+        shopCoupons.setRemark(String.format("活动赠送%s张",quantity));
+        add(shopCoupons);
+        System.out.println("------------------\n-------------------\n----------------\n------------第三个");
     }
 }

@@ -143,4 +143,6 @@ public interface MbShopCouponsServiceI {
 	 * @return
 	 */
 	Map<String, MbShopCoupons> getShopCouponsMapByShopId(Integer shopId);
+
+    void addByActivity(Object object, Integer couponsId, Integer quantity);
 }

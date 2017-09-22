@@ -1,9 +1,14 @@
 package com.mobian.controller;
 
+import java.util.*;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.mobian.absx.F;
 import com.mobian.pageModel.*;
-import com.mobian.service.BasedataServiceI;
 import com.mobian.service.BasetypeServiceI;
+import com.mobian.service.BasedataServiceI;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,9 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
 
 /**
  * 基础数据管理控制器
@@ -172,7 +174,7 @@ public class BasedataController extends BaseController {
 	 */
 	@RequestMapping("/basedataEditPage")
 	public String basedataEditPage(HttpServletRequest request, String id) {
-		BaseData bd = basedataService.get(id);
+		BaseData bd = basedataService.get(id);		
 		request.setAttribute("basedata", bd);
 		return "/admin/basedataEdit";
 	}

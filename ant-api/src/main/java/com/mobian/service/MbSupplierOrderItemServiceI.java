@@ -60,7 +60,7 @@ public interface MbSupplierOrderItemServiceI {
 	 */
 	Integer getTotalPrice(Integer orderId);
 
-	public List< MbSupplierOrderItem> mbSupplierOrderItemByOrderId(Integer id);
+	public List<MbSupplierOrderItem> mbSupplierOrderItemByOrderId(Integer id);
 	List<MbSupplierOrderItem> query(MbSupplierOrderItem mbSupplierOrderItem);
 
 	/**

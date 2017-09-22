@@ -294,7 +294,7 @@ public class MbSupplierStockInController extends BaseController {
         Integer paymentDays = mbSupplierContract.getPaymentDays();
         // 获取付款日 账期不为空才会计算
         if (paymentDays != null){
-            Date payDate = DateUtil.addDayToDate(mbSupplierStockIn.getAddtime(), paymentDays);
+            Date payDate = DateUtil.addDayToDate(mbSupplierStockIn.getAddtime(),paymentDays);
             // 判断当前时间是否超过付款日
             if (new Date().getTime() < payDate.getTime()) {
                 j.setSuccess(true);

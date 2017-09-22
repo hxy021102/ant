@@ -6,18 +6,18 @@
 
 package com.mobian.model;
 
+import javax.persistence.*;
+
 import com.mobian.util.Constants;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
-import javax.persistence.*;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "fm_options")
 @DynamicInsert(true)
 @DynamicUpdate(true)
-public class TfmOptions implements java.io.Serializable,IEntity {
+public class TfmOptions implements java.io.Serializable,IEntity{
 	private static final long serialVersionUID = 5454155825314635342L;
 	
 	//alias
@@ -39,11 +39,11 @@ public class TfmOptions implements java.io.Serializable,IEntity {
 	//columns START
 	//@Length(max=36)
 	private String id;
-	//@NotNull
+	//@NotNull 
 	private java.util.Date addtime;
-	//@NotNull
+	//@NotNull 
 	private java.util.Date updatetime;
-	//@NotNull
+	//@NotNull 
 	private Boolean isdeleted;
 	//@Length(max=36)
 	private String propertiesId;
@@ -59,70 +59,70 @@ public class TfmOptions implements java.io.Serializable,IEntity {
 		public TfmOptions(String id) {
 			this.id = id;
 		}
-
+	
 
 	public void setId(String id) {
 		this.id = id;
 	}
-
+	
 	@Id
 	@Column(name = "id", unique = true, nullable = false, length = 36)
 	public String getId() {
 		return this.id;
 	}
-
+	
 
 	@Column(name = "addtime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public java.util.Date getAddtime() {
 		return this.addtime;
 	}
-
+	
 	public void setAddtime(java.util.Date addtime) {
 		this.addtime = addtime;
 	}
-
+	
 
 	@Column(name = "updatetime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public java.util.Date getUpdatetime() {
 		return this.updatetime;
 	}
-
+	
 	public void setUpdatetime(java.util.Date updatetime) {
 		this.updatetime = updatetime;
 	}
-
+	
 	@Column(name = "isdeleted", unique = false, nullable = false, insertable = true, updatable = true, length = 0)
 	public Boolean getIsdeleted() {
 		return this.isdeleted;
 	}
-
+	
 	public void setIsdeleted(Boolean isdeleted) {
 		this.isdeleted = isdeleted;
 	}
-
+	
 	@Column(name = "properties_id", unique = false, nullable = true, insertable = true, updatable = true, length = 36)
 	public String getPropertiesId() {
 		return this.propertiesId;
 	}
-
+	
 	public void setPropertiesId(String propertiesId) {
 		this.propertiesId = propertiesId;
 	}
-
+	
 	@Column(name = "value", unique = false, nullable = true, insertable = true, updatable = true, length = 100)
 	public String getValue() {
 		return this.value;
 	}
-
+	
 	public void setValue(String value) {
 		this.value = value;
 	}
-
+	
 	@Column(name = "seq", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getSeq() {
 		return this.seq;
 	}
-
+	
 	public void setSeq(Integer seq) {
 		this.seq = seq;
 	}

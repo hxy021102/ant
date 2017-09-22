@@ -46,22 +46,22 @@
 				</tr>	
 				<tr>	
 
-					<th style="width: 50px;"><%=TmbActivityRule.ALIAS_LEFT_VALUE%></th>
-					<td>
-					
-											<input  name="leftValue" type="text" class="easyui-validatebox span2" data-options="required:true"/>
+					<th ><%=TmbActivityRule.ALIAS_LEFT_VALUE%></th>
+					<td colspan="4">
+						<%--<input  name="leftValue" type="text" class="easyui-validatebox span2" data-options="required:true"/>--%>
+						<textarea name="leftValue" data-options="required:true"  rows="4" style="width: 90%;"></textarea>
 					</td>
+				</tr>
+				<tr>
 					<th style="width: 50px;"><%=TmbActivityRule.ALIAS_RIGHT_VALUE%></th>
 					<td>
-
-						<input  name="rightValue" type="text" class="easyui-validatebox span2" data-options="required:true"/>
+						<input  name="rightValue" type="text" class="easyui-validatebox span2" data-options="required:false"/>
 					</td>
 				</tr>	
 				<tr>	
 					<th style="width: 50px;"><%=TmbActivityRule.ALIAS_OPERATOR%></th>
 					<td>
-					
-											<jb:select dataType="OP" name="operator" mustSelect="true"></jb:select>	
+						<jb:select dataType="OP" name="operator" mustSelect="true" required="true"></jb:select>
 					</td>
 					<th style="width: 50px;"><%=TmbActivityRule.ALIAS_SEQ%></th>
 					<td>

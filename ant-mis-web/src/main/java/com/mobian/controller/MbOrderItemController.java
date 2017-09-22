@@ -125,6 +125,7 @@ public class MbOrderItemController extends BaseController {
             }
         };
         //mbOrderLogService
+        Integer total = 0, backTotal = 0;
         try {
             for (MbOrderItem itemExport : itemExports) {
                 MbOrder mbOrder = mbOrderCache.getValue(itemExport.getOrderId());
@@ -171,19 +172,33 @@ public class MbOrderItemController extends BaseController {
                 MbOrderLog mbOrderLog = orderLogCache.getValue(mbOrder.getId()+"|"+mbOrder.getStatus());
                 if (mbOrderLog != null)
                     mbOrderItemExport.setNodeTime(mbOrderLog.getAddtime());
+                if (itemExport.getQuantity() !=null) {
+                    total += itemExport.getQuantity();
+                }
+                if(mbOrderItemExport.getRefundQuantity() != null) {
+                    backTotal += mbOrderItemExport.getRefundQuantity();
+                }
             }
         } finally {
             ThreadCache.clear();
         }
+        //合计
+        if(!CollectionUtils.isEmpty(mbOrderItemExports)){
+            MbOrderItemExport mbOrderItemExport = new MbOrderItemExport();
+            mbOrderItemExport.setShopName("合计");
+            mbOrderItemExport.setQuantity(total);
+            mbOrderItemExport.setRefundQuantity(backTotal);
+            mbOrderItemExports.add(mbOrderItemExport);
+        }
         dg.setRows(mbOrderItemExports);
         List<Colum> colums = new ArrayList<Colum>();
         Colum colum = new Colum();
-        colum.setField("shopId");
-        colum.setTitle("门店ID");
-        colums.add(colum);
-        colum = new Colum();
         colum.setField("shopName");
         colum.setTitle("门店名称");
+        colums.add(colum);
+        colum = new Colum();
+        colum.setField("shopId");
+        colum.setTitle("门店ID");
         colums.add(colum);
         colum = new Colum();
         colum.setField("shopTypeName");
@@ -305,16 +320,9 @@ public class MbOrderItemController extends BaseController {
     @ResponseBody
     public Json addOffset(MbOrderItem mbOrderItem) {
         Json j = new Json();
-        MbOrder mbOrder = mbOrderService.get(mbOrderItem.getOrderId());
-        Integer contractPrice = redisUserService.getContractPrice(mbOrder.getShopId(), mbOrderItem.getItemId());
-        if (contractPrice == null) {
-            MbItem mbItem = mbItemService.getFromCache(mbOrderItem.getItemId());
-            mbOrderItem.setMarketPrice(mbItem.getMarketPrice());
-        }else{
-            mbOrderItem.setMarketPrice(contractPrice);
-        }
-        mbOrderItem.setBuyPrice(0);
-        mbOrderItemService.add(mbOrderItem);
+        MbOrder mbOrder = new MbOrder();
+        mbOrder.setId(mbOrderItem.getOrderId());
+        mbOrderItemService.addOffSet(mbOrder, mbOrderItem.getItemId(), mbOrderItem.getQuantity());
         j.setSuccess(true);
         j.setMsg("添加成功！");
         return j;

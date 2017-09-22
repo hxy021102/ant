@@ -4,6 +4,8 @@ import com.mobian.pageModel.MbOrder;
 import com.mobian.pageModel.MbOrderLog;
 import com.mobian.service.MbOrderLogServiceI;
 import com.mobian.service.MbOrderServiceI;
+import com.mobian.service.rulesengine.impl.MbRuleEngineImpl;
+import com.mobian.service.rulesengine.impl.RuleExecutorImpl;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,12 @@ public class Order12StateImpl implements OrderState {
 
     @Autowired
     private MbOrderLogServiceI orderLogService;
+
+    @Autowired
+    MbRuleEngineImpl mbRuleEngine;
+
+    @Autowired
+    RuleExecutorImpl ruleExecutor;
 
     @Resource(name = "order15StateImpl")
     private OrderState orderState15;

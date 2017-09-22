@@ -1,11 +1,12 @@
 package com.mobian.dao.impl;
 
+import java.util.List;
+
 import com.mobian.dao.UserDaoI;
 import com.mobian.model.Tuser;
+
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public class UserDaoImpl extends BaseDaoImpl<Tuser> implements UserDaoI {

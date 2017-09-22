@@ -8,6 +8,7 @@ import com.mobian.pageModel.MbActivityAction;
 import com.mobian.pageModel.MbActivityRule;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.MbActivityRuleServiceI;
+import com.mobian.service.rulesengine.RedisRuleSetService;
 import com.mobian.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,8 @@ public class MbActivityRuleServiceImpl extends BaseServiceImpl<MbActivityRule> i
 	private MbActivityRuleDaoI mbActivityRuleDao;
 	@Autowired
 	private MbActivityActionServiceImpl mbActivityActionService;
-
+	@Autowired
+	private RedisRuleSetService redisRuleSetService;
 	@Override
 	public DataGrid dataGrid(MbActivityRule mbActivityRule, PageHelper ph) {
 		List<MbActivityRule> ol = new ArrayList<MbActivityRule>();
@@ -96,6 +98,7 @@ public class MbActivityRuleServiceImpl extends BaseServiceImpl<MbActivityRule> i
 		//t.setId(jb.absx.UUID.uuid());
 		t.setIsdeleted(false);
 		mbActivityRuleDao.save(t);
+		mbActivityRule.setId(t.getId());
 	}
 
 	@Override
@@ -114,6 +117,7 @@ public class MbActivityRuleServiceImpl extends BaseServiceImpl<MbActivityRule> i
 		if (t != null) {
 			MyBeanUtils.copyProperties(mbActivityRule, t, new String[]{"id", "addtime", "isdeleted", "updatetime"}, true);
 		}
+		mbActivityRule.setId(t.getId());
 	}
 
 	@Override
@@ -123,9 +127,19 @@ public class MbActivityRuleServiceImpl extends BaseServiceImpl<MbActivityRule> i
 		mbActivityRuleDao.executeHql("update TmbActivityRule t set t.isdeleted = 1 where t.id = :id",params);
 		//mbActivityRuleDao.delete(mbActivityRuleDao.get(TmbActivityRule.class, id));
 	}
-
+	@Override
+	public void addActivityRuleAndRule(MbActivityRule activityRule){
+		add(activityRule);
+		redisRuleSetService.deleteRuleSetListByActivityRuleId(activityRule.getId());
+	}
+	@Override
+	public void editActivityRuleAndRule(MbActivityRule activityRule) {
+		edit(activityRule);
+		redisRuleSetService.deleteRuleSetListByActivityRuleId(activityRule.getId());
+	}
 	@Override
 	public void deleteRule(Integer id) {
+		redisRuleSetService.deleteRuleSetListByActivityRuleId(id);
 		delete(id);
 		MbActivityAction mbActivityAction = new MbActivityAction();
 		mbActivityAction.setActivityRuleId(id);
@@ -151,5 +165,15 @@ public class MbActivityRuleServiceImpl extends BaseServiceImpl<MbActivityRule> i
 			}
 		}
 		return ol;
+	}
+
+	@Override
+	public MbActivityRule getByActivityActionId(Integer activityActionId) {
+	    MbActivityRule activityRule = new MbActivityRule();
+	    MbActivityAction activityAction = mbActivityActionService.get(activityActionId);
+	    if (activityAction != null && !F.empty(activityAction.getActivityRuleId())) {
+	    	activityRule = get(activityAction.getActivityRuleId());
+		}
+		return activityRule;
 	}
 }

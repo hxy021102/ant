@@ -1,18 +1,25 @@
 package com.mobian.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.mobian.pageModel.*;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.mobian.pageModel.Colum;
+import com.mobian.pageModel.MbActivity;
+import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.Json;
+import com.mobian.pageModel.PageHelper;
 import com.mobian.service.MbActivityServiceI;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
+import com.alibaba.fastjson.JSON;
 
 /**
  * MbActivity管理控制器
@@ -63,7 +70,7 @@ public class MbActivityController extends BaseController {
 	 */
 	@RequestMapping("/download")
 	public void download(MbActivity mbActivity, PageHelper ph,String downloadFields,HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException{
-		DataGrid dg = dataGrid(mbActivity,ph);
+		DataGrid dg = dataGrid(mbActivity,ph);		
 		downloadFields = downloadFields.replace("&quot;", "\"");
 		downloadFields = downloadFields.substring(1,downloadFields.length()-1);
 		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
@@ -89,8 +96,8 @@ public class MbActivityController extends BaseController {
 	@RequestMapping("/add")
 	@ResponseBody
 	public Json add(MbActivity mbActivity) {
-		Json j = new Json();
-		mbActivityService.add(mbActivity);
+		Json j = new Json();		
+		mbActivityService.addActivityAndRuleSet(mbActivity);
 		j.setSuccess(true);
 		j.setMsg("添加成功！");		
 		return j;
@@ -134,8 +141,8 @@ public class MbActivityController extends BaseController {
 	@RequestMapping("/edit")
 	@ResponseBody
 	public Json edit(MbActivity mbActivity) {
-		Json j = new Json();
-		mbActivityService.edit(mbActivity);
+		Json j = new Json();		
+		mbActivityService.editActivityAndRuleSet(mbActivity);
 		j.setSuccess(true);
 		j.setMsg("编辑成功！");		
 		return j;
@@ -151,7 +158,7 @@ public class MbActivityController extends BaseController {
 	@ResponseBody
 	public Json delete(Integer id) {
 		Json j = new Json();
-		mbActivityService.deleteActivity(id);
+		mbActivityService.deleteActivityAndRuleSet(id);
 		j.setMsg("删除成功！");
 		j.setSuccess(true);
 		return j;

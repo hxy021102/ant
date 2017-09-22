@@ -172,7 +172,7 @@ public class MbItemStockController extends BaseController {
         SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
 
         if (mbItemStock.getAdjustment() != null && mbItemStock.getAdjustment() != 0) {
-            boolean flag = mbItemStockService.editAndInsertLog(mbItemStock, sessionInfo.getId());
+            boolean flag = mbItemStockService.editAndInsertLog(mbItemStock, sessionInfo.getId()) != null;
             j.setSuccess(flag);
             if (flag)
                 j.setMsg("编辑成功！");
@@ -325,5 +325,70 @@ public class MbItemStockController extends BaseController {
         ph.setRows(0);
         DataGrid dg = mbItemStockService.dataGridReport(mbItemStock, ph);
         downloadTable(colums, dg, response);
+    }
+    /**
+     * 获取MbItemStock带有空桶的数据表格
+     */
+    @RequestMapping("/emptyBucketDataGrid")
+    @ResponseBody
+    public DataGrid emptyBucketDataGrid(Integer warehouseId, PageHelper ph) {
+        if (!F.empty(warehouseId)) {
+            MbItemStock mbItemStock = new MbItemStock();
+            mbItemStock.setWarehouseId(warehouseId);
+            DataGrid dataGrid = mbItemStockService.dataGridEmptyBucket(mbItemStock, ph);
+            return dataGrid;
+        }
+        return new DataGrid();
+    }
+
+    /**
+     * 修改门店所对应的库存
+     * @param id
+     * @param request
+     * @return
+     */
+    @RequestMapping("/editStockPage")
+    public String  editStockPage(Integer id,Integer shopId, HttpServletRequest request) {
+        MbItemStock mbItemStock = mbItemStockService.get(id);
+        mbItemStockService.addWarehouseAndItemInfo(mbItemStock);
+        mbItemStock.setShopId(shopId);
+        request.setAttribute("mbItemStock", mbItemStock);
+        return "/mbitemstock/mbItemStockShopEdit";
+    }
+
+    @RequestMapping("/editStock")
+    @ResponseBody
+    public Json editStock(MbItemStock mbItemStock, HttpSession session) {
+        Json j = new Json();
+        SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+        if (mbItemStock.getAdjustment() != null && mbItemStock.getAdjustment() != 0) {
+            mbItemStockService.editStockAndBalance(mbItemStock, sessionInfo.getId());
+            j.setSuccess(true);
+            j.setMsg("编辑成功！");
+        } else {
+            j.setSuccess(false);
+            j.setMsg("调整量不能为空！！");
+        }
+        return j;
+    }
+
+    @RequestMapping("/editStockQuantityPage")
+    public String editStockQuantity(HttpServletRequest request, Integer id) {
+        MbItemStock mbItemStock = mbItemStockService.get(id);
+        mbItemStockService.addWarehouseAndItemInfo(mbItemStock);
+        request.setAttribute("mbItemStock", mbItemStock);
+        return "/mbitemstock/mbItemStockEditQuantity";
+    }
+    /**
+     * 对库存大盘的数量进行修改
+     * @param mbItemStock
+     * @param session
+     * @return
+     */
+    @RequestMapping("/editStockQuantity")
+    @ResponseBody
+    public Json editStockQuantity(MbItemStock mbItemStock, HttpSession session) {
+        Json j = edit(mbItemStock,session);
+        return j;
     }
 }

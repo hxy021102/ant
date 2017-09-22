@@ -1,12 +1,23 @@
 package com.mobian.controller;
 
-import com.alibaba.fastjson.JSON;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import com.mobian.listener.Application;
-import com.mobian.pageModel.*;
+import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.SessionInfo;
+import com.mobian.pageModel.User;
 import com.mobian.service.ResourceServiceI;
 import com.mobian.service.RoleServiceI;
 import com.mobian.service.UserServiceI;
 import com.mobian.util.ConfigUtil;
+import com.mobian.pageModel.Json;
+import com.mobian.pageModel.PageHelper;
+
 import com.mobian.util.RSAUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +25,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import com.alibaba.fastjson.JSON;
 
 /**
  * 用户控制器
@@ -54,7 +61,7 @@ public class UserController extends BaseController {
 	public Json login(User user, HttpSession session, HttpServletRequest request) {
 		Json j = new Json();
 		String privateKey = (String)session.getAttribute(PRIVATE_KEY);
-		user.setName(RSAUtil.decryptByPravite(user.getName(), privateKey));
+		user.setName(RSAUtil.decryptByPravite(user.getName(),privateKey));
 		user.setPwd(RSAUtil.decryptByPravite(user.getPwd(), privateKey));
 		User u = userService.login(user);
 		if (u != null) {

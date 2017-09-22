@@ -5,11 +5,12 @@
 
 package com.mobian.model;
 
+import javax.persistence.*;
+
+import java.util.Date;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
-import javax.persistence.*;
-import java.util.Date;
 
 @SuppressWarnings("serial")
 @Entity
@@ -48,11 +49,11 @@ public class TmbContract implements java.io.Serializable,IEntity{
 	private Integer id;
 	//
 	private Integer tenantId;
-	//@NotNull
+	//@NotNull 
 	private Date addtime;
-	//@NotNull
+	//@NotNull 
 	private Date updatetime;
-	//@NotNull
+	//@NotNull 
 	private Boolean isdeleted;
 	//@Length(max=64)
 	private String code;
@@ -76,118 +77,118 @@ public class TmbContract implements java.io.Serializable,IEntity{
 		public TmbContract(Integer id) {
 			this.id = id;
 		}
-
+	
 
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id", unique = true, nullable = false, length = 10)
 	public Integer getId() {
 		return this.id;
 	}
-
+	
 	@Column(name = "tenant_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getTenantId() {
 		return this.tenantId;
 	}
-
+	
 	public void setTenantId(Integer tenantId) {
 		this.tenantId = tenantId;
 	}
-
+	
 
 	@Column(name = "addtime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public Date getAddtime() {
 		return this.addtime;
 	}
-
+	
 	public void setAddtime(Date addtime) {
 		this.addtime = addtime;
 	}
-
+	
 
 	@Column(name = "updatetime", unique = false, nullable = false, insertable = true, updatable = true, length = 19)
 	public Date getUpdatetime() {
 		return this.updatetime;
 	}
-
+	
 	public void setUpdatetime(Date updatetime) {
 		this.updatetime = updatetime;
 	}
-
+	
 	@Column(name = "isdeleted", unique = false, nullable = false, insertable = true, updatable = true, length = 0)
 	public Boolean getIsdeleted() {
 		return this.isdeleted;
 	}
-
+	
 	public void setIsdeleted(Boolean isdeleted) {
 		this.isdeleted = isdeleted;
 	}
-
+	
 	@Column(name = "code", unique = false, nullable = true, insertable = true, updatable = true, length = 64)
 	public String getCode() {
 		return this.code;
 	}
-
+	
 	public void setCode(String code) {
 		this.code = code;
 	}
-
+	
 	@Column(name = "name", unique = false, nullable = false, insertable = true, updatable = true, length = 128)
 	public String getName() {
 		return this.name;
 	}
-
+	
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
 	@Column(name = "shop_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getShopId() {
 		return this.shopId;
 	}
-
+	
 	public void setShopId(Integer shopId) {
 		this.shopId = shopId;
 	}
-
+	
 
 	@Column(name = "expiry_date_start", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Date getExpiryDateStart() {
 		return this.expiryDateStart;
 	}
-
+	
 	public void setExpiryDateStart(Date expiryDateStart) {
 		this.expiryDateStart = expiryDateStart;
 	}
-
+	
 
 	@Column(name = "expiry_date_end", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Date getExpiryDateEnd() {
 		return this.expiryDateEnd;
 	}
-
+	
 	public void setExpiryDateEnd(Date expiryDateEnd) {
 		this.expiryDateEnd = expiryDateEnd;
 	}
-
+	
 	@Column(name = "valid", unique = false, nullable = true, insertable = true, updatable = true, length = 0)
 	public Boolean getValid() {
 		return this.valid;
 	}
-
+	
 	public void setValid(Boolean valid) {
 		this.valid = valid;
 	}
-
+	
 	@Column(name = "attachment", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
 	public String getAttachment() {
 		return this.attachment;
 	}
-
+	
 	public void setAttachment(String attachment) {
 		this.attachment = attachment;
 	}

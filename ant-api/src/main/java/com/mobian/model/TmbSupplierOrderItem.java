@@ -16,7 +16,7 @@ import java.util.Date;
 @Table(name = "mb_supplier_order_item")
 @DynamicInsert(true)
 @DynamicUpdate(true)
-public class TmbSupplierOrderItem implements java.io.Serializable,IEntity {
+public class TmbSupplierOrderItem implements java.io.Serializable,IEntity{
 	private static final long serialVersionUID = 5454155825314635342L;
 	
 	//alias
