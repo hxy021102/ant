@@ -174,6 +174,42 @@
 	background-color: rgba(254,153,0,0.6);
 }
 
+.ui-index-list li .ui-btn .num {
+	float: right;
+	width: 90px;
+	height: 30px;
+	border-radius: 3px;
+	margin-top: 20px;
+	border: 1px solid #ddd;
+}
+
+.ui-index-list li .ui-btn .num .ui-col{
+	display: -webkit-box;
+	-webkit-box-pack: center;
+	-webkit-box-align: center;
+	max-width: 33.33%;
+	min-width: 33.33%;
+}
+
+.ui-index-list li .ui-btn .num .ui-col.br{
+	border-right: 1px solid #ddd;
+}
+
+.ui-index-list li .ui-btn .num .ui-col:focus{
+	outline: none;
+}
+
+.ui-index-list li .ui-btn .num .ui-col input{
+	height: 28px;
+	border: 0;
+	width: 100%;
+	text-align: center;
+}
+
+.ui-index-list li .ui-btn .num .ui-col:active{
+	background-color: #ccc;
+}
+
 .ui-shop {
 	color: #fff;
 	position: absolute;
