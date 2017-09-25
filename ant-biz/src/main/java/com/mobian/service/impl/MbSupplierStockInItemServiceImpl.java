@@ -3,12 +3,8 @@ package com.mobian.service.impl;
 import com.mobian.absx.F;
 import com.mobian.dao.MbSupplierStockInItemDaoI;
 import com.mobian.model.TmbSupplierStockInItem;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.MbItem;
-import com.mobian.pageModel.MbSupplierStockInItem;
-import com.mobian.pageModel.PageHelper;
-import com.mobian.service.MbItemServiceI;
-import com.mobian.service.MbSupplierStockInItemServiceI;
+import com.mobian.pageModel.*;
+import com.mobian.service.*;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -27,6 +23,12 @@ public class MbSupplierStockInItemServiceImpl extends BaseServiceImpl<MbSupplier
 	private MbSupplierStockInItemDaoI mbSupplierStockInItemDao;
 	@Autowired
 	private MbItemServiceI mbItemService;
+	@Autowired
+	private MbSupplierStockInServiceI mbSupplierStockInService;
+	@Autowired
+	private MbSupplierOrderServiceI mbSupplierOrderService;
+	@Autowired
+	private MbSupplierServiceI mbSupplierService;
 
 	@Override
 	public DataGrid dataGrid(MbSupplierStockInItem mbSupplierStockInItem, PageHelper ph) {
@@ -40,6 +42,18 @@ public class MbSupplierStockInItemServiceImpl extends BaseServiceImpl<MbSupplier
 				MbSupplierStockInItem o = new MbSupplierStockInItem();
 				BeanUtils.copyProperties(t, o);
 				ol.add(o);
+				if(o.getSupplierStockInId() != null) {
+					MbSupplierStockIn mbSupplierStockIn = mbSupplierStockInService.get(o.getSupplierStockInId());
+					o.setSupplierOrderId(mbSupplierStockIn.getSupplierOrderId());
+					MbSupplierOrder mbSupplierOrder = mbSupplierOrderService.get(mbSupplierStockIn.getSupplierOrderId());
+					MbSupplier mbSupplier = mbSupplierService.get(mbSupplierOrder.getSupplierId());
+					o.setSupplierName(mbSupplier.getName());
+				}
+				if(o.getItemId() != null) {
+				 MbItem mbItem = mbItemService.get(o.getItemId());
+				 o.setProductName(mbItem.getName());
+				 o.setCode(mbItem.getCode());
+				}
 			}
 		}
 		dg.setRows(ol);

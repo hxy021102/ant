@@ -79,9 +79,7 @@ public class MbSupplierStockInItemController extends BaseController {
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(MbSupplierStockInItem mbSupplierStockInItem, PageHelper ph) {
-		DataGrid dg = new DataGrid();
-		List<MbSupplierStockInItem> list = mbSupplierStockInItemService.query(mbSupplierStockInItem);
-		dg.setRows(list);
+		DataGrid dg = mbSupplierStockInItemService.dataGrid(mbSupplierStockInItem,ph);
 		return dg;
 	}
 	/**
