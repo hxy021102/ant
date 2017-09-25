@@ -1,7 +1,6 @@
 package com.mobian.exception;
 
 import com.alibaba.fastjson.JSON;
-import com.mobian.pageModel.Json;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
@@ -10,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 统一异常处理
@@ -44,12 +45,13 @@ public class CustomMappingExceptionResolver extends
 			return getModelAndView(viewName, ex, request);
 		} else {// JSON格式返回
 			try {
-				Json j = new Json();
+				Map<String,Object> j = new HashMap<String,Object>();
+				j.put("success",false);
 				if(ex instanceof ServiceException){
 					ServiceException e = (ServiceException)ex;
-					j.setMsg(e.getMsg());
+					j.put("msg",e.getMsg());
 				}else{
-					j.setMsg(ex.getMessage());
+					j.put("msg",ex.getMessage());
 				}				
 				response.setCharacterEncoding("UTF-8");
 				PrintWriter writer = response.getWriter();
