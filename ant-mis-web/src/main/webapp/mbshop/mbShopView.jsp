@@ -915,11 +915,11 @@
     </form>
 </div>
 <div id="shopCouponsToolbar">
-    <c:if test="${fn:contains(sessionInfo.resourceList, '/mbShopCouponsController/addPage') and mbShop.parentId == null and mbShop.auditStatus == 'AS02' }">
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/mbShopCouponsController/addPage') and (mbShopExt.parentId == null or mbShopExt.parentId == -1) and mbShopExt.auditStatus == 'AS02' }">
         <a onclick="addShopCouponsFun(' + ${mbShopExt.id}+ ');" href="javascript:void(0);" class="easyui-linkbutton"
            data-options="plain:true,iconCls:'pencil_add'">添加</a>
     </c:if>
-    <c:if test="${fn:contains(sessionInfo.resourceList, '/mbShopCouponsController/addPage') and mbShop.parentId != null and mbShop.auditStatus == 'AS02' }">
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/mbShopCouponsController/addPage') and (mbShopExt.parentId != null and mbShopExt.parentId != -1)and mbShopExt.auditStatus == 'AS02' }">
         <a  onclick="viewShop( ${mbShopExt.parentId} )" href="javascript:void(0);" class="easyui-linkbutton"
            data-options="plain:true,iconCls:'pencil_add'">转至主门店 - 添加</a>
     </c:if>
