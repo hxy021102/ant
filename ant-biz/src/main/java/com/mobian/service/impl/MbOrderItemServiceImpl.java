@@ -276,58 +276,60 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
         MbOrder mbOrder = new MbOrder();
         mbOrder.setDeliveryTimeBegin(mbSalesReport.getStartDate());
         mbOrder.setDeliveryTimeEnd(mbSalesReport.getEndDate());
+        mbOrder.setDeliveryWarehouseId(mbSalesReport.getWarehouseId());
         mbOrder.setStatus(mbSalesReport.getOrderStatus());
         if ("OD40".equals(mbSalesReport.getOrderStatus())) {
             mbOrder.setPayStatus("PS01");
         }
         //先找到所有符合条件的订单
         List<MbOrder> mbOrders = mbOrderService.query(mbOrder);
-        Integer[] orderIds = new Integer[mbOrders.size()];
-        for (int i = 0; i < mbOrders.size(); i++) {
-            orderIds[i] = mbOrders.get(i).getId();
-        }
-        //找到所有订单项
-        List<MbOrderItem> orderItems = queryListByOrderIds(orderIds);
-        List<MbOrderRefundItem> OrderRefundItems = mbOrderRefundItemService.queryListByOrderIds(orderIds);
-        //将同种商品在不同订单里的不同价格都保存
-        for (MbOrder m : mbOrders) {
-            for (MbOrderItem item : orderItems) {
-                priceMap.put(m.getId() + item.getItemId() + "", item.getBuyPrice());
-            }
-        }
+        if(!CollectionUtils.isEmpty(mbOrders)) {
+			Integer[] orderIds = new Integer[mbOrders.size()];
+			for (int i = 0; i < mbOrders.size(); i++) {
+				orderIds[i] = mbOrders.get(i).getId();
+			}
+			//找到所有订单项
+			List<MbOrderItem> orderItems = queryListByOrderIds(orderIds);
+			List<MbOrderRefundItem> OrderRefundItems = mbOrderRefundItemService.queryListByOrderIds(orderIds);
+			//将同种商品在不同订单里的不同价格都保存
+			for (MbOrder m : mbOrders) {
+				for (MbOrderItem item : orderItems) {
+					priceMap.put(m.getId() + item.getItemId() + "", item.getBuyPrice());
+				}
+			}
 
-        //遍历所有订单的所有订单项
-        for (MbOrderItem item : orderItems) {
-            //把所有订单项数量累加起来
-            if (map.containsKey(item.getItemId())) {
-                MbSalesReport oldItem = map.get(item.getItemId());
-                oldItem.setQuantity(oldItem.getQuantity() + item.getQuantity());
-                oldItem.setTotalPrice(oldItem.getTotalPrice() + item.getQuantity() * item.getBuyPrice());
-            } else {
-                MbSalesReport salesReport = new MbSalesReport();
-				salesReport.setTotalPrice(item.getQuantity() * item.getBuyPrice());
-				salesReport.setQuantity(item.getQuantity());
-                map.put(item.getItemId(), salesReport);
-            }
+			//遍历所有订单的所有订单项
+			for (MbOrderItem item : orderItems) {
+				//把所有订单项数量累加起来
+				if (map.containsKey(item.getItemId())) {
+					MbSalesReport oldItem = map.get(item.getItemId());
+					oldItem.setQuantity(oldItem.getQuantity() + item.getQuantity());
+					oldItem.setTotalPrice(oldItem.getTotalPrice() + item.getQuantity() * item.getBuyPrice());
+				} else {
+					MbSalesReport salesReport = new MbSalesReport();
+					salesReport.setTotalPrice(item.getQuantity() * item.getBuyPrice());
+					salesReport.setQuantity(item.getQuantity());
+					map.put(item.getItemId(), salesReport);
+				}
 
-        }
-        //遍历所有订单里面所有的退货
-        for (MbOrderRefundItem rf : OrderRefundItems) {
-            Integer price = priceMap.get(rf.getOrderId() + rf.getItemId() + "");
-            if (map.get(rf.getItemId()) != null) {
-                MbSalesReport salesReport = map.get(rf.getItemId());
-                if (salesReport.getBackQuantity() == null) {
-                    salesReport.setBackQuantity(0);
-                }
-                salesReport.setBackQuantity(salesReport.getBackQuantity() + rf.getQuantity());
-                if (salesReport.getBackMoney() == null) {
-                    salesReport.setBackMoney(0);
-                }
-                salesReport.setBackMoney(salesReport.getBackMoney() + rf.getQuantity() * price);
-            }
-        }
+			}
+			//遍历所有订单里面所有的退货
+			for (MbOrderRefundItem rf : OrderRefundItems) {
+				Integer price = priceMap.get(rf.getOrderId() + rf.getItemId() + "");
+				if (map.get(rf.getItemId()) != null) {
+					MbSalesReport salesReport = map.get(rf.getItemId());
+					if (salesReport.getBackQuantity() == null) {
+						salesReport.setBackQuantity(0);
+					}
+					salesReport.setBackQuantity(salesReport.getBackQuantity() + rf.getQuantity());
+					if (salesReport.getBackMoney() == null) {
+						salesReport.setBackMoney(0);
+					}
+					salesReport.setBackMoney(salesReport.getBackMoney() + rf.getQuantity() * price);
+				}
+			}
 
-
+		}
         //统计报表
         Integer totalPrice = 0;
         Integer total = 0;
