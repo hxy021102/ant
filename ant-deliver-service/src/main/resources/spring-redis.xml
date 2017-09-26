@@ -48,8 +48,8 @@
     </bean>
 
     <!-- 配置redisTemplate注入，在使用bean方式来注入时，redisTemplate必须有setter/getter方法 -->
-   <!-- <bean id="redisUtil" class="com.mobian.thirdpart.redis.RedisUtil">
+    <bean id="redisUtil" class="com.mobian.thirdpart.redis.RedisUtil">
         <property name="redisTemplate" ref="redisTemplate"/>
-    </bean>-->
+    </bean>
 
 </beans>
