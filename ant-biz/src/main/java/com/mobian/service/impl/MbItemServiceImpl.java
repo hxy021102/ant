@@ -3,10 +3,7 @@ package com.mobian.service.impl;
 import com.mobian.absx.F;
 import com.mobian.dao.MbItemDaoI;
 import com.mobian.model.TmbItem;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.MbItem;
-import com.mobian.pageModel.MbItemCategory;
-import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.*;
 import com.mobian.service.MbItemCategoryServiceI;
 import com.mobian.service.MbItemServiceI;
 import com.mobian.util.MyBeanUtils;
@@ -103,6 +100,13 @@ public class MbItemServiceImpl extends BaseServiceImpl<MbItem> implements MbItem
 			if (!F.empty(mbItem.getIspack())) {
 				whereHql += " and t.ispack = :ispack";
 				params.put("ispack", mbItem.getIspack());
+			}
+			if (mbItem instanceof MbItemQuery) {
+				MbItemQuery mbItemQuery = (MbItemQuery) mbItem;
+				if (mbItemQuery.getItemIds() != null) {
+					whereHql += " and t.id in (:itemIds)";
+					params.put("itemIds", mbItemQuery.getItemIds());
+				}
 			}
 		}	
 		return whereHql;
