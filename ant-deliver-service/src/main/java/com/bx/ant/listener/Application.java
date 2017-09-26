@@ -31,11 +31,11 @@ public class Application implements ServletContextListener {
 
 	private static void initAppVariable(){
 		ApplicationContext app = WebApplicationContextUtils.getWebApplicationContext(context); 
-		BasedataServiceI service = app.getBean(BasedataServiceI.class);
+		/*BasedataServiceI service = app.getBean(BasedataServiceI.class);
 		Map<String,BaseData> map = service.getAppVariable();
 		for(String key : map.keySet()){
 			context.setAttribute(PREFIX+key, map.get(key));
-		}
+		}*/
 
 
 		ConvertNameUtil.setConfigTransfer(new ConfigTransfer() {
