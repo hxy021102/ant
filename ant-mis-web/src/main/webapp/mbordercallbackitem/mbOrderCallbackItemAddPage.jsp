@@ -37,6 +37,7 @@
 <div data-options="region:'center',border:false" title="" style="overflow: hidden;">
 	<form id="form" method="post">
 		<input name="orderId" type="hidden" value="${orderId}"/>
+		<input name="shopId" type="hidden" value="${shopId}">
 		<table class="table table-hover table-condensed">
 			<tr>
 				<th><%=TmbOrderCallbackItem.ALIAS_ITEM_ID%></th>

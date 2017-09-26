@@ -3,16 +3,16 @@ package com.mobian.controller;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.UUID;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.mobian.pageModel.*;
-import com.mobian.service.MbOrderCallbackItemServiceI;
+import com.mobian.service.*;
 
-import com.mobian.service.MbOrderServiceI;
+
 import com.mobian.util.ConfigUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,7 +35,12 @@ public class MbOrderCallbackItemController extends BaseController {
 	private MbOrderCallbackItemServiceI mbOrderCallbackItemService;
 
 	@Autowired
-	private MbOrderServiceI mbOrderService;
+	private MbBalanceLogServiceI mbBalanceLogService;
+	@Autowired
+	private MbBalanceServiceI mbBalanceService;
+	@Autowired
+	private MbItemServiceI mbItemService;
+
 
 
 	/**
@@ -86,8 +91,9 @@ public class MbOrderCallbackItemController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/addPage")
-	public String addPage(HttpServletRequest request,Integer id ) {
+	public String addPage(HttpServletRequest request,Integer id,Integer shopId ) {
 		request.setAttribute("orderId",id);
+		request.setAttribute("shopId",shopId);
 		return "/mbordercallbackitem/mbOrderCallbackItemAddPage";
 	}
 
@@ -98,12 +104,22 @@ public class MbOrderCallbackItemController extends BaseController {
 	 */
 	@RequestMapping("/add")
 	@ResponseBody
-	public Json add(MbOrderCallbackItem mbOrderCallbackItem, HttpSession session,Integer packId) {
+	public Json add(MbOrderCallbackItem mbOrderCallbackItem, HttpSession session,Integer packId,Integer shopId,Integer orderId) {
 		Json j = new Json();
 		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
 		mbOrderCallbackItem.setItemId(packId);
 		mbOrderCallbackItem.setLoginId(sessionInfo.getId());
 		mbOrderCallbackItemService.add(mbOrderCallbackItem);
+		//与桶账挂钩
+		MbBalance mbBalance = mbBalanceService.addOrGetMbBalanceCash(shopId);
+		MbItem packItem = mbItemService.getFromCache(packId);
+		MbBalanceLog mbBalanceLog = new MbBalanceLog();
+		mbBalanceLog.setAmount(packItem.getMarketPrice() * mbOrderCallbackItem.getQuantity());
+		mbBalanceLog.setRefId(orderId + "");
+		mbBalanceLog.setRefType("BT018");
+		mbBalanceLog.setBalanceId(mbBalance.getId());
+		mbBalanceLog.setReason(String.format("订单ID：%s回桶出库 商品[%s],数量[%s]", orderId, packItem.getName(), mbOrderCallbackItem.getQuantity()));
+		mbBalanceLogService.addAndUpdateBalance(mbBalanceLog);
 		j.setSuccess(true);
 		j.setMsg("添加成功！");		
 		return j;

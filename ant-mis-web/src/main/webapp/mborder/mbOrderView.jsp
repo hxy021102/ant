@@ -242,7 +242,7 @@
             title: '空桶登记',
             width: 780,
             height: 200,
-            href: '${pageContext.request.contextPath}/mbOrderCallbackItemController/addPage?id=' + ${mbOrder.id} ,
+            href: '${pageContext.request.contextPath}/mbOrderCallbackItemController/addPage?id=' + ${mbOrder.id} +'&shopId='+ ${mbOrder.shopId} ,
             buttons: [{
                 text: '添加',
                 handler: function () {
@@ -260,7 +260,7 @@
             title: '退回登记',
             width: 780,
             height: 230,
-            href: '${pageContext.request.contextPath}/mbOrderRefundItemController/addPage?id=' + ${mbOrder.id} ,
+            href: '${pageContext.request.contextPath}/mbOrderRefundItemController/addPage?id=' + ${mbOrder.id} +'&shopId=' +${mbOrder.shopId},
             buttons: [{
                 text: '添加',
                 handler: function () {
@@ -1298,13 +1298,13 @@
         </c:if>
     </div>
     <div id="mbOrderCallbackItemToolbar" style="display: none;">
-        <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderCallbackItemController/add') and mbOrder.deliveryStatus=='DS30' and mbOrder.status=='OD35'}">
+        <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderCallbackItemController/add') and mbOrder.payStatus=='PS05' and mbOrder.status=='OD40'}">
             <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addMbOrderCallbackItem();" data-options="plain:true,iconCls:'pencil_add'">添加</a>
         </c:if>
     </div>
     </div>
     <div id="mbOrderRefundItemToolbar" style="display: none;">
-        <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderRefundItemController/add') and mbOrder.deliveryStatus=='DS30' and mbOrder.status=='OD35'}">
+        <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderRefundItemController/add') and mbOrder.payStatus=='PS05' and mbOrder.status=='OD40'}">
             <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addMbOrderRefundItem();" data-options="plain:true,iconCls:'pencil_add'">添加</a>
         </c:if>
     </div>
