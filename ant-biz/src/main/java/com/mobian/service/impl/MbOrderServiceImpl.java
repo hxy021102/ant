@@ -41,6 +41,8 @@ public class MbOrderServiceImpl extends BaseServiceImpl<MbOrder> implements MbOr
 
     @javax.annotation.Resource
     private Map<String, OrderState> orderStateFactory;
+    @Autowired
+	private RedisOrderLogServiceImpl redisOrderLogService;
 
     @Override
     public OrderState getCurrentState(Integer id) {
@@ -483,6 +485,33 @@ public class MbOrderServiceImpl extends BaseServiceImpl<MbOrder> implements MbOr
 		}
 		orderDistribution.setOrderDayName(timeName);
 		return orderDistribution;
+	}
+
+	@Override
+	public DataGrid dataGridWithOrderLogMessage(MbOrder mbOrder, PageHelper ph) {
+		DataGrid dataGrid = dataGrid(mbOrder, ph);
+		List<MbOrder> mbOrderList = dataGrid.getRows();
+		if (CollectionUtils.isNotEmpty(mbOrderList)) {
+			Integer sendNumber, backNumber, leaveNumber;
+			for (MbOrder order : mbOrderList) {
+				sendNumber = redisOrderLogService.getOrderLogMessage(order.getId(), "LT011");
+				if (!F.empty(sendNumber)) {
+					order.setShopName(order.getShopName() + " " + "【催+" + sendNumber + "】");
+					continue;
+				}
+				backNumber = redisOrderLogService.getOrderLogMessage(order.getId(), "LT012");
+
+				if (!F.empty(backNumber)) {
+					order.setShopName(order.getShopName() + " " + "【回+" + backNumber + "】");
+					continue;
+				}
+				leaveNumber = redisOrderLogService.getOrderLogMessage(order.getId(), "LT013");
+				if (!F.empty(leaveNumber)) {
+					order.setShopName(order.getShopName() + " " + "【留+" + leaveNumber + "】");
+				}
+			}
+		}
+		return dataGrid;
 	}
 
 	@Override

@@ -85,8 +85,9 @@ public class MbOrderLogController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/addPage")
-	public String addPage(HttpServletRequest request) {
+	public String addPage(HttpServletRequest request,Integer orderId) {
 		MbOrderLog mbOrderLog = new MbOrderLog();
+		request.setAttribute("orderId",orderId);
 		return "/mborderlog/mbOrderLogAdd";
 	}
 
@@ -97,11 +98,18 @@ public class MbOrderLogController extends BaseController {
 	 */
 	@RequestMapping("/add")
 	@ResponseBody
-	public Json add(MbOrderLog mbOrderLog) {
-		Json j = new Json();		
-		mbOrderLogService.add(mbOrderLog);
-		j.setSuccess(true);
-		j.setMsg("添加成功！");		
+	public Json add(MbOrderLog mbOrderLog,HttpSession session) {
+		Json j = new Json();
+		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+		mbOrderLog.setLoginId(sessionInfo.getId());
+		Boolean result = mbOrderLogService.addOrderLogAndSetRedisOrderLog(mbOrderLog);
+		if(result) {
+			j.setSuccess(true);
+			j.setMsg("添加成功！");
+		}else{
+			j.setSuccess(false);
+			j.setMsg("催送、催回、留言，3中情景只能出现一种，若添加新的情景，请将已出现的情景删除！");
+		}
 		return j;
 	}
 
@@ -170,7 +178,7 @@ public class MbOrderLogController extends BaseController {
 	@ResponseBody
 	public Json delete(Integer id) {
 		Json j = new Json();
-		mbOrderLogService.delete(id);
+		mbOrderLogService.deleteOrderLogAndChangeRedisValue(id);
 		j.setMsg("删除成功！");
 		j.setSuccess(true);
 		return j;

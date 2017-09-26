@@ -27,6 +27,8 @@ public class MbOrderLogServiceImpl extends BaseServiceImpl<MbOrderLog> implement
 
 	@Autowired
 	private UserServiceI userService;
+	@Autowired
+	private RedisOrderLogServiceImpl redisOrderLogService;
 
 	@Override
 	public DataGrid dataGrid(MbOrderLog mbOrderLog, PageHelper ph) {
@@ -138,4 +140,37 @@ public class MbOrderLogServiceImpl extends BaseServiceImpl<MbOrderLog> implement
 		return o;
 	}
 
+	@Override
+	public Boolean addOrderLogAndSetRedisOrderLog(MbOrderLog mbOrderLog) {
+		Integer number, sendNumber, backNumber, leaveNumber;
+		number = redisOrderLogService.getOrderLogMessage(mbOrderLog.getOrderId(), mbOrderLog.getLogType());
+		if (F.empty(number)) {
+			sendNumber = redisOrderLogService.getOrderLogMessage(mbOrderLog.getOrderId(), "LT011");
+			backNumber = redisOrderLogService.getOrderLogMessage(mbOrderLog.getOrderId(), "LT012");
+			leaveNumber = redisOrderLogService.getOrderLogMessage(mbOrderLog.getOrderId(), "LT013");
+			if (F.empty(sendNumber) && F.empty(backNumber) && F.empty(leaveNumber)) {
+				redisOrderLogService.setOrderLogMessage(mbOrderLog.getOrderId(), mbOrderLog.getLogType(), 1);
+				add(mbOrderLog);
+			} else {
+				return false;
+			}
+		} else {
+			number = redisOrderLogService.getOrderLogMessage(mbOrderLog.getOrderId(), mbOrderLog.getLogType());
+			redisOrderLogService.setOrderLogMessage(mbOrderLog.getOrderId(), mbOrderLog.getLogType(), 1 + number);
+			add(mbOrderLog);
+		}
+		return true;
+	}
+
+	@Override
+	public void deleteOrderLogAndChangeRedisValue(Integer id) {
+		MbOrderLog mbOrderLog = get(id);
+		Integer number = 0;
+		number = redisOrderLogService.getOrderLogMessage(mbOrderLog.getOrderId(), mbOrderLog.getLogType());
+		if (number > 0) {
+			redisOrderLogService.setOrderLogMessage(mbOrderLog.getOrderId(), mbOrderLog.getLogType(), number - 1);
+			deleteOrderLogAndChangeRedisValue(id);
+		}
+		delete(id);
+	}
 }

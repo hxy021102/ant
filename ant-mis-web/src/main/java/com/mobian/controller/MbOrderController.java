@@ -114,7 +114,7 @@ public class MbOrderController extends BaseController {
 			}
 			mbOrder.setShopIds(shopIds);
 		}
-		DataGrid dg = mbOrderService.dataGrid(mbOrder, ph);
+		DataGrid dg = mbOrderService.dataGridWithOrderLogMessage(mbOrder, ph);
 		getDriver(dg);
 		return dg;
 	}
