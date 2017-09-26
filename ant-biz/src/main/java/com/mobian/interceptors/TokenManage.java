@@ -33,7 +33,7 @@ public class TokenManage {
     private RedisUserServiceImpl redisUserService;
 
     public void init() {
-        new Thread("token 回收") {
+        /*new Thread("token 回收") {
             public void run() {
                 while (true) {
                     try {
@@ -48,7 +48,7 @@ public class TokenManage {
                     }
                 }
             }
-        }.start();
+        }.start();*/
     }
 
     public boolean validToken(String tid) {

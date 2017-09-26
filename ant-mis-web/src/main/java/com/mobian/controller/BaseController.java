@@ -1,17 +1,15 @@
 package com.mobian.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.mobian.absx.F;
 import com.mobian.absx.Objectx;
-import com.mobian.thirdpart.oss.OSSUtil;
-import com.mobian.pageModel.*;
-import com.mobian.util.Constants;
-import com.mobian.concurrent.CompletionService;
-import com.mobian.concurrent.Task;
 import com.mobian.interceptors.TokenManage;
-import com.mobian.listener.Application;
-import com.mobian.service.impl.CompletionFactory;
-import com.mobian.util.StringEscapeEditor;
+import com.mobian.pageModel.Colum;
+import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.Json;
+import com.mobian.pageModel.SessionInfo;
+import com.mobian.thirdpart.oss.OSSUtil;
+import com.mobian.util.Constants;
+import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.Util;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
@@ -91,8 +89,8 @@ public class BaseController extends Objectx {
 	//@ResponseBody
 	public Json ExceptionHandler(Exception e) {
 		Json j = new Json();
-		if(_publishSettingVal.equals(Application.getString(Constants.SYSTEM_PUBLISH_SETTING))){
-			j.setMsg(Application.getString(Constants.SYSTEM_GLOBAL_MESSAGE));
+		if(_publishSettingVal.equals(ConvertNameUtil.getString(Constants.SYSTEM_PUBLISH_SETTING))){
+			j.setMsg(ConvertNameUtil.getString(Constants.SYSTEM_GLOBAL_MESSAGE));
 		}else{
 			j.setMsg(e.getMessage());
 		}
