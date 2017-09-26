@@ -8,17 +8,15 @@ import com.mobian.concurrent.Task;
 import com.mobian.controller.BaseController;
 import com.mobian.exception.ServiceException;
 import com.mobian.interceptors.TokenManage;
-import com.mobian.listener.Application;
 import com.mobian.pageModel.*;
 import com.mobian.service.*;
 import com.mobian.service.impl.CompletionFactory;
 import com.mobian.service.impl.RedisUserServiceImpl;
-import com.mobian.service.impl.order.OrderState;
+import com.mobian.util.ConvertNameUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import javax.annotation.Resource;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -84,7 +82,7 @@ public class ApiOrderController extends BaseController {
             j.setMsg("获取订单列表成功！");
             j.setObj(dg);
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("获取订单列表接口异常", e);
         }
 
@@ -134,7 +132,7 @@ public class ApiOrderController extends BaseController {
             j.setMsg("获取订单详情成功！");
             j.setObj(o);
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("获取订单详情接口异常", e);
         }
 
@@ -157,7 +155,7 @@ public class ApiOrderController extends BaseController {
             j.setSuccess(true);
             j.setMsg("取消订单成功！");
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("取消订单接口异常", e);
         }
 
@@ -177,7 +175,7 @@ public class ApiOrderController extends BaseController {
             j.setSuccess(true);
             j.setMsg("确认收货成功！");
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("确认收货接口异常", e);
         }
 
@@ -274,7 +272,7 @@ public class ApiOrderController extends BaseController {
             if(e instanceof ServiceException){
                 j.setMsg(((ServiceException) e).getMsg());
             }else {
-                j.setMsg(Application.getString(EX_0001));
+                j.setMsg(ConvertNameUtil.getString(EX_0001));
             }
             logger.error("下单接口异常", e);
         }

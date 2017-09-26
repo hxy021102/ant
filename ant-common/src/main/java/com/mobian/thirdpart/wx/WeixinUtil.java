@@ -3,14 +3,15 @@ package com.mobian.thirdpart.wx;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.mobian.absx.F;
-import com.mobian.listener.Application;
 import com.mobian.thirdpart.redis.Key;
 import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.thirdpart.redis.RedisUtil;
 import com.mobian.thirdpart.wx.bean.Menu;
 import com.mobian.thirdpart.wx.message.req.templateMessage.TemplateData;
 import com.mobian.thirdpart.wx.message.req.templateMessage.WxTemplate;
+import com.mobian.util.BeanUtil;
 import com.mobian.util.Constants;
+import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ public class WeixinUtil {
 	public final static String TOKEN = "WP007";
 	public final static String KF_ONLINE_TIME = "WP300";
 
-	private static RedisUtil redisUtil = Application.getBean(RedisUtil.class);
+	private static RedisUtil redisUtil = BeanUtil.getBean(RedisUtil.class);
 
 	/**
 	 * 签名加密方式
@@ -171,8 +172,8 @@ public class WeixinUtil {
 
 	public static String getAuthorizeUrl(String code) {
 		String authorize_url = AUTHORIZE_URL
-	    		.replace("APPID", Application.getString(APPID))
-	    		.replace("APPSECRET", Application.getString(APPSECRET))
+	    		.replace("APPID", ConvertNameUtil.getString(APPID))
+	    		.replace("APPSECRET", ConvertNameUtil.getString(APPSECRET))
 	    		.replace("CODE", code);
 		return authorize_url;
 	}
@@ -206,7 +207,7 @@ public class WeixinUtil {
 	 */
 	public static AccessToken getAccessToken() {
 		AccessToken accessToken = null;
-		String requestUrl = ACCESS_TOKEN_URL.replace("APPID", Application.getString(APPID)).replace("APPSECRET", Application.getString(APPSECRET));
+		String requestUrl = ACCESS_TOKEN_URL.replace("APPID", ConvertNameUtil.getString(APPID)).replace("APPSECRET", ConvertNameUtil.getString(APPSECRET));
 		JSONObject jsonObject = JSONObject.parseObject(HttpUtil.httpsRequest(requestUrl, "GET", null));
 		// 如果请求成功
 		if (null != jsonObject && !F.empty(jsonObject.getString("access_token"))) {
@@ -346,8 +347,8 @@ public class WeixinUtil {
 
 	public static String getOAuthUrl(String url) {
 		String oauth_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE&connect_redirect=1#wechat_redirect"
-				.replace("APPID", Application.getString(APPID))
-				.replace("REDIRECT_URI", Application.getString("SV100") + url)
+				.replace("APPID", ConvertNameUtil.getString(APPID))
+				.replace("REDIRECT_URI", ConvertNameUtil.getString("SV100") + url)
 				.replace("SCOPE", "snsapi_base");
 		return oauth_url;
 	}

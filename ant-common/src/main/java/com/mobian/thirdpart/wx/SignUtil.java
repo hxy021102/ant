@@ -1,10 +1,11 @@
 package com.mobian.thirdpart.wx;
 
 
-import com.mobian.listener.Application;
 import com.mobian.thirdpart.redis.Key;
 import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.thirdpart.redis.RedisUtil;
+import com.mobian.util.BeanUtil;
+import com.mobian.util.ConvertNameUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -23,11 +24,11 @@ import java.util.*;
 public class SignUtil {
 	
 	public static void main(String[] args) {
-		String url = "http://omstest.vmall.com:23568/thirdparty/wechat/vcode/gotoshare?quantity=1&batchName=MATE7";
+		/*String url = "http://omstest.vmall.com:23568/thirdparty/wechat/vcode/gotoshare?quantity=1&batchName=MATE7";
 		Map<String, String> ret = sign(url);
 		for (Map.Entry entry : ret.entrySet()) {
 			System.out.println(entry.getKey() + ", " + entry.getValue());
-		}
+		}*/
 	}
 	
 	/**
@@ -35,7 +36,7 @@ public class SignUtil {
 	 * 功能: 验证签名
 	 */
 	public static boolean checkSignature(String signature, String timestamp, String nonce) {
-		String token = Application.getString(WeixinUtil.TOKEN);
+		String token = ConvertNameUtil.getString(WeixinUtil.TOKEN);
 		String[] arr = new String[] {token, timestamp, nonce };
 		// 将token、timestamp、nonce三个参数进行字典序排序
 		Arrays.sort(arr);
@@ -61,7 +62,7 @@ public class SignUtil {
 	}
 
 	public static Map<String, String> sign(String url) {
-		RedisUtil redisUtil = Application.getBean(RedisUtil.class);
+		RedisUtil redisUtil = BeanUtil.getBean(RedisUtil.class);
 		// 调用接口获取access_token
 		Map<String, String> ret = new HashMap<String, String>();
 		String timestamp = String.valueOf(System.currentTimeMillis());//当前时间搓

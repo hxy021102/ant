@@ -4,6 +4,7 @@ import com.mobian.absx.F;
 import com.mobian.listener.Application;
 import com.mobian.pageModel.BaseData;
 import com.mobian.service.BasedataServiceI;
+import com.mobian.util.ConvertNameUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -71,7 +72,7 @@ public class SelectTag extends TagSupport {
                 }
                 String showName = null;
                 if (!F.empty(value)) {
-                    showName = Application.getString(value);
+                    showName = ConvertNameUtil.getString(value);
                     sb.append("		mode: 'local',");
                     //sb.append("		onShowPanel: function(){alert(1)},");
                     sb.append("		onShowPanel: function(e){" +

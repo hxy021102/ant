@@ -1,18 +1,21 @@
 package com.mobian.thirdpart.wx;
 
-import com.mobian.listener.Application;
 import com.mobian.thirdpart.redis.Key;
 import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.thirdpart.redis.RedisUtil;
+import com.mobian.util.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by wenming on 2016/7/9.
  */
 public class AccessTokenInstance {
+    public final static ExecutorService executors = Executors.newFixedThreadPool(1);
 
     private static Logger log = LoggerFactory.getLogger(AccessTokenInstance.class);
     public static final String ACCESS_TOKEN = "WP100";
@@ -43,7 +46,7 @@ public class AccessTokenInstance {
     }
 
     private void start() {
-        Application.executors.execute(new Runnable(){
+        executors.execute(new Runnable(){
             public void run() {
                 while (true) {
                     try {
@@ -56,7 +59,7 @@ public class AccessTokenInstance {
                                 log.info("获取微信jsapiTicket成功，有效时长{}秒 token:{}", jsapiTicket.getExpiresIn(), jsapiTicket.getJsapi_ticket());
                             }
 
-                            RedisUtil redisUtil = Application.getBean(RedisUtil.class);
+                            RedisUtil redisUtil = BeanUtil.getBean(RedisUtil.class);
                             redisUtil.set(Key.build(Namespace.WX_CONFIG, "wx_access_token"), accessToken.getToken(), accessToken.getExpiresIn(), TimeUnit.SECONDS);
                             redisUtil.set(Key.build(Namespace.WX_CONFIG, "wx_jsapi_ticket"), jsapiTicket.getJsapi_ticket(), jsapiTicket.getExpiresIn(), TimeUnit.SECONDS);
 

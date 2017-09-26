@@ -1,13 +1,12 @@
 package com.mobian.thirdpart.wx.service;
 
 
-
 import com.mobian.absx.F;
-import com.mobian.listener.Application;
 import com.mobian.thirdpart.wx.MessageUtil;
 import com.mobian.thirdpart.wx.WeixinUtil;
 import com.mobian.thirdpart.wx.message.resp.CustomerMessage;
 import com.mobian.thirdpart.wx.message.resp.TextMessage;
+import com.mobian.util.ConvertNameUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Calendar;
@@ -63,7 +62,7 @@ public class CoreService {
 			int start = 9, end = 18;
 			boolean transferCustomerService = false;
 			try{
-				String kfOnlineTime = Application.getString(WeixinUtil.KF_ONLINE_TIME);
+				String kfOnlineTime = ConvertNameUtil.getString(WeixinUtil.KF_ONLINE_TIME);
 				kfOnlineTime = F.empty(kfOnlineTime) ? "9-18" : kfOnlineTime;
 				String[] times = kfOnlineTime.split("-");
 				start = Integer.valueOf(times[0]);

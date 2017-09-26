@@ -5,7 +5,6 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.SortParameters.Order;
 import org.springframework.data.redis.core.*;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.query.SortQuery;
 import org.springframework.data.redis.core.query.SortQueryBuilder;
 
@@ -103,7 +102,7 @@ public class RedisUtil {
 	 * @param  key
 	 * @param  value
 	 * @return 递增后的新增
-	 * @throws org.springframework.dao.InvalidDataAccessApiUsageException value不是Integer类型时报错
+	 * @throws InvalidDataAccessApiUsageException value不是Integer类型时报错
 	 */
 	public long increment(String key, long value) throws InvalidDataAccessApiUsageException {
 		valueOps = redisTemplate.opsForValue();

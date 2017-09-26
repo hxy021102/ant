@@ -4,6 +4,8 @@ import com.mobian.interceptors.TokenManage;
 import com.mobian.pageModel.BaseData;
 import com.mobian.service.BasedataServiceI;
 import com.mobian.thirdpart.wx.AccessTokenInstance;
+import com.mobian.util.BeanUtil;
+import com.mobian.util.ConfigTransfer;
 import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.FileUtil;
 import org.springframework.context.ApplicationContext;
@@ -13,8 +15,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * 系统全局容器
@@ -22,13 +22,13 @@ import java.util.concurrent.Executors;
  *
  */
 public class Application implements ServletContextListener {
-	public final static ExecutorService executors = Executors.newFixedThreadPool(3);
 	private static ServletContext context;
 	private static String PREFIX = "SV.";
 	@Override
-	public void contextInitialized(ServletContextEvent event) {	
-		 context = event.getServletContext();	
-		 initAppVariable();
+	public void contextInitialized(ServletContextEvent event) {
+		context = event.getServletContext();
+		BeanUtil.setContext(context);
+		initAppVariable();
 
 		// 启动刷新微信access_token
 		AccessTokenInstance.getInstance();
@@ -42,8 +42,20 @@ public class Application implements ServletContextListener {
 		for(String key : map.keySet()){
 			context.setAttribute(PREFIX+key, map.get(key));
 		}
-		TokenManage.DEFAULT_TOKEN = getString("SV010","89");
-		ConvertNameUtil.setContext(context);
+
+
+		ConvertNameUtil.setConfigTransfer(new ConfigTransfer() {
+			@Override
+			public String getString(String key) {
+				BaseData bd = (BaseData)context.getAttribute(PREFIX+key);
+				String val = null;
+				if(bd != null){
+					val = bd.getName();
+				}
+				return val;
+			}
+		});
+		TokenManage.DEFAULT_TOKEN = ConvertNameUtil.getString("SV010", "89");
 	}
 	
 	/**
@@ -57,7 +69,7 @@ public class Application implements ServletContextListener {
 	 * 获取全局变量值
 	 * @param key
 	 * @return
-	 */
+	 *//*
 	public static String getString(String key){
 		BaseData bd = (BaseData)context.getAttribute(PREFIX+key);
 		String val = null;
@@ -75,7 +87,7 @@ public class Application implements ServletContextListener {
 		}
 		val = val == null?defaultVal:val;
 		return val;
-	}
+	}*/
 	
 	/**
 	 * 获取全局变量值
@@ -96,15 +108,4 @@ public class Application implements ServletContextListener {
 		
 
 	}
-
-	/*public static Object getBean(String name){
-		ApplicationContext app = WebApplicationContextUtils.getWebApplicationContext(context);
-		return app.getBean(name);
-	}*/
-
-	public static <T> T getBean(Class<T> requiredType){
-		ApplicationContext app = WebApplicationContextUtils.getWebApplicationContext(context);
-		return app.getBean(requiredType);
-	}
-
 }

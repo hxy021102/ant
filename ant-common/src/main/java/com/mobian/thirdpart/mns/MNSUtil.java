@@ -9,7 +9,7 @@ import com.aliyun.mns.model.RawTopicMessage;
 import com.aliyun.mns.model.TopicMessage;
 import com.aliyun.oss.ServiceException;
 import com.mobian.absx.F;
-import com.mobian.listener.Application;
+import com.mobian.util.ConvertNameUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -31,9 +31,9 @@ public class MNSUtil {
         /**
          * Step 1. 获取主题引用
          */
-        CloudAccount account = new CloudAccount(Application.getString("AL011"), Application.getString("AL012"), Application.getString("AL013"));
+        CloudAccount account = new CloudAccount(ConvertNameUtil.getString("AL011"), ConvertNameUtil.getString("AL012"), ConvertNameUtil.getString("AL013"));
         MNSClient client = account.getMNSClient();
-        CloudTopic topic = client.getTopicRef(Application.getString("AL014"));
+        CloudTopic topic = client.getTopicRef(ConvertNameUtil.getString("AL014"));
         /**
          * Step 2. 设置SMS消息体（必须）
          *
@@ -47,7 +47,7 @@ public class MNSUtil {
         MessageAttributes messageAttributes = new MessageAttributes();
         BatchSmsAttributes batchSmsAttributes = new BatchSmsAttributes();
         // 3.1 设置发送短信的签名（SMSSignName）
-        batchSmsAttributes.setFreeSignName(Application.getString("AL015"));
+        batchSmsAttributes.setFreeSignName(ConvertNameUtil.getString("AL015"));
         // 3.2 设置发送短信使用的模板（SMSTempateCode）
         batchSmsAttributes.setTemplateCode(template.getTemplateCode());
         // 3.3 设置发送短信所使用的模板中参数对应的值（在短信模板中定义的，没有可以不用设置）

@@ -10,6 +10,7 @@ import com.mobian.pageModel.MbItem;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.MbItemServiceI;
 import com.mobian.service.impl.RedisUserServiceImpl;
+import com.mobian.util.ConvertNameUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,7 +69,7 @@ public class ApiItemController extends BaseController {
             j.setMsg("获取商品列表成功！");
             j.setObj(dg);
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("获取商品列表接口异常", e);
         }
 
@@ -101,7 +102,7 @@ public class ApiItemController extends BaseController {
             j.setMsg("获取商品列表成功！");
             j.setObj(items);
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("获取商品列表接口异常", e);
         }
 
@@ -132,7 +133,7 @@ public class ApiItemController extends BaseController {
             j.setMsg("取商品详情成功！");
             j.setObj(o);
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("取商品详情接口异常", e);
         }
 

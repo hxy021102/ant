@@ -7,6 +7,7 @@ import com.mobian.absx.F;
 import com.mobian.listener.Application;
 import com.mobian.pageModel.*;
 import com.mobian.service.*;
+import com.mobian.util.BeanUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -53,7 +54,7 @@ public class SelectTagGrid extends TagSupport {
     @Override
     public int doStartTag() throws JspException {
         JspWriter out = pageContext.getOut();
-        DiveRegionServiceI diveRegionService = Application.getBean(DiveRegionServiceI.class);
+        DiveRegionServiceI diveRegionService = BeanUtil.getBean(DiveRegionServiceI.class);
         try {
             String _disabled = "false";
             if (!F.empty(disabled)) {
@@ -139,12 +140,12 @@ public class SelectTagGrid extends TagSupport {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("id", value);
         if ("itemId".equals(dataType)) {
-            MbItemServiceI mbItemService = Application.getBean(MbItemServiceI.class);
+            MbItemServiceI mbItemService = BeanUtil.getBean(MbItemServiceI.class);
             MbItem mbItem = mbItemService.getFromCache(Integer.parseInt(value));
             data.put("text", mbItem.getName());
             data.put("parentName", mbItem.getCategoryName());
         } else if ("shopId".equals(dataType)) {
-            MbShopServiceI mbShopService = Application.getBean(MbShopServiceI.class);
+            MbShopServiceI mbShopService = BeanUtil.getBean(MbShopServiceI.class);
             MbShop mbShop = mbShopService.getFromCache(Integer.parseInt(value));
             if (mbShop != null) {
                 data.put("text", mbShop.getName());
@@ -157,7 +158,7 @@ public class SelectTagGrid extends TagSupport {
                 data.put("pid", pid);
             }
         } else if ("warehouseId".equals(dataType)) {
-            MbWarehouseServiceI mbWarehouseService = Application.getBean(MbWarehouseServiceI.class);
+            MbWarehouseServiceI mbWarehouseService = BeanUtil.getBean(MbWarehouseServiceI.class);
             MbWarehouse mbWarehouse = mbWarehouseService.getFromCache(Integer.parseInt(value));
             if (mbWarehouse != null) {
                 data.put("text", mbWarehouse.getName());
@@ -165,21 +166,21 @@ public class SelectTagGrid extends TagSupport {
             }
         } else if ("supplierId".equals(dataType)) {
 
-            MbSupplierServiceI mbSupplierService = Application.getBean(MbSupplierServiceI.class);
+            MbSupplierServiceI mbSupplierService = BeanUtil.getBean(MbSupplierServiceI.class);
             MbSupplier mbSupplier = mbSupplierService.getFromCache(Integer.parseInt(value));
             if (mbSupplier != null) {
                 data.put("text", mbSupplier.getName());
                 data.put("parentName", mbSupplier.getRegionPath());
             }
         } else if ("mbUserId".equals(dataType)) {
-            MbUserServiceI mbUserService = Application.getBean(MbUserServiceI.class);
+            MbUserServiceI mbUserService = BeanUtil.getBean(MbUserServiceI.class);
             MbUser mbUser = mbUserService.getFromCache(Integer.parseInt(value));
             if (mbUser != null) {
                 data.put("text", mbUser.getUserName());
                 data.put("parentName", mbUser.getNickName());
             }
         } else if ("couponsId".equals(dataType)) {
-            MbCouponsServiceI mbCouponsService =Application.getBean(MbCouponsServiceI.class);
+            MbCouponsServiceI mbCouponsService =BeanUtil.getBean(MbCouponsServiceI.class);
             MbCoupons mbCoupons = mbCouponsService.getFromCache(Integer.parseInt(value));
             if (mbCoupons != null) {
                 data.put("text", mbCoupons.getName());
@@ -190,7 +191,7 @@ public class SelectTagGrid extends TagSupport {
         else {
 
             //行政区划
-            DiveRegionServiceI diveRegionService = Application.getBean(DiveRegionServiceI.class);
+            DiveRegionServiceI diveRegionService = BeanUtil.getBean(DiveRegionServiceI.class);
             DiveRegion region = diveRegionService.getFromCache(value);
             if (region != null) {
                 data.put("text", region.getRegionNameZh());

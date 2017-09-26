@@ -9,15 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.bx.ant</groupId>
-    <artifactId>ant-api</artifactId>
+    <artifactId>ant-util</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <dependencies>
-        <dependency>
-            <groupId>com.bx.ant</groupId>
-            <artifactId>ant-util</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
         <!-- 加入spring mvc依赖包 -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -65,4 +60,5 @@
             <version>1.7.5</version>
         </dependency>
     </dependencies>
+
 </project>

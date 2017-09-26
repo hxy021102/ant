@@ -11,6 +11,7 @@
 		<module>ant-mis-web</module>
 		<module>ant-api</module>
 		<module>ant-common</module>
+		<module>ant-util</module>
 	</modules>
 	<name>ant Maven Webapp</name>
 	<url>http://maven.apache.org</url>

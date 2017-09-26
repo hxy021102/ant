@@ -19,4 +19,10 @@
        <!--使用 dubbo 协议实现定义好的 api.PermissionService 接口-->
        <dubbo:service interface="com.mobian.service.MbShopServiceI" ref="mbShopServiceImpl" protocol="dubbo"/>
 
+       <dubbo:service interface="com.mobian.service.BasedataServiceI" ref="basedataServiceImpl" protocol="dubbo"/>
+
+       <dubbo:service interface="com.mobian.service.BasetypeServiceI" ref="basetypeServiceImpl" protocol="dubbo"/>
+
+       <dubbo:service interface="com.mobian.service.DiveRegionServiceI" ref="diveRegionServiceImpl" protocol="dubbo"/>
+
 </beans>

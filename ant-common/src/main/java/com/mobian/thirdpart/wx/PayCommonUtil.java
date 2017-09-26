@@ -1,6 +1,6 @@
 package com.mobian.thirdpart.wx;
 
-import com.mobian.listener.Application;
+import com.mobian.util.ConvertNameUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +32,7 @@ public class PayCommonUtil {
 				sb.append(k + "=" + v + "&");
 			}
 		}
-		sb.append("key=" + Application.getString(WeixinUtil.API_KEY));
+		sb.append("key=" + ConvertNameUtil.getString(WeixinUtil.API_KEY));
 //		sb.append("key=" + "58sf8pYRxqPIsX2B2gdFQy4ojFlPV5cA");
 		String sign = MD5Util.MD5Encode(sb.toString(), characterEncoding).toUpperCase();
 	    
@@ -92,9 +92,9 @@ public class PayCommonUtil {
 			// 企业付款描述信息
 			parameters.put("desc", "集东集西提现");
 			// 公众账号ID 必填
-			parameters.put("mch_appid", Application.getString(WeixinUtil.APPID));
+			parameters.put("mch_appid", ConvertNameUtil.getString(WeixinUtil.APPID));
 			// 商户号 必填
-			parameters.put("mchid", Application.getString(WeixinUtil.MCH_ID));
+			parameters.put("mchid", ConvertNameUtil.getString(WeixinUtil.MCH_ID));
 			// 随机字符串  必填 不长于32位
 			parameters.put("nonce_str", WeixinUtil.CreateNoncestr());
 			// 用户openid，此参数必传
@@ -126,13 +126,13 @@ public class PayCommonUtil {
 		try {
 			SortedMap<Object,Object> parameters = new TreeMap<Object,Object>();
 			// 公众账号ID 必填
-			parameters.put("appid", Application.getString(WeixinUtil.APPID));
+			parameters.put("appid", ConvertNameUtil.getString(WeixinUtil.APPID));
 			// 商户号 必填
-			parameters.put("mch_id", Application.getString(WeixinUtil.MCH_ID));
+			parameters.put("mch_id", ConvertNameUtil.getString(WeixinUtil.MCH_ID));
 			// 随机字符串  必填 不长于32位
 			parameters.put("nonce_str", WeixinUtil.CreateNoncestr());
 			// 操作员  必填
-			parameters.put("op_user_id", Application.getString(WeixinUtil.MCH_ID));
+			parameters.put("op_user_id", ConvertNameUtil.getString(WeixinUtil.MCH_ID));
 			// 商户退款单号  必填
 			parameters.put("out_refund_no", params.get("refund_no").toString());
 			// 商户订单号  必填

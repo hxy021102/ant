@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="com.mobian.listener.Application"%>
+<%@ page import="com.mobian.util.ConvertNameUtil" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
-<title><%=Application.getString("SV001")%></title>
+<title><%=ConvertNameUtil.getString("SV001")%></title>
 <jsp:include page="inc.jsp"></jsp:include>
 <script type="text/javascript" src="${pageContext.request.scheme}://api.map.baidu.com/api?v=2.0&ak=uVkZBmjLC0KGflQtsXRc4rh4&s=1"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/jslib/plupload-2.1.2/js/plupload.full.min.js" charset="utf-8"></script>
@@ -122,7 +122,7 @@
 			data-options="region:'west',href:'${pageContext.request.contextPath}/layout/west.jsp',split:true"
 			title="模块导航" style="width: 170px; overflow: hidden;"></div>
 		<div data-options="region:'center'"
-			title="<%=Application.getString("SV003")%>" style="overflow: hidden;">
+			title="<%=ConvertNameUtil.getString("SV003")%>" style="overflow: hidden;">
 			<div id="index_tabs" style="overflow: hidden;">
 				<!-- <div title="首页" data-options="border:false"
 					style="overflow: hidden;">
@@ -131,7 +131,7 @@
 				</div> -->
 				<div title="首页">
 					<div align="center" style="padding-top: 100px;">
-						<font color="black" size="10"><%=Application.getString("SV003")%></font>
+						<font color="black" size="10"><%=ConvertNameUtil.getString("SV003")%></font>
 					</div>
 				</div>
 			</div>

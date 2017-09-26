@@ -9,7 +9,7 @@ import java.util.concurrent.*;
 /**
  * Created by john on 16/8/7.
  */
-public class ExecutorCompletionServiceImpl<V> implements com.mobian.concurrent.CompletionService<V> {
+public class ExecutorCompletionServiceImpl<V> implements CompletionService<V> {
     private final Executor executor;
     private List<Future<V>> futureList;
     private Map<String,RunnableFuture<V>> cache;

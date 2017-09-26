@@ -6,7 +6,7 @@ import com.aliyun.oss.model.CannedAccessControlList;
 import com.aliyun.oss.model.GetObjectRequest;
 import com.aliyun.oss.model.OSSObject;
 import com.mobian.absx.F;
-import com.mobian.listener.Application;
+import com.mobian.util.ConvertNameUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,12 +31,12 @@ public class OSSUtil {
     private static OSSClient ossClient;
 
     static {
-        accessKeyId = Application.getString("AL001");
-        accessKeySecret = Application.getString("AL002");
-        endpoint = Application.getString("AL003");
-        endpointUrl = Application.getString("AL004");
-        cdnUrl = Application.getString("AL006");
-        bucketName = Application.getString("AL005");
+        accessKeyId = ConvertNameUtil.getString("AL001");
+        accessKeySecret = ConvertNameUtil.getString("AL002");
+        endpoint = ConvertNameUtil.getString("AL003");
+        endpointUrl = ConvertNameUtil.getString("AL004");
+        cdnUrl = ConvertNameUtil.getString("AL006");
+        bucketName = ConvertNameUtil.getString("AL005");
         ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
     }
 
