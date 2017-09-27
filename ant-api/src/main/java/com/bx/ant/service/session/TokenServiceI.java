@@ -25,4 +25,13 @@ public interface TokenServiceI {
      */
     boolean setToken(TokenWrap tokenWrap);
 
+
+    /**
+     * 获取token
+     * @param tokenId
+     * @return
+     */
+    TokenWrap getToken(String tokenId);
+
+
 }
