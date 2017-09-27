@@ -4,9 +4,7 @@ import com.mobian.absx.F;
 import com.mobian.dao.MbOrderCallbackItemDaoI;
 import com.mobian.model.TmbOrderCallbackItem;
 import com.mobian.pageModel.*;
-import com.mobian.service.MbItemServiceI;
-import com.mobian.service.MbOrderCallbackItemServiceI;
-import com.mobian.service.UserServiceI;
+import com.mobian.service.*;
 import com.mobian.util.MyBeanUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -29,6 +27,16 @@ public class MbOrderCallbackItemServiceImpl extends BaseServiceImpl<MbOrderCallb
 
 	@Autowired
 	private MbItemServiceI mbItemService;
+	@Autowired
+	private MbShopServiceI mbShopService;
+	@Autowired
+	private MbOrderServiceI mbOrderService;
+	@Autowired
+	private MbItemStockServiceI mbItemStockService;
+	@Autowired
+	private MbBalanceServiceI mbBalanceService;
+	@Autowired
+	private MbBalanceLogServiceI mbBalanceLogService;
 
 	private static Logger log = Logger.getLogger(MbOrderCallbackItemServiceImpl.class);
 
@@ -70,25 +78,25 @@ public class MbOrderCallbackItemServiceImpl extends BaseServiceImpl<MbOrderCallb
 	}
 
 	protected String whereHql(MbOrderCallbackItem mbOrderCallbackItem, Map<String, Object> params) {
-		String whereHql = "";	
+		String whereHql = "";
 		if (mbOrderCallbackItem != null) {
 			whereHql += " where t.isdeleted = 0 ";
 			if (!F.empty(mbOrderCallbackItem.getTenantId())) {
 				whereHql += " and t.tenantId = :tenantId";
 				params.put("tenantId", mbOrderCallbackItem.getTenantId());
-			}		
+			}
 			if (!F.empty(mbOrderCallbackItem.getIsdeleted())) {
 				whereHql += " and t.isdeleted = :isdeleted";
 				params.put("isdeleted", mbOrderCallbackItem.getIsdeleted());
-			}		
+			}
 			if (!F.empty(mbOrderCallbackItem.getOrderId())) {
 				whereHql += " and t.orderId = :orderId";
 				params.put("orderId", mbOrderCallbackItem.getOrderId());
-			}		
+			}
 			if (!F.empty(mbOrderCallbackItem.getItemId())) {
 				whereHql += " and t.itemId = :itemId";
 				params.put("itemId", mbOrderCallbackItem.getItemId());
-			}		
+			}
 			if (!F.empty(mbOrderCallbackItem.getQuantity())) {
 				whereHql += " and t.quantity = :quantity";
 				params.put("quantity", mbOrderCallbackItem.getQuantity());
@@ -101,7 +109,7 @@ public class MbOrderCallbackItemServiceImpl extends BaseServiceImpl<MbOrderCallb
 				whereHql += " and t.loginId = :loginId";
 				params.put("loginId", mbOrderCallbackItem.getLoginId());
 			}
-		}	
+		}
 		return whereHql;
 	}
 
@@ -155,4 +163,44 @@ public class MbOrderCallbackItemServiceImpl extends BaseServiceImpl<MbOrderCallb
 		}
 		return ol;
 	}
+
+	@Override
+	public void addCallbackItem(MbOrderCallbackItem mbOrderCallbackItem) {
+		add(mbOrderCallbackItem);
+		//空桶入总仓 : 总仓+ ,分仓-
+		MbOrder mbOrderOld = mbOrderService.get(mbOrderCallbackItem.getOrderId());
+		MbShop mbShop = mbShopService.getFromCache(mbOrderOld.getShopId());
+			//总仓增加空桶
+			if (mbOrderOld.getDeliveryWarehouseId() != null) {
+				MbItemStock mbItemStock = mbItemStockService.getByWareHouseIdAndItemId(mbOrderOld.getDeliveryWarehouseId(), mbOrderCallbackItem.getItemId());
+				MbItemStock change = new MbItemStock();
+				change.setId(mbItemStock.getId());
+				change.setAdjustment(mbOrderCallbackItem.getQuantity());
+				change.setLogType("SL02");
+				change.setReason(String.format("订单ID:%s空桶入库，库存：%s", mbOrderCallbackItem.getOrderId(), mbItemStock.getQuantity() + mbOrderCallbackItem.getQuantity()));
+				mbItemStockService.editAndInsertLog(change, mbOrderCallbackItem.getLoginId());
+			}
+
+			//分仓减少空桶
+			MbItemStock mbItemStockShop = mbItemStockService.getByWareHouseIdAndItemId(mbShop.getWarehouseId(), mbOrderCallbackItem.getItemId());
+			MbItemStock changeShop = new MbItemStock();
+			changeShop.setId(mbItemStockShop.getId());
+			changeShop.setAdjustment(-mbOrderCallbackItem.getQuantity());
+			changeShop.setLogType("SL03");
+			changeShop.setReason(String.format("订单ID:%s空桶出库，库存：%s", mbOrderCallbackItem.getOrderId(), mbItemStockShop.getQuantity() - mbOrderCallbackItem.getQuantity()));
+			mbItemStockService.editAndInsertLog(changeShop, mbOrderCallbackItem.getLoginId());
+
+			//加桶钱
+			MbBalance mbBalance = mbBalanceService.addOrGetMbBalanceCash(mbOrderOld.getShopId());
+			MbItem packItem = mbItemService.getFromCache(mbOrderCallbackItem.getItemId());
+			MbBalanceLog mbBalanceLog = new MbBalanceLog();
+			mbBalanceLog.setAmount(packItem.getMarketPrice() * mbOrderCallbackItem.getQuantity());
+			mbBalanceLog.setRefId(mbOrderOld.getId() + "");
+			mbBalanceLog.setRefType("BT018");
+			mbBalanceLog.setBalanceId(mbBalance.getId());
+			mbBalanceLog.setReason(String.format("订单ID：%s回桶出库 商品[%s],数量[%s]", mbOrderOld.getId(), packItem.getName(), mbOrderCallbackItem.getQuantity()));
+			mbBalanceLogService.addAndUpdateBalance(mbBalanceLog);
+
+		}
+
 }

@@ -42,10 +42,7 @@ public class MbOrderRefundItemController extends BaseController {
 
 	@Autowired
 	private MbOrderItemServiceI mbOrderItemService;
-	@Autowired
-	private MbBalanceServiceI mbBalanceService;
-	@Autowired
-	private MbBalanceLogServiceI mbBalanceLogService;
+
 
 
 	/**
@@ -114,10 +111,17 @@ public class MbOrderRefundItemController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/addPage")
-	public String addPage(HttpServletRequest request,Integer id,Integer shopId) {
+	public String addPage(HttpServletRequest request,Integer id) {
 		request.setAttribute("orderId",id);
-		request.setAttribute("shopId",shopId);
 		return "/mborderrefunditem/mbOrderRefundItemAddPage";
+	}
+	/**
+	 * 跳转到添加退回商品页面
+	 */
+	@RequestMapping("/addRefundPage")
+	public String addRefundPage(HttpServletRequest request,Integer id) {
+		request.setAttribute("orderId",id);
+		return "/mborderrefunditem/mbOrderRefundItemAddRefundPage";
 	}
 
 	/**
@@ -127,7 +131,7 @@ public class MbOrderRefundItemController extends BaseController {
 	 */
 	@RequestMapping("/add")
 	@ResponseBody
-	public Json add(MbOrderRefundItem mbOrderRefundItem, HttpSession session,Integer shopId) {
+	public Json add(MbOrderRefundItem mbOrderRefundItem, HttpSession session) {
 		Json j = new Json();
 		MbOrderItem mbOrderItem = new MbOrderItem();
 		mbOrderItem.setOrderId(mbOrderRefundItem.getOrderId());
@@ -165,16 +169,51 @@ public class MbOrderRefundItemController extends BaseController {
 		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
 		mbOrderRefundItem.setLoginId(sessionInfo.getId());
 		mbOrderRefundItemService.add(mbOrderRefundItem);
-		//桶账挂钩
-		MbBalance mbBalance = mbBalanceService.addOrGetMbBalanceCash(shopId);
-		MbItem packItem = mbItemService.getFromCache(mbOrderRefundItem.getItemId());
-		MbBalanceLog mbBalanceLog = new MbBalanceLog();
-		mbBalanceLog.setAmount(packItem.getMarketPrice() * mbOrderRefundItem.getQuantity());
-		mbBalanceLog.setRefId(mbOrderRefundItem.getOrderId() + "");
-		mbBalanceLog.setRefType("BT017");
-		mbBalanceLog.setBalanceId(mbBalance.getId());
-		mbBalanceLog.setReason(String.format("订单ID：%s退货出库 商品[%s],数量[%s]", mbOrderRefundItem.getOrderId(), packItem.getName(), mbOrderRefundItem.getQuantity()));
-		mbBalanceLogService.addAndUpdateBalance(mbBalanceLog);
+		j.setSuccess(true);
+		j.setMsg("添加成功！");
+
+		return j;
+	}
+	@RequestMapping("/addRefund")
+	@ResponseBody
+	public Json addRefund(MbOrderRefundItem mbOrderRefundItem, HttpSession session) {
+		Json j = new Json();
+		MbOrderItem mbOrderItem = new MbOrderItem();
+		mbOrderItem.setOrderId(mbOrderRefundItem.getOrderId());
+		mbOrderItem.setItemId(mbOrderRefundItem.getItemId());
+		List<MbOrderItem> mbOrderItemList = mbOrderItemService.query(mbOrderItem);
+		Integer mbOrderItemQuantity = 0;
+		for (MbOrderItem orderItem : mbOrderItemList) {
+			mbOrderItemQuantity += orderItem.getQuantity();
+		}
+
+		//初始化退回商品总数
+		Integer mbOrderRefundItemQuantity ;
+		if((mbOrderRefundItemQuantity = mbOrderRefundItem.getQuantity()) == null)	{
+			mbOrderRefundItemQuantity=0;
+		}
+		//根据MborderRefundItem中的orderId和ItemId搜索数据库并遍历
+		MbOrderRefundItem mbOrderRefundItemA = new MbOrderRefundItem();
+		mbOrderRefundItemA.setItemId(mbOrderRefundItem.getItemId());
+		mbOrderRefundItemA.setOrderId(mbOrderRefundItem.getOrderId());
+		List<MbOrderRefundItem> mbOrderRefundItems =	mbOrderRefundItemService.query(mbOrderRefundItemA);
+		//遍历从数据库中获取到的退回商品序列,累加不同类型的数量和判断是否存在已经添加的同类型商品
+		for (MbOrderRefundItem m : mbOrderRefundItems) {
+			//累加订单中已经添加的退回商品的数量
+			if (m.getQuantity() != null) {
+				mbOrderRefundItemQuantity += m.getQuantity();
+			}
+		}
+		//判断退货商品数量是否超过发货数量
+		if(mbOrderItemQuantity == null   || mbOrderItemQuantity < mbOrderRefundItemQuantity){
+			j.setSuccess(false);
+			j.setMsg("添加的退货商品数量不能超过该商品的发货量");
+			return j;
+		}
+
+		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+		mbOrderRefundItem.setLoginId(sessionInfo.getId());
+		mbOrderRefundItemService.addRefund(mbOrderRefundItem);
 		j.setSuccess(true);
 		j.setMsg("添加成功！");
 

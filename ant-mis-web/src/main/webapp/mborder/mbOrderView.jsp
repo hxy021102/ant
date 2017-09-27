@@ -242,7 +242,24 @@
             title: '空桶登记',
             width: 780,
             height: 200,
-            href: '${pageContext.request.contextPath}/mbOrderCallbackItemController/addPage?id=' + ${mbOrder.id} +'&shopId='+ ${mbOrder.shopId} ,
+            href: '${pageContext.request.contextPath}/mbOrderCallbackItemController/addPage?id=' + ${mbOrder.id} ,
+            buttons: [{
+                text: '添加',
+                handler: function () {
+                    parent.$.modalDialog.openner_dataGrid = gridMap[6].grid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                    var f = parent.$.modalDialog.handler.find('#form');
+                    f.submit();
+                }
+            }
+            ]
+        });
+    }
+    function addMbOrderCallback() {
+        parent.$.modalDialog({
+            title: '空桶登记',
+            width: 780,
+            height: 200,
+            href: '${pageContext.request.contextPath}/mbOrderCallbackItemController/addCallbackPage?id=' + ${mbOrder.id} ,
             buttons: [{
                 text: '添加',
                 handler: function () {
@@ -260,7 +277,24 @@
             title: '退回登记',
             width: 780,
             height: 230,
-            href: '${pageContext.request.contextPath}/mbOrderRefundItemController/addPage?id=' + ${mbOrder.id} +'&shopId=' +${mbOrder.shopId},
+            href: '${pageContext.request.contextPath}/mbOrderRefundItemController/addPage?id=' + ${mbOrder.id} ,
+            buttons: [{
+                text: '添加',
+                handler: function () {
+                    parent.$.modalDialog.openner_dataGrid = gridMap[7].grid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                    var f = parent.$.modalDialog.handler.find('#form');
+                    f.submit();
+                }
+            }
+            ]
+        });
+    }
+    function addMbOrderRefund() {
+        parent.$.modalDialog({
+            title: '退回登记',
+            width: 780,
+            height: 230,
+            href: '${pageContext.request.contextPath}/mbOrderRefundItemController/addRefundPage?id=' + ${mbOrder.id} ,
             buttons: [{
                 text: '添加',
                 handler: function () {
@@ -1298,14 +1332,20 @@
         </c:if>
     </div>
     <div id="mbOrderCallbackItemToolbar" style="display: none;">
-        <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderCallbackItemController/add') and mbOrder.payStatus=='PS05' and mbOrder.status=='OD40'}">
+        <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderCallbackItemController/add') and mbOrder.deliveryStatus=='DS30' and mbOrder.status=='OD35'}">
             <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addMbOrderCallbackItem();" data-options="plain:true,iconCls:'pencil_add'">添加</a>
+        </c:if>
+        <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderCallbackItemController/addCallback') and mbOrder.payStatus=='PS05' and mbOrder.status=='OD40'}">
+            <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addMbOrderCallback();" data-options="plain:true,iconCls:'pencil_add'">添加</a>
         </c:if>
     </div>
     </div>
     <div id="mbOrderRefundItemToolbar" style="display: none;">
-        <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderRefundItemController/add') and mbOrder.payStatus=='PS05' and mbOrder.status=='OD40'}">
-            <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addMbOrderRefundItem();" data-options="plain:true,iconCls:'pencil_add'">添加</a>
+        <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderRefundItemController/add') and mbOrder.deliveryStatus=='DS30' and mbOrder.status=='OD35'}">
+        <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addMbOrderRefundItem();" data-options="plain:true,iconCls:'pencil_add'">添加</a>
+        </c:if>
+        <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderRefundItemController/addRefund') and mbOrder.payStatus=='PS05' and mbOrder.status=='OD40'}">
+            <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addMbOrderRefund();" data-options="plain:true,iconCls:'pencil_add'">添加</a>
         </c:if>
     </div>
     <iframe id="printIframe" style="display: none;"></iframe>

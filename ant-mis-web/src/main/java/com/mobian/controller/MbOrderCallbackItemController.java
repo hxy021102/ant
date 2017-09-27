@@ -91,10 +91,14 @@ public class MbOrderCallbackItemController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/addPage")
-	public String addPage(HttpServletRequest request,Integer id,Integer shopId ) {
+	public String addPage(HttpServletRequest request,Integer id) {
 		request.setAttribute("orderId",id);
-		request.setAttribute("shopId",shopId);
 		return "/mbordercallbackitem/mbOrderCallbackItemAddPage";
+	}
+	@RequestMapping("/addCallbackPage")
+	public String addCallbackPage(HttpServletRequest request,Integer id ) {
+		request.setAttribute("orderId",id);
+		return "/mbordercallbackitem/mbOrderCallbackItemAddCallbackPage";
 	}
 
 	/**
@@ -104,24 +108,26 @@ public class MbOrderCallbackItemController extends BaseController {
 	 */
 	@RequestMapping("/add")
 	@ResponseBody
-	public Json add(MbOrderCallbackItem mbOrderCallbackItem, HttpSession session,Integer packId,Integer shopId,Integer orderId) {
+	public Json add(MbOrderCallbackItem mbOrderCallbackItem, HttpSession session,Integer packId) {
 		Json j = new Json();
 		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
 		mbOrderCallbackItem.setItemId(packId);
 		mbOrderCallbackItem.setLoginId(sessionInfo.getId());
 		mbOrderCallbackItemService.add(mbOrderCallbackItem);
-		//与桶账挂钩
-		MbBalance mbBalance = mbBalanceService.addOrGetMbBalanceCash(shopId);
-		MbItem packItem = mbItemService.getFromCache(packId);
-		MbBalanceLog mbBalanceLog = new MbBalanceLog();
-		mbBalanceLog.setAmount(packItem.getMarketPrice() * mbOrderCallbackItem.getQuantity());
-		mbBalanceLog.setRefId(orderId + "");
-		mbBalanceLog.setRefType("BT018");
-		mbBalanceLog.setBalanceId(mbBalance.getId());
-		mbBalanceLog.setReason(String.format("订单ID：%s回桶出库 商品[%s],数量[%s]", orderId, packItem.getName(), mbOrderCallbackItem.getQuantity()));
-		mbBalanceLogService.addAndUpdateBalance(mbBalanceLog);
 		j.setSuccess(true);
 		j.setMsg("添加成功！");		
+		return j;
+	}
+	@RequestMapping("/addCallback")
+	@ResponseBody
+	public Json addCallback(MbOrderCallbackItem mbOrderCallbackItem, HttpSession session,Integer packId) {
+		Json j = new Json();
+		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+		mbOrderCallbackItem.setItemId(packId);
+		mbOrderCallbackItem.setLoginId(sessionInfo.getId());
+		mbOrderCallbackItemService.addCallbackItem(mbOrderCallbackItem);
+		j.setSuccess(true);
+		j.setMsg("添加成功！");
 		return j;
 	}
 
