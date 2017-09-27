@@ -42,18 +42,6 @@ public class MbSupplierStockInItemServiceImpl extends BaseServiceImpl<MbSupplier
 				MbSupplierStockInItem o = new MbSupplierStockInItem();
 				BeanUtils.copyProperties(t, o);
 				ol.add(o);
-				if(o.getSupplierStockInId() != null) {
-					MbSupplierStockIn mbSupplierStockIn = mbSupplierStockInService.get(o.getSupplierStockInId());
-					o.setSupplierOrderId(mbSupplierStockIn.getSupplierOrderId());
-					MbSupplierOrder mbSupplierOrder = mbSupplierOrderService.get(mbSupplierStockIn.getSupplierOrderId());
-					MbSupplier mbSupplier = mbSupplierService.get(mbSupplierOrder.getSupplierId());
-					o.setSupplierName(mbSupplier.getName());
-				}
-				if(o.getItemId() != null) {
-				 MbItem mbItem = mbItemService.get(o.getItemId());
-				 o.setProductName(mbItem.getName());
-				 o.setCode(mbItem.getCode());
-				}
 			}
 		}
 		dg.setRows(ol);
@@ -178,5 +166,35 @@ public class MbSupplierStockInItemServiceImpl extends BaseServiceImpl<MbSupplier
 			}
 		}
 		return ol;
+	}
+
+	@Override
+	public DataGrid dataGridStockInItem(MbSupplierStockInItem mbSupplierStockInItem, PageHelper ph) {
+		List<MbSupplierStockInItem> ol = new ArrayList<MbSupplierStockInItem>();
+		String hql = " from TmbSupplierStockInItem t ";
+		DataGrid dg = dataGridQuery(hql, ph, mbSupplierStockInItem, mbSupplierStockInItemDao);
+		@SuppressWarnings("unchecked")
+		List<TmbSupplierStockInItem> l = dg.getRows();
+		if (l != null && l.size() > 0) {
+			for (TmbSupplierStockInItem t : l) {
+				MbSupplierStockInItem o = new MbSupplierStockInItem();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+				if(o.getSupplierStockInId() != null) {
+					MbSupplierStockIn mbSupplierStockIn = mbSupplierStockInService.get(o.getSupplierStockInId());
+					o.setSupplierOrderId(mbSupplierStockIn.getSupplierOrderId());
+					MbSupplierOrder mbSupplierOrder = mbSupplierOrderService.get(mbSupplierStockIn.getSupplierOrderId());
+					MbSupplier mbSupplier = mbSupplierService.get(mbSupplierOrder.getSupplierId());
+					o.setSupplierName(mbSupplier.getName());
+				}
+				if(o.getItemId() != null) {
+					MbItem mbItem = mbItemService.get(o.getItemId());
+					o.setProductName(mbItem.getName());
+					o.setCode(mbItem.getCode());
+				}
+			}
+		}
+		dg.setRows(ol);
+		return dg;
 	}
 }

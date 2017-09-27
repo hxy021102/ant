@@ -81,7 +81,10 @@
 				}, {
 				field : 'price',
 				title : '<%=TmbSupplierStockInItem.ALIAS_PRICE%>',
-				width : 30
+				width : 30,
+				formatter: function (value) {
+				    return $.formatMoney(value)
+				}
 			} ] ],
 			toolbar : '#toolbar',
 			onLoadSuccess : function() {
@@ -191,7 +194,7 @@
         var isValid = $('#searchForm').form('validate');
         if(isValid)
             var options = {};
-        	options.url = '${pageContext.request.contextPath}/mbSupplierStockInItemController/dataGrid';
+        	options.url = '${pageContext.request.contextPath}/mbSupplierStockInItemController/dataGridStockInItem';
         	options.queryParams = $.serializeObject($('#searchForm'));
         	dataGrid.datagrid(options);
 
