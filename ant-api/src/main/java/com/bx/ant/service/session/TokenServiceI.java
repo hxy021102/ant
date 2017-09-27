@@ -2,8 +2,6 @@ package com.bx.ant.service.session;
 
 import com.bx.ant.pageModel.session.TokenWrap;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Created by john on 17/9/26.
  */
@@ -27,7 +25,4 @@ public interface TokenServiceI {
      */
     boolean setToken(TokenWrap tokenWrap);
 
-    TokenWrap getToken(String tokenId);
-
-    TokenWrap getToken(HttpServletRequest request);
 }
