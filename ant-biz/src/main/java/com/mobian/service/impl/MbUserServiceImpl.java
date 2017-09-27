@@ -3,17 +3,16 @@ package com.mobian.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.mobian.absx.F;
 import com.mobian.dao.MbUserDaoI;
+import com.mobian.listener.Application;
 import com.mobian.model.TmbUser;
 import com.mobian.pageModel.*;
 import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.service.MbUserServiceI;
+import com.mobian.thirdpart.redis.RedisUtil;
 import com.mobian.thirdpart.wx.HttpUtil;
 import com.mobian.thirdpart.wx.WeixinUtil;
-import com.mobian.util.Constants;
-import com.mobian.util.MD5Util;
-import com.mobian.util.MyBeanUtils;
-import com.mobian.util.Util;
+import com.mobian.util.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -242,6 +241,8 @@ public class MbUserServiceImpl extends BaseServiceImpl<MbUser> implements MbUser
             mbUser.setRefId(openid);
             mbUser.setRefType("wx");
             mbUser.setIsdeleted(false);
+            RedisUtil redisUtil = BeanUtil.getBean(RedisUtil.class);
+
             JSONObject jsonObject = JSONObject.parseObject(HttpUtil.httpsRequest(WeixinUtil.getUserInfoUrl(openid, access_token), "GET", null));
             // 未关注公众号
             if (F.empty(access_token) && jsonObject.getIntValue("subscribe") == 0) {

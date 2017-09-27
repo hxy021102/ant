@@ -6,7 +6,6 @@ import com.mobian.concurrent.CompletionService;
 import com.mobian.concurrent.Task;
 import com.mobian.controller.BaseController;
 import com.mobian.interceptors.TokenManage;
-import com.mobian.listener.Application;
 import com.mobian.pageModel.*;
 import com.mobian.service.*;
 import com.mobian.service.impl.CompletionFactory;
@@ -14,10 +13,7 @@ import com.mobian.service.impl.RedisUserServiceImpl;
 import com.mobian.thirdpart.mns.MNSTemplate;
 import com.mobian.thirdpart.mns.MNSUtil;
 import com.mobian.thirdpart.wx.WeixinUtil;
-import com.mobian.util.ConfigUtil;
-import com.mobian.util.MD5Util;
-import com.mobian.util.RSAUtil;
-import com.mobian.util.Util;
+import com.mobian.util.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,7 +23,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,7 +89,7 @@ public class ApiUserController extends BaseController {
             }
             j.setMsg("账号密码不能为空！");
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("用户登录接口异常", e);
         }
 
@@ -110,7 +105,7 @@ public class ApiUserController extends BaseController {
     @ResponseBody
     public void loginByWx(String code, String state, HttpServletRequest request, HttpServletResponse response) {
         try{
-            String appId = Application.getString(WeixinUtil.APPID);
+            String appId = ConvertNameUtil.getString(WeixinUtil.APPID);
             String server_url = ConfigUtil.get("server_url").replaceAll("[\"|']", "");
             String redirect_uri = server_url + "api/apiUserController/loginByWx";
             if(F.empty(code)) {
@@ -175,7 +170,7 @@ public class ApiUserController extends BaseController {
             }
             j.setMsg("获取短信验证码失败！");
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("获取短信验证码接口异常", e);
         }
 
@@ -253,7 +248,7 @@ public class ApiUserController extends BaseController {
             }
             j.setMsg("注册失败！");
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("用户注册接口异常", e);
         }
 
@@ -316,7 +311,7 @@ public class ApiUserController extends BaseController {
             j.setSuccess(true);
             j.setMsg("修改成功！");
         }catch(Exception e) {
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("修改、补充用户信息接口异常", e);
         }
 
@@ -338,7 +333,7 @@ public class ApiUserController extends BaseController {
             j.setMsg("获取用户信息成功！");
             j.setObj(o);
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("获取用户信息接口异常", e);
         }
 
@@ -423,7 +418,7 @@ public class ApiUserController extends BaseController {
             j.setMsg("获取用户信息成功！");
             j.setObj(o);
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("获取用户信息接口异常", e);
         }
 
@@ -448,7 +443,7 @@ public class ApiUserController extends BaseController {
             j.setMsg("获取用户门店信息成功！");
             j.setObj(mbShop);
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("获取用户门店信息接口异常", e);
         }
 
@@ -473,7 +468,7 @@ public class ApiUserController extends BaseController {
             j.setMsg("获取用户门店列表成功！");
             j.setObj(shops);
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("获取用户门店列表接口异常", e);
         }
 
@@ -522,7 +517,7 @@ public class ApiUserController extends BaseController {
             j.setMsg("提交用户门店审核信息成功！");
 
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("提交用户门店审核信息接口异常", e);
         }
 
@@ -542,7 +537,7 @@ public class ApiUserController extends BaseController {
             j.setMsg("获取RSA公钥接口成功！");
             j.setObj(publicKey);
         } catch (Exception e) {
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("获取RSA公钥接口异常", e);
         }
 

@@ -6,6 +6,7 @@ import com.mobian.interceptors.TokenManage;
 import com.mobian.listener.Application;
 import com.mobian.pageModel.*;
 import com.mobian.service.MbUserAddressServiceI;
+import com.mobian.util.ConvertNameUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,7 +52,7 @@ public class ApiUserAddressController extends BaseController {
             j.setMsg("获取收货地址成功！");
             j.setObj(dg);
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("获取收货地址接口异常", e);
         }
 
@@ -79,7 +80,7 @@ public class ApiUserAddressController extends BaseController {
             j.setSuccess(true);
             j.setMsg("添加收货地址成功！");
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("添加收货地址接口异常", e);
         }
 
@@ -102,7 +103,7 @@ public class ApiUserAddressController extends BaseController {
             j.setSuccess(true);
             j.setMsg("修改收货地址成功！");
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("修改收货地址接口异常", e);
         }
 
@@ -125,7 +126,7 @@ public class ApiUserAddressController extends BaseController {
             j.setSuccess(true);
             j.setMsg("删除收货地址成功！");
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("删除收货地址接口异常", e);
         }
 
@@ -146,7 +147,7 @@ public class ApiUserAddressController extends BaseController {
             j.setMsg("获取默认收货地址成功！");
             j.setObj(o);
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("获取默认收货地址接口异常", e);
         }
 
@@ -171,7 +172,7 @@ public class ApiUserAddressController extends BaseController {
             j.setSuccess(true);
             j.setMsg("设为默认收货地址成功！");
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("设为默认收货地址接口异常", e);
         }
 
