@@ -2,11 +2,11 @@ package com.mobian.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.mobian.concurrent.ThreadCache;
-import com.mobian.listener.Application;
 import com.mobian.pageModel.*;
 import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.MbShopServiceI;
+import com.mobian.util.ConvertNameUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -98,7 +98,7 @@ public class MbBalanceLogController extends BaseController {
 				MbBalanceLogExport export = new MbBalanceLogExport();
 				BeanUtils.copyProperties(balanceLog, export);
 				mbBalanceLogExports.add(export);
-				export.setRefTypeName(Application.getString(balanceLog.getRefType()));
+				export.setRefTypeName(ConvertNameUtil.getString(balanceLog.getRefType()));
 
 				MbBalance mbBalance = mbBalanceCache.getValue(balanceLog.getBalanceId());
 				if (mbBalance != null) {

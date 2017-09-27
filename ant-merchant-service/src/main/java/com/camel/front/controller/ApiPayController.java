@@ -4,7 +4,6 @@ package com.camel.front.controller;
 import com.aliyun.mns.model.TopicMessage;
 import com.mobian.absx.F;
 import com.mobian.controller.BaseController;
-import com.mobian.listener.Application;
 import com.mobian.pageModel.*;
 import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbBalanceServiceI;
@@ -17,6 +16,7 @@ import com.mobian.thirdpart.wx.HttpUtil;
 import com.mobian.thirdpart.wx.PayCommonUtil;
 import com.mobian.thirdpart.wx.WeixinUtil;
 import com.mobian.thirdpart.wx.XMLUtil;
+import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.IpUtil;
 import com.mobian.util.Util;
 import org.apache.log4j.Logger;
@@ -86,17 +86,17 @@ public class ApiPayController extends BaseController {
 					mbPaymentService.add(payment);
 				}
 				orderNo = "MP" + payment.getOrderId();
-				body = Application.getString(WeixinUtil.BODY) + " - 订单支付";
+				body = ConvertNameUtil.getString(WeixinUtil.BODY) + " - 订单支付";
 				amount = payment.getAmount();
 			} else {
 				if(F.empty(type)) type = 1; // 默认余额
 				MbBalance balance = null;
 				if(type == 1) {
 					balance = mbBalanceService.addOrGetMbBalance(s.getShopId());
-					body = Application.getString(WeixinUtil.BODY) + " - 钱包充值";
+					body = ConvertNameUtil.getString(WeixinUtil.BODY) + " - 钱包充值";
 				} else {
 					balance = mbBalanceService.addOrGetMbBalanceCash(s.getShopId());
-					body = Application.getString(WeixinUtil.BODY) + " - 桶账余额充值";
+					body = ConvertNameUtil.getString(WeixinUtil.BODY) + " - 桶账余额充值";
 				}
 
 				balanceLog.setIsdeleted(true);
@@ -118,7 +118,7 @@ public class ApiPayController extends BaseController {
 			j.success();
 			j.setMsg("微信支付成功！");
 		}catch(Exception e){
-			j.setMsg(Application.getString(EX_0001));
+			j.setMsg(ConvertNameUtil.getString(EX_0001));
 			logger.error("微信支付接口异常", e);
 		}
 		return j;
@@ -159,7 +159,7 @@ public class ApiPayController extends BaseController {
 			j.success();
 			j.setMsg("余额支付成功！");
 		}catch(Exception e){
-			j.setMsg(Application.getString(EX_0001));
+			j.setMsg(ConvertNameUtil.getString(EX_0001));
 			logger.error("余额支付接口异常", e);
 		}
 		return j;
@@ -188,7 +188,7 @@ public class ApiPayController extends BaseController {
 			j.success();
 			j.setMsg("余额支付成功！");
 		}catch(Exception e){
-			j.setMsg(Application.getString(EX_0001));
+			j.setMsg(ConvertNameUtil.getString(EX_0001));
 			logger.error("余额支付接口异常", e);
 		}
 		return j;
@@ -227,7 +227,7 @@ public class ApiPayController extends BaseController {
 				j.setMsg("获取短信验证码失败！");
 			}
 		} catch (Exception e) {
-			j.setMsg(Application.getString(EX_0001));
+			j.setMsg(ConvertNameUtil.getString(EX_0001));
 			logger.error("获取短信验证码接口异常", e);
 		}
 		return j;
@@ -321,17 +321,17 @@ public class ApiPayController extends BaseController {
 		try {
 			SortedMap<Object,Object> parameters = new TreeMap<Object,Object>();
 			// 公众账号ID 必填
-			parameters.put("appid", Application.getString(WeixinUtil.APPID));
+			parameters.put("appid", ConvertNameUtil.getString(WeixinUtil.APPID));
 			// 附加数据 不是必填
 			parameters.put("attach", orderNo);
 			// 商品描述  必填
 			parameters.put("body", body);
 			// 商户号 必填
-			parameters.put("mch_id", Application.getString(WeixinUtil.MCH_ID));
+			parameters.put("mch_id", ConvertNameUtil.getString(WeixinUtil.MCH_ID));
 			// 随机字符串  必填 不长于32位
 			parameters.put("nonce_str", WeixinUtil.CreateNoncestr());
 			// 通知地址  必填
-			parameters.put("notify_url", Application.getString(WeixinUtil.NOTIFY_URL));
+			parameters.put("notify_url", ConvertNameUtil.getString(WeixinUtil.NOTIFY_URL));
 			// 用户标识  trade_type=JSAPI，此参数必传
 			parameters.put("openid", openid);
 			// 商户订单号  必填
