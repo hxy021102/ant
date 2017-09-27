@@ -5,12 +5,12 @@ import com.mobian.concurrent.CompletionService;
 import com.mobian.concurrent.Task;
 import com.mobian.controller.BaseController;
 import com.mobian.interceptors.TokenManage;
-import com.mobian.listener.Application;
 import com.mobian.pageModel.*;
 import com.mobian.service.MbItemServiceI;
 import com.mobian.service.MbShoppingServiceI;
 import com.mobian.service.impl.CompletionFactory;
 import com.mobian.service.impl.RedisUserServiceImpl;
+import com.mobian.util.ConvertNameUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -78,7 +78,7 @@ public class ApiShoppingController extends BaseController {
             j.setMsg("获取购物车列表成功！");
             j.setObj(dg);
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("获取购物车列表接口异常", e);
         }
 
@@ -115,7 +115,7 @@ public class ApiShoppingController extends BaseController {
             j.setSuccess(true);
             j.setMsg("添加购物车商品成功！");
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("添加购物车商品接口异常", e);
         }
 
@@ -141,7 +141,7 @@ public class ApiShoppingController extends BaseController {
             j.setMsg("修改购物车商品数量成功！");
             return j;
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("修改购物车商品数量接口异常", e);
         }
 
@@ -166,7 +166,7 @@ public class ApiShoppingController extends BaseController {
             j.setSuccess(true);
             j.setMsg("删除购物车商品成功！");
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("删除购物车商品接口异常", e);
         }
 
@@ -195,7 +195,7 @@ public class ApiShoppingController extends BaseController {
             j.setSuccess(true);
             j.setMsg("批量删除购物车商品成功！");
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("批量删除购物车商品接口异常", e);
         }
 
@@ -216,7 +216,7 @@ public class ApiShoppingController extends BaseController {
             j.setMsg("获取购物车商品数量成功！");
             j.setObj(num);
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("获取购物车商品数量接口异常", e);
         }
 

@@ -3,9 +3,12 @@ package com.camel.front.controller;
 import com.mobian.absx.F;
 import com.mobian.controller.BaseController;
 import com.mobian.interceptors.TokenManage;
-import com.mobian.listener.Application;
-import com.mobian.pageModel.*;
+import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.Json;
+import com.mobian.pageModel.MbUserInvoice;
+import com.mobian.pageModel.PageHelper;
 import com.mobian.service.MbUserInvoiceServiceI;
+import com.mobian.util.ConvertNameUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,7 +48,7 @@ public class ApiUserInvoiceController extends BaseController {
             j.setMsg("获取发票成功！");
             j.setObj(dg);
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("获取发票接口异常", e);
         }
 
@@ -66,7 +69,7 @@ public class ApiUserInvoiceController extends BaseController {
             j.setSuccess(true);
             j.setMsg("添加发票成功！");
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("添加发票接口异常", e);
         }
 
@@ -89,7 +92,7 @@ public class ApiUserInvoiceController extends BaseController {
             j.setSuccess(true);
             j.setMsg("修改发票成功！");
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("修改发票接口异常", e);
         }
 
@@ -112,7 +115,7 @@ public class ApiUserInvoiceController extends BaseController {
             j.setSuccess(true);
             j.setMsg("删除发票成功！");
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("删除发票接口异常", e);
         }
 

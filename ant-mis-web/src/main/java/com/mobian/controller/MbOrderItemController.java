@@ -2,10 +2,10 @@ package com.mobian.controller;
 
 import com.mobian.absx.F;
 import com.mobian.concurrent.ThreadCache;
-import com.mobian.listener.Application;
 import com.mobian.pageModel.*;
 import com.mobian.service.*;
 import com.mobian.service.impl.RedisUserServiceImpl;
+import com.mobian.util.ConvertNameUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -156,17 +156,17 @@ public class MbOrderItemController extends BaseController {
                     mbOrderItemExport.setItemName(mbItem.getName());
                 }
                 mbOrderItemExport.setTotalRefundAmount(mbOrder.getTotalRefundAmount());
-                mbOrderItemExport.setStatus(Application.getString(mbOrder.getStatus()));
+                mbOrderItemExport.setStatus(ConvertNameUtil.getString(mbOrder.getStatus()));
                 MbOrderRefundItem mbOrderRefundItem = new MbOrderRefundItem();
                 mbOrderRefundItem.setItemId(itemExport.getItemId());
                 mbOrderRefundItem.setOrderId(itemExport.getOrderId());
-                mbOrderItemExport.setPayStatus(Application.getString(mbOrder.getPayStatus()));
+                mbOrderItemExport.setPayStatus(ConvertNameUtil.getString(mbOrder.getPayStatus()));
                 mbOrderItemExport.setDeliveryAddress(mbOrder.getDeliveryAddress());
                 List<MbOrderRefundItem> mbOrderRefundItemList = mbOrderRefundItemService.query(mbOrderRefundItem);
                 if (CollectionUtils.isNotEmpty(mbOrderRefundItemList)) {
                     MbOrderRefundItem refundItem = mbOrderRefundItemList.get(0);
                     mbOrderItemExport.setRefundQuantity(refundItem.getQuantity());
-                    mbOrderItemExport.setRefundType(Application.getString(refundItem.getType()));
+                    mbOrderItemExport.setRefundType(ConvertNameUtil.getString(refundItem.getType()));
                 }
                 mbOrderItemExport.setChannel(mbOrder.getAddLoginId()==null?"公众号":"客服");
                 MbOrderLog mbOrderLog = orderLogCache.getValue(mbOrder.getId()+"|"+mbOrder.getStatus());

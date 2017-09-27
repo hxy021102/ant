@@ -2,10 +2,10 @@ package com.camel.front.controller;
 
 import com.mobian.absx.F;
 import com.mobian.controller.BaseController;
-import com.mobian.listener.Application;
 import com.mobian.pageModel.*;
 import com.mobian.service.*;
 import com.mobian.util.Constants;
+import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -70,7 +70,7 @@ public class ApiBalanceController extends BaseController {
                 j.setObj(-1);
             }
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("获取商品分类接口异常", e);
         }
 
@@ -100,7 +100,7 @@ public class ApiBalanceController extends BaseController {
             j.setMsg("获取钱包明细成功！");
             j.setObj(dg);
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("获取钱包明细接口异常", e);
         }
 
@@ -131,7 +131,7 @@ public class ApiBalanceController extends BaseController {
             j.setSuccess(true);
             j.setMsg("提交余额转账成功！");
         }catch(Exception e){
-            j.setMsg(Application.getString(EX_0001));
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("提交余额转账接口异常", e);
         }
 

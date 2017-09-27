@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<!-- 配置druid监控spring jdbc -->
+	<bean id="druid-stat-interceptor"
+		class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor" />
+
+	<bean id="druid-stat-pointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut"
+		scope="prototype">
+		<property name="patterns">
+			<list>
+				<value>jb.service.*</value>
+			</list>
+		</property>
+	</bean>
+	<aop:config>
+		<aop:advisor advice-ref="druid-stat-interceptor"
+			pointcut-ref="druid-stat-pointcut" />
+	</aop:config>
+	<!-- 配置线程池 -->
+	<bean id ="taskExecutor"  class ="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" >
+		<!-- 线程池维护线程的最少数量 -->
+		<property name ="corePoolSize" value ="60" />
+		<!-- 线程池维护线程所允许的空闲时间 -->
+		<property name ="keepAliveSeconds" value ="3000" />
+		<!-- 线程池维护线程的最大数量 -->
+		<property name ="maxPoolSize" value ="500" />
+		<!-- 线程池所使用的缓冲队列 -->
+		<property name ="queueCapacity" value ="100" />
+	</bean>
+</beans>

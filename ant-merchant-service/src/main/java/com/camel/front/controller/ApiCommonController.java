@@ -2,12 +2,15 @@ package com.camel.front.controller;
 
 import com.mobian.absx.F;
 import com.mobian.controller.BaseController;
-import com.mobian.pageModel.*;
-import com.mobian.service.BugServiceI;
 import com.mobian.interceptors.TokenManage;
 import com.mobian.listener.Application;
+import com.mobian.pageModel.BaseData;
+import com.mobian.pageModel.Bug;
+import com.mobian.pageModel.Json;
+import com.mobian.service.BugServiceI;
 import com.mobian.thirdpart.wx.SignUtil;
 import com.mobian.thirdpart.wx.WeixinUtil;
+import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.HttpUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -102,12 +105,12 @@ public class ApiCommonController extends BaseController {
 		Json j = new Json();
 		try {
 			Map<String, String> signMap = SignUtil.sign(signUrl.split("#")[0]);
-			signMap.put("appId", Application.getString(WeixinUtil.APPID));
+			signMap.put("appId", ConvertNameUtil.getString(WeixinUtil.APPID));
 			j.success();
 			j.setObj(signMap);
 			j.setMsg("微信JS-SDK权限签名成功！");
 		}catch(Exception e){
-			j.setMsg(Application.getString(EX_0001));
+			j.setMsg(ConvertNameUtil.getString(EX_0001));
 			logger.error("微信JS-SDK权限签名接口异常", e);
 		}
 
