@@ -51,4 +51,13 @@ public interface ShopDeliverAccountServiceI {
 	 */
 	public void delete(Integer id);
 
+	/**
+	 * 第三方账号查询门店账号
+	 * @param refId
+	 * @param refType
+	 * @return
+	 */
+	ShopDeliverAccount getByRef(String refId, String refType);
+
+	boolean checkUserName(String userName);
 }

@@ -161,7 +161,7 @@ public class TshopDeliverAccount implements java.io.Serializable,IEntity{
 		this.icon = icon;
 	}
 	
-	@Column(name = "sex", unique = false, nullable = false, insertable = true, updatable = true, length = 4)
+	@Column(name = "sex", unique = false, nullable = true, insertable = true, updatable = true, length = 4)
 	public String getSex() {
 		return this.sex;
 	}

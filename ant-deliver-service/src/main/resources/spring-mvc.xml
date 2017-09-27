@@ -53,16 +53,9 @@
 			<bean class="com.bx.ant.interceptors.TokenInterceptor">
 				<property name="excludeUrls">
 					<list>
-						<value>/api/apiBaseDataController/basedata</value><!-- 基础数据 -->
-						<value>/api/apiBaseDataController/uploadSign</value><!-- 上传签名 -->
-						<value>/api/apiUserController/login</value><!-- 用户登录 -->
-						<value>/api/apiUserController/loginByWx</value><!-- 微信授权登录 -->
-						<value>/api/apiUserController/register</value><!-- 注册 -->
-						<value>/api/apiUserController/getValidateCode</value><!-- 获取短信验证码 -->
-						<value>/api/apiUserController/getPublicKey</value><!-- 获取RSA公钥 -->
-						<value>/api/apiItemController/dataGrid</value><!-- 获取商品列表接口 -->
-						<value>/api/apiItemController/get</value><!-- 获取商品详情接口 -->
-						<value>/api/apiItemCategoryController/dataGrid</value><!-- 获取商品分类接口 -->
+						<value>/api/deliver/account/login</value><!-- 用户登录 -->
+						<value>/api/deliver/account/register</value><!-- 注册 -->
+						<value>/api/deliver/account/getVCode</value><!-- 获取短信验证码 -->
 						<value>/api/apiCommon/error</value><!-- token过期错误返回 -->
 
 						<value>/api/pay/paySuccess</value><!-- 微信支付成功回调 -->

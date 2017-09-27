@@ -1,12 +1,12 @@
 package com.bx.ant.service.impl;
 
-import com.mobian.absx.F;
 import com.bx.ant.dao.ShopDeliverAccountDaoI;
 import com.bx.ant.model.TshopDeliverAccount;
+import com.bx.ant.service.ShopDeliverAccountServiceI;
+import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.pageModel.ShopDeliverAccount;
-import com.bx.ant.service.ShopDeliverAccountServiceI;
 import com.mobian.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,6 +93,7 @@ public class ShopDeliverAccountServiceImpl extends BaseServiceImpl<ShopDeliverAc
 		//t.setId(jb.absx.UUID.uuid());
 		t.setIsdeleted(false);
 		shopDeliverAccountDao.save(t);
+		shopDeliverAccount.setId(t.getId());
 	}
 
 	@Override
@@ -119,6 +120,31 @@ public class ShopDeliverAccountServiceImpl extends BaseServiceImpl<ShopDeliverAc
 		params.put("id", id);
 		shopDeliverAccountDao.executeHql("update TshopDeliverAccount t set t.isdeleted = 1 where t.id = :id",params);
 		//shopDeliverAccountDao.delete(shopDeliverAccountDao.get(TshopDeliverAccount.class, id));
+	}
+
+	@Override
+	public ShopDeliverAccount getByRef(String refId, String refType) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("refId", refId);
+		params.put("refType", refType);
+		TshopDeliverAccount t = shopDeliverAccountDao.get("from TshopDeliverAccount t  where t.isdeleted = 0 and t.refId = :refId and t.refType = :refType", params);
+		if(t != null) {
+			ShopDeliverAccount o = new ShopDeliverAccount();
+			BeanUtils.copyProperties(t, o);
+			return o;
+		}
+		return null;
+	}
+
+	@Override
+	public boolean checkUserName(String userName) {
+		if (!F.empty(userName)) {
+			List<TshopDeliverAccount> l = shopDeliverAccountDao.find("from TshopDeliverAccount t where t.isdeleted = 0 and t.userName = '" + userName + "'", 1, 1);
+			if (l != null || l.size() < 1) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

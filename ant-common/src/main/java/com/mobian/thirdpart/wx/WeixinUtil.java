@@ -33,6 +33,9 @@ public class WeixinUtil {
 	public final static String TOKEN = "WP007";
 	public final static String KF_ONLINE_TIME = "WP300";
 
+	public final static String WXAPPID = "WA001";
+	public final static String WXAPPSECRET = "WA002";
+
 	private static RedisUtil redisUtil = BeanUtil.getBean(RedisUtil.class);
 
 	/**
@@ -82,6 +85,12 @@ public class WeixinUtil {
 	public final static String USERINFO_URL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
 	public final static String OAUTH_USERINFO_URL = "https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
 	public final static String CREATE_MENU_URL = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
+
+	/**
+	 * 小程序code 获取 session_key 和 openid 接口地址
+	 */
+	public final static String WXAPP_JSCODE2SESSION = "https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code";
+
 
 	/**
 	 * 认证成功通知-认证成功通知模板ID
@@ -351,6 +360,14 @@ public class WeixinUtil {
 				.replace("REDIRECT_URI", ConvertNameUtil.getString("SV100") + url)
 				.replace("SCOPE", "snsapi_base");
 		return oauth_url;
+	}
+
+	public static String getJscode2sessionUrl(String code) {
+		String authorize_url = WXAPP_JSCODE2SESSION
+				.replace("APPID", ConvertNameUtil.getString(WXAPPID))
+				.replace("SECRET", ConvertNameUtil.getString(WXAPPSECRET))
+				.replace("JSCODE", code);
+		return authorize_url;
 	}
 
 	public static void main(String[] args) {

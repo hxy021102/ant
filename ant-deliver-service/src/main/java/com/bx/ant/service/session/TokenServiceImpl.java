@@ -9,6 +9,7 @@ import com.mobian.thirdpart.redis.RedisUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -39,10 +40,16 @@ public class TokenServiceImpl implements TokenServiceI {
         return false;
     }
 
+    @Override
     public TokenWrap getToken(String tokenId) {
         String key = Key.build(Namespace.SHOP_USER_LOGIN_TOKEN, tokenId);
         String json = (String) redisUtil.get(key);
         if (F.empty(json)) return null;
         return JSONObject.parseObject(json, TokenWrap.class);
+    }
+
+    @Override
+    public TokenWrap getToken(HttpServletRequest request) {
+        return getToken(request.getParameter(TOKEN_FIELD));
     }
 }
