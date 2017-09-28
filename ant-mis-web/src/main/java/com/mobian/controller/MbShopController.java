@@ -413,4 +413,11 @@ public class MbShopController extends BaseController {
         return mbShopService.dataGridShopBarrel(mbShop,ph);
     }
 
+
+    @RequestMapping("/getShopMap")
+    public String getShopMap(HttpServletRequest request,MbShop mbShop) {
+//      List<MbShop> mbShopList=mbShopService.dataGrid(mbShop).getRows();
+        return "/mbshop/mbShopMap";
+    }
+
 }
