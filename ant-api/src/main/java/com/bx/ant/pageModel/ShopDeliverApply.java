@@ -19,7 +19,7 @@ public class ShopDeliverApply implements java.io.Serializable {
 	private String status;
 	private Integer accountId;
 
-	
+	private MbShop mbShop;
 
 	public void setId(Integer value) {
 		this.id = value;
@@ -101,4 +101,11 @@ public class ShopDeliverApply implements java.io.Serializable {
 		return this.accountId;
 	}
 
+	public MbShop getMbShop() {
+		return mbShop;
+	}
+
+	public void setMbShop(MbShop mbShop) {
+		this.mbShop = mbShop;
+	}
 }

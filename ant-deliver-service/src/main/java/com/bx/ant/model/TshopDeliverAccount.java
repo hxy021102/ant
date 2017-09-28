@@ -57,7 +57,7 @@ public class TshopDeliverAccount implements java.io.Serializable,IEntity{
 	//@Length(max=32)
 	private String password;
 	//@Max(127)
-	private Integer nickName;
+	private String nickName;
 	//@Length(max=512)
 	private String icon;
 	//@NotBlank @Length(max=4)
@@ -142,16 +142,16 @@ public class TshopDeliverAccount implements java.io.Serializable,IEntity{
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	@Column(name = "nick_name", unique = false, nullable = true, insertable = true, updatable = true, length = 3)
-	public Integer getNickName() {
-		return this.nickName;
+
+	@Column(name = "nick_name", unique = false, nullable = true, insertable = true, updatable = true, length = 128)
+	public String getNickName() {
+		return nickName;
 	}
-	
-	public void setNickName(Integer nickName) {
+
+	public void setNickName(String nickName) {
 		this.nickName = nickName;
 	}
-	
+
 	@Column(name = "icon", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
 	public String getIcon() {
 		return this.icon;

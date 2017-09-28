@@ -51,4 +51,5 @@ public interface ShopDeliverApplyServiceI {
 	 */
 	public void delete(Integer id);
 
+	ShopDeliverApply getByAccountId(Integer accountId);
 }

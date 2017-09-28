@@ -4,11 +4,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.aliyun.mns.model.TopicMessage;
 import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.ShopDeliverAccountServiceI;
+import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.bx.ant.service.session.TokenServiceI;
 import com.mobian.absx.F;
 import com.mobian.absx.UUID;
 import com.mobian.pageModel.Json;
+import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.ShopDeliverAccount;
+import com.mobian.pageModel.ShopDeliverApply;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.thirdpart.mns.MNSTemplate;
 import com.mobian.thirdpart.mns.MNSUtil;
@@ -43,6 +46,9 @@ public class ApiAccountController extends BaseController {
 
     @Resource
     private ShopDeliverAccountServiceI shopDeliverAccountService;
+
+    @Resource
+    private ShopDeliverApplyServiceI shopDeliverApplyService;
 
     @Resource
     private TokenServiceI tokenService;
@@ -161,12 +167,57 @@ public class ApiAccountController extends BaseController {
             }
 
             shopDeliverAccountService.add(account);
+
+            TokenWrap token = new TokenWrap();
+            token.setTokenId(UUID.uuid());
+            token.setUid(account.getId().toString());
+            token.setName(account.getUserName());
+            tokenService.setToken(token);
+
             j.setSuccess(true);
             j.setMsg("注册成功！");
+            j.setObj(token.getTokenId());
             return j;
         }catch(Exception e){
             j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("用户注册接口异常", e);
+        }
+
+        return j;
+    }
+
+    /**
+     * 获取用户信息
+     * @param request
+     * @return
+     */
+    @RequestMapping("/get")
+    @ResponseBody
+    public Json get(HttpServletRequest request){
+        Json j = new Json();
+        try{
+            TokenWrap token = tokenService.getToken(request);
+            if(!F.empty(token.getUid())) {
+                ShopDeliverAccount account = shopDeliverAccountService.get(Integer.valueOf(token.getUid()));
+                ShopDeliverApply shopDeliverApply = shopDeliverApplyService.getByAccountId(Integer.valueOf(token.getUid()));
+                MbShop mbShop = mbShopService.getFromCache(shopDeliverApply.getShopId());
+
+                // TODO 统计今日有效订单和今日营业额
+
+
+                Map<String, Object> obj = new HashMap<String, Object>();
+                obj.put("account", account);
+                obj.put("shopDeliverApply", shopDeliverApply);
+                obj.put("mbShop", mbShop);
+
+                j.setSuccess(true);
+                j.setMsg("获取成功！");
+                j.setObj(obj);
+            }
+
+        }catch(Exception e){
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
+            logger.error("获取用户信息接口异常", e);
         }
 
         return j;
@@ -196,6 +247,66 @@ public class ApiAccountController extends BaseController {
         }catch(Exception e){
             j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("用户修改接口异常", e);
+        }
+
+        return j;
+    }
+
+    /**
+     * 绑定门店申请
+     * @param shopDeliverApply
+     * @param request
+     * @return
+     */
+    @RequestMapping("/addShopApply")
+    @ResponseBody
+    public Json addShopApply(ShopDeliverApply shopDeliverApply, HttpServletRequest request){
+        Json j = new Json();
+        try{
+            TokenWrap token = tokenService.getToken(request);
+            if(!F.empty(token.getUid())) {
+                ShopDeliverApply exist = shopDeliverApplyService.getByAccountId(Integer.valueOf(token.getUid()));
+                if(exist == null) {
+                    shopDeliverApply.setAccountId(Integer.valueOf(token.getUid()));
+                    shopDeliverApplyService.add(shopDeliverApply);
+                }
+
+                j.setSuccess(true);
+                j.setMsg("申请成功！");
+            }
+
+        }catch(Exception e){
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
+            logger.error("绑定门店申请接口异常", e);
+        }
+
+        return j;
+    }
+
+
+    /**
+     * 获取用户绑定门店
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getShopApply")
+    @ResponseBody
+    public Json getShopApply(HttpServletRequest request){
+        Json j = new Json();
+        try{
+            TokenWrap token = tokenService.getToken(request);
+            if(!F.empty(token.getUid())) {
+                ShopDeliverApply shopDeliverApply = shopDeliverApplyService.getByAccountId(Integer.valueOf(token.getUid()));
+                if(shopDeliverApply != null)
+                    shopDeliverApply.setMbShop(mbShopService.getFromCache(shopDeliverApply.getShopId()));
+                j.setSuccess(true);
+                j.setMsg("获取成功！");
+                j.setObj(shopDeliverApply);
+            }
+
+        }catch(Exception e){
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
+            logger.error("获取用户绑定门店接口异常", e);
         }
 
         return j;

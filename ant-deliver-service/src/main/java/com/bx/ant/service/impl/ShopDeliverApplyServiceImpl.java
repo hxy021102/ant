@@ -88,6 +88,7 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 		BeanUtils.copyProperties(shopDeliverApply, t);
 		//t.setId(jb.absx.UUID.uuid());
 		t.setIsdeleted(false);
+		if(F.empty(shopDeliverApply.getStatus())) t.setStatus("DAS01");
 		shopDeliverApplyDao.save(t);
 	}
 
@@ -115,6 +116,20 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 		params.put("id", id);
 		shopDeliverApplyDao.executeHql("update TshopDeliverApply t set t.isdeleted = 1 where t.id = :id",params);
 		//shopDeliverApplyDao.delete(shopDeliverApplyDao.get(TshopDeliverApply.class, id));
+	}
+
+	@Override
+	public ShopDeliverApply getByAccountId(Integer accountId) {
+		ShopDeliverApply o = null;
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("accountId", accountId);
+		TshopDeliverApply t = shopDeliverApplyDao.get("from TshopDeliverApply t where t.isdeleted = 0 and t.accountId = :accountId", params);
+		if(t != null) {
+			o = new ShopDeliverApply();
+			BeanUtils.copyProperties(t, o);
+		}
+
+		return o;
 	}
 
 }

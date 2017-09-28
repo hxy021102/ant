@@ -14,7 +14,7 @@ public class ShopDeliverAccount implements java.io.Serializable {
 	private Boolean isdeleted;
 	private String userName;
 	private String password;
-	private Integer nickName;	
+	private String nickName;
 	private String icon;
 	private String sex;
 	private String refId;
@@ -73,13 +73,15 @@ public class ShopDeliverAccount implements java.io.Serializable {
 	public String getPassword() {
 		return this.password;
 	}
-	public void setNickName(Integer nickName) {
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
 		this.nickName = nickName;
 	}
-	
-	public Integer getNickName() {
-		return this.nickName;
-	}
+
 	public void setIcon(String icon) {
 		this.icon = icon;
 	}
