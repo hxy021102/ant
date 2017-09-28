@@ -3,10 +3,7 @@ package com.mobian.controller;
 import com.alibaba.fastjson.JSON;
 import com.mobian.absx.F;
 import com.mobian.pageModel.*;
-import com.mobian.service.MbBalanceServiceI;
-import com.mobian.service.MbOrderServiceI;
-import com.mobian.service.MbShopServiceI;
-import com.mobian.service.MbUserServiceI;
+import com.mobian.service.*;
 import com.mobian.util.ConfigUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -42,6 +39,8 @@ public class MbShopController extends BaseController {
     private MbUserServiceI mbUserService;
     @Autowired
     private MbOrderServiceI mbOrderService;
+    @Autowired
+    private DiveRegionServiceI diveRegionService;
 
 
     /**
@@ -142,6 +141,7 @@ public class MbShopController extends BaseController {
     @ResponseBody
     public Json add(MbShop mbShop) {
         Json j = new Json();
+        mbShopService.setShopLocation(mbShop);
         mbShopService.add(mbShop);
         j.setSuccess(true);
         j.setMsg("添加成功！");
@@ -241,6 +241,7 @@ public class MbShopController extends BaseController {
     @ResponseBody
     public Json edit(MbShop mbShop) {
         Json j = new Json();
+        mbShopService.setShopLocation(mbShop);
         mbShopService.edit(mbShop);
         j.setSuccess(true);
         j.setMsg("编辑成功！");
@@ -411,6 +412,20 @@ public class MbShopController extends BaseController {
     @ResponseBody
     public DataGrid dataGridShopBarrel(MbShop mbShop,PageHelper ph) {
         return mbShopService.dataGridShopBarrel(mbShop,ph);
+    }
+
+    @RequestMapping("/getAllShopLocation")
+    @ResponseBody
+    public Json getAllShopLocation() {
+        Json j = new Json();
+        MbShop mbShop = new MbShop();
+        List<MbShop> mbShops = mbShopService.query(mbShop);
+        for (MbShop m : mbShops) {
+           mbShopService.setShopLocation(m);
+           mbShopService.edit(m);
+        }
+        j.setSuccess(true);
+        return j;
     }
 
 }

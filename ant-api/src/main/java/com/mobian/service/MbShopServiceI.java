@@ -124,5 +124,9 @@ public interface MbShopServiceI {
 	DataGrid dataGridShopBarrelAndArrears(MbShop mbShop, List<MbBalance> mbBalances, PageHelper ph);
 
 	List<MbShop> query(MbShop mbShop);
+	/**
+	 * 设置门店数字地址
+	 */
+	void setShopLocation(MbShop mbShop);
 
 }

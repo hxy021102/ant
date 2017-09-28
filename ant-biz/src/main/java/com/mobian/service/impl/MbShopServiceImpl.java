@@ -1,5 +1,6 @@
 package com.mobian.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mobian.absx.F;
 import com.mobian.dao.MbShopDaoI;
 import com.mobian.dao.MbUserDaoI;
@@ -10,12 +11,14 @@ import com.mobian.model.TmbShop;
 import com.mobian.model.TmbWarehouse;
 import com.mobian.pageModel.*;
 import com.mobian.service.*;
+import com.mobian.thirdpart.wx.HttpUtil;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -585,5 +588,25 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
             }
         }
         return ol;
+    }
+
+    @Override
+    public void setShopLocation(MbShop mbShop) {
+        DiveRegion region = diveRegionService.getFromCache(mbShop.getRegionId()+"");
+        region = diveRegionService.getFromCache(region.getRegionParentId());
+        String city = region.getRegionNameZh();
+        String adress = mbShop.getAddress().replaceAll(" ","");
+        String requestUrl = "http://api.map.baidu.com/geocoder/v2/?output=json&address="+adress+"&city="+city+"&ak=yDOmoXl5HIFt6KZe3BMeL4NRHBGLmCHe";
+        JSONObject jsonObject = JSONObject.parseObject(HttpUtil.httpRequest(requestUrl, "GET", null));
+        if(jsonObject !=null) {
+            JSONObject result = (JSONObject) jsonObject.get("result");
+            JSONObject location = (JSONObject) result.get("location");
+            Object ln = location.get("lng");
+            Object la = location.get("lat");
+            BigDecimal lng = new BigDecimal(ln.toString());
+            BigDecimal lat = new BigDecimal(la.toString());
+            mbShop.setLongitude(lng);
+            mbShop.setLatitude(lat);
+        }
     }
 }
