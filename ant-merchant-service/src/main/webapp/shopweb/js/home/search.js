@@ -66,23 +66,51 @@ var CAMEL_SEARCH = {
         $("#itemList").append(dom);
         // 加入购入车
         dom.find('a.carts').click(item, function(event){
-            if(event.data.quantity <= 0) {
+            var $li = $(this).closest('li'), num = parseInt($li.find('.quantity').val());
+            if(event.data.quantity < num) {
                 $.toast("库存不足", "forbidden");
                 return;
             }
-            ajaxPost('api/apiShoppingController/add', {itemId : event.data.id, quantity : 1}, function(data){
+            ajaxPost('api/apiShoppingController/add', {itemId : event.data.id, quantity : num}, function(data){
                 if(data.success) {
                     $.toast("加入购物车成功", 1500);
+                    initShoppingNum();
                 }
             });
         });
         // 立即抢购
-        dom.find('a.btn').click(item, function(event){
+        /*dom.find('a.btn').click(item, function(event){
             if(event.data.quantity <= 0) {
                 $.toast("库存不足", "forbidden");
                 return;
             }
             window.location.href = '../order/order_confirm.html?itemId=' + event.data.id;
+        });*/
+        dom.find('.quantity').blur(item.quantity, function(event){
+            var num = $(this).val();
+            if(!num || num == 0) {
+                $.toast("<font size='3pt;'>数量超出范围~</font>", "text");
+                $(this).val(1);
+            }
+            if(num > event.data) {
+                $.toast("<font size='3pt;'>数量超出范围~</font>", "text");
+                $(this).val(event.data);
+            }
+        });
+
+        dom.find('.sub').click(function(){
+            var $li = $(this).closest('li'), num = parseInt($li.find('.quantity').val());
+            if(num <= 1) return;
+            $li.find('.quantity').val(num - 1);
+        });
+
+        dom.find('.add').click(item.quantity, function(event){
+            var $li = $(this).closest('li'), num = parseInt($li.find('.quantity').val());
+            if(num == event.data) {
+                $.toast("<font size='3pt;'>亲，不能购买更多哦</font>", "text");
+                return;
+            }
+            $li.find('.quantity').val(num + 1);
         });
 
         dom.find('i.ui-img-cover').click(item.id, function(event){
