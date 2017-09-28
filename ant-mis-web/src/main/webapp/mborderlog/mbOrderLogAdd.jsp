@@ -37,21 +37,8 @@
 		<form id="form" method="post">		
 				<input type="hidden" name="id"/>
 				<input type="hidden" name="orderId" value="${param.orderId}"/>
+				<input type="hidden" name = "logType">
 			<table class="table table-hover table-condensed">
-				<tr>
-					<th><%=TmbOrderLog.ALIAS_LOG_TYPE%>
-					</th>
-					<td>
-						<jb:selectSql dataType="SQ017" name="logType" required="true"></jb:selectSql>
-					</td>
-				</tr>
-				<tr>
-					<th><%=TmbOrderLog.ALIAS_CONTENT%>
-					</th>
-					<td>
-						<input   name="content" type="text" class="easyui-validatebox span2" style="width:400px;" data-options="required:true"/>
-					</td>
-				</tr>
 				<tr>
 					<th><%=TmbOrderLog.ALIAS_REMARK%>
 					</th>

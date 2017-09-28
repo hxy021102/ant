@@ -16,14 +16,22 @@ public class RedisOrderLogServiceImpl {
     private RedisUtil redisUtil;
 
     /**
-     * 设置订单日志催送或者摧回或者留言条数
      *
      * @param orderId
      * @param logType
-     * @param orderLogNumber
      */
-    public void setOrderLogMessage(Integer orderId, String logType, Integer orderLogNumber) {
-        redisUtil.set(Key.build(Namespace.ORDERLOG_MESSAGE, orderId + ":" + logType), orderLogNumber + "", 3600 * 24 * 30, TimeUnit.SECONDS);
+    public long increment(Integer orderId, String logType) {
+        String key = Key.build(Namespace.ORDERLOG_MESSAGE, orderId + ":" + logType);
+        long l = redisUtil.increment(key,1);
+        redisUtil.expire(key, 30, TimeUnit.DAYS);
+        return l;
+    }
+
+    public long decrease(Integer orderId, String logType){
+        String key = Key.build(Namespace.ORDERLOG_MESSAGE, orderId + ":" + logType);
+        long l = redisUtil.increment(key,-1);
+        redisUtil.expire(key, 30, TimeUnit.DAYS);
+        return l;
     }
 
     /**
@@ -33,7 +41,7 @@ public class RedisOrderLogServiceImpl {
      * @param logType
      * @return
      */
-    public Integer getOrderLogMessage(Integer orderId, String logType) {
+    public Integer getOrderLogMessageNumber(Integer orderId, String logType) {
         Object r = redisUtil.get(Key.build(Namespace.ORDERLOG_MESSAGE, orderId + ":" + logType));
         if (r != null) {
             try {

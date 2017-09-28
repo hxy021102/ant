@@ -491,26 +491,22 @@ public class MbOrderServiceImpl extends BaseServiceImpl<MbOrder> implements MbOr
 	public DataGrid dataGridWithOrderLogMessage(MbOrder mbOrder, PageHelper ph) {
 		DataGrid dataGrid = dataGrid(mbOrder, ph);
 		List<MbOrder> mbOrderList = dataGrid.getRows();
+		List<MbOrderExt> mbOrderExtList = new ArrayList<MbOrderExt>();
 		if (CollectionUtils.isNotEmpty(mbOrderList)) {
 			Integer sendNumber, backNumber, leaveNumber;
 			for (MbOrder order : mbOrderList) {
-				sendNumber = redisOrderLogService.getOrderLogMessage(order.getId(), "LT011");
-				if (!F.empty(sendNumber)) {
-					order.setShopName(order.getShopName() + " " + "【催+" + sendNumber + "】");
-					continue;
-				}
-				backNumber = redisOrderLogService.getOrderLogMessage(order.getId(), "LT012");
-
-				if (!F.empty(backNumber)) {
-					order.setShopName(order.getShopName() + " " + "【回+" + backNumber + "】");
-					continue;
-				}
-				leaveNumber = redisOrderLogService.getOrderLogMessage(order.getId(), "LT013");
-				if (!F.empty(leaveNumber)) {
-					order.setShopName(order.getShopName() + " " + "【留+" + leaveNumber + "】");
-				}
+				MbOrderExt mbOrderExt = new MbOrderExt();
+				BeanUtils.copyProperties(order,mbOrderExt);
+				mbOrderExtList.add(mbOrderExt);
+				sendNumber = redisOrderLogService.getOrderLogMessageNumber(order.getId(), "LT011");
+				mbOrderExt.setSendNumber(sendNumber);
+				backNumber = redisOrderLogService.getOrderLogMessageNumber(order.getId(), "LT012");
+				mbOrderExt.setBackNumber(backNumber);
+				leaveNumber = redisOrderLogService.getOrderLogMessageNumber(order.getId(), "LT013");
+				mbOrderExt.setLeaveNumber(leaveNumber);
 			}
 		}
+		dataGrid.setRows(mbOrderExtList);
 		return dataGrid;
 	}
 

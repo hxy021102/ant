@@ -108,7 +108,7 @@ public class MbOrderLogController extends BaseController {
 			j.setMsg("添加成功！");
 		}else{
 			j.setSuccess(false);
-			j.setMsg("催送、催回、留言，3中情景只能出现一种，若添加新的情景，请将已出现的情景删除！");
+			j.setMsg("添加失败！");
 		}
 		return j;
 	}

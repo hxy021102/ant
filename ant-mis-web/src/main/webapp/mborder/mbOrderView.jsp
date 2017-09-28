@@ -791,7 +791,7 @@
             }, {
                 field : 'updatetime',
                 title : '<%=TmbOrderLog.ALIAS_UPDATETIME%>',
-                width : 50
+                width : 70
             }, {
                 field : 'logTypeName',
                 title : '<%=TmbOrderLog.ALIAS_LOG_TYPE%>',
@@ -1134,17 +1134,18 @@
             } ]
         });
     }
-    function addOrderLog() {
+    function addOrderLog(title,logType) {
         parent.$.modalDialog({
-            title : '添加数据',
+            title : title,
             width : 780,
             height : 230,
             href : '${pageContext.request.contextPath}/mbOrderLogController/addPage?orderId='+${mbOrder.id},
             buttons : [ {
-                text : '添加',
+                text : '保存',
                 handler : function() {
                     parent.$.modalDialog.openner_dataGrid = logDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
                     var f = parent.$.modalDialog.handler.find('#form');
+                    f.find("input[name=logType]").val(logType);
                     f.submit();
                 }
             } ]
@@ -1370,7 +1371,11 @@
     </div>
     <div id="logDataGridbar" style="display: none;">
         <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderLogController/add') }">
-            <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addOrderLog();" data-options="plain:true,iconCls:'pencil_add'">添加</a>
+            <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addOrderLog('催单','LT011');" data-options="plain:true,iconCls:'pencil_add'">催单</a>
+            <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addOrderLog('回单','LT012');" data-options="plain:true,iconCls:'pencil_add'">回单</a>
+            <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addOrderLog('留言','LT013');" data-options="plain:true,iconCls:'pencil_add'">留言</a>
+
+
         </c:if>
     </div>
     <iframe id="printIframe" style="display: none;"></iframe>

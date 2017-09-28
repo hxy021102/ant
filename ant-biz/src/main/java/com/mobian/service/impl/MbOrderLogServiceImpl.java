@@ -43,7 +43,7 @@ public class MbOrderLogServiceImpl extends BaseServiceImpl<MbOrderLog> implement
 				BeanUtils.copyProperties(t, o);
 
 				if (o.getLoginId() != null) {
-					User user = userService.get(o.getLoginId());
+					User user = userService.getFromCache(o.getLoginId());
 					if (user != null) {
 						o.setLoginName(user.getName());
 					}
@@ -142,35 +142,15 @@ public class MbOrderLogServiceImpl extends BaseServiceImpl<MbOrderLog> implement
 
 	@Override
 	public Boolean addOrderLogAndSetRedisOrderLog(MbOrderLog mbOrderLog) {
-		Integer number, sendNumber, backNumber, leaveNumber;
-		number = redisOrderLogService.getOrderLogMessage(mbOrderLog.getOrderId(), mbOrderLog.getLogType());
-		if (F.empty(number)) {
-			sendNumber = redisOrderLogService.getOrderLogMessage(mbOrderLog.getOrderId(), "LT011");
-			backNumber = redisOrderLogService.getOrderLogMessage(mbOrderLog.getOrderId(), "LT012");
-			leaveNumber = redisOrderLogService.getOrderLogMessage(mbOrderLog.getOrderId(), "LT013");
-			if (F.empty(sendNumber) && F.empty(backNumber) && F.empty(leaveNumber)) {
-				redisOrderLogService.setOrderLogMessage(mbOrderLog.getOrderId(), mbOrderLog.getLogType(), 1);
-				add(mbOrderLog);
-			} else {
-				return false;
-			}
-		} else {
-			number = redisOrderLogService.getOrderLogMessage(mbOrderLog.getOrderId(), mbOrderLog.getLogType());
-			redisOrderLogService.setOrderLogMessage(mbOrderLog.getOrderId(), mbOrderLog.getLogType(), 1 + number);
-			add(mbOrderLog);
-		}
+		add(mbOrderLog);
+		redisOrderLogService.increment(mbOrderLog.getOrderId(), mbOrderLog.getLogType());
 		return true;
 	}
 
 	@Override
 	public void deleteOrderLogAndChangeRedisValue(Integer id) {
 		MbOrderLog mbOrderLog = get(id);
-		Integer number = 0;
-		number = redisOrderLogService.getOrderLogMessage(mbOrderLog.getOrderId(), mbOrderLog.getLogType());
-		if (number > 0) {
-			redisOrderLogService.setOrderLogMessage(mbOrderLog.getOrderId(), mbOrderLog.getLogType(), number - 1);
-			deleteOrderLogAndChangeRedisValue(id);
-		}
 		delete(id);
+		redisOrderLogService.decrease(mbOrderLog.getOrderId(), mbOrderLog.getLogType());
 	}
 }
