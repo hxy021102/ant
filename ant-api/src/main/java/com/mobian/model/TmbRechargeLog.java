@@ -254,7 +254,7 @@ public class TmbRechargeLog implements java.io.Serializable,IEntity{
 		this.payCode = payCode;
 	}
 
-	@Column(name = "bank_code", unique = false, nullable = true, insertable = true, updatable = true, length = 4)
+	@Column(name = "bank_code", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public String getBankCode() {
 		return bankCode;
 	}

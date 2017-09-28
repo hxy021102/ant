@@ -110,7 +110,7 @@ public class MbRechargeLogServiceImpl extends BaseServiceImpl<MbRechargeLog> imp
 				whereHql += " and t.handleRemark = :handleRemark";
 				params.put("handleRemark", mbRechargeLog.getHandleRemark());
 			}
-			if (!F.empty(mbRechargeLog.getPayCode())) {
+			if (!F.empty(mbRechargeLog.getBankCode())) {
 				whereHql += " and t.bankCode = :bankCode";
 				params.put("bankCode", mbRechargeLog.getBankCode());
 			}
@@ -201,15 +201,17 @@ public class MbRechargeLogServiceImpl extends BaseServiceImpl<MbRechargeLog> imp
 		rechargeLog.setHandleStatus("HS02");
 		//TODO
 		synchronized (this) {
-			if ("HS02".equals(mbRechargeLog.getHandleStatus())) {
-					List<MbPaymentItem> paymentItems = mbPaymentItemService.listMbPaymentItem(paymentItem);
+			if ("HS02".equals(mbRechargeLog.getHandleStatus()) && !"BT013".equals(t.getRefType())) {
+                List<MbPaymentItem> paymentItems = mbPaymentItemService.listMbPaymentItem(paymentItem);
 					List<MbRechargeLog> rechargeLogs = listMbRechargeLog(rechargeLog);
 				if (CollectionUtils.isEmpty(paymentItems) && CollectionUtils.isEmpty(rechargeLogs)) {
 					edit(mbRechargeLog);
 				} else {
 					throw new ServiceException("银行汇款单号已存在,请重新确认!");
 				}
-			} else if ("HS03".equals(mbRechargeLog.getHandleStatus())) {
+            } else if ("HS02".equals(mbRechargeLog.getHandleStatus()) && "BT013".equals(t.getRefType())) {
+                edit(mbRechargeLog);
+            }else if ("HS03".equals(mbRechargeLog.getHandleStatus())) {
 				mbRechargeLog.setPayCode(null);
 				edit(mbRechargeLog);
 			}
@@ -220,7 +222,11 @@ public class MbRechargeLogServiceImpl extends BaseServiceImpl<MbRechargeLog> imp
 			tmbBalanceLog.setBalanceId(mbRechargeLog.getBalanceId());
 			tmbBalanceLog.setAmount(mbRechargeLog.getAmount());
 			tmbBalanceLog.setRefId(String.valueOf(mbRechargeLog.getId()));
-			tmbBalanceLog.setRefType("BT003"); // 转账充值
+			if (!"BT013".equals(t.getRefType())) {
+				tmbBalanceLog.setRefType("BT003"); // 转账汇款
+			}else{
+                tmbBalanceLog.setRefType("BT013");  //后台-冲单
+            }
 			tmbBalanceLog.setRemark(mbRechargeLog.getHandleRemark());
 			mbBalanceLogService.addAndUpdateBalance(tmbBalanceLog);
 		}

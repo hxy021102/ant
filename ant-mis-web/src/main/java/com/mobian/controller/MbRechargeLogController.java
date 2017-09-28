@@ -270,4 +270,30 @@ public class MbRechargeLogController extends BaseController {
 		return j;
 	}
 
+	/**
+	 * 跳转到订单金额冲正页面
+	 * @param request
+	 * @param shopId
+	 * @return
+	 */
+	@RequestMapping("/addOrderRechargePage")
+	public String addOrderRechargePage(HttpServletRequest request,Integer shopId,Integer orderId) {
+		MbRechargeLog mbRechargeLog = new MbRechargeLog();
+		request.setAttribute(" shopId", shopId);
+		request.setAttribute(" orderId", orderId);
+		return "mborder/mbOrderRechargeAdd";
+	}
+	@RequestMapping("/addOrderRecharge")
+	@ResponseBody
+	public Json addOrderRecharge(HttpSession session,MbRechargeLog mbRechargeLog) {
+		Json j = new Json();
+		SessionInfo sessionInfo = (SessionInfo) session.getAttribute("sessionInfo");
+		MbBalance mbBalance = mbBalanceService.addOrGetMbBalance(mbRechargeLog.getShopId());
+		mbRechargeLog.setBalanceId(mbBalance.getId());
+		mbRechargeLog.setApplyLoginId(sessionInfo.getId());
+		mbRechargeLogService.add(mbRechargeLog);
+		j.setSuccess(true);
+		j.setMsg("添加成功！");
+		return j;
+	}
 }
