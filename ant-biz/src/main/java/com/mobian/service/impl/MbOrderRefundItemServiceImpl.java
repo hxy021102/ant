@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class MbOrderRefundItemServiceImpl extends BaseServiceImpl<MbOrderRefundItem> implements MbOrderRefundItemServiceI {
@@ -39,7 +36,16 @@ public class MbOrderRefundItemServiceImpl extends BaseServiceImpl<MbOrderRefundI
 	private MbBalanceServiceI mbBalanceService;
 	@Autowired
 	private MbBalanceLogServiceI mbBalanceLogService;
-
+	@Autowired
+	private MbOrderItemServiceI mbOrderItemService;
+	@Autowired
+	private MbPaymentItemServiceI mbPaymentItemService;
+	@Autowired
+	private MbPaymentServiceI  mbPaymentService;
+	@Autowired
+	private MbOrderLogServiceI mbOrderLogService;
+	@Autowired
+	private MbOrderRefundLogServiceI mbOrderRefundLogService;
 	@Override
 	public DataGrid dataGrid(MbOrderRefundItem mbOrderRefundItem, PageHelper ph) {
 		List<MbOrderRefundItem> ol = new ArrayList<MbOrderRefundItem>();
@@ -173,52 +179,113 @@ public class MbOrderRefundItemServiceImpl extends BaseServiceImpl<MbOrderRefundI
 
 	@Override
 	public void addRefund(MbOrderRefundItem mbOrderRefundItem) {
-			add(mbOrderRefundItem);
-			//退回商品:总仓+ 分仓-
-		    MbOrder mbOrderOld = mbOrderService.get(mbOrderRefundItem.getOrderId());
-		    MbShop mbShop = mbShopService.getFromCache(mbOrderOld.getShopId());
-				if (mbOrderOld.getDeliveryWarehouseId() != null) {
-					//总仓增加商品
-					MbItemStock mbItemStock = mbItemStockService.getByWareHouseIdAndItemId(mbOrderOld.getDeliveryWarehouseId(), mbOrderRefundItem.getItemId());
-					MbItemStock change = new MbItemStock();
-					change.setId(mbItemStock.getId());
-					change.setAdjustment(mbOrderRefundItem.getQuantity());
-					change.setLogType("SL02");
-					change.setReason(String.format("订单ID:%s退货入库，库存：%s", mbOrderRefundItem.getOrderId(), mbItemStock.getQuantity() + mbOrderRefundItem.getQuantity()));
-					mbItemStockService.editAndInsertLog(change, mbOrderOld.getLoginId());
+		add(mbOrderRefundItem);
+		//退回商品:总仓+ 分仓-
+		MbOrder mbOrderOld = mbOrderService.get(mbOrderRefundItem.getOrderId());
+		MbShop mbShop = mbShopService.getFromCache(mbOrderOld.getShopId());
+		if (mbOrderOld.getDeliveryWarehouseId() != null) {
+			//总仓增加商品
+			MbItemStock mbItemStock = mbItemStockService.getByWareHouseIdAndItemId(mbOrderOld.getDeliveryWarehouseId(), mbOrderRefundItem.getItemId());
+			MbItemStock change = new MbItemStock();
+			change.setId(mbItemStock.getId());
+			change.setAdjustment(mbOrderRefundItem.getQuantity());
+			change.setLogType("SL02");
+			change.setReason(String.format("订单ID:%s退货入库，库存：%s", mbOrderRefundItem.getOrderId(), mbItemStock.getQuantity() + mbOrderRefundItem.getQuantity()));
+			mbItemStockService.editAndInsertLog(change, mbOrderOld.getLoginId());
+		}
+
+		//分仓减少商品
+		MbItemStock mbItemStockShop = mbItemStockService.getByWareHouseIdAndItemId(mbShop.getWarehouseId(), mbOrderRefundItem.getItemId());
+		MbItemStock changeShop = new MbItemStock();
+		changeShop.setId(mbItemStockShop.getId());
+		changeShop.setAdjustment(-mbOrderRefundItem.getQuantity());
+		changeShop.setLogType("SL03");
+		changeShop.setReason(String.format("订单ID:%s退货出库，库存：%s", mbOrderOld.getId(), mbItemStockShop.getQuantity() - mbOrderRefundItem.getQuantity()));
+		mbItemStockService.editAndInsertLog(changeShop, mbOrderRefundItem.getLoginId());
+		//分仓空桶减少
+		MbItem mbItem = mbItemService.getFromCache(mbOrderRefundItem.getItemId());
+		if (mbItem != null && mbItem.getPackId() != null) {
+			mbItemStockShop = mbItemStockService.getByWareHouseIdAndItemId(mbShop.getWarehouseId(), mbItem.getPackId());
+			changeShop = new MbItemStock();
+			changeShop.setId(mbItemStockShop.getId());
+			changeShop.setAdjustment(-mbOrderRefundItem.getQuantity());
+			changeShop.setLogType("SL03");
+			changeShop.setReason(String.format("订单ID：%s退货出库，库存:%s", mbOrderOld.getId(), mbItemStockShop.getQuantity() - mbOrderRefundItem.getQuantity()));
+			mbItemStockService.editAndInsertLog(changeShop, mbOrderRefundItem.getLoginId());
+			//加桶钱
+			MbBalance mbBalance = mbBalanceService.addOrGetMbBalanceCash(mbOrderOld.getShopId());
+			MbItem packItem = mbItemService.getFromCache(mbItem.getPackId());
+			MbBalanceLog mbBalanceLog = new MbBalanceLog();
+			mbBalanceLog.setAmount(packItem.getMarketPrice() * mbOrderRefundItem.getQuantity());
+			mbBalanceLog.setRefId(mbOrderOld.getId() + "");
+			mbBalanceLog.setRefType("BT017");
+			mbBalanceLog.setBalanceId(mbBalance.getId());
+			mbBalanceLog.setReason(String.format("订单ID：%s退货出库 商品[%s],数量[%s]", mbOrderOld.getId(), packItem.getName(), mbOrderRefundItem.getQuantity()));
+			mbBalanceLogService.addAndUpdateBalance(mbBalanceLog);
+		}
+		//根据退货商品计算退款金额
+		Integer refundAmount = 0;
+		MbOrderItem mbOrderItem = new MbOrderItem();
+		mbOrderItem.setOrderId(mbOrderOld.getId());
+		mbOrderItem.setItemId(mbOrderRefundItem.getItemId());
+
+		List<MbOrderItem> mbOrderItems = mbOrderItemService.query(mbOrderItem);
+		if (mbOrderItems != null && mbOrderItems.size() > 0) {
+			Collections.sort(mbOrderItems, new Comparator<MbOrderItem>() {
+				@Override
+				public int compare(MbOrderItem o1, MbOrderItem o2) {
+					return o1.getBuyPrice() - o2.getBuyPrice();
 				}
-
-				//分仓减少商品
-				MbItemStock mbItemStockShop = mbItemStockService.getByWareHouseIdAndItemId(mbShop.getWarehouseId(), mbOrderRefundItem.getItemId());
-				MbItemStock changeShop = new MbItemStock();
-				changeShop.setId(mbItemStockShop.getId());
-				changeShop.setAdjustment(-mbOrderRefundItem.getQuantity());
-				changeShop.setLogType("SL03");
-				changeShop.setReason(String.format("订单ID:%s退货出库，库存：%s", mbOrderOld.getId(), mbItemStockShop.getQuantity() - mbOrderRefundItem.getQuantity()));
-				mbItemStockService.editAndInsertLog(changeShop, mbOrderRefundItem.getLoginId());
-				//分仓空桶减少
-				MbItem mbItem = mbItemService.getFromCache(mbOrderRefundItem.getItemId());
-				if (mbItem != null && mbItem.getPackId() != null) {
-					mbItemStockShop = mbItemStockService.getByWareHouseIdAndItemId(mbShop.getWarehouseId(), mbItem.getPackId());
-					changeShop = new MbItemStock();
-					changeShop.setId(mbItemStockShop.getId());
-					changeShop.setAdjustment(-mbOrderRefundItem.getQuantity());
-					changeShop.setLogType("SL03");
-					changeShop.setReason(String.format("订单ID：%s退货出库，库存:%s", mbOrderOld.getId(), mbItemStockShop.getQuantity() - mbOrderRefundItem.getQuantity()));
-					mbItemStockService.editAndInsertLog(changeShop, mbOrderRefundItem.getLoginId());
-					//加桶钱
-					MbBalance mbBalance = mbBalanceService.addOrGetMbBalanceCash(mbOrderOld.getShopId());
-					MbItem packItem = mbItemService.getFromCache(mbItem.getPackId());
-					MbBalanceLog mbBalanceLog = new MbBalanceLog();
-					mbBalanceLog.setAmount(packItem.getMarketPrice() * mbOrderRefundItem.getQuantity());
-					mbBalanceLog.setRefId(mbOrderOld.getId() + "");
-					mbBalanceLog.setRefType("BT017");
-					mbBalanceLog.setBalanceId(mbBalance.getId());
-					mbBalanceLog.setReason(String.format("订单ID：%s退货出库 商品[%s],数量[%s]", mbOrderOld.getId(), packItem.getName(), mbOrderRefundItem.getQuantity()));
-					mbBalanceLogService.addAndUpdateBalance(mbBalanceLog);
+			});
+			int refundQuantity = mbOrderRefundItem.getQuantity();
+			for (MbOrderItem orderItem : mbOrderItems) {
+				if (refundQuantity > 0) {
+					int reduce;
+					if (refundQuantity > orderItem.getQuantity()) {
+						reduce = orderItem.getQuantity();
+					} else {
+						reduce = refundQuantity;
+					}
+					refundQuantity = refundQuantity - reduce;
+					refundAmount += reduce * orderItem.getBuyPrice();
+				} else {
+					break;
 				}
-
-
 			}
-
+		}
+			//将退款金额写入退款记录
+			if ("PS05".equals(mbOrderOld.getPayStatus()) && refundAmount > 0) {
+				MbPayment mbPayment = mbPaymentService.getByOrderId(mbOrderOld.getId());
+				if (mbPayment != null) {
+					List<MbPaymentItem> mbPaymentItems = mbPaymentItemService.getByPaymentId(mbPayment.getId());
+					if (CollectionUtils.isNotEmpty(mbPaymentItems)) {
+						//TODO 支付明细 暂时只有一种
+						MbPaymentItem mbPaymentItem = mbPaymentItems.get(0);
+						MbOrderLog mbOrderLog = new MbOrderLog();
+						mbOrderLog.setContent("订单部分商品退货，退相应金额");
+						mbOrderLog.setLoginId(mbOrderOld.getLoginId());
+						mbOrderLog.setLogType("LT006");
+						mbOrderLog.setOrderId(mbOrderOld.getId());
+						mbOrderLogService.add(mbOrderLog);
+						MbOrderRefundLog mbOrderRefundLog = new MbOrderRefundLog();
+						mbOrderRefundLog.setAmount(refundAmount);
+						mbOrderRefundLog.setPayWay(mbPaymentItem.getPayWay());
+						mbOrderRefundLog.setPaymentItemId(mbPaymentItem.getId());
+						mbOrderRefundLog.setOrderId(mbPayment.getOrderId());
+						mbOrderRefundLog.setOrderType(mbPayment.getOrderType());
+						mbOrderRefundLog.setReason("订单部分商品退货，退相应金额");
+						//退余额
+						mbOrderRefundLog.setRefundWay("RW02");
+						mbOrderRefundLogService.add(mbOrderRefundLog);
+						MbBalance balance = mbBalanceService.addOrGetMbBalance(mbOrderOld.getShopId());
+						MbBalanceLog log = new MbBalanceLog();
+						log.setBalanceId(balance.getId());
+						log.setAmount(refundAmount);
+						log.setRefType("BT006"); //订单部分退货，退余额
+						log.setRefId(mbOrderRefundLog.getId() + "");
+						mbBalanceLogService.addAndUpdateBalance(log);
+					}
+				}
+			}
+	}
 }
