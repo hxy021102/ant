@@ -25,4 +25,9 @@
 
        <dubbo:service interface="com.mobian.service.DiveRegionServiceI" ref="diveRegionServiceImpl" protocol="dubbo"/>
 
+       <dubbo:service interface="com.mobian.service.MbItemServiceI" ref="mbItemServiceImpl" protocol="dubbo"/>
+
+       <dubbo:service interface="com.mobian.service.MbBalanceLogServiceI" ref="mbBalanceLogServiceImpl" protocol="dubbo"/>
+
+       <dubbo:service interface="com.mobian.service.MbBalanceServiceI" ref="mbBalanceServiceImpl" protocol="dubbo"/>
 </beans>

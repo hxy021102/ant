@@ -4,6 +4,8 @@ import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbBalanceLog;
 import com.mobian.pageModel.PageHelper;
 
+import java.util.List;
+
 /**
  * 
  * @author John
@@ -71,4 +73,5 @@ public interface MbBalanceLogServiceI {
 	 */
 	DataGrid dataGridWithShopName(MbBalanceLog mbBalanceLog, PageHelper ph);
 
+    List<MbBalanceLog> list(MbBalanceLog mbBalanceLog);
 }

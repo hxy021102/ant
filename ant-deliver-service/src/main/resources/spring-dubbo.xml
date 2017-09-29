@@ -13,5 +13,7 @@
        <!--<dubbo:annotation package="com.bx.ant.controller" />-->
        <dubbo:reference id="mbShopService" interface="com.mobian.service.MbShopServiceI"/>
        <dubbo:reference id="basedataService" interface="com.mobian.service.BasedataServiceI"/>
-
+       <dubbo:reference id="mbItemService" interface="com.mobian.service.MbItemServiceI"/>
+       <dubbo:reference id="mbBalanceLogService" interface="com.mobian.service.MbBalanceLogServiceI"/>
+       <dubbo:reference id="mbBalanceService" interface="com.mobian.service.MbBalanceServiceI"/>
 </beans>

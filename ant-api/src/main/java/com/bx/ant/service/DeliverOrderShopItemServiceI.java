@@ -1,8 +1,11 @@
 package com.bx.ant.service;
 
+import com.mobian.pageModel.*;
+import com.mobian.pageModel.DeliverOrderItem;
+import com.mobian.pageModel.DeliverOrderShop;
 import com.mobian.pageModel.DeliverOrderShopItem;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.PageHelper;
+
+import java.util.List;
 
 /**
  * 
@@ -51,4 +54,5 @@ public interface DeliverOrderShopItemServiceI {
 	 */
 	public void delete(Integer id);
 
+    void addByDeliverOrderItemList(List<DeliverOrderItem> deliverOrderItems, DeliverOrderShop deliverOrderShop);
 }

@@ -51,4 +51,7 @@ public interface ShopItemServiceI {
 	 */
 	public void delete(Integer id);
 
+    ShopItem getByShopIdAndItemId(Integer shopId, Integer itemId, boolean isOnline);
+
+	ShopItem getByShopIdAndItemId(Integer shopId, Integer itemId);
 }

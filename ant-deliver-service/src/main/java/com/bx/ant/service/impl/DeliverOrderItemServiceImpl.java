@@ -2,16 +2,21 @@ package com.bx.ant.service.impl;
 
 import com.bx.ant.dao.DeliverOrderItemDaoI;
 import com.bx.ant.model.TdeliverOrderItem;
+import com.bx.ant.pageModel.DeliverOrderItemExt;
 import com.mobian.pageModel.DeliverOrderItem;
 import com.bx.ant.service.DeliverOrderItemServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.MbItem;
 import com.mobian.pageModel.PageHelper;
+import com.mobian.service.MbItemServiceI;
 import com.mobian.util.MyBeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,8 +25,11 @@ import java.util.Map;
 @Service
 public class DeliverOrderItemServiceImpl extends BaseServiceImpl<DeliverOrderItem> implements DeliverOrderItemServiceI {
 
-	@Autowired
+	@Resource
 	private DeliverOrderItemDaoI deliverOrderItemDao;
+
+	@Resource
+	private MbItemServiceI mbItemService;
 
 	@Override
 	public DataGrid dataGrid(DeliverOrderItem deliverOrderItem, PageHelper ph) {
@@ -111,6 +119,38 @@ public class DeliverOrderItemServiceImpl extends BaseServiceImpl<DeliverOrderIte
 		params.put("id", id);
 		deliverOrderItemDao.executeHql("update TdeliverOrderItem t set t.isdeleted = 1 where t.id = :id",params);
 		//deliverOrderItemDao.delete(deliverOrderItemDao.get(TdeliverOrderItem.class, id));
+	}
+
+	protected void fillInfo(DeliverOrderItemExt deliverOrderItemExt) {
+		fillItemItemInfo(deliverOrderItemExt);
+	}
+
+	protected void fillItemItemInfo(DeliverOrderItemExt deliverOrderItemExt) {
+		if (!F.empty(deliverOrderItemExt.getItemId())) {
+			MbItem item = mbItemService.getFromCache(deliverOrderItemExt.getItemId());
+			if (item != null) {
+				deliverOrderItemExt.setItemName(item.getName());
+				deliverOrderItemExt.setPictureUrl(item.getUrl());
+			}
+		}
+	}
+
+	@Override
+	public List<DeliverOrderItem> list(DeliverOrderItem DeliverOrderItem) {
+		List<DeliverOrderItem> ol = new ArrayList<DeliverOrderItem>();
+		Map<String, Object> params = new HashMap<String, Object>();
+		String hql = " from TdeliverOrderItem t ";
+		String where = whereHql(DeliverOrderItem, params);
+		List<TdeliverOrderItem> l = deliverOrderItemDao.find(hql + where, params);
+		if (CollectionUtils.isNotEmpty(l)) {
+			for (TdeliverOrderItem t : l) {
+				DeliverOrderItemExt o = new DeliverOrderItemExt();
+				BeanUtils.copyProperties(t, o);
+				fillInfo(o);
+				ol.add(o);
+			}
+		}
+		return ol;
 	}
 
 }

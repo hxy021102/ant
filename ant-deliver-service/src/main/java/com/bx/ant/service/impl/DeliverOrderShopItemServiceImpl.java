@@ -1,13 +1,18 @@
 package com.bx.ant.service.impl;
 
+import com.bx.ant.service.ShopItemServiceI;
 import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderShopItemDaoI;
 import com.bx.ant.model.TdeliverOrderShopItem;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.DeliverOrderShopItem;
-import com.mobian.pageModel.PageHelper;
+import com.mobian.exception.ServiceException;
+import com.mobian.pageModel.*;
 import com.bx.ant.service.DeliverOrderShopItemServiceI;
+import com.mobian.pageModel.DeliverOrderItem;
+import com.mobian.pageModel.DeliverOrderShop;
+import com.mobian.pageModel.DeliverOrderShopItem;
+import com.mobian.pageModel.ShopItem;
 import com.mobian.util.MyBeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +27,9 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 
 	@Autowired
 	private DeliverOrderShopItemDaoI deliverOrderShopItemDao;
+
+	@Autowired
+	private ShopItemServiceI shopItemService;
 
 	@Override
 	public DataGrid dataGrid(DeliverOrderShopItem deliverOrderShopItem, PageHelper ph) {
@@ -119,6 +127,29 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 		params.put("id", id);
 		deliverOrderShopItemDao.executeHql("update TdeliverOrderShopItem t set t.isdeleted = 1 where t.id = :id",params);
 		//deliverOrderShopItemDao.delete(deliverOrderShopItemDao.get(TdeliverOrderShopItem.class, id));
+	}
+
+	@Override
+	public void addByDeliverOrderItemList(List<DeliverOrderItem> deliverOrderItems, DeliverOrderShop deliverOrderShop) {
+		if (F.empty(deliverOrderShop.getId()) || F.empty(deliverOrderShop.getShopId()))
+			throw new ServiceException("数据传递不完整");
+
+		if (CollectionUtils.isNotEmpty(deliverOrderItems)) {
+			for (DeliverOrderItem d : deliverOrderItems) {
+				ShopItem shopItem = shopItemService.getByShopIdAndItemId(deliverOrderShop.getShopId(), d.getItemId());
+				if (shopItem == null) throw new ServiceException("无法找到门店对应商品");
+
+				DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
+				deliverOrderShopItem.setDeliverOrderId(d.getDeliverOrderId());
+				deliverOrderShopItem.setDeliverOrderShopId(deliverOrderShop.getId());
+				deliverOrderShopItem.setFreight(shopItem.getFreight());
+				deliverOrderShopItem.setPrice(shopItem.getPrice());
+				deliverOrderShopItem.setInPrice(shopItem.getInPrice());
+				deliverOrderShopItem.setShopId(deliverOrderShop.getShopId());
+				deliverOrderShopItem.setItemId(d.getItemId());
+				add(deliverOrderShopItem);
+			}
+		}
 	}
 
 }

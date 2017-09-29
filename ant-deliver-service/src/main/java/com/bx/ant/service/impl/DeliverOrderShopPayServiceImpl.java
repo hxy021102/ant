@@ -8,6 +8,7 @@ import com.mobian.pageModel.DeliverOrderShopPay;
 import com.mobian.pageModel.PageHelper;
 import com.bx.ant.service.DeliverOrderShopPayServiceI;
 import com.mobian.util.MyBeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -115,6 +116,21 @@ public class DeliverOrderShopPayServiceImpl extends BaseServiceImpl<DeliverOrder
 		params.put("id", id);
 		deliverOrderShopPayDao.executeHql("update TdeliverOrderShopPay t set t.isdeleted = 1 where t.id = :id",params);
 		//deliverOrderShopPayDao.delete(deliverOrderShopPayDao.get(TdeliverOrderShopPay.class, id));
+	}
+
+	@Override
+	public List<DeliverOrderShopPay> list(DeliverOrderShopPay deliverOrderShopPay) {
+		return dataGrid(deliverOrderShopPay, new PageHelper()).getRows();
+	}
+
+	@Override
+	public void editStatus(DeliverOrderShopPay deliverOrderShopPay, String status) {
+		List<DeliverOrderShopPay> orderShopPayList = list(deliverOrderShopPay);
+		if (CollectionUtils.isNotEmpty(orderShopPayList)) {
+			DeliverOrderShopPay orderShopPay = orderShopPayList.get(0);
+			orderShopPay.setStatus(status);
+			edit(orderShopPay);
+		}
 	}
 
 }

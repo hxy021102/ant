@@ -1,13 +1,24 @@
 package com.bx.ant.service.impl;
 
+import com.bx.ant.dao.DeliverOrderItemDaoI;
+import com.bx.ant.model.TdeliverOrderItem;
+import com.bx.ant.pageModel.DeliverOrderExt;
+import com.bx.ant.pageModel.DeliverOrderItemExt;
+import com.bx.ant.service.DeliverOrderItemServiceI;
+import com.bx.ant.service.DeliverOrderShopServiceI;
+import com.bx.ant.service.DeliverOrderState;
 import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderDaoI;
 import com.bx.ant.model.TdeliverOrder;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.DeliverOrder;
-import com.mobian.pageModel.PageHelper;
+import com.mobian.exception.ServiceException;
+import com.mobian.pageModel.*;
 import com.bx.ant.service.DeliverOrderServiceI;
+import com.mobian.pageModel.DeliverOrder;
+import com.mobian.pageModel.DeliverOrderItem;
+import com.mobian.pageModel.DeliverOrderShop;
+import com.mobian.service.MbItemServiceI;
 import com.mobian.util.MyBeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +33,19 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 
 	@Autowired
 	private DeliverOrderDaoI deliverOrderDao;
+
+	@javax.annotation.Resource
+	private Map<String, DeliverOrderState> deliverOrderStateFactory;
+
+	@Autowired
+	private DeliverOrderShopServiceI deliverOrderShopService;
+
+	@Autowired
+	private DeliverOrderItemServiceI deliverOrderItemService;
+
+	@Autowired
+	private DeliverOrderItemDaoI deliverOrderItemDao;
+
 
 	@Override
 	public DataGrid dataGrid(DeliverOrder deliverOrder, PageHelper ph) {
@@ -116,7 +140,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	}
 
 	@Override
-	public DeliverOrder get(Integer id) {
+	public DeliverOrder get(Long id) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
 		TdeliverOrder t = deliverOrderDao.get("from TdeliverOrder t  where t.id = :id", params);
@@ -134,11 +158,82 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	}
 
 	@Override
-	public void delete(Integer id) {
+	public void delete(Long id) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
 		deliverOrderDao.executeHql("update TdeliverOrder t set t.isdeleted = 1 where t.id = :id",params);
 		//deliverOrderDao.delete(deliverOrderDao.get(TdeliverOrder.class, id));
 	}
 
+	@Override
+	public void fillInfo(DeliverOrderExt deliverOrderExt) {
+		fillDeliverOrderItemInfo(deliverOrderExt);
+	}
+
+	@Override
+	public void fillDeliverOrderItemInfo(DeliverOrderExt deliverOrderExt) {
+		//填充明细信息
+		DeliverOrderItem deliverOrderItem = new DeliverOrderItem();
+		deliverOrderItem.setDeliverOrderId(deliverOrderExt.getId());
+		List<DeliverOrderItem> deliverOrderItems = deliverOrderItemService.list(deliverOrderItem);
+		deliverOrderExt.setDeliverOrderItemList(deliverOrderItems);
+	}
+
+
+	@Override
+	public void transform(DeliverOrder deliverOrder) {
+		DeliverOrderState deliverOrderState;
+		if(F.empty(deliverOrder.getId())) {
+			deliverOrderState = deliverOrderStateFactory.get("deliverOrder01StateImpl");
+			deliverOrderState.handle(deliverOrder);
+		} else {
+			deliverOrderState = getCurrentState(deliverOrder.getId());
+			if(deliverOrderState.next(deliverOrder) == null) {
+				throw new ServiceException("订单状态异常或已变更，请刷新页面重试！");
+			}
+			deliverOrderState.next(deliverOrder).handle(deliverOrder);
+		}
+	}
+
+	@Override
+	public DeliverOrderState getCurrentState(Long id) {
+		DeliverOrder currentDeliverOrder = get(id);
+		DeliverOrderState.deliverOrder.set(currentDeliverOrder);
+		String deliverOrderStatus = currentDeliverOrder.getStatus();
+		DeliverOrderState deliverOrderState = deliverOrderStateFactory.get("deliverOrder" + deliverOrderStatus.substring(2) + "StateImpl");
+		return deliverOrderState;
+	}
+
+
+
+	@Override
+	public List<DeliverOrder> listAuditOrder(Integer shopId) {
+		List<DeliverOrder> ol = new ArrayList<DeliverOrder>();
+		DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+		deliverOrderShop.setStatus(deliverOrderShopService.STATUS_AUDITING);
+		deliverOrderShop.setShopId(shopId);
+		List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.list(deliverOrderShop);
+		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
+			for (DeliverOrderShop orderShop : deliverOrderShops) {
+
+				//通过门店运单获取运单信息
+				DeliverOrderExt deliverOrder = new DeliverOrderExt();
+				BeanUtils.copyProperties(get(orderShop.getDeliverOrderId()), deliverOrder);
+
+				fillInfo(deliverOrder);
+
+
+				if (deliverOrder != null) {
+					ol.add(deliverOrder);
+				}
+			}
+		}
+		return ol;
+	}
+	@Override
+	public DeliverOrder getDeliverOrderExt(Long id) {
+		DeliverOrderExt deliverOrderExt = (DeliverOrderExt) get(id);
+		fillInfo(deliverOrderExt);
+		return deliverOrderExt;
+	}
 }

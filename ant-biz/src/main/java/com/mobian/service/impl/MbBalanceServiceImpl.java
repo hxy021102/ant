@@ -118,25 +118,7 @@ public class MbBalanceServiceImpl extends BaseServiceImpl<MbBalance> implements 
 
 	@Override
 	public MbBalance addOrGetMbBalance(Integer refId) {
-		MbShop mbShop = mbShopService.getFromCache(refId);
-		if (mbShop != null && !F.empty(mbShop.getParentId()) && mbShop.getParentId() != -1) {
-			refId = mbShop.getParentId();
-		}
-		MbBalance o;
-		TmbBalance t = mbBalanceDao.get("from TmbBalance t where t.isdeleted = 0 and t.refType = 1 and refId=" + refId);
-		if(t != null && t.getId() != null) {
-			o = new MbBalance();
-			BeanUtils.copyProperties(t, o);
-		} else {
-			if(refId == null)
-				throw new ServiceException("shopId 不能为空");
-			o = new MbBalance();
-			o.setAmount(0);
-			o.setRefId(refId);
-			o.setRefType(1);
-			add(o);
-		}
-		return o;
+		return addOrGetMbBalance(refId,1,0);
 	}
 
 	@Override
@@ -156,26 +138,13 @@ public class MbBalanceServiceImpl extends BaseServiceImpl<MbBalance> implements 
 
 	@Override
 	public MbBalance addOrGetMbBalanceCash(Integer shopId) {
-		MbShop mbShop = mbShopService.getFromCache(shopId);
-		if (mbShop != null && !F.empty(mbShop.getParentId()) && mbShop.getParentId() != -1) {
-			shopId = mbShop.getParentId();
-		}
-		MbBalance o;
-		TmbBalance t = mbBalanceDao.get("from TmbBalance t where t.isdeleted = 0 and t.refType = 4 and refId=" + shopId);
-		if(t != null && t.getId() != null) {
-			o = new MbBalance();
-			BeanUtils.copyProperties(t, o);
-		} else {
-			if(shopId == null)
-				throw new ServiceException("shopId 不能为空");
-			o = new MbBalance();
-			o.setAmount(-10000000);
-			o.setRefId(shopId);
-			o.setRefType(4);
-			add(o);
-		}
-		return o;
+		return addOrGetMbBalance(shopId,4,-10000000);
 	}
+	@Override
+	public MbBalance addOrGetMbBalanceDelivery(Integer shopId) {
+		return addOrGetMbBalance(shopId,10,0);
+	}
+
 
 	@Override
 	public MbBalance getCashByShopId(Integer shopId) {
@@ -228,5 +197,32 @@ public class MbBalanceServiceImpl extends BaseServiceImpl<MbBalance> implements 
 		}
 		return null;
 	}
+	@Override
+	public MbBalance addOrGetMbBalance(Integer refId, Integer refType, Integer initAmount) {
+		MbShop mbShop = mbShopService.getFromCache(refId);
+		if (mbShop != null && !F.empty(mbShop.getParentId()) && mbShop.getParentId() != -1) {
+			refId = mbShop.getParentId();
+		}
+		MbBalance o;
+		TmbBalance t = mbBalanceDao.get("from TmbBalance t where t.isdeleted = 0 and t.refType = " + refType + " and refId=" + refId);
+		if(t != null && t.getId() != null) {
+			o = new MbBalance();
+			BeanUtils.copyProperties(t, o);
+		} else {
+			if(refId == null)
+				throw new ServiceException("shopId 不能为空");
+			if(refType == null)
+				throw new ServiceException("refType 不能为空");
+			if(refType == null)
+				throw new ServiceException("initAmount 不能为空");
+			o = new MbBalance();
+			o.setAmount(initAmount);
+			o.setRefId(refId);
+			o.setRefType(refType);
+			add(o);
+		}
+		return o;
+	}
+
 
 }

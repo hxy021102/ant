@@ -4,6 +4,8 @@ import com.mobian.pageModel.DeliverOrderShopPay;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
+import java.util.List;
+
 /**
  * 
  * @author John
@@ -51,4 +53,7 @@ public interface DeliverOrderShopPayServiceI {
 	 */
 	public void delete(Integer id);
 
+    List<DeliverOrderShopPay> list(DeliverOrderShopPay deliverOrderShopPay);
+
+    void editStatus(DeliverOrderShopPay deliverOrderShopPay, String status);
 }

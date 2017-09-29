@@ -75,6 +75,13 @@ public interface MbBalanceServiceI {
 	MbBalance addOrGetMbBalanceCash(Integer shopId);
 
 	/**
+	 * 门店运单账户
+	 * @param shopId
+	 * @return
+	 */
+	MbBalance addOrGetMbBalanceDelivery(Integer shopId);
+
+	/**
 	 * 桶押金账户
 	 * @param shopId
 	 * @return
@@ -97,4 +104,12 @@ public interface MbBalanceServiceI {
 	 */
 	List<MbBalance> queryBalanceListByShopId(Integer shopId);
 
+	/**
+	 * 通用创建与获取账户方法
+	 * @param refId
+	 * @param refType
+	 * @param initAmount
+	 * @return
+	 */
+	MbBalance addOrGetMbBalance(Integer refId, Integer refType, Integer initAmount);
 }

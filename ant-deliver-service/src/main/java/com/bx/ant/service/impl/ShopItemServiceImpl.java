@@ -121,4 +121,27 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 		//shopItemDao.delete(shopItemDao.get(TshopItem.class, id));
 	}
 
+	@Override
+	public ShopItem getByShopIdAndItemId(Integer shopId, Integer itemId, boolean isOnline) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		ShopItem shopItem = new ShopItem();
+		shopItem.setShopId(shopId);
+		shopItem.setItemId(itemId);
+		shopItem.setOnline(isOnline);
+		String where = whereHql(shopItem, params);
+		TshopItem t = shopItemDao.get("from TshopItem t " + where , params);
+		ShopItem o = new ShopItem();
+		BeanUtils.copyProperties(t, o);
+		return o;
+	}
+
+	@Override
+	public ShopItem getByShopIdAndItemId(Integer shopId, Integer itemId) {
+		ShopItem shopItem = new ShopItem();
+		shopItem = getByShopIdAndItemId(shopId, itemId, true);
+		if (shopItem != null) return shopItem ;
+		shopItem = getByShopIdAndItemId(shopId, itemId, false);
+		return shopItem;
+	}
+
 }

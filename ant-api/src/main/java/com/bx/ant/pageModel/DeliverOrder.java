@@ -25,6 +25,7 @@ public class DeliverOrder implements java.io.Serializable {
 	private String contactPhone;
 	private String contactPeople;
 	private String remark;
+	private Integer shopId;
 
 	
 
@@ -157,4 +158,11 @@ public class DeliverOrder implements java.io.Serializable {
 		return this.remark;
 	}
 
+	public Integer getShopId() {
+		return shopId;
+	}
+
+	public void setShopId(Integer shopId) {
+		this.shopId = shopId;
+	}
 }

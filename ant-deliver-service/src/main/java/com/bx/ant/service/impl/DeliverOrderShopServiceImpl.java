@@ -3,11 +3,14 @@ package com.bx.ant.service.impl;
 import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderShopDaoI;
 import com.bx.ant.model.TdeliverOrderShop;
+import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.DeliverOrder;
 import com.mobian.pageModel.DeliverOrderShop;
 import com.mobian.pageModel.PageHelper;
 import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.mobian.util.MyBeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -81,6 +84,7 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		//t.setId(jb.absx.UUID.uuid());
 		t.setIsdeleted(false);
 		deliverOrderShopDao.save(t);
+		deliverOrderShop.setId(t.getId());
 	}
 
 	@Override
@@ -108,5 +112,50 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		deliverOrderShopDao.executeHql("update TdeliverOrderShop t set t.isdeleted = 1 where t.id = :id",params);
 		//deliverOrderShopDao.delete(deliverOrderShopDao.get(TdeliverOrderShop.class, id));
 	}
+
+	@Override
+	public DeliverOrderShop addByDeliverOrder(DeliverOrder deliverOrder) {
+		//TODO shop状态?true or false
+		DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+		deliverOrderShop.setAmount(deliverOrder.getAmount());
+		deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
+		deliverOrderShop.setShopId(deliverOrder.getShopId());
+		deliverOrderShop.setStatus(STATUS_AUDITING);
+		add(deliverOrderShop);
+		return deliverOrderShop;
+	}
+
+	@Override
+	public List<DeliverOrderShop> list(DeliverOrderShop deliverOrderShop) {
+		List<DeliverOrderShop> ol = new ArrayList<DeliverOrderShop>();
+		Map<String, Object> params = new HashMap<String, Object>();
+		String hql = " from TdeliverOrderShop t ";
+		String where = whereHql(deliverOrderShop, params);
+		List<TdeliverOrderShop> l = deliverOrderShopDao.find(hql + where, params);
+		if (CollectionUtils.isNotEmpty(l)) {
+			for (TdeliverOrderShop t : l) {
+				DeliverOrderShop o = new DeliverOrderShop();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		return ol;
+	}
+	@Override
+	public DeliverOrderShop editStatus(DeliverOrderShop deliverOrderShop, String status) {
+		List<DeliverOrderShop> deliverOrderShops = list(deliverOrderShop);
+		DeliverOrderShop o = new DeliverOrderShop();
+		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
+			//TODO 只对第一个结果进行处理
+			o = deliverOrderShops.get(0);
+			o.setStatus(status);
+			edit(o);
+		} else {
+			throw new ServiceException("请确认门店订单是否存在");
+		}
+		return o;
+
+	}
+
 
 }

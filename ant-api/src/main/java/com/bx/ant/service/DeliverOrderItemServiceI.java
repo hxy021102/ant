@@ -4,6 +4,8 @@ import com.mobian.pageModel.DeliverOrderItem;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
+import java.util.List;
+
 /**
  * 
  * @author John
@@ -51,4 +53,5 @@ public interface DeliverOrderItemServiceI {
 	 */
 	void delete(Integer id);
 
+    List<DeliverOrderItem> list(DeliverOrderItem DeliverOrderItem);
 }

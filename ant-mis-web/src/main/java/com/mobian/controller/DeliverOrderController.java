@@ -110,7 +110,7 @@ public class DeliverOrderController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/view")
-	public String view(HttpServletRequest request, Integer id) {
+	public String view(HttpServletRequest request, Long id) {
 		DeliverOrder deliverOrder = deliverOrderService.get(id);
 		request.setAttribute("deliverOrder", deliverOrder);
 		return "/deliverorder/deliverOrderView";
@@ -122,7 +122,7 @@ public class DeliverOrderController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/editPage")
-	public String editPage(HttpServletRequest request, Integer id) {
+	public String editPage(HttpServletRequest request, Long id) {
 		DeliverOrder deliverOrder = deliverOrderService.get(id);
 		request.setAttribute("deliverOrder", deliverOrder);
 		return "/deliverorder/deliverOrderEdit";
@@ -152,12 +152,26 @@ public class DeliverOrderController extends BaseController {
 	 */
 	@RequestMapping("/delete")
 	@ResponseBody
-	public Json delete(Integer id) {
+	public Json delete(Long id) {
 		Json j = new Json();
 		deliverOrderService.delete(id);
 		j.setMsg("删除成功！");
 		j.setSuccess(true);
 		return j;
 	}
-
+	/**
+	 * 删除DeliverOrder
+	 *
+	 * @param deliverOrder
+	 * @return
+	 */
+	@RequestMapping("/editStatus")
+	@ResponseBody
+	public Json editStatus(DeliverOrder deliverOrder) {
+		Json j = new Json();
+		deliverOrderService.transform(deliverOrder);
+		j.setMsg("编辑成功");
+		j.setSuccess(true);
+		return j;
+	}
 }
