@@ -416,7 +416,11 @@ public class MbShopController extends BaseController {
 
     @RequestMapping("/getShopMap")
     public String getShopMap(HttpServletRequest request,MbShop mbShop) {
-//      List<MbShop> mbShopList=mbShopService.dataGrid(mbShop).getRows();
+        List<MbShop> mbShopList=mbShopService.query(mbShop);
+        for(MbShop shop:mbShopList) {
+            System.out.println("门店的地址为"+shop.getAddress()+"  精度"+shop.getLongitude()+"维度"+shop.getLatitude());
+        }
+        request.setAttribute("mbShopListData",JSON.toJSONString(mbShopList));
         return "/mbshop/mbShopMap";
     }
 
