@@ -188,17 +188,17 @@ public class MbSupplierOrderItemServiceImpl extends BaseServiceImpl<MbSupplierOr
                }
                Map<String,Integer> map=new HashMap<String, Integer>();
                 for(TmbSupplierStockInItem item :stockInItemList){
-                        Integer itemValue = map.get(item.getItemId()+""+item.getPrice());
+                        Integer itemValue = map.get(item.getItemId()+":"+item.getPrice());
                         if (itemValue == null) {
-                            map.put(item.getItemId()+""+item.getPrice(), item.getQuantity());
+                            map.put(item.getItemId()+":"+item.getPrice(), item.getQuantity());
                         } else {
-                            map.put(item.getItemId()+""+item.getPrice(), itemValue += item.getQuantity());
+                            map.put(item.getItemId()+":"+item.getPrice(), itemValue += item.getQuantity());
 
                     }
                 }
                 for(String itemId :map.keySet()){
                     for (MbSupplierOrderItem order : mbSupplierOrderItemList) {
-                        if(itemId.equals(order.getItemId()+""+order.getPrice())){
+                        if(itemId.equals(order.getItemId()+":"+order.getPrice())){
                             order.setWarehouseQuantity(map.get(itemId));
                         }
                     }
