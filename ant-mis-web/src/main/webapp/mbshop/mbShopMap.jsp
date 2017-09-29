@@ -1,17 +1,12 @@
  <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="com.mobian.model.TmbShop" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%>
- <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=CEADSBSqQi7DC6a5YxqPY6FvgV3Kamc4"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=CEADSBSqQi7DC6a5YxqPY6FvgV3Kamc4"></script>
  <script type="text/javascript">
      parent.$.messager.progress('close');
-     var mapData = '${mbShopListData}';
-    // var mapData= eval("(" + mbShopListData + ")");
-     alert(mapData.length)
+     var mbShopListData = '${mbShopMapData}';
+     var mapData = eval('(' + mbShopListData + ')');
      var mapArray = new Array(mapData.length);
      for (var k = 0; k < mapArray.length; k++) {
-         alert(mapData[k].address)
          mapArray[k] = new Array(3);
      }
      for (var i = 0; i < mapArray.length; i++) {
@@ -25,18 +20,14 @@
              }
          }
      }
-     // 百度地图API功能
+    // 百度地图API功能
      map = new BMap.Map("allmap");
-     map.centerAndZoom(new BMap.Point(116.417854,39.921988), 15);
-     map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
-     /*var data_info = [[116.417854,39.921988,"地址：北京市东城区王府井大街88号乐天银泰百货八层"],
-         [116.406605,39.921585,"地址：北京市东城区东华门大街"],
-         [116.412222,39.912345,"地址：北京市东城区正义路甲5号"]
-     ];*/
+     map.centerAndZoom(new BMap.Point(121.56,31.12), 12.5);
+     map.enableScrollWheelZoom(true);     //开启鼠标滚缩放
      var opts = {
          width : 250,     // 信息窗口宽度
-         height: 80,     // 信息窗口高度
-         title : "信息窗口" , // 信息窗口标题
+         height: 95,     // 信息窗口高度
+         /*title : "信息窗口" , // 信息窗口标题*/
          enableMessage:true//设置允许信息窗发送短息
      };
      for(var i=0;i<mapArray.length;i++){

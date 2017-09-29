@@ -125,4 +125,11 @@ public interface MbShopServiceI {
 
 	List<MbShop> query(MbShop mbShop);
 
+	/**
+	 * 获取门店地图数据
+	 * @param mbShop
+	 * @return
+	 */
+	List<MbShopMap> getShopMapData(MbShop mbShop);
+
 }
