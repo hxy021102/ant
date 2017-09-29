@@ -43,8 +43,8 @@
                 idField : 'id',
                 pageSize : 10,
                 pageList : [ 10, 20, 30, 40, 50 ],
-                sortName : 'id',
-                sortOrder : 'desc',
+                sortName : 'addtime',
+                sortOrder : 'asc',
                 checkOnSelect : false,
                 selectOnCheck : false,
                 nowrap : false,
@@ -60,7 +60,13 @@
                     field : 'itemName',
                     title : '<%=TmbSupplierOrderItem.ALIAS_ITEM_NAME%>',
                     width : 50,
-					align:"center"
+					align:"center",
+                    formatter: function (value, row) {
+                        if (row.price == 0 && row.itemName != "总量")
+                            value += '<font color="red">【赠送】</font>';
+                        return value;
+                    }
+
                 }, {
                     field : 'quantity',
                     title : '<%=TmbSupplierOrderItem.ALIAS_QUANTITY%>',
