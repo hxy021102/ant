@@ -76,6 +76,8 @@ public class TdeliverOrder implements java.io.Serializable,IEntity{
 	//@Length(max=10)
 	private String payStatus;
 	//@Length(max=10)
+	private Integer shopId;
+	//@Length(max=10)
 	private String shopPayStatus;
 	//@Length(max=10)
 	private String payWay;
@@ -261,7 +263,14 @@ public class TdeliverOrder implements java.io.Serializable,IEntity{
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
-	
+	@Column(name = "shop_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public Integer getShopId() {
+		return shopId;
+	}
+
+	public void setShopId(Integer shopId) {
+		this.shopId = shopId;
+	}
 	
 	/*
 	public String toString() {

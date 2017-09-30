@@ -17,6 +17,7 @@ public class DeliverOrderItem implements java.io.Serializable {
 	private Integer price;
 	private Integer inPrice;
 	private Integer freight;
+	private Integer quantity;
 
 	
 
@@ -93,4 +94,11 @@ public class DeliverOrderItem implements java.io.Serializable {
 		return this.freight;
 	}
 
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
 }

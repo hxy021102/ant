@@ -29,4 +29,5 @@ public class DeliverOrderExt extends DeliverOrder {
     public void setDeliverOrderShopItemList(List<DeliverOrderShopItem> deliverOrderShopItemList) {
         this.deliverOrderShopItemList = deliverOrderShopItemList;
     }
+
 }

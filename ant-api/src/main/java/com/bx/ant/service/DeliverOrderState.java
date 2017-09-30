@@ -9,7 +9,7 @@ public interface DeliverOrderState {
 
     ThreadLocal<DeliverOrder> deliverOrder = new ThreadLocal();
 
-    String prefix = "DO";
+    String prefix = "DOS";
     /**
      * 获取状态
      * @return

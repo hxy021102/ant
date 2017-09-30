@@ -12,6 +12,7 @@ import com.mobian.pageModel.DeliverOrder;
 import com.mobian.pageModel.DeliverOrderItem;
 import com.mobian.pageModel.DeliverOrderShop;
 import com.mobian.pageModel.DeliverOrderShopItem;
+import com.mobian.util.BeanUtil;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -204,6 +205,18 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	}
 
 	@Override
+	public void transformByShopIdAndStatus(Long id, Integer shopId, String status) {
+		//配置deliverOrder
+		DeliverOrder deliverOrder =  new DeliverOrder();
+		deliverOrder.setId(id);
+		deliverOrder.setShopId(shopId);
+		deliverOrder.setStatus(status);
+
+		//状态翻转
+		transform(deliverOrder);
+	}
+
+	@Override
 	public DeliverOrderState getCurrentState(Long id) {
 		DeliverOrder currentDeliverOrder = get(id);
 		DeliverOrderState.deliverOrder.set(currentDeliverOrder);
@@ -265,5 +278,21 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		DeliverOrderExt deliverOrderExt = (DeliverOrderExt) get(id);
 		fillInfo(deliverOrderExt);
 		return deliverOrderExt;
+	}
+	@Override
+	public DataGrid dataGridExt(DeliverOrder deliverOrder, PageHelper ph) {
+		DataGrid dg = dataGrid(deliverOrder, ph);
+		List<DeliverOrder> l = dg.getRows();
+		List<DeliverOrder> ol = new ArrayList<DeliverOrder>();
+		if (CollectionUtils.isNotEmpty(l)) {
+			for (DeliverOrder o : l ) {
+				DeliverOrderExt ox = new DeliverOrderExt();
+				BeanUtils.copyProperties(o, ox);
+				fillDeliverOrderShopItemInfo(ox);
+				ol.add(ox);
+			}
+		}
+		dg.setRows(ol);
+		return dg;
 	}
 }
