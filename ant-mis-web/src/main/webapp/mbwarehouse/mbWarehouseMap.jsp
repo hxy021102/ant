@@ -2,8 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=CEADSBSqQi7DC6a5YxqPY6FvgV3Kamc4"></script>
  <script type="text/javascript">
-     var mbShopListData = '${mbShopMapData}';
-     var mapData = eval('(' + mbShopListData + ')');
+     var mbWarehouseListData = '${mbWarehouseData}';
+     var mapData = eval('(' + mbWarehouseListData + ')');
      var mapArray = new Array(mapData.length);
      for (var k = 0; k < mapArray.length; k++) {
          mapArray[k] = new Array(3);
@@ -25,7 +25,7 @@
      map.enableScrollWheelZoom(true);     //开启鼠标滚缩放
      var opts = {
          width : 250,     // 信息窗口宽度
-         height: 95,     // 信息窗口高度
+         height: 80,     // 信息窗口高度
          /*title : "信息窗口" , // 信息窗口标题*/
          enableMessage:true//设置允许信息窗发送短息
      };

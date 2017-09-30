@@ -199,4 +199,17 @@ public class MbWarehouseController extends BaseController {
 		return lt;
 	}
 
+	/**
+	 * 跳转到仓库地图页面并传递地图数据
+	 * @param request
+	 * @param mbWarehouse
+	 * @return
+	 */
+	@RequestMapping("/getWarehouseMap")
+	public String getWarehouseMap(HttpServletRequest request,MbWarehouse mbWarehouse) {
+		List<MbWarehouse> mbWarehouses=mbWarehouseService.getWarehouseMapData(mbWarehouse);
+		request.setAttribute("mbWarehouseData",JSON.toJSONString(mbWarehouses));
+		return "/mbwarehouse/mbWarehouseMap";
+	}
+
 }
