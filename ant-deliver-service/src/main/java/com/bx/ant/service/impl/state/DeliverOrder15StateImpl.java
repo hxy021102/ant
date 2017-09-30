@@ -52,9 +52,6 @@ public class DeliverOrder15StateImpl implements DeliverOrderState {
 
     @Override
     public DeliverOrderState next(DeliverOrder deliverOrder) {
-        if ("DO20".equals(deliverOrder.getStatus())) {
-            return deliverOrderState20;
-        }
         return null;
     }
 }

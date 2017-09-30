@@ -1,22 +1,17 @@
 package com.bx.ant.service.impl;
 
 import com.bx.ant.dao.DeliverOrderItemDaoI;
-import com.bx.ant.model.TdeliverOrderItem;
 import com.bx.ant.pageModel.DeliverOrderExt;
-import com.bx.ant.pageModel.DeliverOrderItemExt;
-import com.bx.ant.service.DeliverOrderItemServiceI;
-import com.bx.ant.service.DeliverOrderShopServiceI;
-import com.bx.ant.service.DeliverOrderState;
+import com.bx.ant.service.*;
 import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderDaoI;
 import com.bx.ant.model.TdeliverOrder;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
-import com.bx.ant.service.DeliverOrderServiceI;
 import com.mobian.pageModel.DeliverOrder;
 import com.mobian.pageModel.DeliverOrderItem;
 import com.mobian.pageModel.DeliverOrderShop;
-import com.mobian.service.MbItemServiceI;
+import com.mobian.pageModel.DeliverOrderShopItem;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -45,6 +40,9 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 
 	@Autowired
 	private DeliverOrderItemDaoI deliverOrderItemDao;
+
+	@Autowired
+	private DeliverOrderShopItemServiceI deliverOrderShopItemService;
 
 
 	@Override
@@ -179,6 +177,16 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		deliverOrderExt.setDeliverOrderItemList(deliverOrderItems);
 	}
 
+	@Override
+	public void fillDeliverOrderShopItemInfo(DeliverOrderExt deliverOrderExt) {
+		//填充明细信息
+		DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
+		deliverOrderShopItem.setDeliverOrderId(deliverOrderExt.getId());
+		List<DeliverOrderShopItem> deliverOrderShopItems = deliverOrderShopItemService.list(deliverOrderShopItem);
+		deliverOrderExt.setDeliverOrderShopItemList(deliverOrderShopItems);
+	}
+
+
 
 	@Override
 	public void transform(DeliverOrder deliverOrder) {
@@ -207,22 +215,18 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 
 
 	@Override
-	public List<DeliverOrder> listAuditOrder(Integer shopId) {
+	public List<DeliverOrder> listOrderByOrderShopIdAndShopStatus(Integer shopId, String deliverOrderShopStatus) {
 		List<DeliverOrder> ol = new ArrayList<DeliverOrder>();
 		DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
-		deliverOrderShop.setStatus(deliverOrderShopService.STATUS_AUDITING);
+		deliverOrderShop.setStatus(deliverOrderShopStatus);
 		deliverOrderShop.setShopId(shopId);
 		List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.list(deliverOrderShop);
 		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
 			for (DeliverOrderShop orderShop : deliverOrderShops) {
-
 				//通过门店运单获取运单信息
 				DeliverOrderExt deliverOrder = new DeliverOrderExt();
 				BeanUtils.copyProperties(get(orderShop.getDeliverOrderId()), deliverOrder);
-
-				fillInfo(deliverOrder);
-
-
+				fillDeliverOrderShopItemInfo(deliverOrder);
 				if (deliverOrder != null) {
 					ol.add(deliverOrder);
 				}
@@ -230,6 +234,32 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		}
 		return ol;
 	}
+
+	@Override
+	public List<DeliverOrder> listOrderByShopIdAndOrderStatus(Integer shopId, String orderStatus) {
+		List<DeliverOrder> ol = new ArrayList<DeliverOrder>();
+		DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+		deliverOrderShop.setShopId(shopId);
+		List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.list(deliverOrderShop);
+		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
+			for (DeliverOrderShop orderShop : deliverOrderShops) {
+
+				//通过门店运单获取运单信息
+				DeliverOrderExt deliverOrder = new DeliverOrderExt();
+				DeliverOrder order = get(orderShop.getDeliverOrderId());
+				if (order != null) {
+				    deliverOrder = (DeliverOrderExt) order;
+					fillDeliverOrderShopItemInfo(deliverOrder);
+					if (orderStatus.equals(deliverOrder.getStatus())) 	{
+						ol.add(deliverOrder);
+					}
+				}
+			}
+		}
+		return ol;
+	}
+
+
 	@Override
 	public DeliverOrder getDeliverOrderExt(Long id) {
 		DeliverOrderExt deliverOrderExt = (DeliverOrderExt) get(id);

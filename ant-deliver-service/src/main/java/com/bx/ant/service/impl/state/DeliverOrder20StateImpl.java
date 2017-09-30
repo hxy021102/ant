@@ -55,7 +55,7 @@ public class DeliverOrder20StateImpl implements DeliverOrderState {
         DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
         deliverOrderShop.setStatus(deliverOrderShopService.STATUS_AUDITING);
         deliverOrderShop.setDeliverOrderId(order.getId());
-        deliverOrderShopService.editStatus(deliverOrderShop,deliverOrderShopService.STATUS_ACCEPTED);
+        deliverOrderShop = deliverOrderShopService.editStatus(deliverOrderShop,deliverOrderShopService.STATUS_ACCEPTED);
 
         //修改门店运单支付状态
         DeliverOrderShopPay deliverOrderShopPay = new DeliverOrderShopPay();
@@ -69,15 +69,15 @@ public class DeliverOrder20StateImpl implements DeliverOrderState {
 //        order.setShopId(deliverOrder.getShopId());
 //        DeliverOrderShop deliverOrderShop = deliverOrderShopService.addByDeliverOrder(order);
         //添加门店运单明细
-        DeliverOrderItem deliverOrderItem = new DeliverOrderItem();
-        deliverOrderItem.setDeliverOrderId(deliverOrder.getId());
-        List<DeliverOrderItem> deliverOrderItems = deliverOrderItemService.list(deliverOrderItem);
-        deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItems, deliverOrderShop);
+//        DeliverOrderItem deliverOrderItem = new DeliverOrderItem();
+//        deliverOrderItem.setDeliverOrderId(deliverOrder.getId());
+//        List<DeliverOrderItem> deliverOrderItems = deliverOrderItemService.list(deliverOrderItem);
+//        deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItems, deliverOrderShop);
     }
 
     @Override
     public DeliverOrderState next(DeliverOrder deliverOrder) {
-        if ("DO25".equals(deliverOrder.getStatus())) {
+        if ((prefix + "25").equals(deliverOrder.getStatus())) {
             return deliverOrderState25;
         }
         return null;

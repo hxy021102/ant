@@ -1,11 +1,11 @@
 package com.bx.ant.pageModel;
 
-import com.mobian.pageModel.DeliverOrderShop;
+import com.mobian.pageModel.DeliverOrderShopItem;
 
 /**
  * Created by wanxp on 17-9-27.
  */
-public class DeliverOrderShopItemExt extends DeliverOrderShop{
+public class DeliverOrderShopItemExt extends DeliverOrderShopItem {
     private String itemName;
     private String pictureUrl;
 

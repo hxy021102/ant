@@ -99,6 +99,12 @@ public interface DeliverOrderServiceI {
 	 */
 	void fillDeliverOrderItemInfo(DeliverOrderExt deliverOrderExt);
 
+	/**
+	 *
+	 * @param deliverOrderExt
+	 */
+    void fillDeliverOrderShopItemInfo(DeliverOrderExt deliverOrderExt);
+
     /**
 	 * 配送订单状态转换
 	 * @param deliverOrder
@@ -106,11 +112,13 @@ public interface DeliverOrderServiceI {
 	void transform(DeliverOrder deliverOrder);
 
 	/**
-	 * 列出门店审核的运单
+	 * 列出门店的运单
 	 * @param shopId
 	 * @return
 	 */
-    List<DeliverOrder> listAuditOrder(Integer shopId);
+	List<DeliverOrder> listOrderByOrderShopIdAndShopStatus(Integer shopId, String deliverOrderShopStatus);
+
+	List<DeliverOrder> listOrderByShopIdAndOrderStatus(Integer shopId, String orderStatus);
 
 	/**
 	 * 获取到含明细的运单

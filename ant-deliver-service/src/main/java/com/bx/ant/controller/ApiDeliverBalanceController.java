@@ -1,9 +1,11 @@
 package com.bx.ant.controller;
 
 import com.bx.ant.service.DeliverOrderServiceI;
+import com.bx.ant.service.DeliverOrderShopPayServiceI;
+import com.mobian.pageModel.*;
 import com.mobian.pageModel.DeliverOrder;
-import com.mobian.pageModel.Json;
-import com.mobian.pageModel.MbBalanceLog;
+import com.mobian.pageModel.DeliverOrderShop;
+import com.mobian.pageModel.DeliverOrderShopPay;
 import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbShopServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class ApiDeliverBalanceController extends BaseController {
     @Autowired
     private MbBalanceLogServiceI mbBalanceLogService;
 
+    @Autowired
+    private DeliverOrderShopPayServiceI deliverOrderPayShopService;
+
 
     @RequestMapping("/viewDeliverBanlanceLogList")
     @ResponseBody
@@ -43,9 +48,10 @@ public class ApiDeliverBalanceController extends BaseController {
     }
 
     @RequestMapping("/viewDeliverBanlanceLogDetial")
-    public Json viewBanlanceLogDetial(Long deliverOrderId) {
+    public Json viewBanlanceLogDetial(Integer refId) {
         Json json = new Json();
-        json.setObj(deliverOrderService.getDeliverOrderExt(deliverOrderId));
+        DeliverOrderShopPay deliverOrderShopPay = deliverOrderPayShopService.get(refId);
+        json.setObj(deliverOrderService.getDeliverOrderExt(deliverOrderShopPay.getDeliverOrderId()));
         json.setMsg("u know");
         json.setSuccess(true);
         return json;

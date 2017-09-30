@@ -1,5 +1,6 @@
 package com.bx.ant.service.impl;
 
+import com.bx.ant.pageModel.DeliverOrderShopItemExt;
 import com.bx.ant.service.ShopItemServiceI;
 import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderShopItemDaoI;
@@ -11,6 +12,7 @@ import com.mobian.pageModel.DeliverOrderItem;
 import com.mobian.pageModel.DeliverOrderShop;
 import com.mobian.pageModel.DeliverOrderShopItem;
 import com.mobian.pageModel.ShopItem;
+import com.mobian.service.MbItemServiceI;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -30,6 +32,9 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 
 	@Autowired
 	private ShopItemServiceI shopItemService;
+
+	@Autowired
+	private MbItemServiceI mbItemService;
 
 	@Override
 	public DataGrid dataGrid(DeliverOrderShopItem deliverOrderShopItem, PageHelper ph) {
@@ -139,6 +144,7 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 				ShopItem shopItem = shopItemService.getByShopIdAndItemId(deliverOrderShop.getShopId(), d.getItemId());
 				if (shopItem == null) throw new ServiceException("无法找到门店对应商品");
 
+
 				DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
 				deliverOrderShopItem.setDeliverOrderId(d.getDeliverOrderId());
 				deliverOrderShopItem.setDeliverOrderShopId(deliverOrderShop.getId());
@@ -148,6 +154,38 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 				deliverOrderShopItem.setShopId(deliverOrderShop.getShopId());
 				deliverOrderShopItem.setItemId(d.getItemId());
 				add(deliverOrderShopItem);
+			}
+		}
+	}
+
+	@Override
+	public List<DeliverOrderShopItem> list(DeliverOrderShopItem deliverOrderShopItem) {
+		List<DeliverOrderShopItem> ol = new ArrayList<DeliverOrderShopItem>();
+		Map<String, Object> params = new HashMap<String, Object>();
+		String hql = " from TdeliverOrderShopItem t ";
+		String where = whereHql(deliverOrderShopItem, params);
+		List<TdeliverOrderShopItem> l = deliverOrderShopItemDao.find(hql + where, params);
+		if (CollectionUtils.isNotEmpty(l)) {
+			for (TdeliverOrderShopItem t : l) {
+				DeliverOrderShopItemExt o = new DeliverOrderShopItemExt();
+				BeanUtils.copyProperties(t, o);
+				fillInfo(o);
+				ol.add(o);
+			}
+		}
+		return ol;
+	}
+
+	protected void fillInfo(DeliverOrderShopItemExt deliverOrderShopItemExt) {
+		fillItemInfo(deliverOrderShopItemExt);
+	}
+
+	protected void fillItemInfo(DeliverOrderShopItemExt deliverOrderShopItemExt) {
+		if (!F.empty(deliverOrderShopItemExt.getItemId())) {
+			MbItem item = mbItemService.getFromCache(deliverOrderShopItemExt.getItemId());
+			if (item != null) {
+				deliverOrderShopItemExt.setItemName(item.getName());
+				deliverOrderShopItemExt.setPictureUrl(item.getUrl());
 			}
 		}
 	}

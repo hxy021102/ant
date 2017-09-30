@@ -50,7 +50,7 @@ public class DeliverOrder25StateImpl implements DeliverOrderState {
 
     @Override
     public DeliverOrderState next(DeliverOrder deliverOrder) {
-        if ("DO30".equals(deliverOrder.getStatus())) {
+        if ((prefix + "30").equals(deliverOrder.getStatus())) {
             return deliverOrderState30;
         }
         return null;

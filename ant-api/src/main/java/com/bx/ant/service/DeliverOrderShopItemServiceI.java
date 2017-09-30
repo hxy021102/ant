@@ -54,5 +54,17 @@ public interface DeliverOrderShopItemServiceI {
 	 */
 	public void delete(Integer id);
 
+	/**
+	 * 通过delierOrderItemList添加至deliverOrderShopItemList
+	 * @param deliverOrderItems
+	 * @param deliverOrderShop
+	 */
     void addByDeliverOrderItemList(List<DeliverOrderItem> deliverOrderItems, DeliverOrderShop deliverOrderShop);
+
+	/**
+	 * 获取list
+	 * @param deliverOrderShopItem
+	 * @return
+	 */
+	List<DeliverOrderShopItem> list(DeliverOrderShopItem deliverOrderShopItem);
 }
