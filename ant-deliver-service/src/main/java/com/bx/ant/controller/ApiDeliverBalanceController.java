@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 
 /**
- * Created by guxin on 2017/4/22.
+ * Created by wanxp 2017/9/22
  *
  * 用户相关接口
  */
