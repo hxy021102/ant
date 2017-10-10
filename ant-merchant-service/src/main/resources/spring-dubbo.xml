@@ -30,4 +30,5 @@
        <dubbo:service interface="com.mobian.service.MbBalanceLogServiceI" ref="mbBalanceLogServiceImpl" protocol="dubbo"/>
 
        <dubbo:service interface="com.mobian.service.MbBalanceServiceI" ref="mbBalanceServiceImpl" protocol="dubbo"/>
+
 </beans>
