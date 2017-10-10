@@ -93,7 +93,7 @@ public class DeliverOrderShopPayServiceImpl extends BaseServiceImpl<DeliverOrder
 	}
 
 	@Override
-	public DeliverOrderShopPay get(Integer id) {
+	public DeliverOrderShopPay get(Long id) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
 		TdeliverOrderShopPay t = deliverOrderShopPayDao.get("from TdeliverOrderShopPay t  where t.id = :id", params);
@@ -111,7 +111,7 @@ public class DeliverOrderShopPayServiceImpl extends BaseServiceImpl<DeliverOrder
 	}
 
 	@Override
-	public void delete(Integer id) {
+	public void delete(Long id) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
 		deliverOrderShopPayDao.executeHql("update TdeliverOrderShopPay t set t.isdeleted = 1 where t.id = :id",params);

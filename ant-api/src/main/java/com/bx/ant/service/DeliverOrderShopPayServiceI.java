@@ -37,7 +37,7 @@ public interface DeliverOrderShopPayServiceI {
 	 * @param id
 	 * @return
 	 */
-	public DeliverOrderShopPay get(Integer id);
+	public DeliverOrderShopPay get(Long id);
 
 	/**
 	 * 修改DeliverOrderShopPay
@@ -51,7 +51,7 @@ public interface DeliverOrderShopPayServiceI {
 	 * 
 	 * @param id
 	 */
-	public void delete(Integer id);
+	public void delete(Long id);
 
     List<DeliverOrderShopPay> list(DeliverOrderShopPay deliverOrderShopPay);
 

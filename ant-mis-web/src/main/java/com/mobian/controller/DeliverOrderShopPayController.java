@@ -48,7 +48,7 @@ public class DeliverOrderShopPayController extends BaseController {
 	/**
 	 * 获取DeliverOrderShopPay数据表格
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 */
 	@RequestMapping("/dataGrid")
@@ -59,7 +59,7 @@ public class DeliverOrderShopPayController extends BaseController {
 	/**
 	 * 获取DeliverOrderShopPay数据表格excel
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 * @throws NoSuchMethodException 
 	 * @throws SecurityException 
@@ -109,7 +109,7 @@ public class DeliverOrderShopPayController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/view")
-	public String view(HttpServletRequest request, Integer id) {
+	public String view(HttpServletRequest request, Long id) {
 		DeliverOrderShopPay deliverOrderShopPay = deliverOrderShopPayService.get(id);
 		request.setAttribute("deliverOrderShopPay", deliverOrderShopPay);
 		return "/deliverordershoppay/deliverOrderShopPayView";
@@ -121,7 +121,7 @@ public class DeliverOrderShopPayController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/editPage")
-	public String editPage(HttpServletRequest request, Integer id) {
+	public String editPage(HttpServletRequest request, Long id) {
 		DeliverOrderShopPay deliverOrderShopPay = deliverOrderShopPayService.get(id);
 		request.setAttribute("deliverOrderShopPay", deliverOrderShopPay);
 		return "/deliverordershoppay/deliverOrderShopPayEdit";
@@ -151,7 +151,7 @@ public class DeliverOrderShopPayController extends BaseController {
 	 */
 	@RequestMapping("/delete")
 	@ResponseBody
-	public Json delete(Integer id) {
+	public Json delete(Long id) {
 		Json j = new Json();
 		deliverOrderShopPayService.delete(id);
 		j.setMsg("删除成功！");
