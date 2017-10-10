@@ -275,8 +275,12 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 
 	@Override
 	public DeliverOrder getDeliverOrderExt(Long id) {
-		DeliverOrderExt deliverOrderExt = (DeliverOrderExt) get(id);
-		fillInfo(deliverOrderExt);
+		DeliverOrder deliverOrder = get(id);
+		DeliverOrderExt deliverOrderExt = new DeliverOrderExt() ;
+		if (deliverOrder != null) {
+			BeanUtils.copyProperties(deliverOrder, deliverOrderExt);
+			fillInfo(deliverOrderExt);
+		}
 		return deliverOrderExt;
 	}
 	@Override
