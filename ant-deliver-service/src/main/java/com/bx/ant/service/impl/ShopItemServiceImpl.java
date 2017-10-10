@@ -1,17 +1,21 @@
 package com.bx.ant.service.impl;
 
+import com.bx.ant.pageModel.ShopItemQuery;
 import com.mobian.absx.F;
 import com.bx.ant.dao.ShopItemDaoI;
 import com.bx.ant.model.TshopItem;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.PageHelper;
-import com.mobian.pageModel.ShopItem;
+import com.mobian.pageModel.*;
 import com.bx.ant.service.ShopItemServiceI;
+import com.mobian.pageModel.ShopItem;
+import com.mobian.service.MbItemServiceI;
 import com.mobian.util.MyBeanUtils;
+import net.sf.json.JSONArray;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +26,8 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 
 	@Autowired
 	private ShopItemDaoI shopItemDao;
+	@javax.annotation.Resource
+	private MbItemServiceI mbItemService;
 
 	@Override
 	public DataGrid dataGrid(ShopItem shopItem, PageHelper ph) {
@@ -143,5 +149,89 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 		shopItem = getByShopIdAndItemId(shopId, itemId, false);
 		return shopItem;
 	}
+
+	@Override
+	public void updateBatchItemOnline(String itemIds, Integer shopId) {
+		/*if (!F.empty(itemIds)) {
+			String[] itemIdArry  = itemIds.split(",");
+			List<ShopItem> shopItemList = new ArrayList<ShopItem>();
+			for (int i = 0; i < itemIdList.length; i++) {
+				ShopItem shopItem = new ShopItem();
+				shopItem.setItemId(Integer.parseInt(itemIdList[i]));
+				shopItem.setShopId(shopId);
+				shopItem.setOnline(true);
+				add(shopItem);
+			}
+		}*/
+	}
+
+	@Override
+	public void updateItemOnline(Integer shopItemId) {
+		ShopItem shopItem = get(shopItemId);
+		shopItem.setOnline(true);
+		edit(shopItem);
+	}
+
+	@Override
+	public void updateBatchShopItemOffline(String ShopItemList, Integer shopId) {
+		JSONArray jsonShopItem = JSONArray.fromObject(ShopItemList);
+		if (!F.empty(ShopItemList)) {
+			//把json字符串转换成对象
+			List<ShopItem> shopItemList = (List<ShopItem>) JSONArray.toCollection(jsonShopItem, ShopItem.class);
+			for (ShopItem shopItem : shopItemList) {
+				shopItem.setOnline(false);
+				edit(shopItem);
+			}
+		}
+	}
+
+	@Override
+	public void updateShopItemOffline(Integer shopItemId) {
+		ShopItem shopItem = get(shopItemId);
+		shopItem.setOnline(false);
+		edit(shopItem);
+	}
+
+	@Override
+	public void deleteBatchShopItem(String ShopItemList, Integer shopId) {
+		JSONArray jsonShopItem = JSONArray.fromObject(ShopItemList);
+		if (!F.empty(ShopItemList)) {
+			//把json字符串转换成对象
+			List<ShopItem> shopItemList = (List<ShopItem>) JSONArray.toCollection(jsonShopItem, ShopItem.class);
+			for (ShopItem shopItem : shopItemList) {
+				delete(shopItem.getId());
+			}
+		}
+	}
+
+	@Override
+	public void updateShopItemQuantity(Integer shopId, Integer itemId, Integer quantity) {
+		ShopItem shopItem=getByShopIdAndItemId(shopId,itemId);
+		shopItem.setQuantity(quantity);
+		edit(shopItem);
+	}
+
+	@Override
+	public DataGrid dataGridWithItemName(ShopItem shopItem, PageHelper ph) {
+		DataGrid dataGrid = dataGrid(shopItem, ph);
+		List<ShopItem> shopItemList = dataGrid.getRows();
+		if (CollectionUtils.isNotEmpty(shopItemList)) {
+			List<ShopItemQuery> shopItemQueries = new ArrayList<ShopItemQuery>();
+			for (ShopItem shop : shopItemList) {
+				ShopItemQuery shopItemQuery = new ShopItemQuery();
+				BeanUtils.copyProperties(shop, shopItemQuery);
+				MbItem item = mbItemService.getFromCache(shopItemQuery.getItemId());
+				shopItemQuery.setItemName(item.getName());
+				shopItemQueries.add(shopItemQuery);
+			}
+			DataGrid dg = new DataGrid();
+			dg.setRows(shopItemQueries);
+			dg.setTotal(dataGrid.getTotal());
+			return dg;
+
+		}
+		return dataGrid;
+	}
+
 
 }
