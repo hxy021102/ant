@@ -114,7 +114,7 @@ public class MbOrderController extends BaseController {
 			}
 			mbOrder.setShopIds(shopIds);
 		}
-		DataGrid dg = mbOrderService.dataGrid(mbOrder, ph);
+		DataGrid dg = mbOrderService.dataGridWithOrderLogMessage(mbOrder, ph);
 		getDriver(dg);
 		return dg;
 	}
@@ -130,7 +130,7 @@ public class MbOrderController extends BaseController {
 					 completionService.submit(new Task<MbOrder, User>(new CacheKey("user", o.getDeliveryDriver()), o) {
 						 @Override
 						 public User call() throws Exception {
-							 return userService.get(getD().getDeliveryDriver());
+							 return userService.getFromCache(getD().getDeliveryDriver());
 						 }
 
 						 protected void set(MbOrder d, User v) {
@@ -177,7 +177,7 @@ public class MbOrderController extends BaseController {
 		MbOrder order = (MbOrder) deliveryDataGrid.getRows().get(0);
 
 		if (!F.empty(order.getDeliveryDriver())) {
-			User user = userService.get(order.getDeliveryDriver());
+			User user = userService.getFromCache(order.getDeliveryDriver());
 			if (user != null)
 				order.setDeliveryDriverName(user.getNickname());
 		}

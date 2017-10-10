@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="com.mobian.listener.Application"%>
+<%@ page import="com.mobian.util.ConvertNameUtil" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <div class="panel-header panel-title" style="text-align: center;">
 	<%=ConvertNameUtil.getString("SV002")%>
