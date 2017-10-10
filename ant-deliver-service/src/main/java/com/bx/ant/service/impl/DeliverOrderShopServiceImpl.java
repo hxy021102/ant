@@ -72,7 +72,15 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 			if (!F.empty(deliverOrderShop.getAmount())) {
 				whereHql += " and t.amount = :amount";
 				params.put("amount", deliverOrderShop.getAmount());
-			}		
+			}
+			if (deliverOrderShop.getUpdatetimeBegin() != null) {
+				whereHql += " and t.updatetime >= :updatetimeBegin";
+				params.put("updatetimeBegin",deliverOrderShop.getUpdatetimeBegin());
+			}
+			if (deliverOrderShop.getUpdatetimeEnd() != null) {
+				whereHql += " and t.updatetime < :updatetimeEnd";
+				params.put("updatetimeEnd",deliverOrderShop.getUpdatetimeEnd());
+			}
 		}	
 		return whereHql;
 	}

@@ -112,4 +112,22 @@ public interface MbBalanceServiceI {
 	 * @return
 	 */
 	MbBalance addOrGetMbBalance(Integer refId, Integer refType, Integer initAmount);
+
+	/**
+	 * 转移金额
+	 * @param shopId
+	 * @param amount
+	 * @param balanceSourceType
+	 * @param balanceTargetType
+	 * @param initTargetMoney
+	 */
+	void transform(Integer shopId, Integer amount, Integer balanceSourceType, Integer balanceTargetType, Integer initTargetMoney);
+
+	/**
+	 * 转移金额
+	 * @param amount
+	 * @param balanceSource
+	 * @param balanceTarget
+	 */
+	void transform(Integer amount, MbBalance balanceSource, MbBalance balanceTarget);
 }
