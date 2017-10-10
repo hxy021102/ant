@@ -15,34 +15,35 @@ import java.util.List;
 public interface DeliverOrderServiceI {
 
 	//供应商/门店支付状态
-	String PAY_STATUS_NOT_PAY = "PS01"; //待支付
-	String PAY_STATUS_AUDIT = "PS02"; //待审核
-	String PAY_STATUS_REFUSE = "PS03"; //审核拒绝
-	String PAY_STATUS_SUCCESS = "PS04"; //支付成功
+	String PAY_STATUS_NOT_PAY = "DPS01"; //待支付
+	String PAY_STATUS_AUDIT = "DPS02"; //待审核
+	String PAY_STATUS_REFUSE = "DPS03"; //审核拒绝
+	String PAY_STATUS_SUCCESS = "DPS04"; //支付成功
 
 	//订单状态
-	String STATUS_NOT_PAY = "DO01"; //待支付
-	String STATUS_PAY_SUCCESS = "DO10"; //支付成功待接单
-	String STATUS_SHOP_REFUSE = "DO15"; //门店拒绝接单
-	String STATUS_SHOP_ACCEPT = "DO20"; //已接单
-	String STATUS_DELIVERING = "DO25"; //已发货
-	String STATUS_DELIVERY_COMPLETE = "DO30"; //已配送完成,等待用户确认状态
-	String STATUS_CLOSED = "DO40"; //订单完成
+	String STATUS_NOT_PAY = "DOS01"; //待支付
+	String STATUS_PAY_SUCCESS = "DOS10"; //支付成功待接单
+	String STATUS_SHOP_REFUSE = "DOS15"; //门店拒绝接单
+	String STATUS_SHOP_ACCEPT = "DOS20"; //已接单
+	String STATUS_DELIVERING = "DOS25"; //已发货
+	String STATUS_DELIVERY_COMPLETE = "DOS30"; //已配送完成,等待用户确认状态
+	String STATUS_CLOSED = "DOS40"; //订单完成
 
 	//配送状态
-	String DELIVER_STATUS_STANDBY = "DS01"; //待处理
-	String DELIVER_STATUS_DELIVERING = "DS02"; //配送中
-	String DELIVER_STATUS_USER_CHECK = "DS03"; //用户确认
-	String DELIVER_STATUS_DELIVERED = "DS04"; //已配送
+	String DELIVER_STATUS_STANDBY = "DDS01"; //待处理
+	String DELIVER_STATUS_DELIVERING = "DDS02"; //配送中
+	String DELIVER_STATUS_USER_CHECK = "DDS03"; //用户确认
+	String DELIVER_STATUS_DELIVERED = "DDS04"; //已配送
 
 	//支付方式
-	String PAY_WAY_BALANCE = "PW01"; //余额
-	String PAY_WAY_WECHAT = "PW02"; //微信
-	String PAY_WAY_TRANSFER = "PW03"; //汇款
+	String PAY_WAY_BALANCE = "DPW01"; //余额
+	String PAY_WAY_WECHAT = "DPW02"; //微信
+	String PAY_WAY_TRANSFER = "DPW03"; //汇款
 
 
+    void transformByShopIdAndStatus(Long id, Integer shopId, String status);
 
-	/**
+    /**
 	 * 获取当前状态
 	 * @return
 	 */
@@ -126,4 +127,6 @@ public interface DeliverOrderServiceI {
 	 * @return
 	 */
 	DeliverOrder getDeliverOrderExt(Long id);
+
+	DataGrid dataGridExt(DeliverOrder deliverOrder, PageHelper ph);
 }
