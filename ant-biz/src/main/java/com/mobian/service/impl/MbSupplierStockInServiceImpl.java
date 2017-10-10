@@ -97,11 +97,11 @@ public class MbSupplierStockInServiceImpl extends BaseServiceImpl<MbSupplierStoc
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             MbSupplierStockInItem mbSupplierStockInItem = (MbSupplierStockInItem) JSONObject.toBean(jsonObject, MbSupplierStockInItem.class);
+            mbSupplierStockInItem.setSupplierStockInId(mbSupplierStockIn.getId());
+            mbSupplierStockInItemService.add(mbSupplierStockInItem);
             if (F.empty(mbSupplierStockInItem.getQuantity())) {
                 continue;
             }
-            mbSupplierStockInItem.setSupplierStockInId(mbSupplierStockIn.getId());
-            mbSupplierStockInItemService.add(mbSupplierStockInItem);
             Integer id = mbSupplierStockIn.getWarehouseId();
             Integer itemid = mbSupplierStockInItem.getItemId();
             //添加入库项改变仓库库存
