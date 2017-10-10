@@ -151,19 +151,41 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 	}
 
 	@Override
-	public void updateBatchItemOnline(String itemIds, Integer shopId) {
-		/*if (!F.empty(itemIds)) {
-			String[] itemIdArry  = itemIds.split(",");
+	public void  addBatchItemOnline(String itemIds, Integer shopId) {
+		 if (!F.empty(itemIds)) {
+			String[] itemIdArray  = itemIds.split(",");
 			List<ShopItem> shopItemList = new ArrayList<ShopItem>();
-			for (int i = 0; i < itemIdList.length; i++) {
+			for (int i = 0; i < itemIdArray.length; i++) {
 				ShopItem shopItem = new ShopItem();
-				shopItem.setItemId(Integer.parseInt(itemIdList[i]));
+				shopItem.setItemId(Integer.parseInt(itemIdArray[i]));
 				shopItem.setShopId(shopId);
 				shopItem.setOnline(true);
 				add(shopItem);
 			}
-		}*/
+		}
 	}
+
+	@Override
+	public void updateBatchItemOnline(String itemIds, Integer shopId) {
+		if (!F.empty(itemIds)) {
+			String[] itemIdArray = itemIds.split(",");
+			for (int i = 0; i < itemIdArray.length; i++) {
+				ShopItem shopItem = getByShopIdAndItemId(shopId, Integer.parseInt(itemIdArray[i]), false);
+				shopItem.setOnline(true);
+				edit(shopItem);
+			}
+		}
+	}
+
+	@Override
+	public void addItemOnline(Integer itemId,Integer shopId) {
+		ShopItem shopItem = new ShopItem();
+		shopItem.setOnline(true);
+		shopItem.setShopId(shopId);
+		shopItem.setItemId(itemId);
+		add(shopItem);
+	}
+
 
 	@Override
 	public void updateItemOnline(Integer shopItemId) {
@@ -173,12 +195,11 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 	}
 
 	@Override
-	public void updateBatchShopItemOffline(String ShopItemList, Integer shopId) {
-		JSONArray jsonShopItem = JSONArray.fromObject(ShopItemList);
-		if (!F.empty(ShopItemList)) {
-			//把json字符串转换成对象
-			List<ShopItem> shopItemList = (List<ShopItem>) JSONArray.toCollection(jsonShopItem, ShopItem.class);
-			for (ShopItem shopItem : shopItemList) {
+	public void updateBatchShopItemOffline(String itemIds, Integer shopId) {
+		if (!F.empty(itemIds)) {
+			String[] itemIdArray = itemIds.split(",");
+			for (int i = 0; i < itemIdArray.length; i++) {
+				ShopItem shopItem = getByShopIdAndItemId(shopId, Integer.parseInt(itemIdArray[i]));
 				shopItem.setOnline(false);
 				edit(shopItem);
 			}
@@ -193,20 +214,19 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 	}
 
 	@Override
-	public void deleteBatchShopItem(String ShopItemList, Integer shopId) {
-		JSONArray jsonShopItem = JSONArray.fromObject(ShopItemList);
-		if (!F.empty(ShopItemList)) {
-			//把json字符串转换成对象
-			List<ShopItem> shopItemList = (List<ShopItem>) JSONArray.toCollection(jsonShopItem, ShopItem.class);
-			for (ShopItem shopItem : shopItemList) {
+	public void deleteBatchShopItem(String itemIds, Integer shopId) {
+		if (!F.empty(itemIds)) {
+			String[] itemIdArray = itemIds.split(",");
+			for (int i = 0; i < itemIdArray.length; i++) {
+				ShopItem shopItem = getByShopIdAndItemId(shopId, Integer.parseInt(itemIdArray[i]));
 				delete(shopItem.getId());
 			}
 		}
 	}
 
 	@Override
-	public void updateShopItemQuantity(Integer shopId, Integer itemId, Integer quantity) {
-		ShopItem shopItem=getByShopIdAndItemId(shopId,itemId);
+	public void updateShopItemQuantity( Integer shopItemId, Integer quantity) {
+		ShopItem shopItem=get(shopItemId);
 		shopItem.setQuantity(quantity);
 		edit(shopItem);
 	}

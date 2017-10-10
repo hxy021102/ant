@@ -60,7 +60,7 @@ public class ApiItemController extends BaseController {
      */
     @RequestMapping("/getAllItemList")
     @ResponseBody
-   public Json getAllItemList(MbItem mbItem,PageHelper ph) {
+    public Json getAllItemList(MbItem mbItem, PageHelper ph) {
         Json j = new Json();
         DataGrid dataGridItem = mbItemService.dataGrid(mbItem, ph);
         j.setObj(dataGridItem);
@@ -79,7 +79,7 @@ public class ApiItemController extends BaseController {
      */
     @RequestMapping("/getShopItemOnline")
     @ResponseBody
-    public Json getShopItemOnline(HttpServletRequest request,ShopItem shopItem, PageHelper ph) {
+    public Json getShopItemOnline(HttpServletRequest request, ShopItem shopItem, PageHelper ph) {
         Json j = new Json();
         TokenWrap token = tokenService.getToken(request);
         shopItem.setShopId(token.getShopId());
@@ -100,7 +100,7 @@ public class ApiItemController extends BaseController {
      */
     @RequestMapping("/getShopItemOffline")
     @ResponseBody
-    public Json getShopItemOffline(HttpServletRequest request,ShopItem shopItem, PageHelper ph) {
+    public Json getShopItemOffline(HttpServletRequest request, ShopItem shopItem, PageHelper ph) {
         Json j = new Json();
         TokenWrap token = tokenService.getToken(request);
         shopItem.setShopId(token.getShopId());
@@ -113,24 +113,58 @@ public class ApiItemController extends BaseController {
     }
 
     /**
-     * 批量修改商品上架
+     * 批量商品上架(大仓商品)
      *
      * @param itemIds
      * @return
      */
-    @RequestMapping(value = "/updateBatchItemOnline", method = RequestMethod.POST)
+    @RequestMapping("/addBatchItemOnline")
+    @ResponseBody
+    public Json addBatchItemOnline(HttpServletRequest request, String itemIds) {
+        Json j = new Json();
+        TokenWrap token = tokenService.getToken(request);
+        shopItemService.addBatchItemOnline(itemIds, token.getShopId());
+        j.setSuccess(true);
+        j.setMsg("门店新增商品批量上架成功！！");
+        return j;
+    }
+
+    /**
+     * 批量修改门店商品上架
+     *
+     * @param itemIds
+     * @return
+     */
+    @RequestMapping("/updateBatchItemOnline")
     @ResponseBody
     public Json updateBatchItemOnline(HttpServletRequest request, String itemIds) {
         Json j = new Json();
         TokenWrap token = tokenService.getToken(request);
         shopItemService.updateBatchItemOnline(itemIds, token.getShopId());
         j.setSuccess(true);
-        j.setMsg("批量上架成功！！");
+        j.setMsg("批量门店商品上架成功！！");
         return j;
     }
 
     /**
-     * 某种商品上架
+     * 某种商品上架(大仓商品)
+     *
+     * @param itemId
+     * @return
+     */
+    @RequestMapping("/addItemOnline")
+    @ResponseBody
+    public Json addItemOnline(HttpServletRequest request, Integer itemId) {
+        Json j = new Json();
+        TokenWrap token = tokenService.getToken(request);
+        shopItemService.addItemOnline(itemId, token.getShopId());
+        j.setSuccess(true);
+        j.setMsg("上架成功！！");
+        return j;
+    }
+
+    /**
+     * 修改门店某种商品状态为上架
      *
      * @param shopItemId
      * @return
@@ -151,7 +185,7 @@ public class ApiItemController extends BaseController {
      * @param itemIds
      * @return
      */
-    @RequestMapping(value = "/updateBatchShopItemOffline", method = RequestMethod.POST)
+    @RequestMapping("/updateBatchShopItemOffline")
     @ResponseBody
     public Json updateBatchShopItemOffline(HttpServletRequest request, String itemIds) {
         Json j = new Json();
@@ -181,15 +215,15 @@ public class ApiItemController extends BaseController {
     /**
      * 批量删除门店商品
      *
-     * @param itemList
+     * @param itemIds
      * @return
      */
-    @RequestMapping(value = "/deleteBatchShopItem", method = RequestMethod.POST)
+    @RequestMapping("/deleteBatchShopItem")
     @ResponseBody
-    public Json deleteBatchShopItem(HttpServletRequest request, String itemList) {
+    public Json deleteBatchShopItem(HttpServletRequest request, String itemIds) {
         Json j = new Json();
         TokenWrap token = tokenService.getToken(request);
-        shopItemService.deleteBatchShopItem(itemList, token.getShopId());
+        shopItemService.deleteBatchShopItem(itemIds, token.getShopId());
         j.setSuccess(true);
         j.setMsg("批量删除成功！！");
         return j;
@@ -205,25 +239,24 @@ public class ApiItemController extends BaseController {
     @ResponseBody
     public Json deleteShopItem(HttpServletRequest request, Integer shopItemId) {
         Json j = new Json();
-        TokenWrap token = tokenService.getToken(request);
         shopItemService.delete(shopItemId);
         j.setSuccess(true);
         j.setMsg("删除成功！！");
         return j;
     }
+
     /**
      * 获取门店商品库存量
      *
      * @param request
-     * @param itemId
+     * @param shopItemId
      * @return
      */
     @RequestMapping("/getShopItemQuantity")
     @ResponseBody
-    public Json getShopItemQuantity(HttpServletRequest request, Integer itemId) {
+    public Json getShopItemQuantity(HttpServletRequest request, Integer shopItemId) {
         Json j = new Json();
-        TokenWrap token = tokenService.getToken(request);
-        ShopItem shopItem=shopItemService.getByShopIdAndItemId(token.getShopId(),itemId);
+        ShopItem shopItem = shopItemService.get(shopItemId);
         j.setObj(shopItem);
         j.setSuccess(true);
         return j;
@@ -233,15 +266,14 @@ public class ApiItemController extends BaseController {
      * 修改门店商品库存量
      *
      * @param request
-     * @param itemId
+     * @param shopItemId
      * @return
      */
-    @RequestMapping("/getShopItemQuantity")
+    @RequestMapping("/updateShopItemQuantity")
     @ResponseBody
-    public Json updateShopItemQuantity(HttpServletRequest request, Integer itemId,Integer quantity) {
+    public Json updateShopItemQuantity(HttpServletRequest request, Integer shopItemId, Integer quantity) {
         Json j = new Json();
-        TokenWrap token = tokenService.getToken(request);
-        shopItemService.updateShopItemQuantity(token.getShopId(),itemId,quantity);
+        shopItemService.updateShopItemQuantity(shopItemId, quantity);
         j.setSuccess(true);
         return j;
     }

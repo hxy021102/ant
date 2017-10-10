@@ -58,14 +58,27 @@ public interface ShopItemServiceI {
 	ShopItem getByShopIdAndItemId(Integer shopId, Integer itemId);
 
 	/**
-	 * 商品批量上架
-	 * @param itemList
+	 *  批量商品上架(大仓商品)
+	 * @param itemIds
 	 * @param shopId
 	 */
-	void updateBatchItemOnline(String itemList,Integer shopId);
+	void addBatchItemOnline(String itemIds,Integer shopId);
 
 	/**
-	 * 某种商品上架
+	 * 批量修改门店商品上架
+	 * @param itemIds
+	 * @param shopId
+	 */
+	void updateBatchItemOnline(String itemIds,Integer shopId);
+
+	/**
+	 * 某种商品上架(大仓商品)
+	 * @param shopItemId
+	 */
+	void addItemOnline(Integer shopItemId,Integer shopId);
+
+	/**
+	 * 修改门店某种商品状态为上架
 	 * @param shopItemId
 	 */
 	void updateItemOnline(Integer shopItemId);
@@ -92,11 +105,10 @@ public interface ShopItemServiceI {
 
 	/**
 	 * 修改门店商品数量
-	 * @param shopId
-	 * @param itemId
+	 * @param shopItemId
 	 * @param quantity
 	 */
-	void updateShopItemQuantity(Integer shopId, Integer itemId,Integer quantity);
+	void updateShopItemQuantity( Integer shopItemId,Integer quantity);
 
 	/**
 	 * 获取门店商品和商品名称
