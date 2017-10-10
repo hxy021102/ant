@@ -97,6 +97,9 @@ public class MbSupplierStockInServiceImpl extends BaseServiceImpl<MbSupplierStoc
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             MbSupplierStockInItem mbSupplierStockInItem = (MbSupplierStockInItem) JSONObject.toBean(jsonObject, MbSupplierStockInItem.class);
+            if (mbSupplierStockInItem.getQuantity() == 0) {
+                continue;
+            }
             mbSupplierStockInItem.setSupplierStockInId(mbSupplierStockIn.getId());
             mbSupplierStockInItemService.add(mbSupplierStockInItem);
             Integer id = mbSupplierStockIn.getWarehouseId();
