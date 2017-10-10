@@ -41,7 +41,7 @@
 			sortOrder : 'desc',
 			checkOnSelect : false,
 			selectOnCheck : false,
-			nowrap : false,
+			nowrap : true,
 			striped : true,
 			rownumbers : true,
 			singleSelect : true,
@@ -51,39 +51,39 @@
 				width : 150,
 				hidden : true
 				}, {
-				field : 'supplierStockInId',
-				title : '<%=TmbSupplierStockInItem.ALIAS_SUPPLIER_STOCK_IN_ID%>',
-				width : 50		
+				field : 'updatetime',
+				title : '<%=TmbSupplierStockInItem.ALIAS_UPDATETIME%>',
+				width : 60
 				}, {
+                field : 'supplierName',
+                title : '<%=TmbSupplierStockInItem.ALIAS_SUPPLIER_NAME%>',
+                width : 80
+           	 	}, {
+                field : 'supplierOrderId',
+                title : '<%=TmbSupplierStockInItem.ALIAS_SUPPLIER_ORDER_ID%>',
+                width : 30
+            	}, {
 				field : 'itemId',
 				title : '<%=TmbSupplierStockInItem.ALIAS_ITEM_ID%>',
-				width : 50		
+				width : 30
 				}, {
+                field : 'code',
+                title : '<%=TmbSupplierStockInItem.ALIAS_CODE%>',
+                width : 60
+            	}, {
+                field : 'productName',
+                title : '<%=TmbSupplierStockInItem.ALIAS_ITEM_NAME%>',
+                width : 80
+            	}, {
 				field : 'quantity',
 				title : '<%=TmbSupplierStockInItem.ALIAS_QUANTITY%>',
-				width : 50		
+				width : 30
 				}, {
 				field : 'price',
 				title : '<%=TmbSupplierStockInItem.ALIAS_PRICE%>',
-				width : 50		
-			}, {
-				field : 'action',
-				title : '操作',
-				width : 100,
-				formatter : function(value, row, index) {
-					var str = '';
-					if ($.canEdit) {
-						str += $.formatString('<img onclick="editFun(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_edit.png');
-					}
-					str += '&nbsp;';
-					if ($.canDelete) {
-						str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_delete.png');
-					}
-					str += '&nbsp;';
-					if ($.canView) {
-						str += $.formatString('<img onclick="viewFun(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_link.png');
-					}
-					return str;
+				width : 30,
+				formatter: function (value) {
+				    return $.formatMoney(value)
 				}
 			} ] ],
 			toolbar : '#toolbar',
@@ -179,20 +179,29 @@
 	    $('#downloadTable').form('submit', {
 	        url:'${pageContext.request.contextPath}/mbSupplierStockInItemController/download',
 	        onSubmit: function(param){
+                var isValid = $('#searchForm').form('validate');
 	        	$.extend(param, $.serializeObject($('#searchForm')));
 	        	param.downloadFields = columsStr;
 	        	param.page = options.pageNumber;
 	        	param.rows = options.pageSize;
+                return isValid
 	        	
        	 }
         }); 
 	}
-	function searchFun() {
-		dataGrid.datagrid('load', $.serializeObject($('#searchForm')));
-	}
+
+    function searchFun() {
+        var isValid = $('#searchForm').form('validate');
+        if(isValid)
+            var options = {};
+        	options.url = '${pageContext.request.contextPath}/mbSupplierStockInItemController/dataGridStockInItem';
+        	options.queryParams = $.serializeObject($('#searchForm'));
+        	dataGrid.datagrid(options);
+
 	function cleanFun() {
 		$('#searchForm input').val('');
 		dataGrid.datagrid('load', {});
+	}
 	}
 </script>
 </head>
@@ -220,6 +229,7 @@
 		</div>
 	</div>
 	<div id="toolbar" style="display: none;">
+		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a>
 		<c:if test="${fn:contains(sessionInfo.resourceList, '/mbSupplierStockInItemController/download')}">
 			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_go',plain:true" onclick="downloadTable();">导出</a>		
 			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">
