@@ -32,6 +32,23 @@ public class ApiDeliverOrderController extends BaseController {
     @Autowired
     private DeliverOrderShopServiceI deliverOrderShopService;
 
+    @RequestMapping("/dataGrid")
+    @ResponseBody
+    public Json dataGrid(DeliverOrder deliverOrder, HttpServletRequest request, PageHelper pageHelper) {
+        Json json = new Json();
+
+        //获取shopId
+        //TODO 测试时设置shop ID值,若真正使用从token中获取
+//        TokenWrap token = getTokenWrap(request);
+//        Integer shopId = token.getShopId();
+        Integer shopId = 1332;
+        deliverOrder.setShopId(shopId);
+        json.setMsg("u know");
+        json.setObj(deliverOrderService.dataGridExt(deliverOrder, pageHelper));
+        json.setSuccess(true);
+        return json;
+    }
+
     /**
      * 获取门店新订单审核列表DataGrid
      * @param request
@@ -83,7 +100,7 @@ public class ApiDeliverOrderController extends BaseController {
     }
 
     /**
-     *  查看已接单
+     *  查看
      * @param request
      * @param pageHelper
      * @return
@@ -150,7 +167,7 @@ public class ApiDeliverOrderController extends BaseController {
         Integer shopId = 1332;
         DeliverOrder deliverOrder =  new DeliverOrder();
         deliverOrder.setShopId(shopId);
-        deliverOrder.setStatus(deliverOrderService.DELIVER_STATUS_DELIVERED);
+        deliverOrder.setStatus(deliverOrderService.STATUS_DELIVERY_COMPLETE);
         json.setMsg("u know");
         json.setObj(deliverOrderService.dataGridExt(deliverOrder, pageHelper));
         json.setSuccess(true);
@@ -169,7 +186,7 @@ public class ApiDeliverOrderController extends BaseController {
         Integer shopId = 1332;
         DeliverOrder deliverOrder =  new DeliverOrder();
         deliverOrder.setShopId(shopId);
-        deliverOrder.setStatus(deliverOrderService.STATUS_DELIVERY_COMPLETE);
+        deliverOrder.setStatus(deliverOrderService.STATUS_CLOSED);
         json.setMsg("u know");
         json.setObj(deliverOrderService.dataGridExt(deliverOrder, pageHelper));
         json.setSuccess(true);

@@ -261,5 +261,15 @@ public class MbBalanceLogServiceImpl extends BaseServiceImpl<MbBalanceLog> imple
 		return ol;
 	}
 
+	@Override
+	public DataGrid getDeliveryBalanceLogDataGrid(MbBalanceLog mbBalanceLog,PageHelper pageHelper) {
+		DataGrid dataGrid = new DataGrid();
+		if (!F.empty(mbBalanceLog.getShopId())) {
+			MbBalance mbBalance = mbBalanceService.addOrGetMbBalanceDelivery(mbBalanceLog.getShopId());
+			mbBalanceLog.setBalanceId(mbBalance.getId());
+			dataGrid = dataGrid(mbBalanceLog, pageHelper);
+		}
+		return dataGrid;
+	}
 
 }
