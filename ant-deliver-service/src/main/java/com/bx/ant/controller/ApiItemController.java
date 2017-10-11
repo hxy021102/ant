@@ -1,41 +1,17 @@
 package com.bx.ant.controller;
 
-import com.alibaba.fastjson.JSONObject;
-import com.aliyun.mns.model.TopicMessage;
 import com.bx.ant.pageModel.session.TokenWrap;
-import com.bx.ant.service.ShopDeliverAccountServiceI;
-import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.bx.ant.service.ShopItemServiceI;
 import com.bx.ant.service.session.TokenServiceI;
-import com.mobian.absx.F;
-import com.mobian.absx.UUID;
 import com.mobian.pageModel.*;
-import com.mobian.pageModel.ShopDeliverAccount;
-import com.mobian.pageModel.ShopDeliverApply;
 import com.mobian.pageModel.ShopItem;
 import com.mobian.service.MbItemServiceI;
-import com.mobian.service.MbShopServiceI;
-import com.mobian.thirdpart.mns.MNSTemplate;
-import com.mobian.thirdpart.mns.MNSUtil;
-import com.mobian.thirdpart.redis.Key;
-import com.mobian.thirdpart.redis.Namespace;
-import com.mobian.thirdpart.redis.RedisUtil;
-import com.mobian.thirdpart.wx.HttpUtil;
-import com.mobian.thirdpart.wx.WeixinUtil;
-import com.mobian.util.ConvertNameUtil;
-import com.mobian.util.Util;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import sun.org.mozilla.javascript.internal.Token;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by 黄晓渝 on 2017/9/30.

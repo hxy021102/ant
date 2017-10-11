@@ -1,14 +1,14 @@
 package com.bx.ant.service.impl;
 
-import com.bx.ant.pageModel.ShopDeliverApplyQuery;
-import com.mobian.absx.F;
 import com.bx.ant.dao.ShopDeliverApplyDaoI;
 import com.bx.ant.model.TshopDeliverApply;
+import com.bx.ant.pageModel.ShopDeliverApplyQuery;
+import com.bx.ant.service.ShopDeliverApplyServiceI;
+import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.pageModel.ShopDeliverApply;
-import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -149,8 +149,8 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 			for (ShopDeliverApply deliverApply : shopDeliverApplies) {
 				ShopDeliverApplyQuery shopDeliverApplyQuery = new ShopDeliverApplyQuery();
 				BeanUtils.copyProperties(deliverApply, shopDeliverApplyQuery);
-				/*MbShop shop = mbShopService.getFromCache(deliverApply.getShopId());
-				shopDeliverApplyQuery.setShopName(shop.getName());*/
+				MbShop shop = mbShopService.getFromCache(deliverApply.getShopId());
+				shopDeliverApplyQuery.setShopName(shop.getName());
 				shopDeliverApplyQueries.add(shopDeliverApplyQuery);
 			}
 			DataGrid dg = new DataGrid();
@@ -166,8 +166,8 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 		ShopDeliverApply shopDeliverApply = get(id);
 		ShopDeliverApplyQuery shopDeliverApplyQuery = new ShopDeliverApplyQuery();
 		BeanUtils.copyProperties(shopDeliverApply, shopDeliverApplyQuery);
-		/*MbShop shop =mbShopService.getFromCache(shopDeliverApply.getShopId());
-		shopDeliverApplyQuery.setShopName(shop.getName());*/
+		MbShop shop = mbShopService.getFromCache(shopDeliverApply.getShopId());
+		shopDeliverApplyQuery.setShopName(shop.getName());
 		return shopDeliverApplyQuery;
 	}
 

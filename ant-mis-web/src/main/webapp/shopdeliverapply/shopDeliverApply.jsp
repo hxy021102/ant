@@ -62,7 +62,7 @@
                 },  {
                 field : 'result',
                 title : '结果',
-                width : 50
+                width : 150
                 },  {
 				field : 'action',
 				title : '操作',
@@ -74,7 +74,7 @@
 					}
                     str += '&nbsp;';
                     if ($.canExamine&&row.status=="DAS01") {
-                        str += $.formatString('<img onclick="examineFun(\'{0}\');" src="{1}" title="审核"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/joystick.png');
+						str += $.formatString('<img onclick="examineFun(\'{0}\');" src="{1}" title="审核"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/joystick.png');
                     }
 					return str;
 				}
@@ -157,13 +157,29 @@
             ]
         });
     }
+    function downloadTable(){
+        var options = dataGrid.datagrid("options");
+        var $colums = [];
+        $.merge($colums, options.columns);
+        $.merge($colums, options.frozenColumns);
+        var columsStr = JSON.stringify($colums);
+        $('#downloadTable').form('submit', {
+            url:'${pageContext.request.contextPath}/shopDeliverApplyController/download',
+            onSubmit: function(param){
+                $.extend(param, $.serializeObject($('#searchForm')));
+                param.downloadFields = columsStr;
+                param.page = options.pageNumber;
+                param.rows = options.pageSize;
 
+            }
+        });
+    }
     function searchFun() {
 		dataGrid.datagrid('load', $.serializeObject($('#searchForm')));
 	}
 	function cleanFun() {
 		$('#searchForm input').val('');
-		dataGrid.datagrid('load', {});
+		dataGrid.datagrid("reload",{ });
 	}
 </script>
 </head>
@@ -193,6 +209,12 @@
 	<div id="toolbar" style="display: none;">
 		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a>
 		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
+		<c:if test="${fn:contains(sessionInfo.resourceList, '/shopDeliverApplyController/download')}">
+			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_go',plain:true" onclick="downloadTable();">导出</a>
+			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">
+			</form>
+			<iframe id="downloadIframe" name="downloadIframe" style="display: none;"></iframe>
+		</c:if>
 	</div>	
 </body>
 </html>

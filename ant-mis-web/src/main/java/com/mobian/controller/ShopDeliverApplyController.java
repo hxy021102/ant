@@ -1,35 +1,28 @@
 package com.mobian.controller;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import com.alibaba.fastjson.JSON;
+import com.bx.ant.pageModel.ShopDeliverApplyQuery;
+import com.bx.ant.service.ShopDeliverApplyServiceI;
+import com.mobian.pageModel.*;
+import com.mobian.pageModel.ShopDeliverApply;
+import com.mobian.util.ConfigUtil;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import com.bx.ant.pageModel.ShopDeliverApplyQuery;
-import com.mobian.pageModel.*;
-import com.bx.ant.service.ShopDeliverApplyServiceI;
-
-import com.mobian.pageModel.ShopDeliverApply;
-import com.mobian.util.ConfigUtil;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.alibaba.fastjson.JSON;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 /**
  * ShopDeliverApply管理控制器
- * 
+ *
  * @author John
- * 
+ *
  */
 @Controller
 @RequestMapping("/shopDeliverApplyController")
@@ -41,7 +34,7 @@ public class ShopDeliverApplyController extends BaseController {
 
 	/**
 	 * 跳转到ShopDeliverApply管理页面
-	 * 
+	 *
 	 * @return
 	 */
 	@RequestMapping("/manager")
@@ -51,7 +44,7 @@ public class ShopDeliverApplyController extends BaseController {
 
 	/**
 	 * 获取ShopDeliverApply数据表格
-	 * 
+	 *
 	 * @param
 	 * @return
 	 */
@@ -62,19 +55,19 @@ public class ShopDeliverApplyController extends BaseController {
 	}
 	/**
 	 * 获取ShopDeliverApply数据表格excel
-	 * 
+	 *
 	 * @param
 	 * @return
-	 * @throws NoSuchMethodException 
-	 * @throws SecurityException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalAccessException 
-	 * @throws IllegalArgumentException 
-	 * @throws IOException 
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws IOException
 	 */
 	@RequestMapping("/download")
 	public void download(ShopDeliverApply shopDeliverApply, PageHelper ph,String downloadFields,HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException{
-		DataGrid dg = dataGrid(shopDeliverApply,ph);		
+		DataGrid dg = dataGrid(shopDeliverApply,ph);
 		downloadFields = downloadFields.replace("&quot;", "\"");
 		downloadFields = downloadFields.substring(1,downloadFields.length()-1);
 		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
@@ -82,7 +75,7 @@ public class ShopDeliverApplyController extends BaseController {
 	}
 	/**
 	 * 跳转到添加ShopDeliverApply页面
-	 * 
+	 *
 	 * @param request
 	 * @return
 	 */
@@ -94,22 +87,22 @@ public class ShopDeliverApplyController extends BaseController {
 
 	/**
 	 * 添加ShopDeliverApply
-	 * 
+	 *
 	 * @return
 	 */
 	@RequestMapping("/add")
 	@ResponseBody
 	public Json add(ShopDeliverApply shopDeliverApply) {
-		Json j = new Json();		
+		Json j = new Json();
 		shopDeliverApplyService.add(shopDeliverApply);
 		j.setSuccess(true);
-		j.setMsg("添加成功！");		
+		j.setMsg("添加成功！");
 		return j;
 	}
 
 	/**
 	 * 跳转到ShopDeliverApply查看页面
-	 * 
+	 *
 	 * @return
 	 */
 	@RequestMapping("/view")
@@ -121,7 +114,7 @@ public class ShopDeliverApplyController extends BaseController {
 
 	/**
 	 * 跳转到ShopDeliverApply修改页面
-	 * 
+	 *
 	 * @return
 	 */
 	@RequestMapping("/editPage")
@@ -133,23 +126,23 @@ public class ShopDeliverApplyController extends BaseController {
 
 	/**
 	 * 修改ShopDeliverApply
-	 * 
+	 *
 	 * @param shopDeliverApply
 	 * @return
 	 */
 	@RequestMapping("/edit")
 	@ResponseBody
 	public Json edit(ShopDeliverApply shopDeliverApply) {
-		Json j = new Json();		
+		Json j = new Json();
 		shopDeliverApplyService.edit(shopDeliverApply);
 		j.setSuccess(true);
-		j.setMsg("编辑成功！");		
+		j.setMsg("编辑成功！");
 		return j;
 	}
 
 	/**
 	 * 删除ShopDeliverApply
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -192,6 +185,4 @@ public class ShopDeliverApplyController extends BaseController {
         j.setMsg("编辑成功！");
         return j;
     }
-
-
 }
