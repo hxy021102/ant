@@ -79,6 +79,12 @@ public class MbSupplierStockInItemController extends BaseController {
 		dg.setRows(list);
 		return dg;
 	}
+	@RequestMapping("/dataGridStockInItem")
+	@ResponseBody
+	public DataGrid  dataGridStockInItem(MbSupplierStockInItem mbSupplierStockInItem, PageHelper ph) {
+		DataGrid dg = mbSupplierStockInItemService.dataGridStockInItem(mbSupplierStockInItem,ph);
+		return dg;
+	}
 	/**
 	 * 获取MbSupplierStockInItem数据表格excel
 	 * 

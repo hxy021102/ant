@@ -99,6 +99,9 @@ public class MbSupplierStockInServiceImpl extends BaseServiceImpl<MbSupplierStoc
             MbSupplierStockInItem mbSupplierStockInItem = (MbSupplierStockInItem) JSONObject.toBean(jsonObject, MbSupplierStockInItem.class);
             mbSupplierStockInItem.setSupplierStockInId(mbSupplierStockIn.getId());
             mbSupplierStockInItemService.add(mbSupplierStockInItem);
+            if (F.empty(mbSupplierStockInItem.getQuantity())) {
+                continue;
+            }
             Integer id = mbSupplierStockIn.getWarehouseId();
             Integer itemid = mbSupplierStockInItem.getItemId();
             //添加入库项改变仓库库存
