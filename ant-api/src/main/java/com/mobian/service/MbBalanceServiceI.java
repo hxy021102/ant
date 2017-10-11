@@ -115,6 +115,7 @@ public interface MbBalanceServiceI {
 
 	/**
 	 * 转移金额
+     * 将通过shopId找到源余额账户和目标账户,若目标账户不存在则将建立目标账户
 	 * @param shopId
 	 * @param amount
 	 * @param balanceSourceType
@@ -125,6 +126,7 @@ public interface MbBalanceServiceI {
 
 	/**
 	 * 转移金额
+	 * 将
 	 * @param amount
 	 * @param balanceSource
 	 * @param balanceTarget

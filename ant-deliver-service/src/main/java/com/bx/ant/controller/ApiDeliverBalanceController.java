@@ -58,7 +58,7 @@ public class ApiDeliverBalanceController extends BaseController {
     }
 
     /**
-     * 获取门店运单账号流水明细
+     * 获取门店派单账号流水明细
      * refId为mbBalanceLog.refId即
      * @param refId
      * @return
@@ -75,7 +75,7 @@ public class ApiDeliverBalanceController extends BaseController {
     }
 
     /**
-     * 获取门店运单账号流水
+     * 获取门店派单账号流水
      * @param date
      * @param pageHelper
      * @return
@@ -119,29 +119,53 @@ public class ApiDeliverBalanceController extends BaseController {
     }
 
     /**
-     * 获取门店运单账户余额
+     * 获取门店派单账户余额
      * @param request
      * @return
      */
     @RequestMapping("/viewDeliverBalance")
     @ResponseBody
+    public Json viewDeliverBalance(HttpServletRequest request) {
+        Json j = new Json();
+//        TokenWrap tokenWrap = getTokenWrap(request);
+//        Integer shopId = tokenWrap.getShopId();
+        Integer shopId = 1332;
+        if (!F.empty(shopId)) {
+            j.setObj(mbBalanceService.addOrGetMbBalanceDelivery(shopId));
+            j.setMsg("u know");
+            j.setSuccess(true);
+        } else {
+            j.setMsg("shopId不能为空");
+            j.setSuccess(false);
+        }
+        return j;
+    }
+
+    /**
+     * 获取门店采购账户余额
+     * @param request
+     * @return
+     */
+    @RequestMapping("/viewBalance")
+    @ResponseBody
     public Json viewBalance(HttpServletRequest request) {
         Json j = new Json();
 //        TokenWrap tokenWrap = getTokenWrap(request);
 //        Integer shopId = tokenWrap.getShopId();
-       Integer shopId = 1332;
-       if (!F.empty(shopId)) {
-           j.setObj(mbBalanceService.addOrGetMbBalanceDelivery(shopId));
-           j.setMsg("u know");
-           j.setSuccess(true);
-       } else {
-           j.setMsg("shopId不能为空");
-           j.setSuccess(false);
-       }
-       return j;
+        Integer shopId = 1332;
+        if (!F.empty(shopId)) {
+            j.setObj(mbBalanceService.addOrGetMbBalance(shopId));
+            j.setMsg("u know");
+            j.setSuccess(true);
+        } else {
+            j.setMsg("shopId不能为空");
+            j.setSuccess(false);
+        }
+        return j;
     }
+
     /**
-     * 转出
+     * 派单账户余额转出采购账户余额
      * @param request
      * @return
      */
@@ -159,7 +183,7 @@ public class ApiDeliverBalanceController extends BaseController {
     }
 
     /**
-     * 转出
+     * 采购账户余额转入派单账户余额
      * @param request
      * @return
      */
