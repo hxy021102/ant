@@ -429,6 +429,7 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
     public void editAudit(MbShop mbShop) {
         TmbShop tmbShop = mbShopDao.get(TmbShop.class, mbShop.getId());
         if (tmbShop != null) {
+            setShopLocation(mbShop);
             tmbShop.setAuditDate(new Date());
             MyBeanUtils.copyProperties(mbShop, tmbShop, new String[]{"id", "addtime", "isdeleted", "updatetime"}, true);
             //通过后建立对应的仓库
@@ -573,6 +574,19 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
         }
         return dataGrid;
     }
+
+    @Override
+    public List<MbShop> getNullLocation() {
+        List<TmbShop> tmbShopList = mbShopDao.find("from TmbShop t  where t.isdeleted = 0 and t.auditStatus = 'AS02' and (t.longitude is null or t.latitude is null)");
+        List<MbShop> mbShopList = new ArrayList<MbShop>();
+        for (TmbShop tmbShop : tmbShopList) {
+            MbShop mbShop = new MbShop();
+            BeanUtils.copyProperties(tmbShop, mbShop);
+            mbShopList.add(mbShop);
+        }
+        return mbShopList;
+    }
+
     @Override
     public List<MbShop> query(MbShop mbShop) {
         List<MbShop> ol = new ArrayList<>();
@@ -592,11 +606,11 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
 
     @Override
     public void setShopLocation(MbShop mbShop) {
-        String adress = mbShop.getAddress().replaceAll(" ","");
-        String requestUrl = "http://api.map.baidu.com/geocoder/v2/?output=json&address="+adress+"&ak=yDOmoXl5HIFt6KZe3BMeL4NRHBGLmCHe";
+        String address = mbShop.getAddress().replaceAll(" ","");
+        String requestUrl = "http://api.map.baidu.com/geocoder/v2/?output=json&address="+address+"&ak=yDOmoXl5HIFt6KZe3BMeL4NRHBGLmCHe";
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.httpRequest(requestUrl, "GET", null));
-        if(jsonObject !=null) {
-            if(jsonObject.get("status") == 0) {
+        if (jsonObject != null) {
+            if (jsonObject.get("status") == 0) {
                 JSONObject result = (JSONObject) jsonObject.get("result");
                 JSONObject location = (JSONObject) result.get("location");
                 Object ln = location.get("lng");

@@ -123,6 +123,17 @@ public interface MbShopServiceI {
 	 */
 	DataGrid dataGridShopBarrelAndArrears(MbShop mbShop, List<MbBalance> mbBalances, PageHelper ph);
 
+	/**
+	 * 查询出坐标为空的地址
+	 * @return
+	 */
+	List<MbShop> getNullLocation();
+
+	/**
+	 * 门店查询函数
+	 * @param mbShop
+	 * @return
+	 */
 	List<MbShop> query(MbShop mbShop);
 	/**
 	 * 设置门店数字地址

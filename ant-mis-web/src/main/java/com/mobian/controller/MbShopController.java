@@ -141,7 +141,7 @@ public class MbShopController extends BaseController {
     @ResponseBody
     public Json add(MbShop mbShop) {
         Json j = new Json();
-        mbShopService.setShopLocation(mbShop);
+        //mbShopService.setShopLocation(mbShop);
         mbShopService.add(mbShop);
         j.setSuccess(true);
         j.setMsg("添加成功！");
