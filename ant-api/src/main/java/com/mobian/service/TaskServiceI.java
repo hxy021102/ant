@@ -26,4 +26,9 @@ public interface TaskServiceI {
      */
     void deleteUnPayOrder();
 
+    /**
+     * 批量补偿修改门店坐标
+     */
+    void updateBatchShopLocation();
+
 }
