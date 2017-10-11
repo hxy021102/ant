@@ -25,13 +25,16 @@ public class TmbSupplierStockInItem implements java.io.Serializable,IEntity{
 	public static final String ALIAS_ID = "主键";
 	public static final String ALIAS_TENANT_ID = "租户ID";
 	public static final String ALIAS_ADDTIME = "添加时间";
-	public static final String ALIAS_UPDATETIME = "修改时间";
+	public static final String ALIAS_UPDATETIME = "入库时间";
 	public static final String ALIAS_ISDELETED = "是否删除,1删除，0未删除";
 	public static final String ALIAS_SUPPLIER_STOCK_IN_ID = "到货ID";
 	public static final String ALIAS_ITEM_ID = "商品ID";
 	public static final String ALIAS_ITEM_NAME="商品名称";
 	public static final String ALIAS_QUANTITY = "数量";
 	public static final String ALIAS_PRICE = "价格";
+	public static final String ALIAS_CODE = "商品编码";
+	public static final String ALIAS_SUPPLIER_ORDER_ID = "采购订单ID";
+	public static final String ALIAS_SUPPLIER_NAME = "供应商名称";
 	
 	//date formats
 	public static final String FORMAT_ADDTIME = com.mobian.util.Constants.DATE_FORMAT_FOR_ENTITY;

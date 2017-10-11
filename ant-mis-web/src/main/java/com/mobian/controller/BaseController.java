@@ -50,6 +50,7 @@ public class BaseController extends Objectx {
 	protected static final String EX_0001 = "EX0001";
 	protected static final String SUCCESS_MESSAGE = "操作成功";
 	public static final String DEFAULT_TOKEN = TokenManage.DEFAULT_TOKEN;
+	public static final String MAP_ = "map_";
 	private String _publishSettingVal = "2"; //生产环境
 
 
@@ -137,12 +138,23 @@ public class BaseController extends Objectx {
 			fileName = _class.getName();
 			i = 0;
 			for(Colum c: colums){
-				Method method=_class.getMethod("get"+F.toUpperCaseFirst(c.getField()));
-				invObj = method.invoke(o);
-				if(invObj==null)
-					row.createCell(i).setCellValue("");
-				else
-					row.createCell(i).setCellValue(invObj.toString());	
+				if(c.getField().startsWith(MAP_)){
+					Method method = _class.getMethod("getExtend");
+					Map<String,Object> map = (Map<String,Object>)method.invoke(o);
+					map = map == null ? new HashMap() : map;
+					invObj = map.get(c.getField().split("_")[1]);
+					if (invObj == null)
+						row.createCell(i).setCellValue("");
+					else
+						row.createCell(i).setCellValue(invObj.toString());
+				}else {
+					Method method = _class.getMethod("get" + F.toUpperCaseFirst(c.getField()));
+					invObj = method.invoke(o);
+					if (invObj == null)
+						row.createCell(i).setCellValue("");
+					else
+						row.createCell(i).setCellValue(invObj.toString());
+				}
 	        	i++;
 			}   
 			j++;
