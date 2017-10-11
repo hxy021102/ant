@@ -61,8 +61,7 @@ public class ApiShopController extends BaseController {
 
         //获取门店信息
         data.put("shop", mbShopService.get(shopId));
-        //获取余额流水
-        MbBalanceLog mbBalanceLog = new MbBalanceLog();
+        //获取当天结束与开始
         Calendar todayC = Calendar.getInstance();
         todayC.set(Calendar.HOUR_OF_DAY,0);
         todayC.set(Calendar.MINUTE,0);
@@ -72,6 +71,9 @@ public class ApiShopController extends BaseController {
         todayC.set(Calendar.MINUTE,59);
         todayC.set(Calendar.SECOND,59);
         Date todayEnd = todayC.getTime();
+
+        //获取余额流水
+        MbBalanceLog mbBalanceLog = new MbBalanceLog();
         mbBalanceLog.setUpdatetimeBegin(todayStart);
         mbBalanceLog.setUpdatetimeEnd(todayEnd);
         mbBalanceLog.setShopId(shopId);
@@ -89,5 +91,21 @@ public class ApiShopController extends BaseController {
         json.setObj(data);
         json.setSuccess(true);
         return json;
+    }
+
+    /**
+     * 获取shopDataGrid
+    * @param shop
+     * @param pageHelper
+     * @return
+     */
+    @RequestMapping("dataGrid")
+    @ResponseBody
+    public  Json dataGrid(MbShop shop, PageHelper pageHelper) {
+        Json j = new Json();
+        j.setSuccess(true);
+        j.setMsg("u know");
+        j.setObj(mbShopService.dataGrid(shop, pageHelper));
+        return j;
     }
 }
