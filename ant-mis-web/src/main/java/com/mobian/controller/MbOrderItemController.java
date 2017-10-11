@@ -145,7 +145,7 @@ public class MbOrderItemController extends BaseController {
         try {
             for (MbOrderItem itemExport : itemExports) {
                 MbOrder mbOrder = mbOrderCache.getValue(itemExport.getOrderId());
-                if (mbOrder == null || mbOrder.getId() == null || "OD01".equals(mbOrder.getStatus())) continue;
+                if (mbOrder == null || mbOrder.getId() == null || "OD01_OD31_OD32".indexOf(mbOrder.getStatus())>-1) continue;
                 MbOrderItemExport mbOrderItemExport = new MbOrderItemExport();
                 BeanUtils.copyProperties(itemExport, mbOrderItemExport);
                 mbOrderItemExport.setMarketPriceFormat(nf.format(mbOrderItemExport.getMarketPrice() / 100f));
