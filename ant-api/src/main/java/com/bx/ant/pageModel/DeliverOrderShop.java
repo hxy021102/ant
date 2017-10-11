@@ -16,6 +16,8 @@ public class DeliverOrderShop implements java.io.Serializable {
 	private Integer shopId;
 	private String status;
 	private Integer amount;
+	private Date updatetimeBegin;
+	private Date updatetimeEnd;
 
 	
 
@@ -85,4 +87,19 @@ public class DeliverOrderShop implements java.io.Serializable {
 		return this.amount;
 	}
 
+	public Date getUpdatetimeBegin() {
+		return updatetimeBegin;
+	}
+
+	public void setUpdatetimeBegin(Date updatetimeBegin) {
+		this.updatetimeBegin = updatetimeBegin;
+	}
+
+	public Date getUpdatetimeEnd() {
+		return updatetimeEnd;
+	}
+
+	public void setUpdatetimeEnd(Date updatetimeEnd) {
+		this.updatetimeEnd = updatetimeEnd;
+	}
 }

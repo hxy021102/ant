@@ -4,10 +4,7 @@ import com.mobian.absx.F;
 import com.mobian.dao.MbBalanceDaoI;
 import com.mobian.exception.ServiceException;
 import com.mobian.model.TmbBalance;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.MbBalance;
-import com.mobian.pageModel.MbShop;
-import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.*;
 import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.MbShopServiceI;
@@ -224,5 +221,56 @@ public class MbBalanceServiceImpl extends BaseServiceImpl<MbBalance> implements 
 		return o;
 	}
 
+	/**
+	 *
+	 * @param shopId
+	 * @param amount
+	 * @param balanceSourceType
+	 * @param balanceTargetType
+	 */
+	@Override
+	public void transform(Integer shopId, Integer amount, Integer balanceSourceType, Integer balanceTargetType, Integer initTargetMoney) {
 
+		//判定是否自身
+		if (balanceSourceType == balanceTargetType)
+			throw new ServiceException("不能转移自身余额");
+
+		//获取目标
+		MbBalance balance = new MbBalance();
+		balance.setRefId(shopId);
+		balance.setRefType(balanceSourceType);
+		List<MbBalance> balanceList = dataGrid(balance, new PageHelper()).getRows();
+		if (CollectionUtils.isEmpty(balanceList))
+			throw new ServiceException("源账户不得为空");
+		MbBalance balanceSource = balanceList.get(0);
+		MbBalance balanceTarget = addOrGetMbBalance(shopId, balanceTargetType, initTargetMoney);
+
+		//判定金额是否合规
+		if (amount < 0)
+			throw new ServiceException("转移金额必须为整数");
+		if (balanceSource.getAmount() - amount < 0)
+			throw new ServiceException("源账户余额不足");
+
+		//转移金额
+		transform(amount, balanceSource, balanceTarget);
+	}
+
+	@Override
+	public void transform(Integer amount, MbBalance balanceSource, MbBalance balanceTarget) {
+		//源账户减少金额
+		MbBalanceLog mbBalanceLogSource = new MbBalanceLog();
+		mbBalanceLogSource.setBalanceId(balanceSource.getId());
+		mbBalanceLogSource.setAmount( -amount);
+		mbBalanceLogSource.setRefId(balanceTarget.getId() + "");
+		mbBalanceLogSource.setRefType("BT050");
+		mbBalanceLogSource.setReason("门店账户金额转移");
+
+		//目标账户增加金额
+		MbBalanceLog mbBalanceLogTarget = new MbBalanceLog();
+		mbBalanceLogTarget.setBalanceId(balanceTarget.getId());
+		mbBalanceLogTarget.setAmount( +amount);
+		mbBalanceLogTarget.setRefId(balanceSource.getId() + "");
+		mbBalanceLogTarget.setRefType("BT050");
+		mbBalanceLogTarget.setReason("门店账户金额转移");
+	}
 }
