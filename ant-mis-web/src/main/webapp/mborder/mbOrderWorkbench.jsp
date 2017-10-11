@@ -256,7 +256,18 @@
 			}
 		});
 	}
-
+	function formatterShopName(shopName,order){
+		if(order.sendNumber){
+			shopName +='<font color="red">【催+'+order.sendNumber+'】</font>';
+		}
+		if(order.backNumber){
+			shopName +='<font color="red">【回+'+order.backNumber+'】</font>';
+		}
+		if(order.leaveNumber){
+			shopName +='<font color="red">【留+'+order.leaveNumber+'】</font>';
+		}
+		return shopName;
+	}
 	// 打单中
 	function loadDataGrid_12() {
 		return $('#dataGrid_12').datagrid({
@@ -289,7 +300,8 @@
 			}, {
 				field : 'shopName',
 				title : '<%=TmbOrder.ALIAS_SHOP_NAME%>',
-				width : 80
+				width : 80,
+				formatter:formatterShopName
 			}, {
 				field: 'orderPrice',
 				title: '<%=TmbOrder.ALIAS_ORDER_PRICE%>',
@@ -369,7 +381,8 @@
 			}, {
 				field : 'shopName',
 				title : '<%=TmbOrder.ALIAS_SHOP_NAME%>',
-				width : 80
+				width : 80,
+				formatter:formatterShopName
 			}, {
 				field: 'orderPrice',
 				title: '<%=TmbOrder.ALIAS_ORDER_PRICE%>',
@@ -453,7 +466,8 @@
 			}, {
 				field : 'shopName',
 				title : '<%=TmbOrder.ALIAS_SHOP_NAME%>',
-				width : 80
+				width : 80,
+				formatter:formatterShopName
 			}, {
 				field: 'orderPrice',
 				title: '<%=TmbOrder.ALIAS_ORDER_PRICE%>',
@@ -542,7 +556,8 @@
 			}, {
 				field : 'shopName',
 				title : '<%=TmbOrder.ALIAS_SHOP_NAME%>',
-				width : 80
+				width : 80,
+				formatter:formatterShopName
 			}, {
 				field: 'orderPrice',
 				title: '<%=TmbOrder.ALIAS_ORDER_PRICE%>',
@@ -631,7 +646,8 @@
 			}, {
 				field : 'shopName',
 				title : '<%=TmbOrder.ALIAS_SHOP_NAME%>',
-				width : 80
+				width : 80,
+				formatter:formatterShopName
 			}, {
 				field: 'orderPrice',
 				title: '<%=TmbOrder.ALIAS_ORDER_PRICE%>',

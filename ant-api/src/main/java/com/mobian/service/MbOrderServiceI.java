@@ -150,4 +150,12 @@ public interface MbOrderServiceI {
 	 * @return
 	 */
 	MbOrderDistribution setOrderDayNumberAndOrderDayNameValue(List<TmbOrder> mbOrders, MbOrderDistribution orderDistribution, String[] timeName);
+
+	/**
+	 * 获取订单列表和订单日志信息
+	 * @param mbOrder
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridWithOrderLogMessage(MbOrder mbOrder, PageHelper ph);
 }

@@ -69,13 +69,13 @@ public class MbOrder implements java.io.Serializable {
 
 	private List<MbOrderItem> mbOrderItemList; //订单商品信息
 	private MbOrderInvoice mbOrderInvoice; //订单发票信息
-	private Date   orderTimeBegin;//订单开始时间
-	private Date   orderTimeEnd;
+	private Date orderTimeBegin;//订单开始时间
+	private Date orderTimeEnd;
 	private Integer[] shopIds;//主店和其包含的分店ID
 
 
-	private Date   deliveryTimeBegin;//订单发货时间
-	private Date   deliveryTimeEnd;
+	private Date deliveryTimeBegin;//订单发货时间
+	private Date deliveryTimeEnd;
 
 	public Date getDeliveryTimeBegin() {
 		return deliveryTimeBegin;
