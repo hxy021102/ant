@@ -113,6 +113,15 @@ public class TaskServiceImpl implements TaskServiceI {
     }
 
     @Override
+    public void updateBatchShopLocation() {
+        List<MbShop> mbShopList = mbShopService.getNullLocation();
+        for (MbShop mbShop : mbShopList) {
+            mbShopService.setShopLocation(mbShop);
+            mbShopService.edit(mbShop);
+        }
+    }
+
+    @Override
     public void sendMessage() {
 
     }
