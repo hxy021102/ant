@@ -20,6 +20,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * Created by wanxp 2017/9/22
@@ -85,18 +86,21 @@ public class ApiDeliverBalanceController extends BaseController {
         Json j = new Json();
         DataGrid dataGrid;
         MbBalanceLog mbBalanceLog = new MbBalanceLog();
-        Calendar now = Calendar.getInstance();
 
+        //默认时间为当月
         if (date == null) {
+             Calendar now = Calendar.getInstance();
              date = now.get(Calendar.YEAR) + "-" + now.get(Calendar.MONTH) ;
         }
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+        //设定搜索时间为月初00:00:00至下月初00:00:00
         try {
-            mbBalanceLog.setUpdatetimeBegin(dateFormat.parse(date
-                    + "-" + now.getActualMinimum(Calendar.DAY_OF_MONTH) + " 00:00:00"));
-            mbBalanceLog.setUpdatetimeEnd(dateFormat.parse(date
-                    +  "-" + now.getActualMaximum(Calendar.DAY_OF_MONTH) + " 00:00:00"));
+            Date timeStart  = new SimpleDateFormat("yyyy-MM").parse(date);
+            mbBalanceLog.setUpdatetimeBegin(timeStart);
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(timeStart);
+            calendar.add(Calendar.MONTH,1);
+            mbBalanceLog.setUpdatetimeEnd(calendar.getTime());
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -135,5 +139,40 @@ public class ApiDeliverBalanceController extends BaseController {
            j.setSuccess(false);
        }
        return j;
+    }
+    /**
+     * 转出
+     * @param request
+     * @return
+     */
+    @RequestMapping("/transformAmountDeliverToBalance")
+    @ResponseBody
+    public Json transformAmountDeliverToBalance(HttpServletRequest request, Integer amount) {
+        Json j = new Json();
+//        TokenWrap tokenWrap = getTokenWrap(request);
+//        Integer shopId = tokenWrap.getShopId();
+        Integer shopId = 1332;
+        mbBalanceService.transform(shopId, amount, 10, 1, 0);
+        j.setMsg("u know");
+        j.setSuccess(true);
+        return j;
+    }
+
+    /**
+     * 转出
+     * @param request
+     * @return
+     */
+    @RequestMapping("/transformAmountBalanceToDeliver")
+    @ResponseBody
+    public Json transformAmountBalanceToDeliver(HttpServletRequest request, Integer amount) {
+        Json j = new Json();
+//        TokenWrap tokenWrap = getTokenWrap(request);
+//        Integer shopId = tokenWrap.getShopId();
+        Integer shopId = 1332;
+        mbBalanceService.transform(shopId, amount, 1, 10, 0);
+        j.setMsg("u know");
+        j.setSuccess(true);
+        return j;
     }
 }
