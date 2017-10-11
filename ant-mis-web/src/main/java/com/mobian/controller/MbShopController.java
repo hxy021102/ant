@@ -418,8 +418,7 @@ public class MbShopController extends BaseController {
     @ResponseBody
     public Json getAllShopLocation() {
         Json j = new Json();
-        MbShop mbShop = new MbShop();
-        List<MbShop> mbShops = mbShopService.query(mbShop);
+        List<MbShop> mbShops = mbShopService.getNullLocation();
         for (MbShop m : mbShops) {
            mbShopService.setShopLocation(m);
            mbShopService.edit(m);
