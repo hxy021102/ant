@@ -21,5 +21,6 @@
        <!-- 用dubbo协议在20880端口暴露服务 -->
        <dubbo:protocol name="${dubbo.protocol.name}" port="${dubbo.protocol.port}" />
        <dubbo:service interface="com.bx.ant.service.ShopDeliverAccountServiceI" ref="shopDeliverAccountServiceImpl" protocol="dubbo"/>
+       <dubbo:service interface="com.bx.ant.service.ShopDeliverApplyServiceI" ref="shopDeliverApplyServiceImpl" protocol="dubbo"/>
 
 </beans>

@@ -2,19 +2,22 @@ package com.mobian.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import com.mobian.pageModel.Colum;
-import com.mobian.pageModel.ShopDeliverApply;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.Json;
-import com.mobian.pageModel.PageHelper;
+import com.bx.ant.pageModel.ShopDeliverApplyQuery;
+import com.mobian.pageModel.*;
 import com.bx.ant.service.ShopDeliverApplyServiceI;
 
+import com.mobian.pageModel.ShopDeliverApply;
+import com.mobian.util.ConfigUtil;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +35,7 @@ import com.alibaba.fastjson.JSON;
 @RequestMapping("/shopDeliverApplyController")
 public class ShopDeliverApplyController extends BaseController {
 
+	@Resource
 	private ShopDeliverApplyServiceI shopDeliverApplyService;
 
 
@@ -48,18 +52,18 @@ public class ShopDeliverApplyController extends BaseController {
 	/**
 	 * 获取ShopDeliverApply数据表格
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 */
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(ShopDeliverApply shopDeliverApply, PageHelper ph) {
-		return shopDeliverApplyService.dataGrid(shopDeliverApply, ph);
+		return shopDeliverApplyService.dataGridWithName(shopDeliverApply, ph);
 	}
 	/**
 	 * 获取ShopDeliverApply数据表格excel
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 * @throws NoSuchMethodException 
 	 * @throws SecurityException 
@@ -110,8 +114,8 @@ public class ShopDeliverApplyController extends BaseController {
 	 */
 	@RequestMapping("/view")
 	public String view(HttpServletRequest request, Integer id) {
-		ShopDeliverApply shopDeliverApply = shopDeliverApplyService.get(id);
-		request.setAttribute("shopDeliverApply", shopDeliverApply);
+		ShopDeliverApplyQuery shopDeliverApplyQuery = shopDeliverApplyService.getViewMessage(id);
+		request.setAttribute("shopDeliverApplyQuery", shopDeliverApplyQuery);
 		return "/shopdeliverapply/shopDeliverApplyView";
 	}
 
@@ -158,5 +162,36 @@ public class ShopDeliverApplyController extends BaseController {
 		j.setSuccess(true);
 		return j;
 	}
+
+    /**
+     * 跳转到ShopDeliverApply审核页面
+     * @param request
+     * @param id
+     * @return
+     */
+    @RequestMapping("/examinePage")
+    public String examinePage(HttpServletRequest request, Integer id) {
+        ShopDeliverApply shopDeliverApply = shopDeliverApplyService.get(id);
+        request.setAttribute("shopDeliverApply", shopDeliverApply);
+        return "/shopdeliverapply/shopDeliverApplyExamine";
+    }
+
+    /**
+     * 编辑审核状态
+     * @param shopDeliverApply
+     * @param session
+     * @return
+     */
+    @RequestMapping("/editState")
+    @ResponseBody
+    public Json editState(ShopDeliverApply shopDeliverApply, HttpSession session) {
+        SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+        Json j = new Json();
+        shopDeliverApplyService.edit(shopDeliverApply);
+        j.setSuccess(true);
+        j.setMsg("编辑成功！");
+        return j;
+    }
+
 
 }

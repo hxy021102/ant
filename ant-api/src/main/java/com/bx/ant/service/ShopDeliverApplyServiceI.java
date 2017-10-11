@@ -1,5 +1,6 @@
 package com.bx.ant.service;
 
+import com.bx.ant.pageModel.ShopDeliverApplyQuery;
 import com.mobian.pageModel.ShopDeliverApply;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
@@ -52,4 +53,19 @@ public interface ShopDeliverApplyServiceI {
 	public void delete(Integer id);
 
 	ShopDeliverApply getByAccountId(Integer accountId);
+
+	/**
+	 *获取派单申请列表并以名称新式显示
+	 * @param shopDeliverApply
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridWithName(ShopDeliverApply shopDeliverApply, PageHelper ph);
+
+	/**
+	 * 获取详细信息
+	 * @param id
+	 * @return
+	 */
+	ShopDeliverApplyQuery getViewMessage(Integer id);
 }

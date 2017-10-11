@@ -13,6 +13,7 @@
     <!--<dubbo:annotation package="com.bx.ant.controller" />-->
 
     <dubbo:reference id="shopDeliverAccountService" interface="com.bx.ant.service.ShopDeliverAccountServiceI"/>
+    <dubbo:reference id="shopDeliverApplyService" interface="com.bx.ant.service.ShopDeliverApplyServiceI"/>
 
 
 </beans>
