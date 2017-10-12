@@ -229,7 +229,7 @@ public class ApiAccountController extends BaseController {
                 mbBalanceLog.setShopId(shopDeliverApply.getShopId());
                 DataGrid dataGrid = mbBalanceLogService.getDeliveryBalanceLogDataGrid(mbBalanceLog,new PageHelper());
                 Integer todayAmount = new Integer(0) ;
-                if (dataGrid.getFooter() != null) {
+                if (dataGrid.getFooter() != null && CollectionUtils.isNotEmpty(dataGrid.getFooter())) {
                     MbBalanceLog  balanceLog =(MbBalanceLog) dataGrid.getFooter().get(0);
                     todayAmount = balanceLog.getAmountIn() + balanceLog.getAmountOut();
                 }
