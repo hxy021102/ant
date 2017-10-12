@@ -153,4 +153,24 @@ public class DeliverOrderItemServiceImpl extends BaseServiceImpl<DeliverOrderIte
 		return ol;
 	}
 
+	@Override
+	public List<DeliverOrderItem> getDeliverOrderItemList(Long deliverOrderId) {
+		DeliverOrderItem deliverOrderItem = new DeliverOrderItem();
+		deliverOrderItem.setDeliverOrderId(deliverOrderId);
+		List<DeliverOrderItem> ol = new ArrayList<DeliverOrderItem>();
+		Map<String, Object> params = new HashMap<String, Object>();
+		String hql = " from TdeliverOrderItem t ";
+		String where = whereHql(deliverOrderItem, params);
+		List<TdeliverOrderItem> l = deliverOrderItemDao.find(hql + where, params);
+		if (CollectionUtils.isNotEmpty(l)) {
+			for (TdeliverOrderItem t : l) {
+				DeliverOrderItemExt o = new DeliverOrderItemExt();
+				BeanUtils.copyProperties(t, o);
+				fillInfo(o);
+				ol.add(o);
+			}
+		}
+		return ol;
+	}
+
 }
