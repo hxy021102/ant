@@ -89,23 +89,6 @@ public class ApiItemController extends BaseController {
     }
 
     /**
-     * 批量商品上架(大仓商品)
-     *
-     * @param itemIds
-     * @return
-     */
-    @RequestMapping("/addBatchItemOnline")
-    @ResponseBody
-    public Json addBatchItemOnline(HttpServletRequest request, String itemIds) {
-        Json j = new Json();
-        TokenWrap token = tokenService.getToken(request);
-        shopItemService.addBatchItemOnline(itemIds, token.getShopId());
-        j.setSuccess(true);
-        j.setMsg("门店新增商品批量上架成功！！");
-        return j;
-    }
-
-    /**
      * 批量修改门店商品上架
      *
      * @param itemIds
@@ -123,33 +106,17 @@ public class ApiItemController extends BaseController {
     }
 
     /**
-     * 某种商品上架(大仓商品)
+     * 修改门店某种商品状态为上架
      *
      * @param itemId
      * @return
      */
-    @RequestMapping("/addItemOnline")
-    @ResponseBody
-    public Json addItemOnline(HttpServletRequest request, Integer itemId) {
-        Json j = new Json();
-        TokenWrap token = tokenService.getToken(request);
-        shopItemService.addItemOnline(itemId, token.getShopId());
-        j.setSuccess(true);
-        j.setMsg("上架成功！！");
-        return j;
-    }
-
-    /**
-     * 修改门店某种商品状态为上架
-     *
-     * @param shopItemId
-     * @return
-     */
     @RequestMapping("/updateItemOnline")
     @ResponseBody
-    public Json updateItemOnline(HttpServletRequest request, Integer shopItemId) {
+    public Json updateItemOnline(HttpServletRequest request, Integer itemId) {
         Json j = new Json();
-        shopItemService.updateItemOnline(shopItemId);
+        TokenWrap token = tokenService.getToken(request);
+        shopItemService.updateItemOnline(itemId,token.getShopId());
         j.setSuccess(true);
         j.setMsg("上架成功！！");
         return j;

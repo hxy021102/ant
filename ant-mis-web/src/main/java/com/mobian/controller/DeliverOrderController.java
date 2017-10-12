@@ -3,8 +3,9 @@ package com.mobian.controller;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.UUID;
 
+
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,7 +16,7 @@ import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
 import com.bx.ant.service.DeliverOrderServiceI;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,7 +33,7 @@ import com.alibaba.fastjson.JSON;
 @RequestMapping("/deliverOrderController")
 public class DeliverOrderController extends BaseController {
 
-
+	@Resource
 	private DeliverOrderServiceI deliverOrderService;
 
 
@@ -49,7 +50,7 @@ public class DeliverOrderController extends BaseController {
 	/**
 	 * 获取DeliverOrder数据表格
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 */
 	@RequestMapping("/dataGrid")

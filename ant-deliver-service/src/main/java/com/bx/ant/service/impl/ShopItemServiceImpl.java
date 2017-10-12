@@ -137,7 +137,11 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 		String where = whereHql(shopItem, params);
 		TshopItem t = shopItemDao.get("from TshopItem t " + where , params);
 		ShopItem o = new ShopItem();
-		BeanUtils.copyProperties(t, o);
+		if (t != null) {
+			BeanUtils.copyProperties(t, o);
+		}else{
+			o=null;
+		}
 		return o;
 	}
 
@@ -151,47 +155,83 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 	}
 
 	@Override
-	public void  addBatchItemOnline(String itemIds, Integer shopId) {
-		 if (!F.empty(itemIds)) {
-			String[] itemIdArray  = itemIds.split(",");
-			List<ShopItem> shopItemList = new ArrayList<ShopItem>();
-			for (int i = 0; i < itemIdArray.length; i++) {
-				ShopItem shopItem = new ShopItem();
-				shopItem.setItemId(Integer.parseInt(itemIdArray[i]));
-				shopItem.setShopId(shopId);
-				shopItem.setOnline(true);
-				add(shopItem);
+	public List<ShopItem> query(ShopItem shopItem) {
+		List<ShopItem> ol = new ArrayList<ShopItem>();
+		String hql = " from TshopItem t ";
+		Map<String, Object> params = new HashMap<String, Object>();
+		String where = whereHql(shopItem, params);
+		List<TshopItem> l = shopItemDao.find(hql + where, params);
+		if (CollectionUtils.isNotEmpty(l)) {
+			for (TshopItem t : l) {
+				ShopItem s = new ShopItem();
+				BeanUtils.copyProperties(t, s);
+				ol.add(s);
 			}
 		}
+		return ol;
 	}
 
 	@Override
 	public void updateBatchItemOnline(String itemIds, Integer shopId) {
 		if (!F.empty(itemIds)) {
-			String[] itemIdArray = itemIds.split(",");
-			for (int i = 0; i < itemIdArray.length; i++) {
-				ShopItem shopItem = getByShopIdAndItemId(shopId, Integer.parseInt(itemIdArray[i]), false);
-				shopItem.setOnline(true);
-				edit(shopItem);
+			ShopItem shopItem = new ShopItem();
+			shopItem.setIsdeleted(false);
+			shopItem.setShopId(shopId);
+			List<ShopItem> shopItemList = query(shopItem);
+			if (CollectionUtils.isNotEmpty(shopItemList)) {
+				List<Integer> itemIdValues = new ArrayList<Integer>();
+				for (ShopItem item : shopItemList) {
+					itemIdValues.add(item.getItemId());
+				}
+				String[] itemIdArray = itemIds.split(",");
+				int i = 0;
+				for (ShopItem item : shopItemList) {
+					if (itemIdValues.contains(Integer.parseInt(itemIdArray[i]))) {
+						i++;
+						if ("true".equals(item.getOnline()))
+							continue;
+						else if ("false".equals(item.getOnline())) {
+							item.setOnline(true);
+							edit(item);
+						}
+					} else {
+						ShopItem shop = new ShopItem();
+						shop.setItemId(Integer.parseInt(itemIdArray[i]));
+						shop.setShopId(shopId);
+						shop.setOnline(true);
+						add(shop);
+						i++;
+					}
+					if (i > itemIdArray.length - 1)
+						break;
+				}
 			}
 		}
 	}
 
-	@Override
-	public void addItemOnline(Integer itemId,Integer shopId) {
-		ShopItem shopItem = new ShopItem();
-		shopItem.setOnline(true);
-		shopItem.setShopId(shopId);
-		shopItem.setItemId(itemId);
-		add(shopItem);
-	}
-
 
 	@Override
-	public void updateItemOnline(Integer shopItemId) {
-		ShopItem shopItem = get(shopItemId);
-		shopItem.setOnline(true);
-		edit(shopItem);
+	public void updateItemOnline(Integer itemId, Integer shopId) {
+		ShopItem shopItem = getByShopIdAndItemId(shopId, itemId);
+		if (shopItem != null) {
+			if ("false".equals(shopItem.getOnline()) && "false".equals(shopItem.getIsdeleted())) {
+				shopItem.setOnline(true);
+				edit(shopItem);
+			} else if ("true".equals(shopItem.getIsdeleted())) {
+				ShopItem item = new ShopItem();
+				item.setOnline(true);
+				item.setItemId(itemId);
+				item.setShopId(shopId);
+				add(item);
+			}
+		} else {
+			ShopItem item = new ShopItem();
+			item.setOnline(true);
+			item.setItemId(itemId);
+			item.setShopId(shopId);
+			add(item);
+		}
+
 	}
 
 	@Override

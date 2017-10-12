@@ -5,6 +5,7 @@ import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import java.util.List;
 
 /**
  * 
@@ -58,11 +59,12 @@ public interface ShopItemServiceI {
 	ShopItem getByShopIdAndItemId(Integer shopId, Integer itemId);
 
 	/**
-	 *  批量商品上架(大仓商品)
-	 * @param itemIds
-	 * @param shopId
+	 * 查询ShopItem对象
+	 * @param shopItem
+	 * @return
 	 */
-	void addBatchItemOnline(String itemIds,Integer shopId);
+	List<ShopItem> query(ShopItem shopItem);
+
 
 	/**
 	 * 批量修改门店商品上架
@@ -72,16 +74,11 @@ public interface ShopItemServiceI {
 	void updateBatchItemOnline(String itemIds,Integer shopId);
 
 	/**
-	 * 某种商品上架(大仓商品)
-	 * @param shopItemId
-	 */
-	void addItemOnline(Integer shopItemId,Integer shopId);
-
-	/**
 	 * 修改门店某种商品状态为上架
-	 * @param shopItemId
+	 * @param itemId
+	 * @param shopId
 	 */
-	void updateItemOnline(Integer shopItemId);
+	void updateItemOnline(Integer itemId,Integer shopId);
 
 	/**
 	 * 门店商品批量下架
