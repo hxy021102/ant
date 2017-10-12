@@ -61,7 +61,7 @@ public interface DeliverOrderShopServiceI {
 
 	DeliverOrderShop addByDeliverOrder(DeliverOrder deliverOrder);
 
-	List<DeliverOrderShop> list(DeliverOrderShop deliverOrderShop);
+	List<DeliverOrderShop> query(DeliverOrderShop deliverOrderShop);
 
 	DeliverOrderShop editStatus(DeliverOrderShop deliverOrderShop, String status);
 }

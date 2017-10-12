@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 
 /**
  * 订单已产生,待支付状态
+ * 该状态已废弃
  * Created by wanxp on 17-9-26.
  */
 @Service("deliverOrder01StateImpl")

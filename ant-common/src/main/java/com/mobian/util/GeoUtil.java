@@ -1,5 +1,9 @@
 package com.mobian.util;
 
+import com.alibaba.fastjson.JSONObject;
+
+import java.math.BigDecimal;
+
 /**
  * Created by john on 17/10/11.
  */
@@ -45,6 +49,27 @@ public class GeoUtil {
         }
         return result;
     }*/
+    public static BigDecimal[] getPosition(String address) {
+        address = address.replaceAll(" ", "");
+        String requestUrl = "http://api.map.baidu.com/geocoder/v2/?output=json&address=" + address + "&ak=yDOmoXl5HIFt6KZe3BMeL4NRHBGLmCHe";
+        JSONObject jsonObject = JSONObject.parseObject(HttpUtil.httpRequest(requestUrl, "GET", null));
+        if (jsonObject != null) {
+            if (jsonObject.get("status") == 0) {
+                JSONObject result = (JSONObject) jsonObject.get("result");
+                JSONObject location = (JSONObject) result.get("location");
+                Object ln = location.get("lng");
+                Object la = location.get("lat");
+
+
+                BigDecimal[] point = new BigDecimal[2];
+                point[0] = new BigDecimal(ln.toString());
+                point[1] = new BigDecimal(la.toString());
+                return point;
+            }
+        }
+        return null;
+    }
+
     public static void main(String[] args) {
         System.out.println(getDistance(121.446014,31.215937,121.446028464238,31.2158502442799  ));
     }

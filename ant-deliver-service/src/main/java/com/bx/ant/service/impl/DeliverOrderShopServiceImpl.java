@@ -134,7 +134,7 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 	}
 
 	@Override
-	public List<DeliverOrderShop> list(DeliverOrderShop deliverOrderShop) {
+	public List<DeliverOrderShop> query(DeliverOrderShop deliverOrderShop) {
 		List<DeliverOrderShop> ol = new ArrayList<DeliverOrderShop>();
 		Map<String, Object> params = new HashMap<String, Object>();
 		String hql = " from TdeliverOrderShop t ";
@@ -151,7 +151,7 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 	}
 	@Override
 	public DeliverOrderShop editStatus(DeliverOrderShop deliverOrderShop, String status) {
-		List<DeliverOrderShop> deliverOrderShops = list(deliverOrderShop);
+		List<DeliverOrderShop> deliverOrderShops = query(deliverOrderShop);
 		DeliverOrderShop o = new DeliverOrderShop();
 		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
 			//TODO 只对第一个结果进行处理

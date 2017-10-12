@@ -61,7 +61,7 @@ public class DeliverOrder20StateImpl implements DeliverOrderState {
         DeliverOrderShopPay deliverOrderShopPay = new DeliverOrderShopPay();
         deliverOrderShopPay.setDeliverOrderId(order.getId());
         deliverOrderShopPay.setShopId(deliverOrder.getShopId());
-        deliverOrderShopPayService.editStatus(deliverOrderShopPay, deliverOrderService.STATUS_NOT_PAY);
+        deliverOrderShopPayService.editStatus(deliverOrderShopPay, deliverOrderService.PAY_STATUS_NOT_PAY);
         
 
 //        DeliverOrder order = new DeliverOrder();

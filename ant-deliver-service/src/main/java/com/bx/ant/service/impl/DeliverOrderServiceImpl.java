@@ -12,7 +12,6 @@ import com.mobian.pageModel.DeliverOrder;
 import com.mobian.pageModel.DeliverOrderItem;
 import com.mobian.pageModel.DeliverOrderShop;
 import com.mobian.pageModel.DeliverOrderShopItem;
-import com.mobian.util.BeanUtil;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -124,7 +123,15 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			if (!F.empty(deliverOrder.getRemark())) {
 				whereHql += " and t.remark = :remark";
 				params.put("remark", deliverOrder.getRemark());
-			}		
+			}
+
+			if (deliverOrder instanceof DeliverOrderExt) {
+				DeliverOrderExt ext = (DeliverOrderExt) deliverOrder;
+				if (ext.getStatusList() != null && ext.getStatusList().length > 0) {
+					whereHql += " and t.status in (:alist)";
+					params.put("alist", ext.getStatusList());
+				}
+			}
 		}	
 		return whereHql;
 	}
@@ -233,7 +240,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
 		deliverOrderShop.setStatus(deliverOrderShopStatus);
 		deliverOrderShop.setShopId(shopId);
-		List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.list(deliverOrderShop);
+		List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(deliverOrderShop);
 		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
 			for (DeliverOrderShop orderShop : deliverOrderShops) {
 				//通过门店运单获取运单信息
@@ -253,7 +260,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		List<DeliverOrder> ol = new ArrayList<DeliverOrder>();
 		DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
 		deliverOrderShop.setShopId(shopId);
-		List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.list(deliverOrderShop);
+		List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(deliverOrderShop);
 		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
 			for (DeliverOrderShop orderShop : deliverOrderShops) {
 

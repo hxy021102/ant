@@ -54,4 +54,11 @@ public interface DeliverOrderItemServiceI {
 	void delete(Integer id);
 
     List<DeliverOrderItem> list(DeliverOrderItem DeliverOrderItem);
+
+	/**
+	 * 根据运单ID 查询运单明细
+	 * @param deliverOrderId
+	 * @return
+	 */
+	List<DeliverOrderItem> getDeliverOrderItemList(Long deliverOrderId);
 }

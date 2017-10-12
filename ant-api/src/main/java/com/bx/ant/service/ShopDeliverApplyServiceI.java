@@ -5,12 +5,18 @@ import com.mobian.pageModel.ShopDeliverApply;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
+import java.util.List;
+
 /**
  * 
  * @author John
  * 
  */
 public interface ShopDeliverApplyServiceI {
+
+	String DAS_01 = "DAS01"; //待审核
+	String DAS_02 = "DAS02"; //审核通过
+	String DAS_03 = "DAS03"; //审核拒绝
 
 	/**
 	 * 获取ShopDeliverApply数据表格
@@ -68,4 +74,12 @@ public interface ShopDeliverApplyServiceI {
 	 * @return
 	 */
 	ShopDeliverApplyQuery getViewMessage(Integer id);
+
+	/**
+	 * 查询到在工作且可用的门店
+	 * @return
+	 */
+	List<ShopDeliverApply> getAvailableAndWorkShop();
+
+
 }

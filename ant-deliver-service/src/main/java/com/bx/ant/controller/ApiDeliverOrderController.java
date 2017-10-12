@@ -49,30 +49,30 @@ public class ApiDeliverOrderController extends BaseController {
         return json;
     }
 
-    /**
-     * 获取门店新订单审核列表DataGrid
-     * @param request
-     * @param pageHelper
-     * @return
-     */
-    @RequestMapping("/viewAuditDataGrid")
-    @ResponseBody
-    public Json viewAuditList(HttpServletRequest request, PageHelper pageHelper){
-        Json json = new Json();
-
-        //获取shopId
-        //TODO 测试时设置shop ID值,若真正使用从token中获取
-//        TokenWrap token = getTokenWrap(request);
-//        Integer shopId = token.getShopId();
-        Integer shopId = 1332;
-        DeliverOrder deliverOrder =  new DeliverOrder();
-        deliverOrder.setShopId(shopId);
-        deliverOrder.setStatus(deliverOrderService.STATUS_PAY_SUCCESS);
-        json.setMsg("u know");
-        json.setObj(deliverOrderService.dataGridExt(deliverOrder, pageHelper));
-        json.setSuccess(true);
-        return json;
-    }
+//    /**
+//     * 获取门店新订单审核列表DataGrid
+//     * @param request
+//     * @param pageHelper
+//     * @return
+//     */
+//    @RequestMapping("/viewAuditDataGrid")
+//    @ResponseBody
+//    public Json viewAuditList(HttpServletRequest request, PageHelper pageHelper){
+//        Json json = new Json();
+//
+//        //获取shopId
+//        //TODO 测试时设置shop ID值,若真正使用从token中获取
+////        TokenWrap token = getTokenWrap(request);
+////        Integer shopId = token.getShopId();
+//        Integer shopId = 1332;
+//        DeliverOrder deliverOrder =  new DeliverOrder();
+//        deliverOrder.setShopId(shopId);
+//        deliverOrder.setStatus(deliverOrderService.STATUS_PAY_SUCCESS);
+//        json.setMsg("u know");
+//        json.setObj(deliverOrderService.dataGridExt(deliverOrder, pageHelper));
+//        json.setSuccess(true);
+//        return json;
+//    }
 
     /**
      *  查看已接单
