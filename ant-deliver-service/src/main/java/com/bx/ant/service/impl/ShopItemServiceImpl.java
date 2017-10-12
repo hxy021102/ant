@@ -311,11 +311,13 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 			List<ShopItem> shopItems = query(shopItem);
 			if (CollectionUtils.isNotEmpty(shopItems)) {
 				for (MbItem item : mbItems) {
-					for (ShopItem sItem : shopItems) {
+					for (int i = 0; i < shopItems.size(); i++) {
+						ShopItem sItem = shopItems.get(i);
 						if (sItem.getItemId() == item.getId()) {
 							item.setQuantity(sItem.getQuantity());
 							mbItemList.add(item);
-						} else {
+							break;
+						} else if (i == shopItems.size() - 1) {
 							item.setQuantity(0);
 							mbItemList.add(item);
 						}
