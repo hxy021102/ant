@@ -1,5 +1,7 @@
 package com.bx.ant.controller;
 
+import com.aliyun.mns.model.TopicMessage;
+import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderShopPayServiceI;
 import com.mobian.absx.F;
@@ -8,6 +10,13 @@ import com.mobian.pageModel.DeliverOrderShopPay;
 import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.MbShopServiceI;
+import com.mobian.thirdpart.mns.MNSTemplate;
+import com.mobian.thirdpart.mns.MNSUtil;
+import com.mobian.thirdpart.redis.Key;
+import com.mobian.thirdpart.redis.Namespace;
+import com.mobian.thirdpart.redis.RedisUtil;
+import com.mobian.util.ConvertNameUtil;
+import com.mobian.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,10 +24,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by wanxp 2017/9/22
@@ -43,6 +52,9 @@ public class ApiDeliverBalanceController extends BaseController {
 
     @Autowired
     private DeliverOrderShopPayServiceI deliverOrderPayShopService;
+
+    @Resource
+    private RedisUtil redisUtil;
 
 
     @RequestMapping("/viewDeliverBanlanceLogList")
@@ -200,6 +212,44 @@ public class ApiDeliverBalanceController extends BaseController {
         mbBalanceService.transform(shopId, amount, 1, 10, 0);
         j.setMsg("u know");
         j.setSuccess(true);
+        return j;
+    }
+
+    @ResponseBody
+    @RequestMapping("/getVCode")
+    public Json getVCode(HttpServletRequest request) {
+        Json j = new Json();
+        try {
+            TokenWrap tokenWrap = getTokenWrap(request);
+            String phone = tokenWrap.getName();
+            if(!F.empty(phone)) {
+                String oldCode = (String) redisUtil.getString(Key.build(Namespace.SHOP_BALANCE_ROLL_VALIDATE_CODE, phone));
+                if(!F.empty(oldCode)) {
+                    j.setMsg("访问过于频繁，请秒后重试！");
+                    return j;
+                }
+
+                String code = Util.CreateNonceNumstr(6); //生成短信验证码
+                MNSTemplate template = new MNSTemplate();
+                template.setTemplateCode("SMS_63345368");
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("code", code);
+                params.put("product", "骆驼送");
+                template.setParams(params);
+                TopicMessage topicMessage = MNSUtil.sendMns(phone, template);
+                if(topicMessage != null) {
+                    redisUtil.set(Key.build(Namespace.SHOP_BALANCE_ROLL_VALIDATE_CODE, phone), code, 60, TimeUnit.SECONDS);
+                    j.setSuccess(true);
+                    j.setMsg("获取短信验证码成功！");
+                    j.setObj(params);
+                    return j;
+                }
+                j.setMsg("获取短信验证码失败！");
+            }
+        } catch (Exception e) {
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
+            logger.error("获取短信验证码接口异常", e);
+        }
         return j;
     }
 }
