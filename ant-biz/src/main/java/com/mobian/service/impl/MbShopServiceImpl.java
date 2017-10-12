@@ -1,6 +1,5 @@
 package com.mobian.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.mobian.absx.F;
 import com.mobian.dao.MbShopDaoI;
 import com.mobian.dao.MbUserDaoI;
@@ -11,7 +10,7 @@ import com.mobian.model.TmbShop;
 import com.mobian.model.TmbWarehouse;
 import com.mobian.pageModel.*;
 import com.mobian.service.*;
-import com.mobian.thirdpart.wx.HttpUtil;
+import com.mobian.util.GeoUtil;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -86,7 +85,7 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
         PageHelper ph = new PageHelper();
         ph.setRows(100);
         ph.setHiddenTotal(true);
-        mbShop.setAuditStatus("AS02");
+        mbShop.setAuditStatus(AS_02);
         DataGrid dg = dataGrid(mbShop, ph);
         if (CollectionUtils.isEmpty(dg.getRows())) {
             if (!F.empty(mbShop.getContactPhone())) {
@@ -234,7 +233,7 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
         TmbShop tmbShop = new TmbShop();
         MyBeanUtils.copyProperties(mbShop, tmbShop);
         tmbShop.setIsdeleted(false);
-        tmbShop.setAuditStatus("AS01");
+        tmbShop.setAuditStatus(AS_01);
         mbShopDao.save(tmbShop);
         mbShop.setId(tmbShop.getId());
     }
@@ -377,7 +376,7 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
         List<MbShop> shops = null;
         MbShop mbShop = get(shopId);
 
-        if(!mbShop.getIsdeleted() && "AS02".equals(mbShop.getAuditStatus())) {
+        if(!mbShop.getIsdeleted() && AS_02.equals(mbShop.getAuditStatus())) {
             shops = new ArrayList<MbShop>();
             mbShop.setRegionPath(diveRegionService.getRegionPath(mbShop.getRegionId() + ""));
             shops.add(mbShop);
@@ -387,7 +386,7 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
 
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("parentId", shopId);
-            List<TmbShop> l = mbShopDao.find("from TmbShop t where t.isdeleted = 0 and t.auditStatus = 'AS02' and t.parentId = :parentId", params);
+            List<TmbShop> l = mbShopDao.find("from TmbShop t where t.isdeleted = 0 and t.auditStatus = '"+AS_02+"' and t.parentId = :parentId", params);
             if (CollectionUtils.isNotEmpty(l)) {
                 for (TmbShop t : l) {
                     MbShop o = new MbShop();
@@ -433,7 +432,7 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
             tmbShop.setAuditDate(new Date());
             MyBeanUtils.copyProperties(mbShop, tmbShop, new String[]{"id", "addtime", "isdeleted", "updatetime"}, true);
             //通过后建立对应的仓库
-            if ("AS02".equals(mbShop.getAuditStatus())) {
+            if (AS_02.equals(mbShop.getAuditStatus())) {
                 TmbWarehouse tmbWarehouse = new TmbWarehouse();
                 BeanUtils.copyProperties(tmbShop, tmbWarehouse);
                 tmbWarehouse.setIsdeleted(false);
@@ -552,7 +551,7 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
                     mbShopExt.setBalanceAmount(mbBalance.getAmount());
                     mbShopExt.setBalanceId(mbBalance.getId());
                 }
-                if ("AS02".equals(mbShopExt.getAuditStatus())) {
+                if (AS_02.equals(mbShopExt.getAuditStatus())) {
                     mbBalance = mbBalanceService.addOrGetMbBalanceCash(shop.getId());
                     if (mbBalance != null) {
                         mbShopExt.setCashBalanceId(mbBalance.getId());
@@ -577,7 +576,7 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
 
     @Override
     public List<MbShop> getNullLocation() {
-        List<TmbShop> tmbShopList = mbShopDao.find("from TmbShop t  where t.isdeleted = 0 and t.auditStatus = 'AS02' and (t.longitude is null or t.latitude is null)");
+        List<TmbShop> tmbShopList = mbShopDao.find("from TmbShop t  where t.isdeleted = 0 and t.auditStatus = '"+AS_02+"' and (t.longitude is null or t.latitude is null)");
         List<MbShop> mbShopList = new ArrayList<MbShop>();
         for (TmbShop tmbShop : tmbShopList) {
             MbShop mbShop = new MbShop();
@@ -606,20 +605,10 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
 
     @Override
     public void setShopLocation(MbShop mbShop) {
-        String address = mbShop.getAddress().replaceAll(" ","");
-        String requestUrl = "http://api.map.baidu.com/geocoder/v2/?output=json&address="+address+"&ak=yDOmoXl5HIFt6KZe3BMeL4NRHBGLmCHe";
-        JSONObject jsonObject = JSONObject.parseObject(HttpUtil.httpRequest(requestUrl, "GET", null));
-        if (jsonObject != null) {
-            if (jsonObject.get("status") == 0) {
-                JSONObject result = (JSONObject) jsonObject.get("result");
-                JSONObject location = (JSONObject) result.get("location");
-                Object ln = location.get("lng");
-                Object la = location.get("lat");
-                BigDecimal lng = new BigDecimal(ln.toString());
-                BigDecimal lat = new BigDecimal(la.toString());
-                mbShop.setLongitude(lng);
-                mbShop.setLatitude(lat);
-            }
+        BigDecimal[] point = GeoUtil.getPosition(mbShop.getAddress());
+        if (point != null) {
+            mbShop.setLongitude(point[0]);
+            mbShop.setLatitude(point[1]);
         }
     }
 }

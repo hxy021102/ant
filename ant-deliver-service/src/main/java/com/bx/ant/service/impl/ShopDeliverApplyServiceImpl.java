@@ -17,10 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverApply> implements ShopDeliverApplyServiceI {
@@ -96,7 +93,7 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 		BeanUtils.copyProperties(shopDeliverApply, t);
 		//t.setId(jb.absx.UUID.uuid());
 		t.setIsdeleted(false);
-		if(F.empty(shopDeliverApply.getStatus())) t.setStatus("DAS01");
+		if(F.empty(shopDeliverApply.getStatus())) t.setStatus(DAS_01);
 		shopDeliverApplyDao.save(t);
 	}
 
@@ -171,5 +168,31 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 		return shopDeliverApplyQuery;
 	}
 
-
+	@Override
+	public List<ShopDeliverApply> getAvailableAndWorkShop() {
+		ShopDeliverApply shopDeliverApply = new ShopDeliverApply();
+		PageHelper ph = new PageHelper();
+		ph.setHiddenTotal(true);
+		shopDeliverApply.setOnline(true);
+		shopDeliverApply.setStatus(DAS_02);
+		DataGrid dataGrid = dataGrid(shopDeliverApply, ph);
+		List<ShopDeliverApply> shopDeliverApplyList = dataGrid.getRows();
+		Iterator<ShopDeliverApply> iterator = shopDeliverApplyList.iterator();
+		while (iterator.hasNext()) {
+			ShopDeliverApply deliverApply = iterator.next();
+			MbShop shop = mbShopService.getFromCache(deliverApply.getShopId());
+			boolean flag = false;
+			if (MbShopServiceI.AS_02.equals(shop.getAuditStatus()) && (MbShopServiceI.ST01.equals(shop.getShopType()) || MbShopServiceI.ST03.equals(shop.getShopType()))) {
+				if (shop.getLatitude() != null && shop.getLongitude() != null) {
+					deliverApply.setMbShop(shop);
+					flag = true;
+				}
+			}
+			//不满足的删除掉
+			if (!flag) {
+				iterator.remove();
+			}
+		}
+		return shopDeliverApplyList;
+	}
 }
