@@ -2,20 +2,21 @@ package com.mobian.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
+
+
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mobian.pageModel.Colum;
-import com.mobian.pageModel.Supplier;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.Json;
-import com.mobian.pageModel.PageHelper;
+import com.mobian.absx.F;
+import com.mobian.pageModel.*;
 import com.bx.ant.service.SupplierServiceI;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.mobian.pageModel.Supplier;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -31,7 +32,7 @@ import com.alibaba.fastjson.JSON;
 @Controller
 @RequestMapping("/supplierController")
 public class SupplierController extends BaseController {
-
+    @Resource
 	private SupplierServiceI supplierService;
 
 
@@ -48,7 +49,7 @@ public class SupplierController extends BaseController {
 	/**
 	 * 获取Supplier数据表格
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 */
 	@RequestMapping("/dataGrid")
@@ -59,7 +60,7 @@ public class SupplierController extends BaseController {
 	/**
 	 * 获取Supplier数据表格excel
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 * @throws NoSuchMethodException 
 	 * @throws SecurityException 
@@ -157,6 +158,34 @@ public class SupplierController extends BaseController {
 		j.setMsg("删除成功！");
 		j.setSuccess(true);
 		return j;
+	}
+
+	@RequestMapping("/selectQuery")
+	@ResponseBody
+	public List<Tree> query(String q) {
+		Supplier supplier = new Supplier();
+		List<Tree> lt = new ArrayList<Tree>();
+		if (!F.empty(q)) {
+			supplier.setName(q);
+		} else {
+			return lt;
+		}
+		PageHelper ph = new PageHelper();
+		ph.setHiddenTotal(true);
+		ph.setPage(100);
+		DataGrid suppliers = supplierService.dataGrid(supplier, ph);
+		List<Supplier> rows = suppliers.getRows();
+		if (!CollectionUtils.isEmpty(rows)) {
+
+			for (Supplier d : rows) {
+				Tree tree = new Tree();
+				tree.setId(d.getId() + "");
+				tree.setText(d.getName());
+				tree.setParentName(d.getContacter());
+				lt.add(tree);
+			}
+		}
+		return lt;
 	}
 
 }

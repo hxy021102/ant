@@ -67,8 +67,8 @@ public class SupplierServiceImpl extends BaseServiceImpl<Supplier> implements Su
 				params.put("status", supplier.getStatus());
 			}		
 			if (!F.empty(supplier.getName())) {
-				whereHql += " and t.name = :name";
-				params.put("name", supplier.getName());
+				whereHql += " and t.name LIKE :name";
+				params.put("name", "%" +supplier.getName() + "%");
 			}		
 			if (!F.empty(supplier.getAddress())) {
 				whereHql += " and t.address = :address";

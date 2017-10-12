@@ -1,10 +1,10 @@
 package com.bx.ant.service;
 
+import com.mobian.pageModel.MbItem;
 import com.mobian.pageModel.ShopItem;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 /**
@@ -115,5 +115,12 @@ public interface ShopItemServiceI {
 	 */
 	DataGrid dataGridWithItemName(ShopItem shopItem, PageHelper ph);
 
+	/**
+	 * 获取商品数据列表并设置门店商品库存
+	 * @param mbItem
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridWithQuantity(MbItem mbItem, PageHelper ph, Integer shopId);
 
 }
