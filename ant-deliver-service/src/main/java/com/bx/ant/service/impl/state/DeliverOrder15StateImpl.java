@@ -17,8 +17,9 @@ import javax.annotation.Resource;
 @Service("deliverOrder15StateImpl")
 public class DeliverOrder15StateImpl implements DeliverOrderState {
 
-    @Resource(name = "deliverOrder20StateImpl")
-    private DeliverOrderState deliverOrderState20;
+
+    @Resource(name = "deliverOrder10StateImpl")
+    private DeliverOrderState deliverOrderState10;
 
     @Autowired
     private DeliverOrderServiceI deliverOrderService;
@@ -52,6 +53,9 @@ public class DeliverOrder15StateImpl implements DeliverOrderState {
 
     @Override
     public DeliverOrderState next(DeliverOrder deliverOrder) {
+        if ((prefix + "10").equals(deliverOrder.getStatus())) {
+            return deliverOrderState10;
+        }
         return null;
     }
 }

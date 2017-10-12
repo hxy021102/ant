@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
 /**
- * 已支付,待接单状态
+ * 已分配订单,待接单状态
  * Created by wanxp on 17-9-26.
  */
 @Service("deliverOrder10StateImpl")
