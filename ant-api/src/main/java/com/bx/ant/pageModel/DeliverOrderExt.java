@@ -11,6 +11,9 @@ import java.util.List;
  * Created by wanxp on 17-9-27.
  */
 public class DeliverOrderExt extends DeliverOrder {
+
+    private String[] statusList;
+
     private List<DeliverOrderItem> deliverOrderItemList;
     private List<DeliverOrderShopItem> deliverOrderShopItemList;
 
@@ -30,4 +33,11 @@ public class DeliverOrderExt extends DeliverOrder {
         this.deliverOrderShopItemList = deliverOrderShopItemList;
     }
 
+    public String[] getStatusList() {
+        return statusList;
+    }
+
+    public void setStatusList(String[] statusList) {
+        this.statusList = statusList;
+    }
 }
