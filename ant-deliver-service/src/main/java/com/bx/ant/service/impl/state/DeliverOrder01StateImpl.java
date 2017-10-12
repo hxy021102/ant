@@ -9,14 +9,14 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
 /**
- * 订单已产生,待支付状态
+ * 订单已分配,带接单状态
  * Created by wanxp on 17-9-26.
  */
 @Service("deliverOrder01StateImpl")
 public class DeliverOrder01StateImpl implements DeliverOrderState {
 
-    @Resource(name = "deliverOrder10StateImpl")
-    private DeliverOrderState deliverOrderState10;
+    @Resource(name = "deliverOrder20StateImpl")
+    private DeliverOrderState deliverOrderState20;
 
     @Autowired
     private DeliverOrderServiceI deliverOrderService;
@@ -34,8 +34,8 @@ public class DeliverOrder01StateImpl implements DeliverOrderState {
 
     @Override
     public DeliverOrderState next(DeliverOrder deliverOrder) {
-        if ((prefix + "10").equals(deliverOrder.getStatus())) {
-            return deliverOrderState10;
+        if ((prefix + "20").equals(deliverOrder.getStatus())) {
+            return deliverOrderState20;
         }
         return null;
     }

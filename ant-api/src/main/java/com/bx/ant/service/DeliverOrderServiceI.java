@@ -21,9 +21,9 @@ public interface DeliverOrderServiceI {
 	String PAY_STATUS_SUCCESS = "DPS04"; //支付成功
 
 	//订单状态
-	String STATUS_NOT_PAY = "DOS01"; //待支付
-	String STATUS_PAY_SUCCESS = "DOS10"; //支付成功待接单
-	String STATUS_SHOP_REFUSE = "DOS15"; //门店拒绝接单
+	String STATUS_NOT_PAY = "DOS01"; //待接单
+//	String STATUS_PAY_SUCCESS = "DOS10"; //支付成功待接单
+//	String STATUS_SHOP_REFUSE = "DOS15"; //门店拒绝接单
 	String STATUS_SHOP_ACCEPT = "DOS20"; //已接单
 	String STATUS_DELIVERING = "DOS25"; //已发货
 	String STATUS_DELIVERY_COMPLETE = "DOS30"; //已配送完成,等待用户确认状态
