@@ -167,7 +167,7 @@ public class TdeliverOrderItem implements java.io.Serializable,IEntity{
 	{
 		this.freight = freight;
 	}
-	@Column(name = "quantity", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	@Column(name = "quantity", unique = false, nullable = true, insertable = true, updatable = true, length = 11)
 	public Integer getQuantity() {
 		return quantity;
 	}

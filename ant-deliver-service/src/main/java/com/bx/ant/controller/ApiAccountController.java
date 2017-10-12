@@ -5,13 +5,15 @@ import com.aliyun.mns.model.TopicMessage;
 import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.ShopDeliverAccountServiceI;
 import com.bx.ant.service.ShopDeliverApplyServiceI;
+import com.bx.ant.service.impl.DeliverOrderShopServiceImpl;
 import com.bx.ant.service.session.TokenServiceI;
 import com.mobian.absx.F;
 import com.mobian.absx.UUID;
-import com.mobian.pageModel.Json;
-import com.mobian.pageModel.MbShop;
+import com.mobian.pageModel.*;
+import com.mobian.pageModel.DeliverOrderShop;
 import com.mobian.pageModel.ShopDeliverAccount;
 import com.mobian.pageModel.ShopDeliverApply;
+import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.thirdpart.mns.MNSTemplate;
 import com.mobian.thirdpart.mns.MNSUtil;
@@ -22,14 +24,14 @@ import com.mobian.thirdpart.wx.HttpUtil;
 import com.mobian.thirdpart.wx.WeixinUtil;
 import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.Util;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -55,6 +57,12 @@ public class ApiAccountController extends BaseController {
 
     @Resource
     private RedisUtil redisUtil;
+
+    @Resource
+    private MbBalanceLogServiceI mbBalanceLogService;
+
+    @Resource
+    private DeliverOrderShopServiceImpl deliverOrderShopService;
 
     /**
      * 登录接口
@@ -203,12 +211,44 @@ public class ApiAccountController extends BaseController {
                 MbShop mbShop = mbShopService.getFromCache(shopDeliverApply.getShopId());
 
                 // TODO 统计今日有效订单和今日营业额
+                //获取当天结束与开始
+                Calendar todayC = Calendar.getInstance();
+                todayC.set(Calendar.HOUR_OF_DAY,0);
+                todayC.set(Calendar.MINUTE,0);
+                todayC.set(Calendar.SECOND,0);
+                Date todayStart = todayC.getTime();
+                todayC.set(Calendar.HOUR_OF_DAY,23);
+                todayC.set(Calendar.MINUTE,59);
+                todayC.set(Calendar.SECOND,59);
+                Date todayEnd = todayC.getTime();
 
+                //获取今日营业额
+                MbBalanceLog mbBalanceLog = new MbBalanceLog();
+                mbBalanceLog.setUpdatetimeBegin(todayStart);
+                mbBalanceLog.setUpdatetimeEnd(todayEnd);
+                mbBalanceLog.setShopId(shopDeliverApply.getShopId());
+                DataGrid dataGrid = mbBalanceLogService.getDeliveryBalanceLogDataGrid(mbBalanceLog,new PageHelper());
+                Integer todayAmount = new Integer(0) ;
+                if (dataGrid.getFooter() != null) {
+                    MbBalanceLog  balanceLog =(MbBalanceLog) dataGrid.getFooter().get(0);
+                    todayAmount = balanceLog.getAmountIn() + balanceLog.getAmountOut();
+                }
+                //获取有效订单数量
+                Integer todayQuantity = new Integer(0);
+                DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+                deliverOrderShop.setShopId(shopDeliverApply.getShopId());
+                deliverOrderShop.setUpdatetimeBegin(todayStart);
+                deliverOrderShop.setUpdatetimeEnd(todayEnd);
+                List<DeliverOrderShop> deliverOrderShopList = deliverOrderShopService.dataGrid(deliverOrderShop, new PageHelper()).getRows();
+                if (CollectionUtils.isNotEmpty(deliverOrderShopList)) todayQuantity = deliverOrderShopList.size();
 
                 Map<String, Object> obj = new HashMap<String, Object>();
                 obj.put("account", account);
                 obj.put("shopDeliverApply", shopDeliverApply);
                 obj.put("mbShop", mbShop);
+                obj.put("todayAmount", todayAmount);
+                obj.put("todayQuantity", todayQuantity);
+
 
                 j.setSuccess(true);
                 j.setMsg("获取成功！");

@@ -18,9 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.*;
 
 /**
  * Created by wanxp 2017/9/22
@@ -59,16 +57,18 @@ public class ApiDeliverBalanceController extends BaseController {
 
     /**
      * 获取门店派单账号流水明细
-     * refId为mbBalanceLog.refId即
-     * @param refId
+     * mbBalanceLog
+     * @param  balanceLog
      * @return
      */
     @RequestMapping("/viewDeliverBanlanceLogDetial")
     @ResponseBody
-    public Json viewBanlanceLogDetial(Long refId) {
+    public Json viewBanlanceLogDetial(MbBalanceLog balanceLog) {
         Json json = new Json();
-        DeliverOrderShopPay deliverOrderShopPay = deliverOrderPayShopService.get(refId);
-        json.setObj(deliverOrderService.getDeliverOrderExt(deliverOrderShopPay.getDeliverOrderId()));
+        if ("BT060".equals(balanceLog.getRefType())) {
+            DeliverOrderShopPay deliverOrderShopPay = deliverOrderPayShopService.get(Long.parseLong(balanceLog.getRefId()));
+            json.setObj(deliverOrderService.getDeliverOrderExt(deliverOrderShopPay.getDeliverOrderId()));
+        }
         json.setMsg("u know");
         json.setSuccess(true);
         return json;
@@ -123,15 +123,18 @@ public class ApiDeliverBalanceController extends BaseController {
      * @param request
      * @return
      */
-    @RequestMapping("/viewDeliverBalance")
+    @RequestMapping("/viewBalance")
     @ResponseBody
-    public Json viewDeliverBalance(HttpServletRequest request) {
+    public Json viewBalance(HttpServletRequest request) {
         Json j = new Json();
 //        TokenWrap tokenWrap = getTokenWrap(request);
 //        Integer shopId = tokenWrap.getShopId();
         Integer shopId = 1332;
+        Map<String, Object> objectMap = new HashMap<String, Object>();
         if (!F.empty(shopId)) {
-            j.setObj(mbBalanceService.addOrGetMbBalanceDelivery(shopId));
+            objectMap.put("deliverBalance", mbBalanceService.addOrGetMbBalanceDelivery(shopId));
+            objectMap.put("balance",mbBalanceService.addOrGetMbBalance(shopId) );
+            j.setObj(objectMap);
             j.setMsg("u know");
             j.setSuccess(true);
         } else {
@@ -141,28 +144,28 @@ public class ApiDeliverBalanceController extends BaseController {
         return j;
     }
 
-    /**
-     * 获取门店采购账户余额
-     * @param request
-     * @return
-     */
-    @RequestMapping("/viewBalance")
-    @ResponseBody
-    public Json viewBalance(HttpServletRequest request) {
-        Json j = new Json();
-//        TokenWrap tokenWrap = getTokenWrap(request);
-//        Integer shopId = tokenWrap.getShopId();
-        Integer shopId = 1332;
-        if (!F.empty(shopId)) {
-            j.setObj(mbBalanceService.addOrGetMbBalance(shopId));
-            j.setMsg("u know");
-            j.setSuccess(true);
-        } else {
-            j.setMsg("shopId不能为空");
-            j.setSuccess(false);
-        }
-        return j;
-    }
+//    /**
+//     * 获取门店采购账户余额
+//     * @param request
+//     * @return
+//     */
+//    @RequestMapping("/viewBalance")
+//    @ResponseBody
+//    public Json viewBalance(HttpServletRequest request) {
+//        Json j = new Json();
+////        TokenWrap tokenWrap = getTokenWrap(request);
+////        Integer shopId = tokenWrap.getShopId();
+//        Integer shopId = 1332;
+//        if (!F.empty(shopId)) {
+//            j.setObj(mbBalanceService.addOrGetMbBalance(shopId));
+//            j.setMsg("u know");
+//            j.setSuccess(true);
+//        } else {
+//            j.setMsg("shopId不能为空");
+//            j.setSuccess(false);
+//        }
+//        return j;
+//    }
 
     /**
      * 派单账户余额转出采购账户余额
