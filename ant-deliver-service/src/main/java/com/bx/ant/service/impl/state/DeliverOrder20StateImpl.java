@@ -36,6 +36,10 @@ public class DeliverOrder20StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderShopPayServiceI deliverOrderShopPayService;
 
+    @Autowired
+    private DeliverOrderLogServiceI deliverOrderLogService;
+
+
     @Override
     public String getStateName() {
         return "20";
@@ -44,22 +48,22 @@ public class DeliverOrder20StateImpl implements DeliverOrderState {
     @Override
     public void handle(DeliverOrder deliverOrder) {
         //修改运单状态
-        DeliverOrder order = new DeliverOrder();
-        order.setId(deliverOrder.getId());
-        order.setStatus(prefix + getStateName());
-        order.setDeliveryStatus(deliverOrderService.DELIVER_STATUS_STANDBY);
-        order.setShopPayStatus(deliverOrderService.PAY_STATUS_NOT_PAY);
-        deliverOrderService.edit(order);
+        DeliverOrder orderNew = new DeliverOrder();
+        orderNew.setId(deliverOrder.getId());
+        orderNew.setStatus(prefix + getStateName());
+        orderNew.setDeliveryStatus(deliverOrderService.DELIVER_STATUS_STANDBY);
+        orderNew.setShopPayStatus(deliverOrderService.PAY_STATUS_NOT_PAY);
+        deliverOrderService.editAndAddLog(orderNew,deliverOrderLogService.TYPE_ACCEPT_DELIVER_ORDER, "运单被接");
 
         //修改门店运单状态
         DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
         deliverOrderShop.setStatus(deliverOrderShopService.STATUS_AUDITING);
-        deliverOrderShop.setDeliverOrderId(order.getId());
+        deliverOrderShop.setDeliverOrderId(orderNew.getId());
         deliverOrderShop = deliverOrderShopService.editStatus(deliverOrderShop,deliverOrderShopService.STATUS_ACCEPTED);
 
         //修改门店运单支付状态
         DeliverOrderShopPay deliverOrderShopPay = new DeliverOrderShopPay();
-        deliverOrderShopPay.setDeliverOrderId(order.getId());
+        deliverOrderShopPay.setDeliverOrderId(orderNew.getId());
         deliverOrderShopPay.setShopId(deliverOrder.getShopId());
         deliverOrderShopPayService.editStatus(deliverOrderShopPay, deliverOrderService.PAY_STATUS_NOT_PAY);
         

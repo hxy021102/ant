@@ -119,6 +119,12 @@ public interface DeliverOrderServiceI {
 	 */
 	List<DeliverOrder> listOrderByOrderShopIdAndShopStatus(Integer shopId, String deliverOrderShopStatus);
 
+	/**
+	 * 通过门店ID和订单状态获取订单列表
+	 * @param shopId
+	 * @param orderStatus
+	 * @return
+	 */
 	List<DeliverOrder> listOrderByShopIdAndOrderStatus(Integer shopId, String orderStatus);
 
 	/**
@@ -128,5 +134,28 @@ public interface DeliverOrderServiceI {
 	 */
 	DeliverOrder getDeliverOrderExt(Long id);
 
+	/**
+	 * 获取包含DeliverOrderShopItemList的order
+	 * @param deliverOrder
+	 * @param ph
+	 * @return
+	 */
 	DataGrid dataGridExt(DeliverOrder deliverOrder, PageHelper ph);
+
+	/**
+	 * 编辑deliverOrder并添加记录
+	 * @param deliverOrder
+	 * @param logType
+	 * @param content
+	 * @param loginId
+	 */
+    void editAndAddLog(DeliverOrder deliverOrder, String logType, String content, String loginId);
+
+	/**
+	 * 编辑deliverOrder并添加记录
+	 * @param deliverOrder
+	 * @param logType
+	 * @param content
+	 */
+    void editAndAddLog(DeliverOrder deliverOrder, String logType, String content);
 }

@@ -1,11 +1,8 @@
 package com.bx.ant.service.impl.state;
 
-import com.bx.ant.service.DeliverOrderPayServiceI;
-import com.bx.ant.service.DeliverOrderServiceI;
-import com.bx.ant.service.DeliverOrderState;
-import com.bx.ant.service.impl.DeliverOrderShopPayServiceImpl;
+import com.bx.ant.service.*;
 import com.mobian.pageModel.DeliverOrder;
-import com.mobian.pageModel.DeliverOrderPay;
+import com.mobian.pageModel.DeliverOrderShop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +29,12 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderPayServiceI deliverOrderPayService;
 
+    @Autowired
+    private DeliverOrderShopServiceI deliverOrderShopService;
+
+    @Autowired
+    private DeliverOrderLogServiceI deliverOrderLogService;
+
     @Override
     public String getStateName() {
         return "10";
@@ -50,14 +53,21 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
 //        deliverOrderPay.setStatus(deliverOrder.getPayStatus());
 //        deliverOrderPayService.add(deliverOrderPay);
 
-        DeliverOrder deliverOrderNew = new DeliverOrder();
+        DeliverOrder orderNew = new DeliverOrder();
 
-        deliverOrderNew.setId(deliverOrder.getId());
-//        deliverOrderNew.setPayWay(deliverOrderPay.getPayWay());
-        deliverOrderNew.setStatus(prefix + getStateName());
-//        deliverOrderNew.setPayStatus(deliverOrderPay.getStatus());
+        orderNew.setId(deliverOrder.getId());
+        orderNew.setStatus(prefix + getStateName());
+        deliverOrderService.editAndAddLog(orderNew, deliverOrderLogService.TYPE_ASSIGN_DELIVER_ORDER,
+                "运单被分配");
 
-        deliverOrderService.edit(deliverOrderNew);
+
+        DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+        deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
+        deliverOrderShop.setShopId(deliverOrder.getShopId());
+        deliverOrderShopService.editStatus(deliverOrderShop,deliverOrderShopService.STATUS_AUDITING);
+
+
+
 
 
 
@@ -65,9 +75,11 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
 
     @Override
     public DeliverOrderState next(DeliverOrder deliverOrder) {
+        //跳转至接受状态
         if ((prefix + "20").equals(deliverOrder.getStatus())) {
             return deliverOrderState20;
         }
+        //跳转至拒绝状态
         if ((prefix + "15").equals(deliverOrder.getStatus())) {
             return deliverOrderState15;
         }

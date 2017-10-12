@@ -1,9 +1,6 @@
 package com.bx.ant.service.impl.state;
 
-import com.bx.ant.service.DeliverOrderServiceI;
-import com.bx.ant.service.DeliverOrderShopPayServiceI;
-import com.bx.ant.service.DeliverOrderShopServiceI;
-import com.bx.ant.service.DeliverOrderState;
+import com.bx.ant.service.*;
 import com.mobian.pageModel.*;
 import com.mobian.pageModel.DeliverOrder;
 import com.mobian.pageModel.DeliverOrderShop;
@@ -14,7 +11,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -39,6 +35,9 @@ public class DeliverOrder40StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderShopPayServiceI deliverOrderShopPayService;
 
+    @Autowired
+    private DeliverOrderLogServiceI deliverOrderLogService;
+
     @Override
     public String getStateName() {
         return "40";
@@ -47,15 +46,15 @@ public class DeliverOrder40StateImpl implements DeliverOrderState {
     @Override
     public void handle(DeliverOrder deliverOrder) {
         //修改运单状态
-        DeliverOrder order = new DeliverOrder();
-        order.setId(deliverOrder.getId());
-        order.setStatus(prefix + getStateName());
-        deliverOrderService.edit(order);
+        DeliverOrder orderNew = new DeliverOrder();
+        orderNew.setId(deliverOrder.getId());
+        orderNew.setStatus(prefix + getStateName());
+        deliverOrderService.editAndAddLog(orderNew, deliverOrderLogService.TYPE_COMPLETE_DELIVER_ORDER, "运单已完成");
 
         //修改运单门店状态
         DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
         deliverOrderShop.setStatus(deliverOrderShopService.STATUS_ACCEPTED);
-        deliverOrderShop.setDeliverOrderId(order.getId());
+        deliverOrderShop.setDeliverOrderId(orderNew.getId());
         deliverOrderShop = deliverOrderShopService.editStatus(deliverOrderShop,deliverOrderShopService.STATUS_COMPLETE);
 
         //门店结算
@@ -74,7 +73,7 @@ public class DeliverOrder40StateImpl implements DeliverOrderState {
             //TODO 这里不知道是否写对?
             balanceLog.setAmount(deliverOrderShopPay.getAmount());
 
-            balanceLog.setReason(String.format("门店[ID:%1$s]完成运单[ID:%2$s]结算转入", deliverOrderShop.getShopId(), order.getId()));
+            balanceLog.setReason(String.format("门店[ID:%1$s]完成运单[ID:%2$s]结算转入", deliverOrderShop.getShopId(), orderNew.getId()));
             mbBalanceLogService.addAndUpdateBalance(balanceLog);
         }
     }

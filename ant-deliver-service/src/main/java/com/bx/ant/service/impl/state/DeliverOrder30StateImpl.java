@@ -1,5 +1,6 @@
 package com.bx.ant.service.impl.state;
 
+import com.bx.ant.service.DeliverOrderLogServiceI;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderState;
 import com.mobian.pageModel.DeliverOrder;
@@ -21,6 +22,9 @@ public class DeliverOrder30StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderServiceI deliverOrderService;
 
+    @Autowired
+    private DeliverOrderLogServiceI deliverOrderLogService;
+
     @Override
     public String getStateName() {
         return "30";
@@ -30,11 +34,11 @@ public class DeliverOrder30StateImpl implements DeliverOrderState {
     public void handle(DeliverOrder deliverOrder) {
 
         //修改运单状态
-        DeliverOrder order = new DeliverOrder();
-        order.setId(deliverOrder.getId());
-        order.setStatus(prefix + getStateName());
-        order.setDeliveryStatus(deliverOrderService.DELIVER_STATUS_DELIVERED);
-        deliverOrderService.edit(order);
+        DeliverOrder orderNew = new DeliverOrder();
+        orderNew.setId(deliverOrder.getId());
+        orderNew.setStatus(prefix + getStateName());
+        orderNew.setDeliveryStatus(deliverOrderService.DELIVER_STATUS_DELIVERED);
+        deliverOrderService.editAndAddLog(orderNew, deliverOrderLogService.TYPE_DELIVERED_DELIVER_ORDER, "运单已被派送至目的地");
 
         //
     }

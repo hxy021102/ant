@@ -153,13 +153,13 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 	public DeliverOrderShop editStatus(DeliverOrderShop deliverOrderShop, String status) {
 		List<DeliverOrderShop> deliverOrderShops = query(deliverOrderShop);
 		DeliverOrderShop o = new DeliverOrderShop();
-		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
+		if (CollectionUtils.isNotEmpty(deliverOrderShops)  && deliverOrderShops.size() == 1) {
 			//TODO 只对第一个结果进行处理
 			o = deliverOrderShops.get(0);
 			o.setStatus(status);
 			edit(o);
 		} else {
-			throw new ServiceException("请确认门店订单是否存在");
+			throw new ServiceException("请确认门店订单是否存在且唯一");
 		}
 		return o;
 
