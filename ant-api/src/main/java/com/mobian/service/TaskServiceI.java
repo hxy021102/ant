@@ -31,9 +31,5 @@ public interface TaskServiceI {
      */
     void updateBatchShopLocation();
 
-    /**
-     * 分配订单
-     */
-    void allocationDeliverOrder();
 
 }
