@@ -281,7 +281,12 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 				ShopItemQuery shopItemQuery = new ShopItemQuery();
 				BeanUtils.copyProperties(shop, shopItemQuery);
 				MbItem item = mbItemService.getFromCache(shopItemQuery.getItemId());
-				shopItemQuery.setItemName(item.getName());
+				if(F.empty(shop.getQuantity())){
+					shopItemQuery.setQuantity(0);
+				}
+				shopItemQuery.setName(item.getName());
+				shopItemQuery.setQuantityUnitName(item.getQuantityUnitName());
+				shopItemQuery.setUrl(item.getUrl());
 				shopItemQueries.add(shopItemQuery);
 			}
 			DataGrid dg = new DataGrid();
@@ -293,5 +298,40 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 		return dataGrid;
 	}
 
+	@Override
+	public DataGrid dataGridWithQuantity(MbItem mbItem, PageHelper ph, Integer shopId) {
+		DataGrid dataGrid = mbItemService.dataGrid(mbItem, ph);
+		List<MbItem> mbItems = dataGrid.getRows();
+		if (CollectionUtils.isNotEmpty(mbItems)) {
+			List<MbItem> mbItemList = new ArrayList<MbItem>();
+			ShopItem shopItem = new ShopItem();
+			shopItem.setIsdeleted(false);
+			shopItem.setOnline(true);
+			shopItem.setShopId(shopId);
+			List<ShopItem> shopItems = query(shopItem);
+			if (CollectionUtils.isNotEmpty(shopItems)) {
+				for (MbItem item : mbItems) {
+					for (ShopItem sItem : shopItems) {
+						if (sItem.getItemId() == item.getId()) {
+							item.setQuantity(sItem.getQuantity());
+							mbItemList.add(item);
+						} else {
+							item.setQuantity(0);
+							mbItemList.add(item);
+						}
+					}
+				}
+			} else {
+				for (MbItem item : mbItems) {
+					item.setQuantity(0);
+					mbItemList.add(item);
+				}
+			}
+			DataGrid dg = new DataGrid();
+			dg.setRows(mbItemList);
+			return dg;
+		}
+		return dataGrid;
+	}
 
 }

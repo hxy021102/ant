@@ -22,8 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 public class ApiItemController extends BaseController {
 
     @Resource
-    private MbItemServiceI mbItemService;
-    @Resource
     private ShopItemServiceI shopItemService;
     @Resource
     private TokenServiceI tokenService;
@@ -36,9 +34,10 @@ public class ApiItemController extends BaseController {
      */
     @RequestMapping("/getAllItemList")
     @ResponseBody
-    public Json getAllItemList(MbItem mbItem, PageHelper ph) {
+    public Json getAllItemList(HttpServletRequest request,MbItem mbItem, PageHelper ph) {
         Json j = new Json();
-        DataGrid dataGridItem = mbItemService.dataGrid(mbItem, ph);
+        TokenWrap token = tokenService.getToken(request);
+        DataGrid dataGridItem = shopItemService.dataGridWithQuantity(mbItem, ph,token.getShopId());
         j.setObj(dataGridItem);
         j.setSuccess(true);
         j.setMsg("获取成功！");

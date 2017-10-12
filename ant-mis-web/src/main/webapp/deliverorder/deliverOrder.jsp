@@ -183,7 +183,6 @@
 						</td>
 						<th>供应商名称</th>
 						<td>
-							<%--<input type="text" name="supplierId" maxlength="10" class="span2"/>--%>
 							<jb:selectGrid dataType="deliverSupplierId" name="supplierId"></jb:selectGrid>
 						</td>
 						<th>订单状态</th>

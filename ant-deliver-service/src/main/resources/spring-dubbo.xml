@@ -24,5 +24,6 @@
        <dubbo:service interface="com.bx.ant.service.ShopDeliverApplyServiceI" ref="shopDeliverApplyServiceImpl" protocol="dubbo"/>
        <dubbo:service interface="com.bx.ant.service.DeliverOrderServiceI" ref="deliverOrderServiceImpl" protocol="dubbo"/>
        <dubbo:service interface="com.bx.ant.service.DeliverOrderAllocationServiceI" ref="deliverOrderAllocationServiceImpl" protocol="dubbo"/>
+       <dubbo:service interface="com.bx.ant.service.SupplierServiceI" ref="supplierServiceImpl" protocol="dubbo"/>
 
 </beans>
