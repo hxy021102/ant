@@ -186,6 +186,7 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 			if (item != null) {
 				deliverOrderShopItemExt.setItemName(item.getName());
 				deliverOrderShopItemExt.setPictureUrl(item.getUrl());
+				deliverOrderShopItemExt.setQuantityUnitName(item.getQuantityUnitName());
 			}
 		}
 	}

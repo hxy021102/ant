@@ -31,6 +31,7 @@ public class DeliverOrder implements java.io.Serializable {
 	private Integer shopId;
 
 
+
 	
 
 	public void setId(Long value) {
