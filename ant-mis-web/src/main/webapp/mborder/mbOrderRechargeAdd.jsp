@@ -52,7 +52,7 @@
 		<form id="form" method="post">		
 			<input type="hidden" name="id"/>
 			<input type="hidden" name="payCode" value="${param.orderId}"/>
-			<input type="hidden" name="bankCode" value="${param.orderId}"/>
+			<input type="hidden" name="bankCode" value="TB10"/>
 			<table class="table table-hover table-condensed">
 				<tr>
 					<th>门店ID</th>
@@ -67,7 +67,7 @@
 				</tr>
 				<tr>
 					<th>充值类型</th>
-					<td>
+					<td colspan="3">
 						<jb:selectSql dataType="SQ014" name="refType" required="true"></jb:selectSql>
 					</td>
 				</tr>

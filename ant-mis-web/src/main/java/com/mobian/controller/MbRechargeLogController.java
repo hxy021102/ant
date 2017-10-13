@@ -231,7 +231,9 @@ public class MbRechargeLogController extends BaseController {
 	 */
 	@RequestMapping("/editAuditPage")
 	public String editAuditPage(HttpServletRequest request, Integer id) {
+		MbRechargeLog mbRechargeLog = mbRechargeLogService.get(id);
 		request.setAttribute("id", id);
+		request.setAttribute("mbRechargeLog", mbRechargeLog);
 		return "/mbrechargelog/mbRechargeLogAudit";
 	}
 
@@ -249,8 +251,7 @@ public class MbRechargeLogController extends BaseController {
 			j.setSuccess(false);
 			j.setMsg("请输入原因");
 
-		}
-		else if (F.empty(mbRechargeLog.getPayCode()) && "HS02".equals(mbRechargeLog.getHandleStatus())) {
+		}else if (F.empty(mbRechargeLog.getPayCode()) && "HS02".equals(mbRechargeLog.getHandleStatus())) {
 			j.setSuccess(false);
 			j.setMsg("请输入银行汇款单号");
 		}

@@ -68,7 +68,7 @@
                 title : '<%=TmbBalanceLog.ALIAS_REF_ID%>',
                 width : 80,
                 formatter : function (value, row, index) {
-                    if(row.refType=="BT016" || row.refType =="BT017" || row.refType == "BT018"  || row.refType=="BT005" || row.refType=="BT006" || row.refType=="BT002"||"BT013") {
+                    if(row.refType=="BT016" || row.refType =="BT017" || row.refType == "BT018"  || row.refType=="BT005" || row.refType=="BT006" || row.refType=="BT002") {
                         return '<a onclick="viewOrder('+ row.refId +',\''+row.refType+'\')">' + row.refId + '</a>';
                     }
                     else {
