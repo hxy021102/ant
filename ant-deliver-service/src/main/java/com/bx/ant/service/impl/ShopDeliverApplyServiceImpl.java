@@ -8,7 +8,7 @@ import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.PageHelper;
-import com.mobian.pageModel.ShopDeliverApply;
+import com.bx.ant.pageModel.ShopDeliverApply;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;

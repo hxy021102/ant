@@ -5,7 +5,7 @@ import com.bx.ant.dao.SupplierDaoI;
 import com.bx.ant.model.Tsupplier;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
-import com.mobian.pageModel.Supplier;
+import com.bx.ant.pageModel.Supplier;
 import com.bx.ant.service.SupplierServiceI;
 import com.mobian.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;

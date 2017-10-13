@@ -6,7 +6,7 @@ import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderShopPayServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.*;
-import com.mobian.pageModel.DeliverOrderShopPay;
+import com.bx.ant.pageModel.DeliverOrderShopPay;
 import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.MbShopServiceI;

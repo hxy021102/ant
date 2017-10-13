@@ -6,7 +6,7 @@ import com.bx.ant.service.ShopDeliverAccountServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
-import com.mobian.pageModel.ShopDeliverAccount;
+import com.bx.ant.pageModel.ShopDeliverAccount;
 import com.mobian.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
