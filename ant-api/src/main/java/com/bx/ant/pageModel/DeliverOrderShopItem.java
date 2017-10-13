@@ -21,6 +21,7 @@ public class DeliverOrderShopItem implements java.io.Serializable {
 	private Integer freight;
 	private Integer quantity;
 
+
 	
 
 	public void setId(Long value) {
