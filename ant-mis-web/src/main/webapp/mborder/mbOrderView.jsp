@@ -1371,8 +1371,8 @@
     </div>
     <div id="logDataGridbar" style="display: none;">
         <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderLogController/add') }">
-            <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addOrderLog('催单','LT011');" data-options="plain:true,iconCls:'pencil_add'">催单</a>
-            <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addOrderLog('回单','LT012');" data-options="plain:true,iconCls:'pencil_add'">回单</a>
+            <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addOrderLog('催送','LT011');" data-options="plain:true,iconCls:'pencil_add'">催送</a>
+            <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addOrderLog('催回','LT012');" data-options="plain:true,iconCls:'pencil_add'">催回</a>
             <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addOrderLog('留言','LT013');" data-options="plain:true,iconCls:'pencil_add'">留言</a>
 
 
