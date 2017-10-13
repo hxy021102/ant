@@ -344,6 +344,10 @@
                 invoke: function () {
                     gridMap.handle(this, loadMbOrderRefundItemDataGrid);
                 }, grid: null
+            },8: {
+                invoke: function () {
+                    gridMap.handle(this, loadMbOrderShopBalanceDataGrid);
+                }, grid: null
             }
 
         };
@@ -1134,6 +1138,87 @@
             } ]
         });
     }
+    var mbOrderShopBalanceDataGrid;
+    function loadMbOrderShopBalanceDataGrid(){
+        var orderId =${mbOrder.id}+"";
+        return  mbOrderShopBalanceDataGrid=$('#mbOrderShopBalanceDataGrid').datagrid({
+            url : '${pageContext.request.contextPath}/mbRechargeLogController/dataGrid?payCode='+orderId,
+            fit : true,
+            fitColumns : true,
+            border : false,
+            pagination : true,
+            idField : 'id',
+            pageSize : 10,
+            pageList : [ 10, 20, 30, 40, 50 ],
+            sortName : 'id',
+            sortOrder : 'desc',
+            checkOnSelect : false,
+            selectOnCheck : false,
+            nowrap : true,
+            striped : true,
+            rownumbers : true,
+            singleSelect : true,
+            columns : [ [ {
+                field : 'addtime',
+                title : '申请时间',
+                width : 60
+            },{
+                field : 'refTypeName',
+                title : '<%=TmbRechargeLog.ALIAS_REF_TYPE%>',
+                width : 40
+            }, {
+                field : 'shopId',
+                title : '门店ID',
+                width : 30
+            }, {
+                field : 'shopName',
+                title : '门店名称',
+                width : 80
+            }, {
+
+                field : 'payCode',
+                title : '订单ID',
+                width : 30
+            },  {
+                field : 'amount',
+                title : '<%=TmbRechargeLog.ALIAS_AMOUNT%>',
+                width : 30	,
+                align:'right',
+                formatter:function(value){
+                    return $.formatMoney(value);
+                }
+            }, {
+                field : 'applyLoginName',
+                title : '<%=TmbRechargeLog.ALIAS_APPLY_LOGIN_ID%>',
+                width : 25
+            } , {
+                field : 'content',
+                title : '<%=TmbRechargeLog.ALIAS_CONTENT%>',
+                width :120
+            } , {
+                field : 'handleStatusName',
+                title : '<%=TmbRechargeLog.ALIAS_HANDLE_STATUS%>',
+                width : 40,
+            } ] ],
+            toolbar:"#mbOrderShopBalanceToolbar"
+        });
+    }
+    function addOrderShopBalance() {
+        parent.$.modalDialog({
+            title : '添加数据',
+            width : 780,
+            height : 250,
+            href : '${pageContext.request.contextPath}/mbRechargeLogController/addOrderRechargePage?shopId=${mbOrder.shopId}&orderId=${mbOrder.id}',
+            buttons : [ {
+                text : '添加',
+                handler : function() {
+                    parent.$.modalDialog.openner_dataGrid = mbOrderShopBalanceDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                    var f = parent.$.modalDialog.handler.find('#form');
+                    f.submit();
+                }
+            } ]
+        });
+    }
     function addOrderLog(title,logType) {
         parent.$.modalDialog({
             title : title,
@@ -1349,6 +1434,9 @@
                 <div title="商品退回">
                     <table id="mbOrderRefundItemDataGrid"></table>
                 </div>
+                <div title="金额冲正">
+                    <table id="mbOrderShopBalanceDataGrid"></table>
+                </div>
             </div>
         </div>
     </div>
@@ -1367,6 +1455,11 @@
     <div id="mbOrderRefundItemToolbar" style="display: none;">
         <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderRefundItemController/add') and mbOrder.deliveryStatus=='DS30' and mbOrder.status=='OD35'}">
             <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addMbOrderRefundItem();" data-options="plain:true,iconCls:'pencil_add'">添加</a>
+        </c:if>
+    </div>
+    <div id="mbOrderShopBalanceToolbar" style="display: none;">
+        <c:if test="${fn:contains(sessionInfo.resourceList, '/mbRechargeLogController/addOrderRecharge') and mbOrder.payStatus=='PS05' and mbOrder.status=='OD40'}">
+            <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addOrderShopBalance();" data-options="plain:true,iconCls:'pencil_add'">添加</a>
         </c:if>
     </div>
     <div id="logDataGridbar" style="display: none;">

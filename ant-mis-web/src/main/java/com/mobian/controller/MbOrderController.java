@@ -67,6 +67,8 @@ public class MbOrderController extends BaseController {
 	private MbWarehouseServiceI mbWarehouseService;
 	@Autowired
 	private MbOrderRefundLogServiceI mbOrderRefundLogService;
+	@Autowired
+	private MbRechargeLogServiceI mbRechargeLogService;
 
 
 	@Resource(name = "order02StateImpl")
@@ -352,6 +354,10 @@ public class MbOrderController extends BaseController {
 		if("BT002".equals(type)) {
 			MbPayment mbPayment = mbPaymentService.get(id);
 			id = mbPayment.getOrderId();
+		}
+		if ("BT013".equals(type)) {
+			MbRechargeLog mbRechargeLog = mbRechargeLogService.get(id);
+			id = Integer.parseInt(mbRechargeLog.getBankCode());
 		}
 		MbOrder mbOrder = mbOrderService.get(id);
         Integer shopId = mbOrder.getShopId();
