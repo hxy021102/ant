@@ -15,4 +15,5 @@ public interface Namespace {
     String ORDER_QUANTITY="order_quantity";
     String REMIND_DRIVERS="remind_drivers";
     String ACTIVITY_TYPE_REFID = "activity_type_refid";
+    String ORDERLOG_MESSAGE="order_log_message";
 }

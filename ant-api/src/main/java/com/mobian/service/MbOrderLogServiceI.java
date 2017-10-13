@@ -59,4 +59,15 @@ public interface MbOrderLogServiceI {
 	 */
 	MbOrderLog getByIdAndType(Integer orderId, String logType);
 
+	/**
+	 * 添加订单日志并将值保存到redis
+	 */
+	Boolean addOrderLogAndSetRedisOrderLog(MbOrderLog mbOrderLog);
+
+	/**
+	 * 删除订单日志并改变redis中的数据
+	 * @param id
+	 */
+	void deleteOrderLogAndChangeRedisValue(Integer id);
+
 }

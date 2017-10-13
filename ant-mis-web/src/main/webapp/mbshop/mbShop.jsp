@@ -403,6 +403,15 @@
             });
         }
 
+        function getAllShopLocation() {
+            $.post('${pageContext.request.contextPath}/mbShopController/getAllShopLocation',
+                function (result) {
+                if (result.success) {
+                    parent.$.messager.alert('提示', "获取成功",'info');
+                }
+            }, 'JSON');
+        }
+
     </script>
 </head>
 <body>
@@ -481,6 +490,10 @@
     <c:if test="${fn:contains(sessionInfo.resourceList, '/mbShopController/getShopMap')}">
         <a onclick="showShopMap();" href="javascript:void(0);" class="easyui-linkbutton"
            data-options="plain:true,iconCls:''">门店地图</a>
+    </c:if>
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/mbShopController/getAllShopLocation')}">
+        <a onclick="getAllShopLocation();" href="javascript:void(0);" class="easyui-linkbutton"
+           data-options="plain:true,iconCls:'pencil_add'">获取所有门店数字地址</a>
     </c:if>
 </div>
 </body>

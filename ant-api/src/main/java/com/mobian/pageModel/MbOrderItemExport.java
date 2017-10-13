@@ -2,6 +2,7 @@ package com.mobian.pageModel;
 
 
 import java.util.Date;
+import java.util.Map;
 
 @SuppressWarnings("serial")
 public class MbOrderItemExport extends MbOrderItem {
@@ -24,10 +25,15 @@ public class MbOrderItemExport extends MbOrderItem {
 	 * 订单金额
 	 */
 	private Integer orderPrice;
+
+	private String marketPriceFormat;
+	private String buyPriceFormat;
 	/**
 	 * 退款总金额
 	 */
 	private Integer totalRefundAmount;
+
+	private String totalRefundAmountFormat;
 	/**
 	 * 配送司机ID
 	 */
@@ -82,6 +88,18 @@ public class MbOrderItemExport extends MbOrderItem {
 	 *发货时间
 	 */
 	private Date deliveryTime;
+
+	/**
+	 * 用户备注
+	 */
+	private String userRemark;
+
+	/**
+	 * 联系电话
+	 */
+	private String contactPhone;
+
+	private Map<String,Integer> extend;
 
 	public Date getDeliveryTime() {
 		return deliveryTime;
@@ -217,5 +235,54 @@ public class MbOrderItemExport extends MbOrderItem {
 
 	public void setShopTypeName(String shopTypeName) {
 		this.shopTypeName = shopTypeName;
+	}
+
+	public String getUserRemark() {
+		return userRemark;
+	}
+
+	public void setUserRemark(String userRemark) {
+		this.userRemark = userRemark;
+	}
+
+	public String getContactPhone() {
+		return contactPhone;
+	}
+
+	public void setContactPhone(String contactPhone) {
+		this.contactPhone = contactPhone;
+	}
+
+
+	public String getMarketPriceFormat() {
+		return marketPriceFormat;
+	}
+
+	public void setMarketPriceFormat(String marketPriceFormat) {
+		this.marketPriceFormat = marketPriceFormat;
+	}
+
+	public String getBuyPriceFormat() {
+		return buyPriceFormat;
+	}
+
+	public void setBuyPriceFormat(String buyPriceFormat) {
+		this.buyPriceFormat = buyPriceFormat;
+	}
+
+	public String getTotalRefundAmountFormat() {
+		return totalRefundAmountFormat;
+	}
+
+	public void setTotalRefundAmountFormat(String totalRefundAmountFormat) {
+		this.totalRefundAmountFormat = totalRefundAmountFormat;
+	}
+
+	public Map<String, Integer> getExtend() {
+		return extend;
+	}
+
+	public void setExtend(Map<String, Integer> extend) {
+		this.extend = extend;
 	}
 }

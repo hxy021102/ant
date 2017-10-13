@@ -294,12 +294,27 @@ public class MbItemStockServiceImpl extends BaseServiceImpl<MbItemStock> impleme
 
 	@Override
 	public DataGrid dataGridReport(MbItemStock mbItemStock, PageHelper ph) {
+		if (!F.empty(mbItemStock.getIsPack())) {
+			mbItemStock = getStockItemIdNumbersValue(mbItemStock);
+			if (mbItemStock.getItemIdNumbers() == null)
+				return new DataGrid();
+		}
 		DataGrid dataGrid = dataGrid(mbItemStock, ph);
 		List<MbItemStock> mbItemStocks = dataGrid.getRows();
 		if (!CollectionUtils.isEmpty(mbItemStocks)) {
+			Integer totalQuantity = 0, sumPrice = 0;
 			for (MbItemStock itemStock : mbItemStocks) {
 				itemStock.setTotalPrice(itemStock.getQuantity() * itemStock.getAveragePrice());
+				totalQuantity += itemStock.getQuantity();
+			 	sumPrice += itemStock.getTotalPrice();
 			}
+			List<MbItemStock> footer = new ArrayList<MbItemStock>();
+			MbItemStock totalRow = new MbItemStock();
+			totalRow.setWarehouseCode("合计");
+			totalRow.setQuantity(totalQuantity);
+			totalRow.setTotalPrice(sumPrice);
+			footer.add(totalRow);
+			dataGrid.setFooter(footer);
 			dataGrid.setRows(mbItemStocks);
 		}
 		return dataGrid;
@@ -345,5 +360,49 @@ public class MbItemStockServiceImpl extends BaseServiceImpl<MbItemStock> impleme
 		params.put("warehouseId", warehouseId);
 		List<TmbItemStock> tmbItemStockList = mbItemStockDao.find("from TmbItemStock t  where t.isdeleted = 0 and t.warehouseId = :warehouseId", params);
 		return tmbItemStockList;
+	}
+
+	@Override
+	public MbItemStock getStockItemIdNumbersValue(MbItemStock mbItemStock) {
+		MbItemQuery mbItemQuery = new MbItemQuery();
+		mbItemQuery.setIspack(mbItemStock.getIsPack());
+		if (F.empty(mbItemStock.getItemIds())) {
+			List<MbItem> mbItems = mbItemService.query(mbItemQuery);
+			Integer[] itemIdNumbers;
+			int i = 0;
+			if (!CollectionUtils.isEmpty(mbItems)) {
+				itemIdNumbers = new Integer[mbItems.size()];
+				for (MbItem item : mbItems) {
+					itemIdNumbers[i] = item.getId();
+					i++;
+				}
+				mbItemStock.setItemIdNumbers(itemIdNumbers);
+			}
+			return mbItemStock;
+		}
+		if (!F.empty(mbItemStock.getItemIds())) {
+			String[] itemIdsStr = mbItemStock.getItemIds().split(",");
+			Integer[] itemIds = new Integer[itemIdsStr.length];
+			for (int j = 0; j < itemIds.length; j++) {
+				itemIds[j] = Integer.parseInt(itemIdsStr[j]);
+			}
+			mbItemQuery.setItemIds(itemIds);
+			List<MbItem> mbItemList = mbItemService.query(mbItemQuery);
+			Integer[] itemIdNumbers;
+			int i = 0;
+			if (!CollectionUtils.isEmpty(mbItemList)) {
+				itemIdNumbers = new Integer[mbItemList.size()];
+				for (MbItem item : mbItemList) {
+					itemIdNumbers[i] = item.getId();
+					i++;
+				}
+				mbItemStock.setItemIdNumbers(itemIdNumbers);
+				mbItemStock.setItemIds(null);
+			} else {
+				mbItemStock.setItemIdNumbers(null);
+			}
+			return mbItemStock;
+		}
+		return null;
 	}
 }
