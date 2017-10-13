@@ -89,8 +89,8 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 				params.put("amount", deliverOrder.getAmount());
 			}		
 			if (!F.empty(deliverOrder.getStatus())) {
-				whereHql += " and t.status = :status";
-				params.put("status", deliverOrder.getStatus());
+				whereHql += " and t.status in (:status)";
+				params.put("status", deliverOrder.getStatus().split(","));
 			}		
 			if (!F.empty(deliverOrder.getDeliveryStatus())) {
 				whereHql += " and t.deliveryStatus = :deliveryStatus";
@@ -233,7 +233,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		DeliverOrder currentDeliverOrder = get(id);
 		DeliverOrderState.deliverOrder.set(currentDeliverOrder);
 		String deliverOrderStatus = currentDeliverOrder.getStatus();
-		DeliverOrderState deliverOrderState = deliverOrderStateFactory.get("deliverOrder" + deliverOrderStatus.substring(2) + "StateImpl");
+		DeliverOrderState deliverOrderState = deliverOrderStateFactory.get("deliverOrder" + deliverOrderStatus.substring(3) + "StateImpl");
 		return deliverOrderState;
 	}
 
