@@ -1,7 +1,7 @@
 package com.bx.ant.service;
 
 import com.bx.ant.pageModel.DeliverOrderExt;
-import com.mobian.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrder;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
@@ -92,19 +92,19 @@ public interface DeliverOrderServiceI {
 	 * 填充信息
 	 * @param deliverOrderExt
 	 */
-    void fillInfo(DeliverOrderExt deliverOrderExt);
+//    void fillInfo(DeliverOrderExt deliverOrderExt);
 
 	/**
 	 * 填充商品信息
 	 * @param deliverOrderExt
 	 */
-	void fillDeliverOrderItemInfo(DeliverOrderExt deliverOrderExt);
+//	void fillDeliverOrderItemInfo(DeliverOrderExt deliverOrderExt);
 
 	/**
 	 *
 	 * @param deliverOrderExt
 	 */
-    void fillDeliverOrderShopItemInfo(DeliverOrderExt deliverOrderExt);
+//    void fillDeliverOrderShopItemInfo(DeliverOrderExt deliverOrderExt);
 
     /**
 	 * 配送订单状态转换

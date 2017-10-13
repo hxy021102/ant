@@ -8,11 +8,11 @@ import com.bx.ant.dao.DeliverOrderDaoI;
 import com.bx.ant.model.TdeliverOrder;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
-import com.mobian.pageModel.DeliverOrder;
-import com.mobian.pageModel.DeliverOrderItem;
-import com.mobian.pageModel.DeliverOrderLog;
-import com.mobian.pageModel.DeliverOrderShop;
-import com.mobian.pageModel.DeliverOrderShopItem;
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderItem;
+import com.bx.ant.pageModel.DeliverOrderLog;
+import com.bx.ant.pageModel.DeliverOrderShop;
+import com.bx.ant.pageModel.DeliverOrderShopItem;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -89,8 +89,8 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 				params.put("amount", deliverOrder.getAmount());
 			}		
 			if (!F.empty(deliverOrder.getStatus())) {
-				whereHql += " and t.status = :status";
-				params.put("status", deliverOrder.getStatus());
+				whereHql += " and t.status in (:status)";
+				params.put("status", deliverOrder.getStatus().split(","));
 			}		
 			if (!F.empty(deliverOrder.getDeliveryStatus())) {
 				whereHql += " and t.deliveryStatus = :deliveryStatus";
@@ -176,13 +176,11 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		//deliverOrderDao.delete(deliverOrderDao.get(TdeliverOrder.class, id));
 	}
 
-	@Override
-	public void fillInfo(DeliverOrderExt deliverOrderExt) {
-		fillDeliverOrderItemInfo(deliverOrderExt);
+	protected void fillInfo(DeliverOrderExt deliverOrderExt) {
+		fillDeliverOrderShopItemInfo(deliverOrderExt);
 	}
 
-	@Override
-	public void fillDeliverOrderItemInfo(DeliverOrderExt deliverOrderExt) {
+	protected void fillDeliverOrderItemInfo(DeliverOrderExt deliverOrderExt) {
 		//填充明细信息
 		DeliverOrderItem deliverOrderItem = new DeliverOrderItem();
 		deliverOrderItem.setDeliverOrderId(deliverOrderExt.getId());
@@ -190,13 +188,25 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		deliverOrderExt.setDeliverOrderItemList(deliverOrderItems);
 	}
 
-	@Override
-	public void fillDeliverOrderShopItemInfo(DeliverOrderExt deliverOrderExt) {
+	protected void fillDeliverOrderShopItemInfo(DeliverOrderExt deliverOrderExt) {
 		//填充明细信息
 		DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
 		deliverOrderShopItem.setDeliverOrderId(deliverOrderExt.getId());
 		List<DeliverOrderShopItem> deliverOrderShopItems = deliverOrderShopItemService.list(deliverOrderShopItem);
 		deliverOrderExt.setDeliverOrderShopItemList(deliverOrderShopItems);
+	}
+
+	protected void fillDeliverOrderShopInfo(DeliverOrderExt deliverOrderExt) {
+		DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+		if (!F.empty(deliverOrderExt.getShopId())) {
+			deliverOrderShop.setShopId(deliverOrderExt.getShopId());
+			deliverOrderShop.setDeliverOrderId(deliverOrderExt.getId());
+			List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(deliverOrderShop);
+			if (CollectionUtils.isNotEmpty(deliverOrderShops) && deliverOrderShops.size() == 1) {
+				deliverOrderShop = deliverOrderShops.get(0);
+				deliverOrderExt.setDistance(deliverOrderShop.getDistance());
+			}
+		}
 	}
 
 
@@ -233,7 +243,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		DeliverOrder currentDeliverOrder = get(id);
 		DeliverOrderState.deliverOrder.set(currentDeliverOrder);
 		String deliverOrderStatus = currentDeliverOrder.getStatus();
-		DeliverOrderState deliverOrderState = deliverOrderStateFactory.get("deliverOrder" + deliverOrderStatus.substring(2) + "StateImpl");
+		DeliverOrderState deliverOrderState = deliverOrderStateFactory.get("deliverOrder" + deliverOrderStatus.substring(3) + "StateImpl");
 		return deliverOrderState;
 	}
 
@@ -305,6 +315,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 				DeliverOrderExt ox = new DeliverOrderExt();
 				BeanUtils.copyProperties(o, ox);
 				fillDeliverOrderShopItemInfo(ox);
+				fillDeliverOrderShopInfo(ox);
 				ol.add(ox);
 			}
 		}

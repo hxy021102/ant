@@ -1,4 +1,4 @@
-package com.mobian.pageModel;
+package com.bx.ant.pageModel;
 
 import java.util.Date;
 
@@ -19,6 +19,8 @@ public class ShopDeliverAccount implements java.io.Serializable {
 	private String sex;
 	private String refId;
 	private String refType;
+
+	private String keyword;
 
 	
 
@@ -111,4 +113,11 @@ public class ShopDeliverAccount implements java.io.Serializable {
 		return this.refType;
 	}
 
+	public String getKeyword() {
+		return keyword;
+	}
+
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
 }

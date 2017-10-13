@@ -1,4 +1,4 @@
-package com.mobian.pageModel;
+package com.bx.ant.pageModel;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -29,6 +29,7 @@ public class DeliverOrder implements java.io.Serializable {
 	private BigDecimal latitude;
 	private String remark;
 	private Integer shopId;
+
 
 
 	

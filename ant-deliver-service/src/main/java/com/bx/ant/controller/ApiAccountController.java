@@ -10,9 +10,9 @@ import com.bx.ant.service.session.TokenServiceI;
 import com.mobian.absx.F;
 import com.mobian.absx.UUID;
 import com.mobian.pageModel.*;
-import com.mobian.pageModel.DeliverOrderShop;
-import com.mobian.pageModel.ShopDeliverAccount;
-import com.mobian.pageModel.ShopDeliverApply;
+import com.bx.ant.pageModel.DeliverOrderShop;
+import com.bx.ant.pageModel.ShopDeliverAccount;
+import com.bx.ant.pageModel.ShopDeliverApply;
 import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.thirdpart.mns.MNSTemplate;
@@ -337,8 +337,14 @@ public class ApiAccountController extends BaseController {
             TokenWrap token = tokenService.getToken(request);
             if(!F.empty(token.getUid())) {
                 ShopDeliverApply shopDeliverApply = shopDeliverApplyService.getByAccountId(Integer.valueOf(token.getUid()));
-                if(shopDeliverApply != null)
+                if(shopDeliverApply != null) {
                     shopDeliverApply.setMbShop(mbShopService.getFromCache(shopDeliverApply.getShopId()));
+                    if("DAS02".equals(shopDeliverApply.getStatus())) {
+                        token.setShopId(shopDeliverApply.getShopId());
+                        tokenService.setToken(token);
+                    }
+                }
+
                 j.setSuccess(true);
                 j.setMsg("获取成功！");
                 j.setObj(shopDeliverApply);

@@ -1,7 +1,7 @@
 package com.bx.ant.service;
 
 import com.bx.ant.pageModel.ShopDeliverApplyQuery;
-import com.mobian.pageModel.ShopDeliverApply;
+import com.bx.ant.pageModel.ShopDeliverApply;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
@@ -80,6 +80,7 @@ public interface ShopDeliverApplyServiceI {
 	 * @return
 	 */
 	List<ShopDeliverApply> getAvailableAndWorkShop();
+	List<ShopDeliverApply> query(ShopDeliverApply shopDeliverApply);
 
 
 }

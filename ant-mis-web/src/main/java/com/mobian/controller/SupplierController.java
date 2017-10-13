@@ -15,7 +15,7 @@ import com.mobian.absx.F;
 import com.mobian.pageModel.*;
 import com.bx.ant.service.SupplierServiceI;
 
-import com.mobian.pageModel.Supplier;
+import com.bx.ant.pageModel.Supplier;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

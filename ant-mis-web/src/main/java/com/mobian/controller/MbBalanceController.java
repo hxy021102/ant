@@ -126,7 +126,15 @@ public class MbBalanceController extends BaseController {
 		request.setAttribute("mbBalance", mbBalance);
 		return "/mbbalance/mbBalanceCashView";
 	}
-
+	/**
+	 * 派单钱包
+	 */
+	@RequestMapping("/viewDeliverCash")
+	public String viewDeliverCash(HttpServletRequest request,Integer shopId) {
+		MbBalance mbBalance = mbBalanceService.addOrGetMbBalanceDelivery(shopId);
+		request.setAttribute("mbBalance", mbBalance);
+		return "/mbbalance/mbBanlanceDeliverCashView";
+	}
 	/**
 	 * 跳转到MbBalance修改页面
 	 * 
