@@ -60,4 +60,5 @@ public interface ShopDeliverAccountServiceI {
 	ShopDeliverAccount getByRef(String refId, String refType);
 
 	boolean checkUserName(String userName);
+	ShopDeliverAccount getFromCache(Integer id);
 }

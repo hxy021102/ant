@@ -1,8 +1,10 @@
 package com.mobian.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.*;
+import com.bx.ant.pageModel.ShopDeliverApply;
 import com.mobian.service.*;
 import com.mobian.util.ConfigUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.*;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -41,6 +45,8 @@ public class MbShopController extends BaseController {
     private MbOrderServiceI mbOrderService;
     @Autowired
     private DiveRegionServiceI diveRegionService;
+    @Resource
+    private ShopDeliverApplyServiceI shopDeliverApplyService;
 
 
     /**
@@ -172,8 +178,20 @@ public class MbShopController extends BaseController {
         }
         Integer debt = mbOrderService.getOrderDebtMoney(id);
         debt = debt == null ? 0 : debt;
+        ShopDeliverApply shopDeliverApply = new ShopDeliverApply();
+        shopDeliverApply.setShopId(id);
+        shopDeliverApply.setStatus("DAS02");
+        List<ShopDeliverApply> list = shopDeliverApplyService.query(shopDeliverApply);
+        Integer accountId = null;
+        if(!CollectionUtils.isEmpty(list)) {
+            mbShopExt.setDeliver(1);
+            accountId = list.get(0).getAccountId();
+        }else {
+            mbShopExt.setDeliver(0);
+        }
         request.setAttribute("mbShopExt", mbShopExt);
         request.setAttribute("debt", debt);
+        request.setAttribute("accountId",accountId);
         return "/mbshop/mbShopView";
     }
 

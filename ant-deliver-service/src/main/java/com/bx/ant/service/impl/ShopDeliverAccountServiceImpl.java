@@ -53,19 +53,19 @@ public class ShopDeliverAccountServiceImpl extends BaseServiceImpl<ShopDeliverAc
 			if (!F.empty(shopDeliverAccount.getIsdeleted())) {
 				whereHql += " and t.isdeleted = :isdeleted";
 				params.put("isdeleted", shopDeliverAccount.getIsdeleted());
-			}		
+			}
 			if (!F.empty(shopDeliverAccount.getUserName())) {
-				whereHql += " and t.userName = :userName";
-				params.put("userName", shopDeliverAccount.getUserName());
+				whereHql += " and t.userName like :userName";
+				params.put("userName","%"+shopDeliverAccount.getUserName()+"%");
 			}		
 			if (!F.empty(shopDeliverAccount.getPassword())) {
 				whereHql += " and t.password = :password";
 				params.put("password", shopDeliverAccount.getPassword());
-			}		
+			}
 			if (!F.empty(shopDeliverAccount.getNickName())) {
-				whereHql += " and t.nickName = :nickName";
-				params.put("nickName", shopDeliverAccount.getNickName());
-			}		
+				whereHql += " and t.nickName like :nickName";
+				params.put("nickName","%" + shopDeliverAccount.getNickName() + "%");
+			}
 			if (!F.empty(shopDeliverAccount.getIcon())) {
 				whereHql += " and t.icon = :icon";
 				params.put("icon", shopDeliverAccount.getIcon());
@@ -81,7 +81,12 @@ public class ShopDeliverAccountServiceImpl extends BaseServiceImpl<ShopDeliverAc
 			if (!F.empty(shopDeliverAccount.getRefType())) {
 				whereHql += " and t.refType = :refType";
 				params.put("refType", shopDeliverAccount.getRefType());
-			}		
+			}
+			if(!F.empty(shopDeliverAccount.getKeyword())){
+				whereHql += " and (t.nickName LIKE :nickName or userName like:userName)";
+				params.put("userName", "%" + shopDeliverAccount.getKeyword() + "%");
+				params.put("nickName", "%"+ shopDeliverAccount.getKeyword() + "%");
+			}
 		}	
 		return whereHql;
 	}
@@ -147,4 +152,11 @@ public class ShopDeliverAccountServiceImpl extends BaseServiceImpl<ShopDeliverAc
 		return true;
 	}
 
+	@Override
+	public ShopDeliverAccount getFromCache(Integer id) {
+		TshopDeliverAccount source = shopDeliverAccountDao.getById(id);
+		ShopDeliverAccount target = new ShopDeliverAccount();
+		BeanUtils.copyProperties(source, target);
+		return target;
+	}
 }
