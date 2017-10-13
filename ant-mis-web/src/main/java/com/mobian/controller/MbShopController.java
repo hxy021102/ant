@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.*;
-import com.mobian.pageModel.ShopDeliverApply;
+import com.bx.ant.pageModel.ShopDeliverApply;
 import com.mobian.service.*;
 import com.mobian.util.ConfigUtil;
 import org.apache.commons.collections.CollectionUtils;
