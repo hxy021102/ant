@@ -8,6 +8,7 @@
 <head>
     <title>MbShop管理</title>
     <jsp:include page="../inc.jsp"></jsp:include>
+    <script type="text/javascript" src="${pageContext.request.scheme}://api.map.baidu.com/api?v=2.0&ak=uVkZBmjLC0KGflQtsXRc4rh4&s=1"></script>
     <c:if test="${fn:contains(sessionInfo.resourceList, '/mbShopController/editPage')}">
         <script type="text/javascript">
             $.canEdit = true;
@@ -385,7 +386,6 @@
             var options = {};
             options.url = '${pageContext.request.contextPath}/mbShopController/dataGrid';
             options.queryParams = $.serializeObject($('#searchForm'));
-            console.log('Search queryParams:'+JSON.stringify(options.queryParams) + "---options : " +options);
             dataGrid.datagrid(options);
         }
 
@@ -395,12 +395,16 @@
         }
 
         function showShopMap() {
-            parent.$.modalDialog({
-                title: '门店地图',
-                width: 780,
-                height: 500,
-                href: '${pageContext.request.contextPath}/mbShopController/getShopMap'
-            });
+            //$('#shopLayout').layout('collapse','east');
+            $('#shopLayout').layout('expand','east');
+            var queryParams = $.serializeObject($('#searchForm'));
+            $.post('${pageContext.request.contextPath}/mbShopController/getShopMap',queryParams,
+                    function (result) {
+                        if (result.success) {
+                            //result.obj
+                            renderMap(result.obj);
+                        }
+                    }, 'JSON');
         }
 
         function getAllShopLocation() {
@@ -439,6 +443,11 @@
                     <td>
                         <jb:select dataType="AS" name="auditStatus" value="${auditStatus}" ></jb:select>
                     </td>
+                    <th style="width: 50px;"><%=TmbShop.ALIAS_SHOP_TYPE%>
+                    </th>
+                    <td>
+                        <jb:select dataType="ST" name="shopType" mustSelect="true"></jb:select>
+                    </td>
                 </tr>
                 <tr>
 
@@ -460,7 +469,7 @@
                     <th style="width: 50px">
                         <%=TmbShop.ALIAS_ADDRESS%>
                     </th>
-                    <td>
+                    <td colspan="3">
                         <input type="text" name="address" class="span2"/>
                     </td>
                 </tr>
@@ -468,7 +477,66 @@
         </form>
     </div>
     <div data-options="region:'center',border:false">
-        <table id="dataGrid"></table>
+        <div id="shopLayout" class="easyui-layout" data-options="fit : true,border : false">
+            <div data-options="region:'east',split:true,collapsed:true" title="地图模式">
+                <div id="allmap" style="height: 100%">
+                </div>
+
+                <script type="text/javascript">
+                    var map;
+                    function renderMap(mapData) {
+                        var mapArray = new Array(mapData.length);
+                        for (var k = 0; k < mapArray.length; k++) {
+                            mapArray[k] = new Array(3);
+                        }
+                        for (var i = 0; i < mapArray.length; i++) {
+                            for (var j = 0; j < mapArray[i].length; j++) {
+                                if (j == 0) {
+                                    mapArray[i][j] = mapData[i].longitude;
+                                } else if (j == 1) {
+                                    mapArray[i][j] = mapData[i].latitude
+                                } else if (j == 2) {
+                                    mapArray[i][j] = mapData[i].address
+                                }
+                            }
+                        }
+                        // 百度地图API功能
+                        map = new BMap.Map("allmap");
+                        console.log(map)
+                        map.centerAndZoom(new BMap.Point(121.56, 31.12), 12.5);
+                        map.enableScrollWheelZoom(true);     //开启鼠标滚缩放
+
+                        for (var i = 0; i < mapArray.length; i++) {
+                            var marker = new BMap.Marker(new BMap.Point(mapArray[i][0], mapArray[i][1]));  // 创建标注
+                            var content = mapArray[i][2];
+                            map.addOverlay(marker);               // 将标注添加到地图中
+                            addClickHandler(content, marker);
+                        }
+                    }
+                    function addClickHandler(content,marker){
+                        marker.addEventListener("click",function(e){
+                                    openInfo(content,e)}
+                        );
+                    }
+                    function openInfo(content,e){
+                        var opts = {
+                            width: 250,     // 信息窗口宽度
+                            height: 95,     // 信息窗口高度
+                            /*title : "信息窗口" , // 信息窗口标题*/
+                            enableMessage: true//设置允许信息窗发送短息
+                        };
+                        var p = e.target;
+                        var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
+                        var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
+                        map.openInfoWindow(infoWindow,point); //开启信息窗口
+                    }
+
+                </script>
+            </div>
+            <div data-options="region:'center'">
+                <table id="dataGrid"></table>
+            </div>
+        </div>
     </div>
 </div>
 <div id="toolbar" style="display: none;">
