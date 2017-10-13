@@ -177,7 +177,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	}
 
 	protected void fillInfo(DeliverOrderExt deliverOrderExt) {
-		fillDeliverOrderItemInfo(deliverOrderExt);
+		fillDeliverOrderShopItemInfo(deliverOrderExt);
 	}
 
 	protected void fillDeliverOrderItemInfo(DeliverOrderExt deliverOrderExt) {

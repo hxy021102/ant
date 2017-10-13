@@ -98,7 +98,15 @@ public class ApiDeliverBalanceController extends BaseController {
         Json j = new Json();
         DataGrid dataGrid;
         MbBalanceLog mbBalanceLog = new MbBalanceLog();
-
+        if(F.empty(pageHelper.getRows()  )) {
+            pageHelper.setRows(50);
+        }
+        if(F.empty(pageHelper.getSort())) {
+            pageHelper.setSort("addtime");
+        }
+        if(F.empty(pageHelper.getOrder())) {
+            pageHelper.setOrder("desc");
+        }
         //默认时间为当月
         if (date == null) {
              Calendar now = Calendar.getInstance();
