@@ -20,7 +20,7 @@ public class ShopItem implements java.io.Serializable {
 	private Integer quantity;
 	private Boolean online;
 
-	
+	private Integer[] itemIds;
 
 	public void setId(Integer value) {
 		this.id = value;
@@ -108,5 +108,13 @@ public class ShopItem implements java.io.Serializable {
 
 	public void setOnline(Boolean online) {
 		this.online = online;
+	}
+
+	public Integer[] getItemIds() {
+		return itemIds;
+	}
+
+	public void setItemIds(Integer[] itemIds) {
+		this.itemIds = itemIds;
 	}
 }
