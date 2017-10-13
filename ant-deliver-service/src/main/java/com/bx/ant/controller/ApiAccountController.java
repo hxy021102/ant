@@ -337,8 +337,14 @@ public class ApiAccountController extends BaseController {
             TokenWrap token = tokenService.getToken(request);
             if(!F.empty(token.getUid())) {
                 ShopDeliverApply shopDeliverApply = shopDeliverApplyService.getByAccountId(Integer.valueOf(token.getUid()));
-                if(shopDeliverApply != null)
+                if(shopDeliverApply != null) {
                     shopDeliverApply.setMbShop(mbShopService.getFromCache(shopDeliverApply.getShopId()));
+                    if("DAS02".equals(shopDeliverApply.getStatus())) {
+                        token.setShopId(shopDeliverApply.getShopId());
+                        tokenService.setToken(token);
+                    }
+                }
+
                 j.setSuccess(true);
                 j.setMsg("获取成功！");
                 j.setObj(shopDeliverApply);

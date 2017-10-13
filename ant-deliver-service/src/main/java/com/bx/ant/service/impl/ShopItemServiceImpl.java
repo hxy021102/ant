@@ -318,19 +318,20 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 			shopItem.setShopId(shopId);
 			shopItem.setItemIds(itemIds);
 			List<ShopItem> shopItems = query(shopItem);
+			Map<Integer, Integer> quantityMap = new HashMap<Integer, Integer>();
 			if (CollectionUtils.isNotEmpty(shopItems)) {
-				Map<Integer, Integer> quantityMap = new HashMap<Integer, Integer>();
 				for(ShopItem item : shopItems) {
 					if(!quantityMap.containsKey(item.getItemId())) {
 						quantityMap.put(item.getItemId(), item.getQuantity());
 					}
 				}
-				for (MbItem item : mbItems) {
-					if(quantityMap.containsKey(item.getId())) {
-						item.setQuantity(quantityMap.get(item.getId()));
-					} else {
-						item.setQuantity(0);
-					}
+			}
+
+			for (MbItem item : mbItems) {
+				if(quantityMap.containsKey(item.getId())) {
+					item.setQuantity(quantityMap.get(item.getId()));
+				} else {
+					item.setQuantity(0);
 				}
 			}
 		}
