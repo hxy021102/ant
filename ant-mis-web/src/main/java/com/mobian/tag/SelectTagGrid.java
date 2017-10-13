@@ -7,7 +7,7 @@ import com.bx.ant.service.SupplierServiceI;
 import com.mobian.absx.F;
 import com.mobian.listener.Application;
 import com.mobian.pageModel.*;
-import com.mobian.pageModel.Supplier;
+import com.bx.ant.pageModel.Supplier;
 import com.mobian.service.*;
 import com.mobian.util.BeanUtil;
 

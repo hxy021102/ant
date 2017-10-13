@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.bx.ant.service.ShopDeliverAccountServiceI;
 import com.mobian.pageModel.Colum;
-import com.mobian.pageModel.ShopDeliverAccount;
+import com.bx.ant.pageModel.ShopDeliverAccount;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
