@@ -192,6 +192,14 @@
 		$('#searchForm input').val('');
 		dataGrid.datagrid('load', {});
 	}
+    function showWarehouseMap() {
+        parent.$.modalDialog({
+            title: '仓库地图',
+            width: 780,
+            height: 500,
+            href: '${pageContext.request.contextPath}/mbWarehouseController/getWarehouseMap'
+        });
+    }
 </script>
 </head>
 <body>
@@ -226,6 +234,10 @@
 			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">
 			</form>
 			<iframe id="downloadIframe" name="downloadIframe" style="display: none;"></iframe>
+		</c:if>
+		<c:if test="${fn:contains(sessionInfo.resourceList, '/mbWarehouseController/getWarehouseMap')}">
+			<a onclick="showWarehouseMap();" href="javascript:void(0);" class="easyui-linkbutton"
+			   data-options="plain:true,iconCls:''">仓库地图</a>
 		</c:if>
 	</div>	
 </body>

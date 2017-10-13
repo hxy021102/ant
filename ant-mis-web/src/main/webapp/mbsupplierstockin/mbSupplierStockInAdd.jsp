@@ -161,7 +161,12 @@
                 <thead>
                 <tr>
                     <th data-options="field:'itemId',width:80">商品ID</th>
-                    <th data-options="field:'itemName',width:180,align:'center'<%--,editor:{type:'numberbox',options:{precision:1}}--%>">
+                    <th data-options="field:'itemName',width:180,align:'center',
+                        formatter: function (value, row) {
+                            if (row.price == 0)
+                                value += '<font color=\'red\'>【赠送】</font>';
+                                return value;
+                            }">
                         商品名称
                     </th>
                     <th data-options="field:'quantity',width:80,align:'center',editor:{type:'numberbox',options:{required: true}}">数量</th>

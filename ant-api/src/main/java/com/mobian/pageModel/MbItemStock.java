@@ -33,7 +33,7 @@ public class MbItemStock implements java.io.Serializable {
 	private String warehouseType;
 	private Integer shopId;
 	private Boolean safe;
-
+    private Boolean isPack;
 	public Boolean getSafe() {
 		return safe;
 	}
@@ -226,5 +226,13 @@ public class MbItemStock implements java.io.Serializable {
 
 	public void setShopId(Integer shopId) {
 		this.shopId = shopId;
+	}
+
+	public Boolean getIsPack() {
+		return isPack;
+	}
+
+	public void setIsPack(Boolean pack) {
+		isPack = pack;
 	}
 }

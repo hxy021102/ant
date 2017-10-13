@@ -86,19 +86,24 @@ public class MbSupplierOrderServiceImpl extends BaseServiceImpl<MbSupplierOrder>
         int totalPrice = 0;
         Boolean t = true;
         List<Integer> list = new ArrayList<Integer>();
-        List<MbSupplierOrderItem> mbSupplierOrderItemList=new ArrayList<MbSupplierOrderItem>();
         List<MbSupplierOrderItem> mbSupplierOrderItems= mbSupplierOrder.getMbSupplierOrderItemList();
+        List<Integer> itemIds = new ArrayList<Integer>();
         for(MbSupplierOrderItem mbSupplierOrderItem:mbSupplierOrderItems){
             if (mbSupplierOrderItem.getPrice() != 0) {
-                mbSupplierOrderItemList.add(mbSupplierOrderItem);
-            }
-        }
-        for (MbSupplierOrderItem mbSupplierOrderItem : mbSupplierOrderItemList) {
-            if (list.contains(mbSupplierOrderItem.getItemId())) {
-                t = false;
-                break;
-            } else {
+                if (list.contains(mbSupplierOrderItem.getItemId())) {
+                    t = false;
+                    break;
+                } else {
                     list.add(mbSupplierOrderItem.getItemId());
+                }
+            }
+            if (F.empty(mbSupplierOrderItem.getPrice())) {
+                if (itemIds.contains(mbSupplierOrderItem.getItemId())) {
+                    t = false;
+                    break;
+                } else {
+                    itemIds.add(mbSupplierOrderItem.getItemId());
+                }
             }
         }
         if (t) {

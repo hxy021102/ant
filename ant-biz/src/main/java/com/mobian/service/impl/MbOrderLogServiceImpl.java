@@ -27,6 +27,8 @@ public class MbOrderLogServiceImpl extends BaseServiceImpl<MbOrderLog> implement
 
 	@Autowired
 	private UserServiceI userService;
+	@Autowired
+	private RedisOrderLogServiceImpl redisOrderLogService;
 
 	@Override
 	public DataGrid dataGrid(MbOrderLog mbOrderLog, PageHelper ph) {
@@ -41,7 +43,7 @@ public class MbOrderLogServiceImpl extends BaseServiceImpl<MbOrderLog> implement
 				BeanUtils.copyProperties(t, o);
 
 				if (o.getLoginId() != null) {
-					User user = userService.get(o.getLoginId());
+					User user = userService.getFromCache(o.getLoginId());
 					if (user != null) {
 						o.setLoginName(user.getName());
 					}
@@ -138,4 +140,17 @@ public class MbOrderLogServiceImpl extends BaseServiceImpl<MbOrderLog> implement
 		return o;
 	}
 
+	@Override
+	public Boolean addOrderLogAndSetRedisOrderLog(MbOrderLog mbOrderLog) {
+		add(mbOrderLog);
+		redisOrderLogService.increment(mbOrderLog.getOrderId(), mbOrderLog.getLogType());
+		return true;
+	}
+
+	@Override
+	public void deleteOrderLogAndChangeRedisValue(Integer id) {
+		MbOrderLog mbOrderLog = get(id);
+		delete(id);
+		redisOrderLogService.decrease(mbOrderLog.getOrderId(), mbOrderLog.getLogType());
+	}
 }

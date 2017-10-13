@@ -1,5 +1,6 @@
 package com.mobian.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mobian.absx.F;
 import com.mobian.dao.MbShopDaoI;
 import com.mobian.dao.MbUserDaoI;
@@ -10,12 +11,14 @@ import com.mobian.model.TmbShop;
 import com.mobian.model.TmbWarehouse;
 import com.mobian.pageModel.*;
 import com.mobian.service.*;
+import com.mobian.thirdpart.wx.HttpUtil;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -426,6 +429,7 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
     public void editAudit(MbShop mbShop) {
         TmbShop tmbShop = mbShopDao.get(TmbShop.class, mbShop.getId());
         if (tmbShop != null) {
+            setShopLocation(mbShop);
             tmbShop.setAuditDate(new Date());
             MyBeanUtils.copyProperties(mbShop, tmbShop, new String[]{"id", "addtime", "isdeleted", "updatetime"}, true);
             //通过后建立对应的仓库
@@ -570,6 +574,19 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
         }
         return dataGrid;
     }
+
+    @Override
+    public List<MbShop> getNullLocation() {
+        List<TmbShop> tmbShopList = mbShopDao.find("from TmbShop t  where t.isdeleted = 0 and t.auditStatus = 'AS02' and (t.longitude is null or t.latitude is null)");
+        List<MbShop> mbShopList = new ArrayList<MbShop>();
+        for (TmbShop tmbShop : tmbShopList) {
+            MbShop mbShop = new MbShop();
+            BeanUtils.copyProperties(tmbShop, mbShop);
+            mbShopList.add(mbShop);
+        }
+        return mbShopList;
+    }
+
     @Override
     public List<MbShop> query(MbShop mbShop) {
         List<MbShop> ol = new ArrayList<>();
@@ -585,5 +602,41 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
             }
         }
         return ol;
+    }
+
+    @Override
+    public void setShopLocation(MbShop mbShop) {
+        String address = mbShop.getAddress().replaceAll(" ","");
+        String requestUrl = "http://api.map.baidu.com/geocoder/v2/?output=json&address="+address+"&ak=yDOmoXl5HIFt6KZe3BMeL4NRHBGLmCHe";
+        JSONObject jsonObject = JSONObject.parseObject(HttpUtil.httpRequest(requestUrl, "GET", null));
+        if (jsonObject != null) {
+            if (jsonObject.get("status") == 0) {
+                JSONObject result = (JSONObject) jsonObject.get("result");
+                JSONObject location = (JSONObject) result.get("location");
+                Object ln = location.get("lng");
+                Object la = location.get("lat");
+                BigDecimal lng = new BigDecimal(ln.toString());
+                BigDecimal lat = new BigDecimal(la.toString());
+                mbShop.setLongitude(lng);
+                mbShop.setLatitude(lat);
+            }
+        }
+    }
+
+    @Override
+    public List<MbShopMap> getShopMapData(MbShop mbShop) {
+        List<MbShop> mbShopList = query(mbShop);
+        if (CollectionUtils.isNotEmpty(mbShopList)) {
+            List<MbShopMap> mbShopMaps = new ArrayList<MbShopMap>();
+            for (MbShop shop : mbShopList) {
+                MbShopMap mbShopMap = new MbShopMap();
+                mbShopMap.setAddress("门店名称：" + shop.getName() + "<br/>联系人：" + shop.getContactPeople() + "<br/>联系电话：" + shop.getContactPhone() + "<br/>地址：" + shop.getAddress());
+                mbShopMap.setLongitude(shop.getLongitude());
+                mbShopMap.setLatitude(shop.getLatitude());
+                mbShopMaps.add(mbShopMap);
+            }
+            return mbShopMaps;
+        }
+        return null;
     }
 }

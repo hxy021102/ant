@@ -28,6 +28,7 @@
 			striped : true,
 			rownumbers : true,
 			singleSelect : true,
+            showFooter :true,
 			columns : [ [ {
 				field : 'id',
 				title : '编号',
@@ -36,7 +37,12 @@
 				}, {
 				field : 'warehouseCode',
 				title : '<%=TmbItemStock.ALIAS_WAREHOUSE_CODE%>',
-				width : 20
+				width : 20,
+                styler:function(value,row,index) {
+                    if (value == '合计') {
+                        return 'font-weight: bold;';
+                    }
+                }
 				}, {
 				field : 'warehouseName',
 				title : '<%=TmbItemStock.ALIAS_WAREHOUSE_NAME%>',
@@ -50,7 +56,9 @@
                 title : '<%=TmbItemStock.ALIAS_AVERAGE_PRICE%>',
                 width : 20,
 				align:"right",
-                formatter:function(value){
+                formatter: function (value) {
+                    if (value == null)
+                       return;
                     return $.formatMoney(value);
                 }
                 },{
@@ -79,31 +87,9 @@
 				$('#searchForm table').show();
 				parent.$.messager.progress('close');
 				$(this).datagrid('tooltip');
-                computeTotal();
 			}
 		});
 	});
-    function computeTotal() {
-        //返回当前页的所有行
-        var arr = $("#dataGrid").datagrid("getRows");
-        if (arr.length!=0) {
-            var sumQuantity = 0;
-            var sumTotalPrice=0
-            //累加
-            for (var i = 0; i < arr.length; i++) {
-                sumQuantity += arr[i].quantity
-                sumTotalPrice += arr[i].totalPrice
-            }
-
-            //新增一行显示统计信息
-            $('#dataGrid').datagrid('appendRow', {
-                warehouseCode:"合计",
-                averagePrice:"",
-                quantity: sumQuantity,
-                totalPrice:sumTotalPrice,
-            });
-        }
-    }
 
     function viewChart() {
         var isValid = $('#searchForm').form('validate');
@@ -114,7 +100,7 @@
                 title : '查看图表',
                 width : 900,
                 height : 500,
-                href : '${pageContext.request.contextPath}/mbItemStockController/viewChart?warehouseId=' + fromObj.warehouseId+'&itemIds=' + (fromObj.itemIds || ''),
+                href : '${pageContext.request.contextPath}/mbItemStockController/viewChart?warehouseId=' + fromObj.warehouseId+'&itemIds=' + (fromObj.itemIds || '')+"&isPack=" + fromObj.isPack,
             });
         }
 	}
@@ -160,6 +146,14 @@
 						</td>
 						<td>
 							<strong><%=TmbItemStock.ALIAS_ITEM_NAME%>&nbsp;&nbsp;</strong><jb:selectGrid dataType="itemId" name="itemIds" multiple="true"></jb:selectGrid>
+						</td>
+						<td>
+							<strong>是否包装</strong>
+							<select class="easyui-combobox" name="isPack" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+								<option value="  ">&nbsp;&nbsp;</option>
+								<option value="true">是</option>
+								<option value="false">否</option>
+							</select>
 						</td>
 					</tr>
 				</table>

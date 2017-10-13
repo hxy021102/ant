@@ -64,4 +64,5 @@ public interface MbSupplierStockInItemServiceI {
 
 
 	List<MbSupplierStockInItem> getListByStockInIds(Integer[] stockInIds);
+	DataGrid dataGridStockInItem(MbSupplierStockInItem mbSupplierStockInItem, PageHelper ph);
 }
