@@ -357,7 +357,7 @@ public class MbOrderController extends BaseController {
 		}
 		if ("BT013".equals(type)) {
 			MbRechargeLog mbRechargeLog = mbRechargeLogService.get(id);
-			id = Integer.parseInt(mbRechargeLog.getBankCode());
+			id = Integer.parseInt(mbRechargeLog.getPayCode());
 		}
 		MbOrder mbOrder = mbOrderService.get(id);
         Integer shopId = mbOrder.getShopId();
