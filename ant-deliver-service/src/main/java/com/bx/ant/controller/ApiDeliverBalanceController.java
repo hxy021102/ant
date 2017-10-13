@@ -186,11 +186,22 @@ public class ApiDeliverBalanceController extends BaseController {
      */
     @RequestMapping("/transformAmountDeliverToBalance")
     @ResponseBody
-    public Json transformAmountDeliverToBalance(HttpServletRequest request, Integer amount) {
+    public Json transformAmountDeliverToBalance(HttpServletRequest request, Integer amount, String vcode) {
         Json j = new Json();
 //        TokenWrap tokenWrap = getTokenWrap(request);
 //        Integer shopId = tokenWrap.getShopId();
         Integer shopId = 1332;
+
+//        String oldCode = (String) redisUtil.getString(Key.build(Namespace.SHOP_BALANCE_ROLL_VALIDATE_CODE, tokenWrap.getName()));
+//        if(F.empty(oldCode)) {
+//            j.setMsg("验证码已过期！");
+//            return j;
+//        }
+//        if(!oldCode.equals(vcode)) {
+//            j.setMsg("验证码错误！");
+//            return j;
+//        }
+
         mbBalanceService.transform(shopId, amount, 10, 1, 0);
         j.setMsg("u know");
         j.setSuccess(true);
@@ -204,11 +215,22 @@ public class ApiDeliverBalanceController extends BaseController {
      */
     @RequestMapping("/transformAmountBalanceToDeliver")
     @ResponseBody
-    public Json transformAmountBalanceToDeliver(HttpServletRequest request, Integer amount) {
+    public Json transformAmountBalanceToDeliver(HttpServletRequest request, Integer amount, String vcode) {
         Json j = new Json();
 //        TokenWrap tokenWrap = getTokenWrap(request);
 //        Integer shopId = tokenWrap.getShopId();
         Integer shopId = 1332;
+
+//        String oldCode = (String) redisUtil.getString(Key.build(Namespace.SHOP_BALANCE_ROLL_VALIDATE_CODE, tokenWrap.getName()));
+//        if(F.empty(oldCode)) {
+//            j.setMsg("验证码已过期！");
+//            return j;
+//        }
+//        if(!oldCode.equals(vcode)) {
+//            j.setMsg("验证码错误！");
+//            return j;
+//        }
+
         mbBalanceService.transform(shopId, amount, 1, 10, 0);
         j.setMsg("u know");
         j.setSuccess(true);
