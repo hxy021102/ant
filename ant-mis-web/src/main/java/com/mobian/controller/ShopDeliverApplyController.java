@@ -80,8 +80,9 @@ public class ShopDeliverApplyController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/addPage")
-	public String addPage(HttpServletRequest request) {
+	public String addPage(HttpServletRequest request,Integer shopId) {
 		ShopDeliverApply shopDeliverApply = new ShopDeliverApply();
+		request.setAttribute("shopId",shopId);
 		return "/shopdeliverapply/shopDeliverApplyAdd";
 	}
 
@@ -94,9 +95,20 @@ public class ShopDeliverApplyController extends BaseController {
 	@ResponseBody
 	public Json add(ShopDeliverApply shopDeliverApply) {
 		Json j = new Json();
-		shopDeliverApplyService.add(shopDeliverApply);
-		j.setSuccess(true);
-		j.setMsg("添加成功！");
+		ShopDeliverApply deliverApply = new ShopDeliverApply();
+		deliverApply.setStatus("DAS02");
+		deliverApply.setAccountId(shopDeliverApply.getAccountId());
+		List<ShopDeliverApply> shopDeliverApplies =	shopDeliverApplyService.query(deliverApply);
+		if(shopDeliverApplies != null && shopDeliverApplies.size() > 0) {
+			j.setSuccess(false);
+			j.setMsg("该账号已经开通过，请更换账号！");
+		}else {
+			shopDeliverApply.setResult("后台开通");
+			shopDeliverApply.setStatus("DAS02");
+			shopDeliverApplyService.add(shopDeliverApply);
+			j.setSuccess(true);
+			j.setMsg("开通成功！");
+		}
 		return j;
 	}
 

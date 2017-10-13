@@ -80,6 +80,7 @@ public interface ShopDeliverApplyServiceI {
 	 * @return
 	 */
 	List<ShopDeliverApply> getAvailableAndWorkShop();
+	List<ShopDeliverApply> query(ShopDeliverApply shopDeliverApply);
 
 
 }

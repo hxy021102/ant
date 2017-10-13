@@ -11,7 +11,7 @@ import com.mobian.absx.F;
 import com.mobian.absx.UUID;
 import com.mobian.pageModel.*;
 import com.mobian.pageModel.DeliverOrderShop;
-import com.mobian.pageModel.ShopDeliverAccount;
+import com.bx.ant.pageModel.ShopDeliverAccount;
 import com.mobian.pageModel.ShopDeliverApply;
 import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbShopServiceI;

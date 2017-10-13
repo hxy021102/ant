@@ -17,6 +17,8 @@ public class MbShopExt extends MbShop {
 	//门店欠款
 	private Integer debt;
 	private Integer totalDebt;
+	//派单
+	private Integer deliver;
 
 	public Integer getTotalDebt() {
 		return totalDebt;
@@ -64,5 +66,13 @@ public class MbShopExt extends MbShop {
 
 	public void setCashBalanceAmount(Integer cashBalanceAmount) {
 		this.cashBalanceAmount = cashBalanceAmount;
+	}
+
+	public Integer getDeliver() {
+		return deliver;
+	}
+
+	public void setDeliver(Integer deliver) {
+		this.deliver = deliver;
 	}
 }
