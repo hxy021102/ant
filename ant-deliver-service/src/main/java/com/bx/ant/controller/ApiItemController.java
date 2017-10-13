@@ -4,7 +4,7 @@ import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.ShopItemServiceI;
 import com.bx.ant.service.session.TokenServiceI;
 import com.mobian.pageModel.*;
-import com.mobian.pageModel.ShopItem;
+import com.bx.ant.pageModel.ShopItem;
 import com.mobian.service.MbItemServiceI;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

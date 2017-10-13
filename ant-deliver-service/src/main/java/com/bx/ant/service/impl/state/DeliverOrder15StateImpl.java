@@ -1,10 +1,11 @@
 package com.bx.ant.service.impl.state;
 
+import com.bx.ant.service.DeliverOrderLogServiceI;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.bx.ant.service.DeliverOrderState;
-import com.mobian.pageModel.DeliverOrder;
-import com.mobian.pageModel.DeliverOrderShop;
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderShop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,9 @@ public class DeliverOrder15StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderShopServiceI deliverOrderShopService;
 
+    @Autowired
+    private DeliverOrderLogServiceI deliverOrderLogService;
+
     @Override
     public String getStateName() {
         return "15";
@@ -36,15 +40,15 @@ public class DeliverOrder15StateImpl implements DeliverOrderState {
     public void handle(DeliverOrder deliverOrder) {
 
         //修改运单状态
-        DeliverOrder order = new DeliverOrder();
-        order.setId(deliverOrder.getId());
-        order.setStatus(prefix + getStateName());
-        deliverOrderService.edit(order);
+        DeliverOrder orderNew = new DeliverOrder();
+        orderNew.setId(deliverOrder.getId());
+        orderNew.setStatus(prefix + getStateName());
+        deliverOrderService.editAndAddLog(orderNew, deliverOrderLogService.TYPE_REFUSE_DELIVER_ORDER,"运单被拒绝");
 
         //修改运单门店状态
         DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
         deliverOrderShop.setStatus(deliverOrderShopService.STATUS_AUDITING);
-        deliverOrderShop.setDeliverOrderId(order.getId());
+        deliverOrderShop.setDeliverOrderId(orderNew.getId());
         deliverOrderShopService.editStatus(deliverOrderShop,deliverOrderShopService.STATUS_REFUSED);
 
         //TODO 这里应该执行重新分配订单方法

@@ -8,7 +8,7 @@ import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbItem;
 import com.mobian.pageModel.PageHelper;
-import com.mobian.pageModel.ShopItem;
+import com.bx.ant.pageModel.ShopItem;
 import com.mobian.service.MbItemServiceI;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -63,7 +63,11 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 			if (!F.empty(shopItem.getShopId())) {
 				whereHql += " and t.shopId = :shopId";
 				params.put("shopId", shopItem.getShopId());
-			}		
+			}
+			if (shopItem.getItemIds() != null) {
+				whereHql += " and t.itemId in (:itemIds)";
+				params.put("itemIds", shopItem.getItemIds());
+			}
 			if (!F.empty(shopItem.getItemId())) {
 				whereHql += " and t.itemId = :itemId";
 				params.put("itemId", shopItem.getItemId());
@@ -303,33 +307,32 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 		DataGrid dataGrid = mbItemService.dataGrid(mbItem, ph);
 		List<MbItem> mbItems = dataGrid.getRows();
 		if (CollectionUtils.isNotEmpty(mbItems)) {
-			List<MbItem> mbItemList = new ArrayList<MbItem>();
+			Integer[] itemIds = new Integer[mbItems.size()];
+			int index = 0;
+			for(MbItem item : mbItems) {
+				itemIds[index++] = item.getId();
+			}
 			ShopItem shopItem = new ShopItem();
 			shopItem.setIsdeleted(false);
 			shopItem.setOnline(true);
 			shopItem.setShopId(shopId);
+			shopItem.setItemIds(itemIds);
 			List<ShopItem> shopItems = query(shopItem);
 			if (CollectionUtils.isNotEmpty(shopItems)) {
-				for (MbItem item : mbItems) {
-					for (ShopItem sItem : shopItems) {
-						if (sItem.getItemId() == item.getId()) {
-							item.setQuantity(sItem.getQuantity());
-							mbItemList.add(item);
-						} else {
-							item.setQuantity(0);
-							mbItemList.add(item);
-						}
+				Map<Integer, Integer> quantityMap = new HashMap<Integer, Integer>();
+				for(ShopItem item : shopItems) {
+					if(!quantityMap.containsKey(item.getItemId())) {
+						quantityMap.put(item.getItemId(), item.getQuantity());
 					}
 				}
-			} else {
 				for (MbItem item : mbItems) {
-					item.setQuantity(0);
-					mbItemList.add(item);
+					if(quantityMap.containsKey(item.getId())) {
+						item.setQuantity(quantityMap.get(item.getId()));
+					} else {
+						item.setQuantity(0);
+					}
 				}
 			}
-			DataGrid dg = new DataGrid();
-			dg.setRows(mbItemList);
-			return dg;
 		}
 		return dataGrid;
 	}

@@ -8,10 +8,11 @@ import com.bx.ant.dao.DeliverOrderDaoI;
 import com.bx.ant.model.TdeliverOrder;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
-import com.mobian.pageModel.DeliverOrder;
-import com.mobian.pageModel.DeliverOrderItem;
-import com.mobian.pageModel.DeliverOrderShop;
-import com.mobian.pageModel.DeliverOrderShopItem;
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderItem;
+import com.bx.ant.pageModel.DeliverOrderLog;
+import com.bx.ant.pageModel.DeliverOrderShop;
+import com.bx.ant.pageModel.DeliverOrderShopItem;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -43,6 +44,9 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 
 	@Autowired
 	private DeliverOrderShopItemServiceI deliverOrderShopItemService;
+
+	@Autowired
+	private DeliverOrderLogServiceI deliverOrderLogService;
 
 
 	@Override
@@ -143,6 +147,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		//t.setId(jb.absx.UUID.uuid());
 		t.setIsdeleted(false);
 		deliverOrderDao.save(t);
+		deliverOrder.setId(t.getId());
 	}
 
 	@Override
@@ -305,5 +310,21 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		}
 		dg.setRows(ol);
 		return dg;
+	}
+
+	@Override
+	public void editAndAddLog(DeliverOrder deliverOrder, String logType, String content, String loginId) {
+		edit(deliverOrder);
+		DeliverOrderLog deliverOrderLog = new DeliverOrderLog();
+		deliverOrderLog.setDeliverOrderId(deliverOrder.getId());
+		deliverOrderLog.setLoginId(loginId);
+		deliverOrderLog.setContent(content);
+		deliverOrderLog.setLogType(logType);
+		deliverOrderLogService.add(deliverOrderLog);
+	}
+
+	@Override
+	public  void editAndAddLog(DeliverOrder deliverOrder, String logType, String content) {
+		editAndAddLog(deliverOrder, logType, content, null);
 	}
 }

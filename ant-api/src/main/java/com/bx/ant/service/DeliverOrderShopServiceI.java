@@ -1,7 +1,7 @@
 package com.bx.ant.service;
 
-import com.mobian.pageModel.DeliverOrder;
-import com.mobian.pageModel.DeliverOrderShop;
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderShop;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
@@ -13,11 +13,11 @@ import java.util.List;
  * 
  */
 public interface DeliverOrderShopServiceI {
-	String STATUS_AUDITING = "DS01"; //等待审核
-	String STATUS_ACCEPTED = "DS02"; //接受
-	String STATUS_REFUSED = "DS03"; //拒绝
-	String STATUS_COMPLETE = "DS04"; //正常完成
-	String STATUS_INACTIVE = "DS05"; //失效
+	String STATUS_AUDITING = "DSS01"; //等待审核
+	String STATUS_ACCEPTED = "DSS02"; //接受
+	String STATUS_REFUSED = "DSS03"; //拒绝
+	String STATUS_COMPLETE = "DSS04"; //正常完成
+	String STATUS_INACTIVE = "DSS05"; //失效
 
 	/**
 	 * 获取DeliverOrderShop数据表格

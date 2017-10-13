@@ -1,8 +1,10 @@
 package com.bx.ant.service.impl.state;
 
+import com.bx.ant.service.DeliverOrderLogServiceI;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderState;
-import com.mobian.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,9 @@ public class DeliverOrder01StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderServiceI deliverOrderService;
 
+    @Autowired
+    private DeliverOrderLogServiceI deliverOrderLogService;
+
     @Override
     public String getStateName() {
         return "01";
@@ -31,6 +36,12 @@ public class DeliverOrder01StateImpl implements DeliverOrderState {
     public void handle(DeliverOrder deliverOrder) {
         deliverOrder.setStatus(prefix + getStateName());
         deliverOrderService.add(deliverOrder);
+
+        DeliverOrderLog log = new DeliverOrderLog();
+        log.setDeliverOrderId(deliverOrder.getId());
+        log.setLogType(deliverOrderLogService.TYPE_ADD_DELIVER_ORDER);
+        log.setContent("加订单等待分配");
+        deliverOrderLogService.add(log);
     }
 
     @Override

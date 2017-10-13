@@ -10,6 +10,9 @@ import com.bx.ant.service.session.TokenServiceI;
 import com.mobian.absx.F;
 import com.mobian.absx.UUID;
 import com.mobian.pageModel.*;
+import com.bx.ant.pageModel.DeliverOrderShop;
+import com.bx.ant.pageModel.ShopDeliverAccount;
+import com.bx.ant.pageModel.ShopDeliverApply;
 import com.mobian.pageModel.DeliverOrderShop;
 import com.bx.ant.pageModel.ShopDeliverAccount;
 import com.mobian.pageModel.ShopDeliverApply;
@@ -229,7 +232,7 @@ public class ApiAccountController extends BaseController {
                 mbBalanceLog.setShopId(shopDeliverApply.getShopId());
                 DataGrid dataGrid = mbBalanceLogService.getDeliveryBalanceLogDataGrid(mbBalanceLog,new PageHelper());
                 Integer todayAmount = new Integer(0) ;
-                if (dataGrid.getFooter() != null) {
+                if (dataGrid.getFooter() != null && CollectionUtils.isNotEmpty(dataGrid.getFooter())) {
                     MbBalanceLog  balanceLog =(MbBalanceLog) dataGrid.getFooter().get(0);
                     todayAmount = balanceLog.getAmountIn() + balanceLog.getAmountOut();
                 }

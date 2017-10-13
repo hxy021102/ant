@@ -1,10 +1,11 @@
 package com.bx.ant.service.impl.state;
 
+import com.bx.ant.service.DeliverOrderLogServiceI;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.bx.ant.service.DeliverOrderState;
-import com.mobian.pageModel.DeliverOrder;
-import com.mobian.pageModel.DeliverOrderShop;
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderShop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,8 @@ public class DeliverOrder25StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderServiceI deliverOrderService;
 
+    @Autowired
+    private DeliverOrderLogServiceI deliverOrderLogService;
 
     @Override
     public String getStateName() {
@@ -33,11 +36,11 @@ public class DeliverOrder25StateImpl implements DeliverOrderState {
     public void handle(DeliverOrder deliverOrder) {
 
         //修改运单状态
-        DeliverOrder order = new DeliverOrder();
-        order.setId(deliverOrder.getId());
-        order.setStatus(prefix + getStateName());
-        order.setDeliveryStatus(deliverOrderService.DELIVER_STATUS_DELIVERING);
-        deliverOrderService.edit(order);
+        DeliverOrder orderNew = new DeliverOrder();
+        orderNew.setId(deliverOrder.getId());
+        orderNew.setStatus(prefix + getStateName());
+        orderNew.setDeliveryStatus(deliverOrderService.DELIVER_STATUS_DELIVERING);
+        deliverOrderService.editAndAddLog(orderNew, deliverOrderLogService.TYPE_DELIVERING_DELIVER_ORDER, "运单发货");
 
         //修改门店运单状态
 //        DeliverOrderShop deliverOrderShop = new DeliverOrderShop();

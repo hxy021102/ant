@@ -1,6 +1,6 @@
 package com.bx.ant.service;
 
-import com.mobian.pageModel.DeliverOrderLog;
+import com.bx.ant.pageModel.DeliverOrderLog;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
@@ -11,6 +11,13 @@ import com.mobian.pageModel.PageHelper;
  */
 public interface DeliverOrderLogServiceI {
 
+	String TYPE_ADD_DELIVER_ORDER = "DLT01";
+	String TYPE_ASSIGN_DELIVER_ORDER = "DLT02";
+	String TYPE_ACCEPT_DELIVER_ORDER = "DLT03";
+	String TYPE_REFUSE_DELIVER_ORDER = "DLT04";
+	String TYPE_DELIVERING_DELIVER_ORDER = "DLT05";
+	String TYPE_DELIVERED_DELIVER_ORDER = "DLT06";
+	String TYPE_COMPLETE_DELIVER_ORDER = "DLT07";
 	/**
 	 * 获取DeliverOrderLog数据表格
 	 * 
@@ -20,14 +27,14 @@ public interface DeliverOrderLogServiceI {
 	 *            分页帮助类
 	 * @return
 	 */
-	public DataGrid dataGrid(DeliverOrderLog deliverOrderLog, PageHelper ph);
+	 DataGrid dataGrid(DeliverOrderLog deliverOrderLog, PageHelper ph);
 
 	/**
 	 * 添加DeliverOrderLog
 	 * 
 	 * @param deliverOrderLog
 	 */
-	public void add(DeliverOrderLog deliverOrderLog);
+	 void add(DeliverOrderLog deliverOrderLog);
 
 	/**
 	 * 获得DeliverOrderLog对象
@@ -35,20 +42,20 @@ public interface DeliverOrderLogServiceI {
 	 * @param id
 	 * @return
 	 */
-	public DeliverOrderLog get(Integer id);
+	 DeliverOrderLog get(Integer id);
 
 	/**
 	 * 修改DeliverOrderLog
 	 * 
 	 * @param deliverOrderLog
 	 */
-	public void edit(DeliverOrderLog deliverOrderLog);
+	 void edit(DeliverOrderLog deliverOrderLog);
 
 	/**
 	 * 删除DeliverOrderLog
 	 * 
 	 * @param id
 	 */
-	public void delete(Integer id);
+	 void delete(Integer id);
 
 }

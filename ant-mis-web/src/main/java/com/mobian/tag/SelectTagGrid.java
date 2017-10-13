@@ -8,6 +8,7 @@ import com.mobian.absx.F;
 import com.mobian.listener.Application;
 import com.mobian.pageModel.*;
 import com.bx.ant.pageModel.ShopDeliverAccount;
+import com.bx.ant.pageModel.Supplier;
 import com.mobian.service.*;
 import com.mobian.util.BeanUtil;
 
@@ -134,8 +135,8 @@ public class SelectTagGrid extends TagSupport {
             e.printStackTrace();
         }
         return super.doStartTag();
-        //return TagSupport.EVAL_BODY_INCLUDE;//输出标签体内容
-        //return TagSupport.SKIP_BODY;//不输出标签体内容
+        //return TagSupport.EVAL_BODY_INCLUDE;//输出标签体内容  
+        //return TagSupport.SKIP_BODY;//不输出标签体内容  
     }
 
     private Map getData() {

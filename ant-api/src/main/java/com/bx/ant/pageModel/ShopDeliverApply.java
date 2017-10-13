@@ -1,5 +1,6 @@
-package com.mobian.pageModel;
+package com.bx.ant.pageModel;
 
+import com.mobian.pageModel.MbShop;
 import com.mobian.util.ConvertNameUtil;
 
 import java.util.Date;
