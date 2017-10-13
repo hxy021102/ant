@@ -89,9 +89,10 @@ public interface ShopItemServiceI {
 
 	/**
 	 * 门店某种商品下架
-	 * @param shopItemId
+	 * @param itemId
+	 * @param shopId
 	 */
-	void updateShopItemOffline(Integer shopItemId);
+	void updateShopItemOffline(Integer itemId,Integer shopId);
 
 	/**
 	 * 批量删除门店商品
@@ -102,10 +103,11 @@ public interface ShopItemServiceI {
 
 	/**
 	 * 修改门店商品数量
-	 * @param shopItemId
+	 * @param itemId
+	 * @param shopId
 	 * @param quantity
 	 */
-	void updateShopItemQuantity( Integer shopItemId,Integer quantity);
+	void updateShopItemQuantity( Integer itemId,Integer shopId,Integer quantity);
 
 	/**
 	 * 获取门店商品和商品名称
@@ -122,5 +124,12 @@ public interface ShopItemServiceI {
 	 * @return
 	 */
 	DataGrid dataGridWithQuantity(MbItem mbItem, PageHelper ph, Integer shopId);
+
+	/**
+	 * 删除指定的商品
+	 * @param itemId
+	 * @param shopId
+	 */
+	void deleteShopItem(Integer itemId,Integer shopId);
 
 }
