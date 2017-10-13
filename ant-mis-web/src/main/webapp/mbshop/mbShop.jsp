@@ -393,6 +393,16 @@
             $('#searchForm input').val('');
             dataGrid.datagrid('load', {});
         }
+
+        function showShopMap() {
+            parent.$.modalDialog({
+                title: '门店地图',
+                width: 780,
+                height: 500,
+                href: '${pageContext.request.contextPath}/mbShopController/getShopMap'
+            });
+        }
+
         function getAllShopLocation() {
             $.post('${pageContext.request.contextPath}/mbShopController/getAllShopLocation',
                 function (result) {
@@ -476,6 +486,10 @@
         <form id="downloadTable" target="downloadIframe" method="post" style="display: none;">
         </form>
         <iframe id="downloadIframe" name="downloadIframe" style="display: none;"></iframe>
+    </c:if>
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/mbShopController/getShopMap')}">
+        <a onclick="showShopMap();" href="javascript:void(0);" class="easyui-linkbutton"
+           data-options="plain:true,iconCls:''">门店地图</a>
     </c:if>
     <c:if test="${fn:contains(sessionInfo.resourceList, '/mbShopController/getAllShopLocation')}">
         <a onclick="getAllShopLocation();" href="javascript:void(0);" class="easyui-linkbutton"

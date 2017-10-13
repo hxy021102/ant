@@ -427,4 +427,12 @@ public class MbShopController extends BaseController {
         return j;
     }
 
+
+    @RequestMapping("/getShopMap")
+    public String getShopMap(HttpServletRequest request,MbShop mbShop) {
+        List<MbShopMap> mbShopMaps=mbShopService.getShopMapData(mbShop);
+        request.setAttribute("mbShopMapData",JSON.toJSONString(mbShopMaps));
+        return "/mbshop/mbShopMap";
+    }
+
 }
