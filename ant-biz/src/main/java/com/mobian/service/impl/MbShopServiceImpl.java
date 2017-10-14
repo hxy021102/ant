@@ -610,7 +610,7 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
         String requestUrl = "http://api.map.baidu.com/geocoder/v2/?output=json&address="+address+"&ak=yDOmoXl5HIFt6KZe3BMeL4NRHBGLmCHe";
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.httpRequest(requestUrl, "GET", null));
         if (jsonObject != null) {
-            if (jsonObject.get("status") == 0) {
+            if (jsonObject.getInteger("status") == 0) {
                 JSONObject result = (JSONObject) jsonObject.get("result");
                 JSONObject location = (JSONObject) result.get("location");
                 Object ln = location.get("lng");
