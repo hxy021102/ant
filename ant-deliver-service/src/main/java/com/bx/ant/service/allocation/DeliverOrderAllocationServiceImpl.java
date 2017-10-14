@@ -2,6 +2,7 @@ package com.bx.ant.service.allocation;
 
 import com.bx.ant.pageModel.DeliverOrderExt;
 import com.bx.ant.service.*;
+import com.mobian.absx.F;
 import com.mobian.pageModel.*;
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.DeliverOrderItem;
@@ -59,7 +60,8 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
         for (DeliverOrder deliverOrder : deliverOrderList) {
             try {
                 //3、计算待分配订单的数字地址
-                if (deliverOrder.getLongitude() == null || deliverOrder.getLatitude() == null) {
+                if ((deliverOrder.getLongitude() == null || deliverOrder.getLatitude() == null)
+                        && !F.empty(deliverOrder.getDeliveryAddress())) {
                     BigDecimal[] point = GeoUtil.getPosition(deliverOrder.getDeliveryAddress());
                     deliverOrder.setLongitude(point[0]);
                     deliverOrder.setLatitude(point[1]);
