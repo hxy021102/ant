@@ -18,6 +18,9 @@ public class SupplierItemRelation implements java.io.Serializable {
 	private Integer inPrice;
 	private Integer freight;
 	private Boolean online;
+	//新加字段
+	private  String code;
+	private  String itemName;
 
 	
 
@@ -100,5 +103,21 @@ public class SupplierItemRelation implements java.io.Serializable {
 
 	public void setOnline(Boolean online) {
 		this.online = online;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getItemName() {
+		return itemName;
+	}
+
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
 	}
 }

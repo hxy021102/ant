@@ -5,16 +5,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mobian.pageModel.Colum;
+import com.mobian.pageModel.*;
 import com.bx.ant.pageModel.SupplierItemRelation;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.Json;
-import com.mobian.pageModel.PageHelper;
 import com.bx.ant.service.SupplierItemRelationServiceI;
 
+import com.mobian.service.MbItemServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,8 +30,10 @@ import com.alibaba.fastjson.JSON;
 @Controller
 @RequestMapping("/supplierItemRelationController")
 public class SupplierItemRelationController extends BaseController {
-
+    @Resource
 	private SupplierItemRelationServiceI supplierItemRelationService;
+    @Autowired
+	private MbItemServiceI mbItemService;
 
 
 	/**
@@ -48,18 +49,28 @@ public class SupplierItemRelationController extends BaseController {
 	/**
 	 * 获取SupplierItemRelation数据表格
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 */
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(SupplierItemRelation supplierItemRelation, PageHelper ph) {
-		return supplierItemRelationService.dataGrid(supplierItemRelation, ph);
+		DataGrid g = supplierItemRelationService.dataGrid(supplierItemRelation, ph);
+		List<SupplierItemRelation> list = g.getRows();
+		for(SupplierItemRelation s : list) {
+			if(s.getItemId() != null) {
+			MbItem mbItem = mbItemService.get(s.getItemId());
+			s.setItemName(mbItem.getName());
+			s.setCode(mbItem.getCode());
+			}
+		}
+		return  g;
+
 	}
 	/**
 	 * 获取SupplierItemRelation数据表格excel
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 * @throws NoSuchMethodException 
 	 * @throws SecurityException 
@@ -83,8 +94,8 @@ public class SupplierItemRelationController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/addPage")
-	public String addPage(HttpServletRequest request) {
-		SupplierItemRelation supplierItemRelation = new SupplierItemRelation();
+	public String addPage(HttpServletRequest request,Integer supplierId) {
+		request.setAttribute("supplierId",supplierId);
 		return "/supplieritemrelation/supplierItemRelationAdd";
 	}
 

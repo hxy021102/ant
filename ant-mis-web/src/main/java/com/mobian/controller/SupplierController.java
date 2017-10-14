@@ -10,12 +10,14 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.mobian.absx.F;
 import com.mobian.pageModel.*;
 import com.bx.ant.service.SupplierServiceI;
 
 import com.bx.ant.pageModel.Supplier;
+import com.mobian.util.ConfigUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -84,8 +86,12 @@ public class SupplierController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/addPage")
-	public String addPage(HttpServletRequest request) {
+	public String addPage(HttpServletRequest request,HttpSession session) {
+		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
 		Supplier supplier = new Supplier();
+		String loginId = sessionInfo.getId();
+		supplier.setLoginId(loginId);
+		request.setAttribute("supplier",supplier);
 		return "/supplier/supplierAdd";
 	}
 

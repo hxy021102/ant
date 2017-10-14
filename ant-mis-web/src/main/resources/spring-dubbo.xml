@@ -17,6 +17,6 @@
     <dubbo:reference id="deliverOrderService" interface="com.bx.ant.service.DeliverOrderServiceI"/>
     <dubbo:reference id="deliverOrderAllocationService" interface="com.bx.ant.service.DeliverOrderAllocationServiceI"/>
     <dubbo:reference id="supplierService" interface="com.bx.ant.service.SupplierServiceI"/>
-
+    <dubbo:reference id="supplierItemRelationService" interface="com.bx.ant.service.SupplierItemRelationServiceI"/>
 
 </beans>

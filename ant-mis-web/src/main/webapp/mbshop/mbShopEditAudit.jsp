@@ -135,7 +135,7 @@
 						${mbShop.address}
 						<input name="longitude" id="gisLng" type="hidden" value="${mbShop.longitude}">
 						<input name="latitude" id="gisLat" type="hidden" value="${mbShop.latitude}">
-						<input id="address" type="hidden" value="${mbShop.address}">
+						<input name="address"  id="address" type="hidden" value="${mbShop.address}" >
 					</td>
 				</tr>
 				<tr>
