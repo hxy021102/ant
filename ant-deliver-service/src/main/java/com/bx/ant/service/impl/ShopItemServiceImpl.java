@@ -138,6 +138,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 		shopItem.setShopId(shopId);
 		shopItem.setItemId(itemId);
 		shopItem.setOnline(isOnline);
+		shopItem.setIsdeleted(false);
 		String where = whereHql(shopItem, params);
 		TshopItem t = shopItemDao.get("from TshopItem t " + where , params);
 		ShopItem o = new ShopItem();
@@ -178,23 +179,32 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 	@Override
 	public void updateBatchItemOnline(String itemIds, Integer shopId) {
 		if (!F.empty(itemIds)) {
+			String[] itemIdArray = itemIds.split(",");
+			Integer[] itemIdValues = new Integer[itemIdArray.length];
+			int j;
+			for( j = 0;j<itemIdValues.length;j++){
+				itemIdValues[j]=Integer.parseInt(itemIdArray[j]);
+			}
 			ShopItem shopItem = new ShopItem();
 			shopItem.setIsdeleted(false);
 			shopItem.setShopId(shopId);
+			shopItem.setItemIds(itemIdValues);
 			List<ShopItem> shopItemList = query(shopItem);
+			//上架的商品门店包含时
 			if (CollectionUtils.isNotEmpty(shopItemList)) {
-				List<Integer> itemIdValues = new ArrayList<Integer>();
+				Map<Integer, ShopItem> itemMap = new HashMap<Integer, ShopItem>();
 				for (ShopItem item : shopItemList) {
-					itemIdValues.add(item.getItemId());
+					if (!itemMap.containsKey(item.getItemId())) {
+						itemMap.put(item.getItemId(), item);
+					}
 				}
-				String[] itemIdArray = itemIds.split(",");
-				int i = 0;
-				for (ShopItem item : shopItemList) {
-					if (itemIdValues.contains(Integer.parseInt(itemIdArray[i]))) {
-						i++;
-						if ("true".equals(item.getOnline()))
+				for (int i = 0; i < itemIdArray.length; i++) {
+					int itemId = Integer.parseInt(itemIdArray[i]);
+					if (itemMap.containsKey(itemId)) {
+						ShopItem item = itemMap.get(itemId);
+						if (item.getOnline())
 							continue;
-						else if ("false".equals(item.getOnline())) {
+						else {
 							item.setOnline(true);
 							edit(item);
 						}
@@ -204,10 +214,15 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 						shop.setShopId(shopId);
 						shop.setOnline(true);
 						add(shop);
-						i++;
 					}
-					if (i > itemIdArray.length - 1)
-						break;
+				}
+			} else {
+				for(Integer itemId :itemIdValues ) {
+					ShopItem shop = new ShopItem();
+					shop.setItemId(itemId);
+					shop.setShopId(shopId);
+					shop.setOnline(true);
+					add(shop);
 				}
 			}
 		}
@@ -218,15 +233,9 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 	public void updateItemOnline(Integer itemId, Integer shopId) {
 		ShopItem shopItem = getByShopIdAndItemId(shopId, itemId);
 		if (shopItem != null) {
-			if ("false".equals(shopItem.getOnline()) && "false".equals(shopItem.getIsdeleted())) {
+			if (!shopItem.getOnline()) {
 				shopItem.setOnline(true);
 				edit(shopItem);
-			} else if ("true".equals(shopItem.getIsdeleted())) {
-				ShopItem item = new ShopItem();
-				item.setOnline(true);
-				item.setItemId(itemId);
-				item.setShopId(shopId);
-				add(item);
 			}
 		} else {
 			ShopItem item = new ShopItem();
@@ -251,10 +260,12 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 	}
 
 	@Override
-	public void updateShopItemOffline(Integer shopItemId) {
-		ShopItem shopItem = get(shopItemId);
-		shopItem.setOnline(false);
-		edit(shopItem);
+	public void updateShopItemOffline(Integer itemId, Integer shopId) {
+		ShopItem shopItem = getByShopIdAndItemId(shopId, itemId, true);
+		if (shopItem != null) {
+			shopItem.setOnline(false);
+			edit(shopItem);
+		}
 	}
 
 	@Override
@@ -269,8 +280,8 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 	}
 
 	@Override
-	public void updateShopItemQuantity( Integer shopItemId, Integer quantity) {
-		ShopItem shopItem=get(shopItemId);
+	public void updateShopItemQuantity( Integer itemId,Integer shopId, Integer quantity) {
+		ShopItem shopItem=getByShopIdAndItemId(shopId,itemId);
 		shopItem.setQuantity(quantity);
 		edit(shopItem);
 	}
@@ -335,6 +346,12 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 			}
 		}
 		return dataGrid;
+	}
+
+	@Override
+	public void deleteShopItem(Integer itemId, Integer shopId) {
+		ShopItem shopItem = getByShopIdAndItemId(shopId, itemId);
+		delete(shopItem.getId());
 	}
 
 }

@@ -1,4 +1,4 @@
-﻿﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%> 
@@ -16,7 +16,7 @@
 	var dataGrid;
 	$(function() {
 		dataGrid = $('#dataGrid').datagrid({
-			url : '${pageContext.request.contextPath}/deliverOrderController/dataGrid',
+			url : '${pageContext.request.contextPath}/deliverOrderController/dataGrid?id',
 			fit : true,
 			fitColumns : true,
 			border : false,
@@ -35,7 +35,9 @@
 				field : 'id',
 				title : '运单ID',
 				width : 50,
-				hidden : true
+                formatter : function (value, row, index) {
+                    return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
+                }
 				},  {
 				field : 'supplierId',
 				title : '供应商ID',
@@ -43,21 +45,22 @@
 				}, {
                 field : 'supplierName',
                 title : '供应商名称',
-                width : 50
+                width : 80
                 }, {
 				field : 'amount',
 				title : '总金额',
+				align:"right",
 				width : 50		
 				}, {
-				field : 'status',
+				field : 'statusName',
 				title : '订单状态',
 				width : 50		
 				}, {
-				field : 'deliveryStatus',
+				field : 'deliveryStatusName',
 				title : '配送状态',
 				width : 50		
 				}, {
-				field : 'shopPayStatus',
+				field : 'shopPayStatusName',
 				title : '结算状态',
 				width : 50		
 				}] ],
@@ -117,16 +120,12 @@
 	}
 
 	function viewFun(id) {
-		if (id == undefined) {
-			var rows = dataGrid.datagrid('getSelections');
-			id = rows[0].id;
-		}
-		parent.$.modalDialog({
-			title : '查看数据',
-			width : 780,
-			height : 500,
-			href : '${pageContext.request.contextPath}/deliverOrderController/view?id=' + id
-		});
+        var href = '${pageContext.request.contextPath}/deliverOrderController/view?id=' + id;
+        parent.$("#index_tabs").tabs('add', {
+            title : '运单详情-' + id,
+            content : '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            closable : true
+        });
 	}
 
 	function addFun() {

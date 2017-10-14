@@ -4,6 +4,8 @@ import com.bx.ant.pageModel.Supplier;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
+import java.util.List;
+
 /**
  * 
  * @author John
@@ -50,5 +52,12 @@ public interface SupplierServiceI {
 	 * @param id
 	 */
 	public void delete(Integer id);
+
+	/**
+	 * 查询供应商对象信息
+	 * @param supplier
+	 * @return
+	 */
+	public List<Supplier> query(Supplier supplier);
 
 }

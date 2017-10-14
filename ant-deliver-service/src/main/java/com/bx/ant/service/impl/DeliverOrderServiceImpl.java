@@ -1,18 +1,14 @@
 package com.bx.ant.service.impl;
 
 import com.bx.ant.dao.DeliverOrderItemDaoI;
-import com.bx.ant.pageModel.DeliverOrderExt;
+import com.bx.ant.pageModel.*;
 import com.bx.ant.service.*;
 import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderDaoI;
 import com.bx.ant.model.TdeliverOrder;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
-import com.bx.ant.pageModel.DeliverOrder;
-import com.bx.ant.pageModel.DeliverOrderItem;
-import com.bx.ant.pageModel.DeliverOrderLog;
-import com.bx.ant.pageModel.DeliverOrderShop;
-import com.bx.ant.pageModel.DeliverOrderShopItem;
+
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -47,6 +43,9 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 
 	@Autowired
 	private DeliverOrderLogServiceI deliverOrderLogService;
+
+	@Autowired
+	private SupplierServiceI supplierService;
 
 
 	@Override
@@ -135,6 +134,10 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 					whereHql += " and t.status in (:alist)";
 					params.put("alist", ext.getStatusList());
 				}
+			}
+			if (!F.empty(deliverOrder.getId())) {
+				whereHql += " and t.id = :id";
+				params.put("id", deliverOrder.getId());
 			}
 		}	
 		return whereHql;
@@ -337,5 +340,58 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	@Override
 	public  void editAndAddLog(DeliverOrder deliverOrder, String logType, String content) {
 		editAndAddLog(deliverOrder, logType, content, null);
+	}
+
+	@Override
+	public DataGrid dataGridWithName(DeliverOrder deliverOrder, PageHelper ph) {
+		DataGrid dataGrid = dataGrid(deliverOrder, ph);
+		List<DeliverOrder> deliverOrders = dataGrid.getRows();
+		if (CollectionUtils.isNotEmpty(deliverOrders)) {
+			Integer[] supplierIds = new Integer[deliverOrders.size()];
+			int index = 0;
+			for (DeliverOrder order : deliverOrders) {
+				supplierIds[index++] = order.getSupplierId();
+			}
+			SupplierQuery supplierQuery = new SupplierQuery();
+			supplierQuery.setIsdeleted(false);
+			supplierQuery.setSupplierIds(supplierIds);
+			List<Supplier> suppliers = supplierService.query(supplierQuery);
+			if (CollectionUtils.isNotEmpty(suppliers)) {
+				Map<Integer, String> supplierMap = new HashMap<Integer, String>();
+				for (Supplier supplier : suppliers) {
+					if (!supplierMap.containsKey(supplier.getId())) {
+						supplierMap.put(supplier.getId(), supplier.getName());
+					}
+				}
+				List<DeliverOrderQuery> deliverOrderQueries = new ArrayList<DeliverOrderQuery>();
+				for (DeliverOrder order : deliverOrders) {
+					DeliverOrderQuery deliverOrderQuery = new DeliverOrderQuery();
+					BeanUtils.copyProperties(order, deliverOrderQuery);
+					deliverOrderQuery.setSupplierName(supplierMap.get(order.getSupplierId()));
+					deliverOrderQuery.setStatusName(order.getStatus());
+					deliverOrderQuery.setShopPayStatusName(order.getShopPayStatus());
+					deliverOrderQuery.setDeliveryStatusName(order.getDeliveryStatus());
+					deliverOrderQueries.add(deliverOrderQuery);
+				}
+				DataGrid dg = new DataGrid();
+				dg.setRows(deliverOrderQueries);
+				dg.setTotal(dataGrid.getTotal());
+				return dg;
+			}
+		}
+		return dataGrid;
+	}
+
+	@Override
+	public DeliverOrderQuery getDeliverOrderView(Long id) {
+		DeliverOrder deliverOrder = get(id);
+		DeliverOrderQuery deliverOrderQuery = new DeliverOrderQuery();
+		BeanUtils.copyProperties(deliverOrder, deliverOrderQuery);
+		Supplier supplier = supplierService.get(deliverOrderQuery.getSupplierId());
+		deliverOrderQuery.setSupplierName(supplier.getName());
+		deliverOrderQuery.setStatusName(deliverOrder.getStatus());
+		deliverOrderQuery.setShopPayStatusName(deliverOrder.getShopPayStatus());
+		deliverOrderQuery.setDeliveryStatusName(deliverOrder.getDeliveryStatus());
+		return deliverOrderQuery;
 	}
 }
