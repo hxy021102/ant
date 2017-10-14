@@ -2,7 +2,7 @@ package com.bx.ant.controller;
 
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderShopServiceI;
-import com.bx.ant.pageModel.DeliverOrder;
+import com.mobian.pageModel.DeliverOrder;
 import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.MbShopServiceI;

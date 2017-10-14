@@ -9,5 +9,5 @@ import com.bx.ant.model.TshopDeliverAccount;
  * 
  */
 public interface ShopDeliverAccountDaoI extends BaseDaoI<TshopDeliverAccount> {
-    TshopDeliverAccount getById(Integer id);
+
 }

@@ -1,4 +1,4 @@
-package com.bx.ant.pageModel;
+package com.mobian.pageModel;
 
 import java.util.Date;
 
@@ -20,7 +20,6 @@ public class DeliverOrderShopItem implements java.io.Serializable {
 	private Integer inPrice;
 	private Integer freight;
 	private Integer quantity;
-
 
 	
 

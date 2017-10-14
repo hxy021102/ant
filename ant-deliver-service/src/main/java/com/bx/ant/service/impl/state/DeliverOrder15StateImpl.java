@@ -4,8 +4,8 @@ import com.bx.ant.service.DeliverOrderLogServiceI;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.bx.ant.service.DeliverOrderState;
-import com.bx.ant.pageModel.DeliverOrder;
-import com.bx.ant.pageModel.DeliverOrderShop;
+import com.mobian.pageModel.DeliverOrder;
+import com.mobian.pageModel.DeliverOrderShop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +43,7 @@ public class DeliverOrder15StateImpl implements DeliverOrderState {
         DeliverOrder orderNew = new DeliverOrder();
         orderNew.setId(deliverOrder.getId());
         orderNew.setStatus(prefix + getStateName());
-        deliverOrderService.editAndAddLog(orderNew, deliverOrderLogService.TYPE_REFUSE_DELIVER_ORDER,"[运单被拒绝]:" + deliverOrder.getRemark());
+        deliverOrderService.editAndAddLog(orderNew, deliverOrderLogService.TYPE_REFUSE_DELIVER_ORDER,"运单被拒绝");
 
         //修改运单门店状态
         DeliverOrderShop deliverOrderShop = new DeliverOrderShop();

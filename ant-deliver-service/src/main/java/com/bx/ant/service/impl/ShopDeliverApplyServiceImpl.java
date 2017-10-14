@@ -8,7 +8,7 @@ import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.PageHelper;
-import com.bx.ant.pageModel.ShopDeliverApply;
+import com.mobian.pageModel.ShopDeliverApply;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -194,22 +194,5 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 			}
 		}
 		return shopDeliverApplyList;
-	}
-
-	@Override
-	public List<ShopDeliverApply> query(ShopDeliverApply shopDeliverApply) {
-		List<ShopDeliverApply> ol = new ArrayList<ShopDeliverApply>();
-		String hql = " from TshopDeliverApply t ";
-		Map<String, Object> params = new HashMap<String, Object>();
-		String where = whereHql(shopDeliverApply, params);
-		List<TshopDeliverApply> l = shopDeliverApplyDao.find(hql + where, params);
-		if (CollectionUtils.isNotEmpty(l)) {
-			for (TshopDeliverApply t : l) {
-				ShopDeliverApply o= new ShopDeliverApply();
-				BeanUtils.copyProperties(t, o);
-				ol.add(o);
-			}
-		}
-		return ol;
 	}
 }

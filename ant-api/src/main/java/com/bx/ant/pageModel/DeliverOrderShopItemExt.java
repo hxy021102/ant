@@ -1,6 +1,6 @@
 package com.bx.ant.pageModel;
 
-import com.bx.ant.pageModel.DeliverOrderShopItem;
+import com.mobian.pageModel.DeliverOrderShopItem;
 
 /**
  * Created by wanxp on 17-9-27.
@@ -8,8 +8,6 @@ import com.bx.ant.pageModel.DeliverOrderShopItem;
 public class DeliverOrderShopItemExt extends DeliverOrderShopItem {
     private String itemName;
     private String pictureUrl;
-    private String quantityUnitName;
-
 
     public String getItemName() {
         return itemName;
@@ -25,13 +23,5 @@ public class DeliverOrderShopItemExt extends DeliverOrderShopItem {
 
     public void setPictureUrl(String pictureUrl) {
         this.pictureUrl = pictureUrl;
-    }
-
-    public String getQuantityUnitName() {
-        return quantityUnitName;
-    }
-
-    public void setQuantityUnitName(String quantityUnitName) {
-        this.quantityUnitName = quantityUnitName;
     }
 }

@@ -3,10 +3,10 @@ package com.bx.ant.service.allocation;
 import com.bx.ant.pageModel.DeliverOrderExt;
 import com.bx.ant.service.*;
 import com.mobian.pageModel.*;
-import com.bx.ant.pageModel.DeliverOrder;
-import com.bx.ant.pageModel.DeliverOrderItem;
-import com.bx.ant.pageModel.DeliverOrderShop;
-import com.bx.ant.pageModel.ShopDeliverApply;
+import com.mobian.pageModel.DeliverOrder;
+import com.mobian.pageModel.DeliverOrderItem;
+import com.mobian.pageModel.DeliverOrderShop;
+import com.mobian.pageModel.ShopDeliverApply;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.util.GeoUtil;
 import org.slf4j.Logger;
@@ -59,11 +59,11 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
         for (DeliverOrder deliverOrder : deliverOrderList) {
             try {
                 //3、计算待分配订单的数字地址
-                if (deliverOrder.getLongitude() == null || deliverOrder.getLatitude() == null) {
+               /* if (deliverOrder.getLongitude() == null || deliverOrder.getLatitude() == null) {
                     BigDecimal[] point = GeoUtil.getPosition(deliverOrder.getDeliveryAddress());
                     deliverOrder.setLongitude(point[0]);
                     deliverOrder.setLatitude(point[1]);
-                }
+                }*/
                 //4、计算最近距离点
                 MbShop minMbShop = null;
                 double minDistance = 0;

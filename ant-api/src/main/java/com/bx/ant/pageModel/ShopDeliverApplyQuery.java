@@ -1,7 +1,7 @@
 package com.bx.ant.pageModel;
 
 import com.mobian.pageModel.MbShop;
-import com.bx.ant.pageModel.ShopDeliverApply;
+import com.mobian.pageModel.ShopDeliverApply;
 
 import java.util.Date;
 

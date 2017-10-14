@@ -1,6 +1,6 @@
 package com.bx.ant.pageModel;
 
-import com.bx.ant.pageModel.DeliverOrderItem;
+import com.mobian.pageModel.DeliverOrderItem;
 
 /**
  * Created by wanxp on 17-9-27.

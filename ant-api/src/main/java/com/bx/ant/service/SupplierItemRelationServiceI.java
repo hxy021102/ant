@@ -1,6 +1,6 @@
 package com.bx.ant.service;
 
-import com.bx.ant.pageModel.SupplierItemRelation;
+import com.mobian.pageModel.SupplierItemRelation;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 

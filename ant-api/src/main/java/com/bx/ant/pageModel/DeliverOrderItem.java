@@ -1,4 +1,4 @@
-package com.bx.ant.pageModel;
+package com.mobian.pageModel;
 
 import java.util.Date;
 

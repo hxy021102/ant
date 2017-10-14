@@ -1,11 +1,10 @@
 package com.bx.ant.pageModel;
 
-import com.bx.ant.pageModel.DeliverOrder;
-import com.bx.ant.pageModel.DeliverOrderItem;
-import com.bx.ant.pageModel.DeliverOrderShop;
-import com.bx.ant.pageModel.DeliverOrderShopItem;
+import com.mobian.pageModel.DeliverOrder;
+import com.mobian.pageModel.DeliverOrderItem;
+import com.mobian.pageModel.DeliverOrderShop;
+import com.mobian.pageModel.DeliverOrderShopItem;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -14,7 +13,6 @@ import java.util.List;
 public class DeliverOrderExt extends DeliverOrder {
 
     private String[] statusList;
-    private BigDecimal distance;
 
     private List<DeliverOrderItem> deliverOrderItemList;
     private List<DeliverOrderShopItem> deliverOrderShopItemList;
@@ -41,13 +39,5 @@ public class DeliverOrderExt extends DeliverOrder {
 
     public void setStatusList(String[] statusList) {
         this.statusList = statusList;
-    }
-
-    public BigDecimal getDistance() {
-        return distance;
-    }
-
-    public void setDistance(BigDecimal distance) {
-        this.distance = distance;
     }
 }

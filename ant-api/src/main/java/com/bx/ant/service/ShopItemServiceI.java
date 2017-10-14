@@ -1,7 +1,7 @@
 package com.bx.ant.service;
 
 import com.mobian.pageModel.MbItem;
-import com.bx.ant.pageModel.ShopItem;
+import com.mobian.pageModel.ShopItem;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 

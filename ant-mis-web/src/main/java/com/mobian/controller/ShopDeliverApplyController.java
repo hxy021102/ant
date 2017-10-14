@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.bx.ant.pageModel.ShopDeliverApplyQuery;
 import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.pageModel.*;
-import com.bx.ant.pageModel.ShopDeliverApply;
+import com.mobian.pageModel.ShopDeliverApply;
 import com.mobian.util.ConfigUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -80,9 +80,8 @@ public class ShopDeliverApplyController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/addPage")
-	public String addPage(HttpServletRequest request,Integer shopId) {
+	public String addPage(HttpServletRequest request) {
 		ShopDeliverApply shopDeliverApply = new ShopDeliverApply();
-		request.setAttribute("shopId",shopId);
 		return "/shopdeliverapply/shopDeliverApplyAdd";
 	}
 
@@ -95,20 +94,9 @@ public class ShopDeliverApplyController extends BaseController {
 	@ResponseBody
 	public Json add(ShopDeliverApply shopDeliverApply) {
 		Json j = new Json();
-		ShopDeliverApply deliverApply = new ShopDeliverApply();
-		deliverApply.setStatus("DAS02");
-		deliverApply.setAccountId(shopDeliverApply.getAccountId());
-		List<ShopDeliverApply> shopDeliverApplies =	shopDeliverApplyService.query(deliverApply);
-		if(shopDeliverApplies != null && shopDeliverApplies.size() > 0) {
-			j.setSuccess(false);
-			j.setMsg("该账号已经开通过，请更换账号！");
-		}else {
-			shopDeliverApply.setResult("后台开通");
-			shopDeliverApply.setStatus("DAS02");
-			shopDeliverApplyService.add(shopDeliverApply);
-			j.setSuccess(true);
-			j.setMsg("开通成功！");
-		}
+		shopDeliverApplyService.add(shopDeliverApply);
+		j.setSuccess(true);
+		j.setMsg("添加成功！");
 		return j;
 	}
 

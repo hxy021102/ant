@@ -5,8 +5,8 @@ import com.bx.ant.dao.DeliverOrderShopDaoI;
 import com.bx.ant.model.TdeliverOrderShop;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.DataGrid;
-import com.bx.ant.pageModel.DeliverOrder;
-import com.bx.ant.pageModel.DeliverOrderShop;
+import com.mobian.pageModel.DeliverOrder;
+import com.mobian.pageModel.DeliverOrderShop;
 import com.mobian.pageModel.PageHelper;
 import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.mobian.util.MyBeanUtils;
@@ -154,7 +154,7 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		List<DeliverOrderShop> deliverOrderShops = query(deliverOrderShop);
 		DeliverOrderShop o = new DeliverOrderShop();
 		if (CollectionUtils.isNotEmpty(deliverOrderShops)  && deliverOrderShops.size() == 1) {
-			//只对第一个结果进行处理
+			//TODO 只对第一个结果进行处理
 			o = deliverOrderShops.get(0);
 			o.setStatus(status);
 			edit(o);

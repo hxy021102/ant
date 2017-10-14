@@ -270,7 +270,7 @@ public class MbBalanceServiceImpl extends BaseServiceImpl<MbBalance> implements 
 		mbBalanceLogTarget.setBalanceId(balanceTarget.getId());
 		mbBalanceLogTarget.setAmount( +amount);
 		mbBalanceLogTarget.setRefId(balanceSource.getId() + "");
-		mbBalanceLogTarget.setRefType("BT051");
+		mbBalanceLogTarget.setRefType("BT050");
 		mbBalanceLogTarget.setReason("门店账户金额转入");
 
 		mbBalanceLogService.addAndUpdateBalance(mbBalanceLogSource);

@@ -1,6 +1,6 @@
 package com.bx.ant.pageModel;
 
-import com.bx.ant.pageModel.ShopItem;
+import com.mobian.pageModel.ShopItem;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Date;

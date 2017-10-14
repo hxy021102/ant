@@ -1,4 +1,4 @@
-package com.bx.ant.pageModel;
+package com.mobian.pageModel;
 
 import java.math.BigDecimal;
 import java.util.Date;
