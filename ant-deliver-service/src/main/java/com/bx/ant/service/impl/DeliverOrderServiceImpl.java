@@ -2,21 +2,17 @@ package com.bx.ant.service.impl;
 
 import com.bx.ant.dao.DeliverOrderItemDaoI;
 import com.bx.ant.pageModel.DeliverOrderExt;
-import com.bx.ant.pageModel.DeliverOrderQuery;
-import com.bx.ant.pageModel.SupplierQuery;
 import com.bx.ant.service.*;
 import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderDaoI;
 import com.bx.ant.model.TdeliverOrder;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
-import com.mobian.pageModel.DeliverOrder;
-import com.mobian.pageModel.DeliverOrderItem;
-import com.mobian.pageModel.DeliverOrderLog;
-import com.mobian.pageModel.DeliverOrderShop;
-import com.mobian.pageModel.DeliverOrderShopItem;
-import com.mobian.pageModel.Supplier;
-import com.mobian.util.BeanUtil;
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderItem;
+import com.bx.ant.pageModel.DeliverOrderLog;
+import com.bx.ant.pageModel.DeliverOrderShop;
+import com.bx.ant.pageModel.DeliverOrderShopItem;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -51,9 +47,6 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 
 	@Autowired
 	private DeliverOrderLogServiceI deliverOrderLogService;
-
-	@Autowired
-	private SupplierServiceI supplierService;
 
 
 	@Override
@@ -96,8 +89,8 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 				params.put("amount", deliverOrder.getAmount());
 			}		
 			if (!F.empty(deliverOrder.getStatus())) {
-				whereHql += " and t.status = :status";
-				params.put("status", deliverOrder.getStatus());
+				whereHql += " and t.status in (:status)";
+				params.put("status", deliverOrder.getStatus().split(","));
 			}		
 			if (!F.empty(deliverOrder.getDeliveryStatus())) {
 				whereHql += " and t.deliveryStatus = :deliveryStatus";
@@ -143,10 +136,6 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 					params.put("alist", ext.getStatusList());
 				}
 			}
-			if (!F.empty(deliverOrder.getId())) {
-				whereHql += " and t.id = :id";
-				params.put("id", deliverOrder.getId());
-			}
 		}	
 		return whereHql;
 	}
@@ -187,13 +176,11 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		//deliverOrderDao.delete(deliverOrderDao.get(TdeliverOrder.class, id));
 	}
 
-	@Override
-	public void fillInfo(DeliverOrderExt deliverOrderExt) {
-		fillDeliverOrderItemInfo(deliverOrderExt);
+	protected void fillInfo(DeliverOrderExt deliverOrderExt) {
+		fillDeliverOrderShopItemInfo(deliverOrderExt);
 	}
 
-	@Override
-	public void fillDeliverOrderItemInfo(DeliverOrderExt deliverOrderExt) {
+	protected void fillDeliverOrderItemInfo(DeliverOrderExt deliverOrderExt) {
 		//填充明细信息
 		DeliverOrderItem deliverOrderItem = new DeliverOrderItem();
 		deliverOrderItem.setDeliverOrderId(deliverOrderExt.getId());
@@ -201,13 +188,25 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		deliverOrderExt.setDeliverOrderItemList(deliverOrderItems);
 	}
 
-	@Override
-	public void fillDeliverOrderShopItemInfo(DeliverOrderExt deliverOrderExt) {
+	protected void fillDeliverOrderShopItemInfo(DeliverOrderExt deliverOrderExt) {
 		//填充明细信息
 		DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
 		deliverOrderShopItem.setDeliverOrderId(deliverOrderExt.getId());
 		List<DeliverOrderShopItem> deliverOrderShopItems = deliverOrderShopItemService.list(deliverOrderShopItem);
 		deliverOrderExt.setDeliverOrderShopItemList(deliverOrderShopItems);
+	}
+
+	protected void fillDeliverOrderShopInfo(DeliverOrderExt deliverOrderExt) {
+		DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+		if (!F.empty(deliverOrderExt.getShopId())) {
+			deliverOrderShop.setShopId(deliverOrderExt.getShopId());
+			deliverOrderShop.setDeliverOrderId(deliverOrderExt.getId());
+			List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(deliverOrderShop);
+			if (CollectionUtils.isNotEmpty(deliverOrderShops) && deliverOrderShops.size() == 1) {
+				deliverOrderShop = deliverOrderShops.get(0);
+				deliverOrderExt.setDistance(deliverOrderShop.getDistance());
+			}
+		}
 	}
 
 
@@ -244,7 +243,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		DeliverOrder currentDeliverOrder = get(id);
 		DeliverOrderState.deliverOrder.set(currentDeliverOrder);
 		String deliverOrderStatus = currentDeliverOrder.getStatus();
-		DeliverOrderState deliverOrderState = deliverOrderStateFactory.get("deliverOrder" + deliverOrderStatus.substring(2) + "StateImpl");
+		DeliverOrderState deliverOrderState = deliverOrderStateFactory.get("deliverOrder" + deliverOrderStatus.substring(3) + "StateImpl");
 		return deliverOrderState;
 	}
 
@@ -316,6 +315,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 				DeliverOrderExt ox = new DeliverOrderExt();
 				BeanUtils.copyProperties(o, ox);
 				fillDeliverOrderShopItemInfo(ox);
+				fillDeliverOrderShopInfo(ox);
 				ol.add(ox);
 			}
 		}
@@ -337,58 +337,5 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	@Override
 	public  void editAndAddLog(DeliverOrder deliverOrder, String logType, String content) {
 		editAndAddLog(deliverOrder, logType, content, null);
-	}
-
-	@Override
-	public DataGrid dataGridWithName(DeliverOrder deliverOrder, PageHelper ph) {
-		DataGrid dataGrid = dataGrid(deliverOrder, ph);
-		List<DeliverOrder> deliverOrders = dataGrid.getRows();
-		if (CollectionUtils.isNotEmpty(deliverOrders)) {
-			Integer[] supplierIds = new Integer[deliverOrders.size()];
-			int index = 0;
-			for (DeliverOrder order : deliverOrders) {
-				supplierIds[index++] = order.getSupplierId();
-			}
-			SupplierQuery supplierQuery = new SupplierQuery();
-			supplierQuery.setIsdeleted(false);
-			supplierQuery.setSupplierIds(supplierIds);
-			List<Supplier> suppliers = supplierService.query(supplierQuery);
-			if (CollectionUtils.isNotEmpty(suppliers)) {
-				Map<Integer, String> supplierMap = new HashMap<Integer, String>();
-				for (Supplier supplier : suppliers) {
-					if (!supplierMap.containsKey(supplier.getId())) {
-						supplierMap.put(supplier.getId(), supplier.getName());
-					}
-				}
-				List<DeliverOrderQuery> deliverOrderQueries = new ArrayList<DeliverOrderQuery>();
-				for (DeliverOrder order : deliverOrders) {
-					DeliverOrderQuery deliverOrderQuery = new DeliverOrderQuery();
-					BeanUtils.copyProperties(order, deliverOrderQuery);
-					deliverOrderQuery.setSupplierName(supplierMap.get(order.getSupplierId()));
-					deliverOrderQuery.setStatusName(order.getStatus());
-					deliverOrderQuery.setShopPayStatusName(order.getShopPayStatus());
-					deliverOrderQuery.setDeliveryStatusName(order.getDeliveryStatus());
-					deliverOrderQueries.add(deliverOrderQuery);
-				}
-				DataGrid dg = new DataGrid();
-				dg.setRows(deliverOrderQueries);
-				dg.setTotal(dataGrid.getTotal());
-				return dg;
-			}
-		}
-		return dataGrid;
-	}
-
-	@Override
-	public DeliverOrderQuery getDeliverOrderView(Long id) {
-		DeliverOrder deliverOrder = get(id);
-		DeliverOrderQuery deliverOrderQuery = new DeliverOrderQuery();
-		BeanUtils.copyProperties(deliverOrder, deliverOrderQuery);
-		Supplier supplier = supplierService.get(deliverOrderQuery.getSupplierId());
-		deliverOrderQuery.setSupplierName(supplier.getName());
-		deliverOrderQuery.setStatusName(deliverOrder.getStatus());
-		deliverOrderQuery.setShopPayStatusName(deliverOrder.getShopPayStatus());
-		deliverOrderQuery.setDeliveryStatusName(deliverOrder.getDeliveryStatus());
-		return deliverOrderQuery;
 	}
 }

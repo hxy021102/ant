@@ -1,7 +1,7 @@
 package com.bx.ant.service;
 
 import com.mobian.pageModel.MbItem;
-import com.mobian.pageModel.ShopItem;
+import com.bx.ant.pageModel.ShopItem;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
@@ -89,10 +89,9 @@ public interface ShopItemServiceI {
 
 	/**
 	 * 门店某种商品下架
-	 * @param itemId
-	 * @param shopId
+	 * @param shopItemId
 	 */
-	void updateShopItemOffline(Integer itemId,Integer shopId);
+	void updateShopItemOffline(Integer shopItemId);
 
 	/**
 	 * 批量删除门店商品
@@ -103,11 +102,10 @@ public interface ShopItemServiceI {
 
 	/**
 	 * 修改门店商品数量
-	 * @param itemId
-	 * @param shopId
+	 * @param shopItemId
 	 * @param quantity
 	 */
-	void updateShopItemQuantity( Integer itemId,Integer shopId,Integer quantity);
+	void updateShopItemQuantity( Integer shopItemId,Integer quantity);
 
 	/**
 	 * 获取门店商品和商品名称
@@ -124,12 +122,5 @@ public interface ShopItemServiceI {
 	 * @return
 	 */
 	DataGrid dataGridWithQuantity(MbItem mbItem, PageHelper ph, Integer shopId);
-
-	/**
-	 * 删除指定的商品
-	 * @param itemId
-	 * @param shopId
-	 */
-	void deleteShopItem(Integer itemId,Integer shopId);
 
 }

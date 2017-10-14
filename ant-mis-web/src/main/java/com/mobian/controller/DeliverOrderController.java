@@ -9,9 +9,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bx.ant.pageModel.DeliverOrderQuery;
 import com.mobian.pageModel.Colum;
-import com.mobian.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrder;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
@@ -57,7 +56,7 @@ public class DeliverOrderController extends BaseController {
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(DeliverOrder deliverOrder, PageHelper ph) {
-		return deliverOrderService.dataGridWithName(deliverOrder, ph);
+		return deliverOrderService.dataGrid(deliverOrder, ph);
 	}
 	/**
 	 * 获取DeliverOrder数据表格excel
@@ -113,9 +112,9 @@ public class DeliverOrderController extends BaseController {
 	 */
 	@RequestMapping("/view")
 	public String view(HttpServletRequest request, Long id) {
-		DeliverOrderQuery deliverOrderQuery = deliverOrderService.getDeliverOrderView(id);
-		request.setAttribute("deliverOrder", deliverOrderQuery);
-		return "deliverorder/deliverOrderView";
+		DeliverOrder deliverOrder = deliverOrderService.get(id);
+		request.setAttribute("deliverOrder", deliverOrder);
+		return "/deliverorder/deliverOrderView";
 	}
 
 	/**

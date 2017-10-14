@@ -8,10 +8,10 @@ import com.bx.ant.model.TdeliverOrderShopItem;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
 import com.bx.ant.service.DeliverOrderShopItemServiceI;
-import com.mobian.pageModel.DeliverOrderItem;
-import com.mobian.pageModel.DeliverOrderShop;
-import com.mobian.pageModel.DeliverOrderShopItem;
-import com.mobian.pageModel.ShopItem;
+import com.bx.ant.pageModel.DeliverOrderItem;
+import com.bx.ant.pageModel.DeliverOrderShop;
+import com.bx.ant.pageModel.DeliverOrderShopItem;
+import com.bx.ant.pageModel.ShopItem;
 import com.mobian.service.MbItemServiceI;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -186,6 +186,7 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 			if (item != null) {
 				deliverOrderShopItemExt.setItemName(item.getName());
 				deliverOrderShopItemExt.setPictureUrl(item.getUrl());
+				deliverOrderShopItemExt.setQuantityUnitName(item.getQuantityUnitName());
 			}
 		}
 	}

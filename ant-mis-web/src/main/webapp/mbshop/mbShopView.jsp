@@ -275,106 +275,106 @@
         }
         var loadShopCouponsDataGrid;
         function loadShopCouponsDataGrid() {
-             return loadShopCouponsDataGrid = $('#shopCouponsDataGrid').datagrid({
-                 url : '${pageContext.request.contextPath}/mbShopCouponsController/dataGrid?shopId=' + ${mbShopExt.id},
-                 queryParams:{'status':'NS001'},
-                 fit : true,
-                 fitColumns : true,
-                 border : false,
-                 pagination : true,
-                 idField : 'id',
-                 pageSize : 10,
-                 pageList : [ 10, 20, 30, 40, 50 ],
-                 sortName : 'id',
-                 sortOrder : 'desc',
-                 checkOnSelect : false,
-                 selectOnCheck : false,
-                 nowrap : false,
-                 striped : true,
-                 rownumbers : true,
-                 singleSelect : true,
-                 columns : [ [ {
-                     field : 'id',
-                     title : '编号',
-                     width : 150,
-                     hidden : true
-                 }, {
-                     field : 'isDelete',
-                     title : '<%=TmbShopCoupons.ALIAS_ISDELETED%>',
-                     width : 50,
-                     hidden : true
-                 },{
-                     field : 'addtime',
-                     title : '<%=TmbShopCoupons.ALIAS_ADDTIME%>',
-                     width : 50
-                 },
-                     {
-                     field : 'couponsName',
-                     title : '<%=TmbCoupons.ALIAS_NAME%>',
-                     width : 50,
-                     formatter: function (value, row, index) {
-                         var str = '';
-                         str += '&nbsp;';
-                         if ($.viewShopCoupons) {
-                             str += $.formatString('<a href="javascript:void(0);" onclick="viewCoupons(\'{0}\');" class="easyui-linkbutton">{1}</a>', row.couponsId, value);
-                         }
-                         return str;
-                     }
-                 },{
-                     field : 'quantityUsed',
-                     title : '<%=TmbShopCoupons.ALIAS_QUANTITY_USED%>',
-                     width : 45,
-                     align : 'right',
-                     formatter : function (value) {
-                         return value==null ? 0 : value ;
-                     }
-                 }, {
-                     field : 'quantityTotal',
-                     title : '<%=TmbShopCoupons.ALIAS_QUANTITY_TOTAL%>',
-                     width : 40,
-                     align : 'right',
-                     formatter : function (value) {
-                         return value==null ? 0 : value ;
-                     }
-                 }, {
-                     field : 'statusName',
-                     title : '<%=TmbShopCoupons.ALIAS_STATUS%>',
-                     width : 40
-                 }, {
-                     field : 'timeStart',
-                     title : '<%=TmbShopCoupons.ALIAS_TIME_START%>',
-                     width : 50
-                 }, {
-                     field : 'timeEnd',
-                     title : '<%=TmbShopCoupons.ALIAS_TIME_END%>',
-                     width : 50
-                 }, {
-                     field : 'remark',
-                     title : '<%=TmbShopCoupons.ALIAS_REMARK%>',
-                     width : 50
-                 },{
-                    field: 'action',
-                    title: '操作',
-                    width: 30,
-                    formatter: function (value, row, index) {
-                        var str = '';
-                        str += '&nbsp;';
-                        if ($.viewShopCoupons) {
-                            str += $.formatString('<img onclick="viewShopCoupons(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/map/magnifier.png');
+            return loadShopCouponsDataGrid = $('#shopCouponsDataGrid').datagrid({
+                url : '${pageContext.request.contextPath}/mbShopCouponsController/dataGrid?shopId=' + ${mbShopExt.id},
+                queryParams:{'status':'NS001'},
+                fit : true,
+                fitColumns : true,
+                border : false,
+                pagination : true,
+                idField : 'id',
+                pageSize : 10,
+                pageList : [ 10, 20, 30, 40, 50 ],
+                sortName : 'id',
+                sortOrder : 'desc',
+                checkOnSelect : false,
+                selectOnCheck : false,
+                nowrap : false,
+                striped : true,
+                rownumbers : true,
+                singleSelect : true,
+                columns : [ [ {
+                    field : 'id',
+                    title : '编号',
+                    width : 150,
+                    hidden : true
+                }, {
+                    field : 'isDelete',
+                    title : '<%=TmbShopCoupons.ALIAS_ISDELETED%>',
+                    width : 50,
+                    hidden : true
+                },{
+                    field : 'addtime',
+                    title : '<%=TmbShopCoupons.ALIAS_ADDTIME%>',
+                    width : 50
+                },
+                    {
+                        field : 'couponsName',
+                        title : '<%=TmbCoupons.ALIAS_NAME%>',
+                        width : 50,
+                        formatter: function (value, row, index) {
+                            var str = '';
+                            str += '&nbsp;';
+                            if ($.viewShopCoupons) {
+                                str += $.formatString('<a href="javascript:void(0);" onclick="viewCoupons(\'{0}\');" class="easyui-linkbutton">{1}</a>', row.couponsId, value);
+                            }
+                            return str;
                         }
-                        str += '&nbsp;';
-                        if ($.editShopCoupons && row.status != 'NS010') {
-                            str += $.formatString('<img onclick="editShopCoupons(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/pencil.png');
+                    },{
+                        field : 'quantityUsed',
+                        title : '<%=TmbShopCoupons.ALIAS_QUANTITY_USED%>',
+                        width : 45,
+                        align : 'right',
+                        formatter : function (value) {
+                            return value==null ? 0 : value ;
                         }
-                        str += '&nbsp;';
-                        if ($.deleteShopCoupons && row.status != 'NS010') {
-                            str += $.formatString('<img onclick="deleteShopCoupons(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/cancel.png');
+                    }, {
+                        field : 'quantityTotal',
+                        title : '<%=TmbShopCoupons.ALIAS_QUANTITY_TOTAL%>',
+                        width : 40,
+                        align : 'right',
+                        formatter : function (value) {
+                            return value==null ? 0 : value ;
                         }
-                        return str;
+                    }, {
+                        field : 'statusName',
+                        title : '<%=TmbShopCoupons.ALIAS_STATUS%>',
+                        width : 40
+                    }, {
+                        field : 'timeStart',
+                        title : '<%=TmbShopCoupons.ALIAS_TIME_START%>',
+                        width : 50
+                    }, {
+                        field : 'timeEnd',
+                        title : '<%=TmbShopCoupons.ALIAS_TIME_END%>',
+                        width : 50
+                    }, {
+                        field : 'remark',
+                        title : '<%=TmbShopCoupons.ALIAS_REMARK%>',
+                        width : 50
+                    },{
+                        field: 'action',
+                        title: '操作',
+                        width: 30,
+                        formatter: function (value, row, index) {
+                            var str = '';
+                            str += '&nbsp;';
+                            if ($.viewShopCoupons) {
+                                str += $.formatString('<img onclick="viewShopCoupons(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/map/magnifier.png');
+                            }
+                            str += '&nbsp;';
+                            if ($.editShopCoupons && row.status != 'NS010') {
+                                str += $.formatString('<img onclick="editShopCoupons(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/pencil.png');
+                            }
+                            str += '&nbsp;';
+                            if ($.deleteShopCoupons && row.status != 'NS010') {
+                                str += $.formatString('<img onclick="deleteShopCoupons(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/cancel.png');
+                            }
+                            return str;
+                        }
                     }
-                }
                 ]],
-                 toolbar: '#shopCouponsToolbar'
+                toolbar: '#shopCouponsToolbar'
             });
         }
 
@@ -433,91 +433,91 @@
                 ]]
             });
         }
-         var emptyBucketDataGrid;
+        var emptyBucketDataGrid;
         function loadEmptyBucketDataGrid() {
             return  emptyBucketDataGrid=$('#emptyBucketDataGrid').datagrid({
-                    url : '${pageContext.request.contextPath}/mbItemStockController/emptyBucketDataGrid?warehouseId='+'${mbShopExt.warehouseId}',
-                    fit : true,
-                    fitColumns : true,
-                    border : false,
-                    pagination : true,
-                    idField : 'id',
-                    pageSize : 10,
-                    pageList : [ 10, 20, 30, 40, 50,500 ],
-                    sortName : 'id',
-                    sortOrder : 'desc',
-                    checkOnSelect : false,
-                    selectOnCheck : false,
-                    nowrap : false,
-                    striped : true,
-                    rownumbers : true,
-                    singleSelect : true,
-                    columns : [ [ {
-                        field : 'id',
-                        title : '编号',
-                        width : 150,
-                        hidden : true
-                    }, {
-                        field : 'warehouseCode',
-                        title : '<%=TmbItemStock.ALIAS_WAREHOUSE_CODE%>',
-                        width : 20
-                    }, {
-                        field : 'warehouseName',
-                        title : '<%=TmbItemStock.ALIAS_WAREHOUSE_NAME%>',
-                        width : 50
-                    }, {
-                        field : 'itemCode',
-                        title : '商品编码',
-                        width : 50
-                    }, {
-                        field : 'itemName',
-                        title : '<%=TmbItemStock.ALIAS_ITEM_NAME%>',
-                        width : 50
-                    },{
-                        field : 'averagePrice',
-                        title : '<%=TmbItemStock.ALIAS_AVERAGE_PRICE%>',
-                        width : 25,
-                        align:"right",
-                        formatter:function(value){
-                            return $.formatMoney(value);
+                url : '${pageContext.request.contextPath}/mbItemStockController/emptyBucketDataGrid?warehouseId='+'${mbShopExt.warehouseId}',
+                fit : true,
+                fitColumns : true,
+                border : false,
+                pagination : true,
+                idField : 'id',
+                pageSize : 10,
+                pageList : [ 10, 20, 30, 40, 50,500 ],
+                sortName : 'id',
+                sortOrder : 'desc',
+                checkOnSelect : false,
+                selectOnCheck : false,
+                nowrap : false,
+                striped : true,
+                rownumbers : true,
+                singleSelect : true,
+                columns : [ [ {
+                    field : 'id',
+                    title : '编号',
+                    width : 150,
+                    hidden : true
+                }, {
+                    field : 'warehouseCode',
+                    title : '<%=TmbItemStock.ALIAS_WAREHOUSE_CODE%>',
+                    width : 20
+                }, {
+                    field : 'warehouseName',
+                    title : '<%=TmbItemStock.ALIAS_WAREHOUSE_NAME%>',
+                    width : 50
+                }, {
+                    field : 'itemCode',
+                    title : '商品编码',
+                    width : 50
+                }, {
+                    field : 'itemName',
+                    title : '<%=TmbItemStock.ALIAS_ITEM_NAME%>',
+                    width : 50
+                },{
+                    field : 'averagePrice',
+                    title : '<%=TmbItemStock.ALIAS_AVERAGE_PRICE%>',
+                    width : 25,
+                    align:"right",
+                    formatter:function(value){
+                        return $.formatMoney(value);
+                    }
+                },{
+                    field : 'quantity',
+                    title : '<%=TmbItemStock.ALIAS_QUANTITY%>',
+                    width : 25,
+                    formatter: function (value, row) {
+                        if (value && row.safeQuantity) {
+                            if (value <= row.safeQuantity) {
+                                return '<font color="red">'+value+'<font>';
+                            }
                         }
-                    },{
-                        field : 'quantity',
-                        title : '<%=TmbItemStock.ALIAS_QUANTITY%>',
-                        width : 25,
-                        formatter: function (value, row) {
-                            if (value && row.safeQuantity) {
-                                if (value <= row.safeQuantity) {
-                                    return '<font color="red">'+value+'<font>';
-                                }
-                            }
-                            return value;
+                        return value;
+                    }
+                },{
+                    field : 'orderQuantity',
+                    title : '<%=TmbItemStock.ALIAS_ORDER_QUANTITY%>',
+                    width : 25
+                },{
+                    field : 'od15Quantity',
+                    title : '捡货中',
+                    width : 20
+                }, {
+                    field : 'safeQuantity',
+                    title : '<%=TmbItemStock.ALIAS_SAFE_QUANTITY%>',
+                    width : 15
+                }, {
+                    field : 'action',
+                    title : '操作',
+                    width : 30,
+                    formatter : function(value, row, index) {
+                        var str = '';
+                        if ($.editShopStock) {
+                            str += $.formatString('<img onclick="editStock(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/pencil.png');
                         }
-                    },{
-                        field : 'orderQuantity',
-                        title : '<%=TmbItemStock.ALIAS_ORDER_QUANTITY%>',
-                        width : 25
-                    },{
-                        field : 'od15Quantity',
-                        title : '捡货中',
-                        width : 20
-                    }, {
-                        field : 'safeQuantity',
-                        title : '<%=TmbItemStock.ALIAS_SAFE_QUANTITY%>',
-                        width : 15
-                    }, {
-                        field : 'action',
-                        title : '操作',
-                        width : 30,
-                        formatter : function(value, row, index) {
-                            var str = '';
-                            if ($.editShopStock) {
-                                str += $.formatString('<img onclick="editStock(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/pencil.png');
-                            }
-                                return str;
-                            }
-                        } ] ],
-                });
+                        return str;
+                    }
+                } ] ],
+            });
         }
 
         $(function () {
@@ -781,6 +781,43 @@
                 closable: true
             });
         }
+        function addShopDeliverApply(id) {
+            parent.$.modalDialog({
+                title: '开通派单',
+                width: 550,
+                height: 350,
+                href: '${pageContext.request.contextPath}/shopDeliverApplyController/addPage?shopId='+ id,
+                buttons: [{
+                    text: '开通',
+                    handler: function () {
+                        parent.$.modalDialog.opener_url = window.location;//先把当前页面定义好，开通成功后刷新当前页面
+                        var f = parent.$.modalDialog.handler.find('#form');
+                        f.submit();
+
+                    }
+                }]
+            });
+
+        }
+
+        function viewAccount(id) {
+            var href = '${pageContext.request.contextPath}/shopDeliverAccountController/view?id=' + id
+            parent.$("#index_tabs").tabs('add', {
+                title : '账号详情-' + id,
+                content : '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:100%;"></iframe>',
+                closable : true
+            });
+        }
+        //派单钱包
+        function viewDeliverMoney(shopId) {
+            var href = '${pageContext.request.contextPath}/mbBalanceController/viewDeliverCash?shopId='+shopId ;
+            parent.$("#index_tabs").tabs('add', {
+                title: '派单钱包-' + shopId,
+                content: '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+                closable: true
+            });
+
+        }
     </script>
 </head>
 <body>
@@ -858,14 +895,14 @@
                 </th>
                 <td>
 
-                        <c:choose>
+                    <c:choose>
                         <c:when test="${(mbShopExt.balanceAmount-debt)>0}">
                             <font color="green" class="money_input">${mbShopExt.balanceAmount-debt}</font>
                         </c:when>
                         <c:otherwise>
                             <font color="red" class="money_input">${mbShopExt.balanceAmount-debt}</font>
                         </c:otherwise>
-                        </c:choose>
+                    </c:choose>
                 </td>
                 <th>桶余额
                 </th>
@@ -876,9 +913,29 @@
             <tr>
                 <th><%=TmbShop.ALIAS_ADDRESS%>
                 </th>
-                <td colspan="7">
+                <td>
                     ${mbShopExt.address}
                 </td>
+                <th>派单</th>
+                <c:if test="${fn:contains(sessionInfo.resourceList, '/shopDeliverApplyController/addPage') and mbShopExt.deliver == 0}">
+                <td colspan="3">
+                    未开通&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="addShopDeliverApply(${mbShopExt.id});"class="easyui-linkbutton">开通</a>
+                    </c:if>
+                    <c:if test="${mbShopExt.deliver == 1}">
+                <td>
+                    已开通
+                    </c:if>
+                </td>
+                <th>账号ID</th>
+                <td>
+                    <a href="javascript:void(0);" onclick="viewAccount(${accountId})">${accountId}</a>
+                </td>
+                <c:if test="${mbShopExt.deliver == 1}">
+                    <th>派单钱包</th>
+                    <td>
+                        <a href="javascript:void(0);" onclick="viewDeliverMoney(${mbShopExt.id})">查看</a>
+                    </td>
+                </c:if>
             </tr>
         </table>
     </div>
@@ -921,7 +978,7 @@
     </c:if>
     <c:if test="${fn:contains(sessionInfo.resourceList, '/mbShopCouponsController/addPage') and (mbShopExt.parentId != null and mbShopExt.parentId != -1)and mbShopExt.auditStatus == 'AS02' }">
         <a  onclick="viewShop( ${mbShopExt.parentId} )" href="javascript:void(0);" class="easyui-linkbutton"
-           data-options="plain:true,iconCls:'pencil_add'">转至主门店 - 添加</a>
+            data-options="plain:true,iconCls:'pencil_add'">转至主门店 - 添加</a>
     </c:if>
     &nbsp;&nbsp;&nbsp;
     <c:if test="${fn:contains(sessionInfo.resourceList, '/mbShopCouponsController/view')}">
@@ -930,8 +987,8 @@
     </c:if>
 </div>
 <%--<div id="shopCouponsWindow" class="easyui-window" title="Basic Window" data-options="iconCls:'icon-save'" style="width:500px;height:200px;padding:10px;">--%>
-     <%--该门店不是主店,无法添加券票,请前往主店进行券票添加操作.该门店主门店ID为--%>
-    <%--<a href="javascript:void(0)" onclick="viewShop(${mbShop.parentID})" >${mbShop.parentId}</a>--%>
+<%--该门店不是主店,无法添加券票,请前往主店进行券票添加操作.该门店主门店ID为--%>
+<%--<a href="javascript:void(0)" onclick="viewShop(${mbShop.parentID})" >${mbShop.parentId}</a>--%>
 <%--</div>--%>
 <div id="toolbar">
     <c:if test="${fn:contains(sessionInfo.resourceList, '/mbShopInvoiceController/addPage')}">

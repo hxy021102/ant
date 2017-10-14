@@ -1,7 +1,6 @@
 package com.bx.ant.service;
 
-import com.bx.ant.pageModel.DeliverOrderQuery;
-import com.mobian.pageModel.DeliverOrderItem;
+import com.bx.ant.pageModel.DeliverOrderItem;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
@@ -62,6 +61,4 @@ public interface DeliverOrderItemServiceI {
 	 * @return
 	 */
 	List<DeliverOrderItem> getDeliverOrderItemList(Long deliverOrderId);
-
-
 }

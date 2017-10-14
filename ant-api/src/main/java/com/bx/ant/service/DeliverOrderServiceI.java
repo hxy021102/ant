@@ -1,8 +1,7 @@
 package com.bx.ant.service;
 
 import com.bx.ant.pageModel.DeliverOrderExt;
-import com.bx.ant.pageModel.DeliverOrderQuery;
-import com.mobian.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrder;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
@@ -20,12 +19,6 @@ public interface DeliverOrderServiceI {
 	String PAY_STATUS_AUDIT = "DPS02"; //待审核
 	String PAY_STATUS_REFUSE = "DPS03"; //审核拒绝
 	String PAY_STATUS_SUCCESS = "DPS04"; //支付成功
-
-	//门店结算状态
-	String SHOP_PAY_STATUS_NOT_PAY = "SPS01"; //待支付
-	String SHOP_PAY_STATUS_AUDIT = "SPS02"; //待审核
-	String SHOP_PAY_STATUS_REFUSE = "SPS03"; //审核拒绝
-	String SHOP_PAY_STATUS_SUCCESS = "SPS04"; //支付成功
 
 	//订单状态
 	String STATUS_NOT_ALLOCATION = "DOS01"; //待分配
@@ -99,19 +92,19 @@ public interface DeliverOrderServiceI {
 	 * 填充信息
 	 * @param deliverOrderExt
 	 */
-    void fillInfo(DeliverOrderExt deliverOrderExt);
+//    void fillInfo(DeliverOrderExt deliverOrderExt);
 
 	/**
 	 * 填充商品信息
 	 * @param deliverOrderExt
 	 */
-	void fillDeliverOrderItemInfo(DeliverOrderExt deliverOrderExt);
+//	void fillDeliverOrderItemInfo(DeliverOrderExt deliverOrderExt);
 
 	/**
 	 *
 	 * @param deliverOrderExt
 	 */
-    void fillDeliverOrderShopItemInfo(DeliverOrderExt deliverOrderExt);
+//    void fillDeliverOrderShopItemInfo(DeliverOrderExt deliverOrderExt);
 
     /**
 	 * 配送订单状态转换
@@ -165,19 +158,4 @@ public interface DeliverOrderServiceI {
 	 * @param content
 	 */
     void editAndAddLog(DeliverOrder deliverOrder, String logType, String content);
-
-	/**
-	 * 获取运单管理列表数据
-	 * @param deliverOrder
-	 * @param ph
-	 * @return
-	 */
-	DataGrid dataGridWithName(DeliverOrder deliverOrder,PageHelper ph);
-
-	/**
-	 * 根据运单ID，查询运单详细
-	 * @param id
-	 * @return
-	 */
-	DeliverOrderQuery getDeliverOrderView(Long id );
 }

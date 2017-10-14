@@ -1,13 +1,23 @@
-﻿﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%> 
 <!DOCTYPE html>
 <html>
 <head>
-<title>DeliverOrder管理</title>
+<title>ShopDeliverAccount管理</title>
 <jsp:include page="../inc.jsp"></jsp:include>
-<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/view')}">
+<c:if test="${fn:contains(sessionInfo.resourceList, '/shopDeliverAccountController/editPage')}">
+	<script type="text/javascript">
+		$.canEdit = true;
+	</script>
+</c:if>
+<c:if test="${fn:contains(sessionInfo.resourceList, '/shopDeliverAccountController/delete')}">
+	<script type="text/javascript">
+		$.canDelete = true;
+	</script>
+</c:if>
+<c:if test="${fn:contains(sessionInfo.resourceList, '/shopDeliverAccountController/view')}">
 	<script type="text/javascript">
 		$.canView = true;
 	</script>
@@ -16,7 +26,7 @@
 	var dataGrid;
 	$(function() {
 		dataGrid = $('#dataGrid').datagrid({
-			url : '${pageContext.request.contextPath}/deliverOrderController/dataGrid',
+			url : '${pageContext.request.contextPath}/shopDeliverAccountController/dataGrid',
 			fit : true,
 			fitColumns : true,
 			border : false,
@@ -24,6 +34,7 @@
 			idField : 'id',
 			pageSize : 10,
 			pageList : [ 10, 20, 30, 40, 50 ],
+			sortName : 'id',
 			sortOrder : 'desc',
 			checkOnSelect : false,
 			selectOnCheck : false,
@@ -33,35 +44,40 @@
 			singleSelect : true,
 			columns : [ [ {
 				field : 'id',
-				title : '运单ID',
-				width : 50,
-				hidden : true
-				},  {
-				field : 'supplierId',
-				title : '供应商ID',
+				title : '编号',
+				width : 30,
+                formatter : function(value,row,index) {
+				    return '<a onclick="viewFun('+ row.id +')">'+row.id+'</a>';
+				}
+				}, {
+				field : 'userName',
+				title : '账号',
+				width : 50
+				}, {
+				field : 'nickName',
+				title : '昵称',
 				width : 50		
 				}, {
-                field : 'supplierName',
-                title : '供应商名称',
-                width : 50
-                }, {
-				field : 'amount',
-				title : '总金额',
-				width : 50		
+				field : 'sex',
+				title : '性别',
+				width : 50	,
+				formatter : function(value,row,index) {
+				    if(row.sex == 1) {
+				       return '男';
+					}else {
+				       return '女';
+ 					}
+				}
 				}, {
-				field : 'status',
-				title : '订单状态',
-				width : 50		
+				field : 'refId',
+				title : '第三方ID',
+				width : 80
 				}, {
-				field : 'deliveryStatus',
-				title : '配送状态',
-				width : 50		
-				}, {
-				field : 'shopPayStatus',
-				title : '结算状态',
-				width : 50		
-				}] ],
-			toolbar : '#toolbar',
+				field : 'refType',
+				title : '第三方类型',
+				width : 50
+            }]],
+            toolbar : '#toolbar',
 			onLoadSuccess : function() {
 				$('#searchForm table').show();
 				parent.$.messager.progress('close');
@@ -82,7 +98,7 @@
 					title : '提示',
 					text : '数据处理中，请稍后....'
 				});
-				$.post('${pageContext.request.contextPath}/deliverOrderController/delete', {
+				$.post('${pageContext.request.contextPath}/shopDeliverAccountController/delete', {
 					id : id
 				}, function(result) {
 					if (result.success) {
@@ -104,7 +120,7 @@
 			title : '编辑数据',
 			width : 780,
 			height : 500,
-			href : '${pageContext.request.contextPath}/deliverOrderController/editPage?id=' + id,
+			href : '${pageContext.request.contextPath}/shopDeliverAccountController/editPage?id=' + id,
 			buttons : [ {
 				text : '编辑',
 				handler : function() {
@@ -121,12 +137,12 @@
 			var rows = dataGrid.datagrid('getSelections');
 			id = rows[0].id;
 		}
-		parent.$.modalDialog({
-			title : '查看数据',
-			width : 780,
-			height : 500,
-			href : '${pageContext.request.contextPath}/deliverOrderController/view?id=' + id
-		});
+        var href = '${pageContext.request.contextPath}/shopDeliverAccountController/view?id=' + id
+        parent.$("#index_tabs").tabs('add', {
+            title : '账号详情-' + id,
+            content : '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:100%;"></iframe>',
+            closable : true
+        });
 	}
 
 	function addFun() {
@@ -134,7 +150,7 @@
 			title : '添加数据',
 			width : 780,
 			height : 500,
-			href : '${pageContext.request.contextPath}/deliverOrderController/addPage',
+			href : '${pageContext.request.contextPath}/shopDeliverAccountController/addPage',
 			buttons : [ {
 				text : '添加',
 				handler : function() {
@@ -152,7 +168,7 @@
 		$.merge($colums, options.frozenColumns);
 		var columsStr = JSON.stringify($colums);
 	    $('#downloadTable').form('submit', {
-	        url:'${pageContext.request.contextPath}/deliverOrderController/download',
+	        url:'${pageContext.request.contextPath}/shopDeliverAccountController/download',
 	        onSubmit: function(param){
 	        	$.extend(param, $.serializeObject($('#searchForm')));
 	        	param.downloadFields = columsStr;
@@ -173,34 +189,19 @@
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit : true,border : false">
-		<div data-options="region:'north',title:'查询条件',border:false" style="height: 120px; overflow: hidden;">
+		<div data-options="region:'north',title:'查询条件',border:false" style="height: 65px; overflow: hidden;">
 			<form id="searchForm">
 				<table class="table table-hover table-condensed" style="display: none;">
-					<tr>
-						<th>运单ID</th>
-						<td>
-							<input type="text" name="id" maxlength="10" class="span2"/>
-						</td>
-						<th>供应商名称</th>
-						<td>
-							<jb:selectGrid dataType="deliverSupplierId" name="supplierId"></jb:selectGrid>
-						</td>
-						<th>订单状态</th>
-						<td>
-							<jb:select dataType="DOS" name="status"></jb:select>
-						</td>
-					</tr>
-					<tr>
-						<th>结算状态</th>
-						<td>
-							<jb:select dataType="SPS" name="shopPayStatus"></jb:select>
-						</td>
-						<th></th><td></td>
-						<th>配送状态</th>
-						<td >
-							<jb:select dataType="DDS" name="deliveryStatus"></jb:select>
-						</td>
-					</tr>
+						<tr>	
+							<th style="width: 50px">账号</th>
+							<td>
+								<input type="text" name="userName" maxlength="32" class="span2"/>
+							</td>
+							<th style="width: 50px">昵称</th>
+							<td>
+								<input type="text" name="nickName" maxlength="32" class="span2"/>
+							</td>
+						</tr>
 				</table>
 			</form>
 		</div>
@@ -209,8 +210,11 @@
 		</div>
 	</div>
 	<div id="toolbar" style="display: none;">
+		<%--<c:if test="${fn:contains(sessionInfo.resourceList, '/shopDeliverAccountController/addPage')}">--%>
+			<%--<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'bug_add'">添加</a>--%>
+		<%--</c:if>--%>
 		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
-		<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/download')}">
+		<c:if test="${fn:contains(sessionInfo.resourceList, '/shopDeliverAccountController/download')}">
 			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_go',plain:true" onclick="downloadTable();">导出</a>		
 			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">
 			</form>

@@ -6,7 +6,7 @@ import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderShopPayServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.*;
-import com.mobian.pageModel.DeliverOrderShopPay;
+import com.bx.ant.pageModel.DeliverOrderShopPay;
 import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.MbShopServiceI;
@@ -98,7 +98,15 @@ public class ApiDeliverBalanceController extends BaseController {
         Json j = new Json();
         DataGrid dataGrid;
         MbBalanceLog mbBalanceLog = new MbBalanceLog();
-
+        if(F.empty(pageHelper.getRows()  )) {
+            pageHelper.setRows(50);
+        }
+        if(F.empty(pageHelper.getSort())) {
+            pageHelper.setSort("addtime");
+        }
+        if(F.empty(pageHelper.getOrder())) {
+            pageHelper.setOrder("desc");
+        }
         //默认时间为当月
         if (date == null) {
              Calendar now = Calendar.getInstance();
@@ -186,11 +194,22 @@ public class ApiDeliverBalanceController extends BaseController {
      */
     @RequestMapping("/transformAmountDeliverToBalance")
     @ResponseBody
-    public Json transformAmountDeliverToBalance(HttpServletRequest request, Integer amount) {
+    public Json transformAmountDeliverToBalance(HttpServletRequest request, Integer amount, String vcode) {
         Json j = new Json();
 //        TokenWrap tokenWrap = getTokenWrap(request);
 //        Integer shopId = tokenWrap.getShopId();
         Integer shopId = 1332;
+
+//        String oldCode = (String) redisUtil.getString(Key.build(Namespace.SHOP_BALANCE_ROLL_VALIDATE_CODE, tokenWrap.getName()));
+//        if(F.empty(oldCode)) {
+//            j.setMsg("验证码已过期！");
+//            return j;
+//        }
+//        if(!oldCode.equals(vcode)) {
+//            j.setMsg("验证码错误！");
+//            return j;
+//        }
+
         mbBalanceService.transform(shopId, amount, 10, 1, 0);
         j.setMsg("u know");
         j.setSuccess(true);
@@ -204,11 +223,22 @@ public class ApiDeliverBalanceController extends BaseController {
      */
     @RequestMapping("/transformAmountBalanceToDeliver")
     @ResponseBody
-    public Json transformAmountBalanceToDeliver(HttpServletRequest request, Integer amount) {
+    public Json transformAmountBalanceToDeliver(HttpServletRequest request, Integer amount, String vcode) {
         Json j = new Json();
 //        TokenWrap tokenWrap = getTokenWrap(request);
 //        Integer shopId = tokenWrap.getShopId();
         Integer shopId = 1332;
+
+//        String oldCode = (String) redisUtil.getString(Key.build(Namespace.SHOP_BALANCE_ROLL_VALIDATE_CODE, tokenWrap.getName()));
+//        if(F.empty(oldCode)) {
+//            j.setMsg("验证码已过期！");
+//            return j;
+//        }
+//        if(!oldCode.equals(vcode)) {
+//            j.setMsg("验证码错误！");
+//            return j;
+//        }
+
         mbBalanceService.transform(shopId, amount, 1, 10, 0);
         j.setMsg("u know");
         j.setSuccess(true);

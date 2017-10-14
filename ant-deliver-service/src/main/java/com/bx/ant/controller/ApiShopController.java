@@ -1,10 +1,11 @@
 package com.bx.ant.controller;
 
+import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.mobian.pageModel.*;
-import com.mobian.pageModel.DeliverOrder;
-import com.mobian.pageModel.DeliverOrderShop;
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderShop;
 import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.MbShopServiceI;
@@ -101,8 +102,11 @@ public class ApiShopController extends BaseController {
      */
     @RequestMapping("dataGrid")
     @ResponseBody
-    public  Json dataGrid(MbShop shop, PageHelper pageHelper) {
+    public  Json dataGrid(MbShop shop, PageHelper pageHelper, HttpServletRequest request) {
         Json j = new Json();
+//        TokenWrap token = getTokenWrap(request);
+//        shop.setContactPhone(token.getName());
+        shop.setContactPhone("18701959799");
         j.setSuccess(true);
         j.setMsg("u know");
         j.setObj(mbShopService.dataGrid(shop, pageHelper));
