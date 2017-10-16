@@ -132,10 +132,11 @@ public class MbOrderServiceImpl extends BaseServiceImpl<MbOrder> implements MbOr
 	}
 
 	@Override
-	public void editOrderDeliveryDriver(Integer id,String deliveryDriver,String remark,String loginId){
+	public void editOrderDeliveryDriver(Integer id,String deliveryDriver,Integer deliveryCost,String remark,String loginId){
 		MbOrder order = new MbOrder();
 		order.setId(id);
 		order.setDeliveryDriver(deliveryDriver);
+		order.setDeliveryCost(deliveryCost);
 		edit(order);
 		MbOrderLog mbOrderLog = new MbOrderLog();
 		mbOrderLog.setIsdeleted(false);

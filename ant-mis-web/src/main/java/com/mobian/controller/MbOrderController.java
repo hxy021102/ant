@@ -723,10 +723,10 @@ public class MbOrderController extends BaseController {
 
 	@RequestMapping("/updateDeliveryDriver")
 	@ResponseBody
-	public Json updateDeliveryDriver(Integer id, String deliveryDriver, String remark, HttpSession session) {
+	public Json updateDeliveryDriver(Integer id, String deliveryDriver,Integer deliveryCost, String remark, HttpSession session) {
 		Json json = new Json();
 		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
-		mbOrderService.editOrderDeliveryDriver(id, deliveryDriver, remark, sessionInfo.getId());
+		mbOrderService.editOrderDeliveryDriver(id, deliveryDriver,deliveryCost, remark, sessionInfo.getId());
 		json.setSuccess(true);
 		json.setMsg("分配司机成功！");
 		return json;

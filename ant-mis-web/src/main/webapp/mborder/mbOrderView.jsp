@@ -513,7 +513,7 @@
                 title: '<%=TmbOrder.ALIAS_DELIVERY_WAY%>',
                 width: 60
             }, {
-                field: 'deliveryPrice',
+                field: 'deliveryCost',
                 title: '<%=TmbOrder.ALIAS_DELIVERY_PRICE%>',
                 width: 40,
                 align:'right',
@@ -1307,7 +1307,7 @@
                         <c:if test="${fn:contains(sessionInfo.resourceList,'/mbOrderController/confirmMbOrderCallbackItem' ) and mbOrder.deliveryStatus=='DS30' and mbOrder.status=='OD35'}">
                             <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="confirmMbOrderCallbackItemAlert();">回桶确认</a>
                         </c:if>
-                        <c:if test="${fn:contains(sessionInfo.resourceList,'/mbOrderController/updateDeliveryDriverPage' ) and (mbOrder.status=='OD12' or mbOrder.status=='OD15' or mbOrder.status=='OD20')}">
+                        <c:if test="${fn:contains(sessionInfo.resourceList,'/mbOrderController/updateDeliveryDriverPage' ) and (mbOrder.status=='OD12' or mbOrder.status=='OD15' or mbOrder.status=='OD20' or mbOrder.status=='OD30' or mbOrder.status=='OD35' or mbOrder.status=='OD40')}">
                             <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="updateDeliveryDriver();">分配司机</a>
                         </c:if>
                         <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderController/printOrderView') and mbOrder.status=='OD12'}">
@@ -1391,10 +1391,13 @@
 
                 <tr>
                     <th>发货地：</th>
-                    <td colspan="7">
+                    <td>
                         ${warehouseName}
                     </td>
-
+                    <th>运费：</th>
+                    <td colspan="5" class="moneyFormatter">
+                        ${mbOrder.deliveryCost}
+                    </td>
 
                 </tr>
 

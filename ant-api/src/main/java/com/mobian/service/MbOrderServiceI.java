@@ -110,7 +110,7 @@ public interface MbOrderServiceI {
 	 * @param remark
 	 * @param loginId
 	 */
-	void editOrderDeliveryDriver(Integer id, String deliveryDriver, String remark, String loginId);
+	void editOrderDeliveryDriver(Integer id, String deliveryDriver,Integer deliveryCost, String remark, String loginId);
 
 
 	DataGrid queryOrderDataGrid(MbOrder mbOrder, PageHelper ph);

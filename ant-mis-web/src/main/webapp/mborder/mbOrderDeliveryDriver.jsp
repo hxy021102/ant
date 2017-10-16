@@ -29,6 +29,21 @@
 				}
 			}
 		});
+
+		$('.money_input').blur(function () {
+			var source = $(this);
+			var target = source.next();
+			if (!/^([1-9]\d*|0)(\.\d{2})?$/.test(source.val())) {
+				source.val("").focus();
+			}
+			var val = source.val().trim();
+			if (val.indexOf('.') > -1) {
+				val = val.replace('.', "");
+			} else if (val != '') {
+				val += "00";
+			}
+			target.val(val);
+		});
 	});
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
@@ -43,8 +58,13 @@
 					<c:otherwise>
 						<tr>
 							<th>司机</th>
-							<td colspan="3">
+							<td>
 								<jb:selectSql dataType="SQ007" name="deliveryDriver" required="true" value="${mbOrder.deliveryDriver}"></jb:selectSql>
+							</td>
+							<th>运费</th>
+							<td>
+								<input class="span2 money_input easyui-validatebox" name="deliveryCostStr" type="text"/>
+								<input type="hidden" name="deliveryCost">
 							</td>
 						</tr>
 					</c:otherwise>
