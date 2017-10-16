@@ -23,7 +23,7 @@
 				parent.$.messager.progress('close');
 				result = $.parseJSON(result);
 				if (result.success) {
-					parent.$.modalDialog.openner_dataGrid.datagrid('reload');//之所以能在这里调用到parent.$.modalDialog.openner_dataGrid这个对象，是因为user.jsp页面预定义好了
+					parent.$.modalDialog.openner_dataGrid.location.reload();//之所以能在这里调用到parent.$.modalDialog.openner_dataGrid这个对象，是因为user.jsp页面预定义好了
 					parent.$.modalDialog.handler.dialog('close');
 				} else {
 					parent.$.messager.alert('错误', result.msg, 'error');
@@ -35,7 +35,7 @@
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;">	
 		<form id="form" method="post">
-			<input name="supplier_order_id" type="hidden" value="${supplier_order_id}"/>
+			<input name="supplierOrderId" type="hidden" value="${supplierOrderId}"/>
 			<table class="table table-hover table-condensed">
 				<tr>	
 
@@ -45,15 +45,11 @@
 					</td>
 					<th><%=TmbSupplierOrderItem.ALIAS_QUANTITY%></th>
 					<td>
-						<input class="span2" name="quantity" type="text"/>
+						<input  name="quantity" type="number" class="easyui-validatebox span2" data-options="required:true"/>
+						<input class="span2" name="price" type="hidden" value="0"/>
 					</td>
 				</tr>	
-				<tr>
-					<th><%=TmbSupplierOrderItem.ALIAS_PRICE%></th>	
-					<td>
-											<input class="span2" name="price" type="text"/>
-					</td>							
-				</tr>	
+
 			</table>		
 		</form>
 	</div>
