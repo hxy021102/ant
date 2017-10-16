@@ -3,9 +3,11 @@ package com.bx.ant.controller;
 import com.bx.ant.pageModel.ShopItem;
 import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.ShopItemServiceI;
-import com.bx.ant.service.session.TokenServiceI;
 import com.mobian.absx.F;
-import com.mobian.pageModel.*;
+import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.Json;
+import com.mobian.pageModel.MbItem;
+import com.mobian.pageModel.PageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,8 +25,6 @@ public class ApiItemController extends BaseController {
 
     @Resource
     private ShopItemServiceI shopItemService;
-    @Resource
-    private TokenServiceI tokenService;
 
     /**
      * 获取所有商品信息
@@ -36,7 +36,7 @@ public class ApiItemController extends BaseController {
     @ResponseBody
     public Json getAllItemList(HttpServletRequest request,MbItem mbItem, PageHelper ph) {
         Json j = new Json();
-        TokenWrap token = tokenService.getToken(request);
+        TokenWrap token = getTokenWrap(request);
         if(!F.empty(token.getShopId())) {
             if(ph.getRows() == 0 || ph.getRows() > 50) {
                 ph.setRows(10);
@@ -69,7 +69,7 @@ public class ApiItemController extends BaseController {
     @ResponseBody
     public Json getShopItemOnline(HttpServletRequest request, ShopItem shopItem, PageHelper ph) {
         Json j = new Json();
-        TokenWrap token = tokenService.getToken(request);
+        TokenWrap token = getTokenWrap(request);
         if(!F.empty(token.getShopId())) {
             shopItem.setShopId(token.getShopId());
             shopItem.setOnline(true);
@@ -95,7 +95,7 @@ public class ApiItemController extends BaseController {
     @ResponseBody
     public Json getShopItemOffline(HttpServletRequest request, ShopItem shopItem, PageHelper ph) {
         Json j = new Json();
-        TokenWrap token = tokenService.getToken(request);
+        TokenWrap token = getTokenWrap(request);
         if(!F.empty(token.getShopId())) {
             shopItem.setShopId(token.getShopId());
             shopItem.setOnline(false);
@@ -120,7 +120,7 @@ public class ApiItemController extends BaseController {
     @ResponseBody
     public Json updateBatchItemOnline(HttpServletRequest request, String itemIds) {
         Json j = new Json();
-        TokenWrap token = tokenService.getToken(request);
+        TokenWrap token = getTokenWrap(request);
         if(!F.empty(token.getShopId())) {
             shopItemService.updateBatchItemOnline(itemIds, token.getShopId());
             j.setSuccess(true);
@@ -142,7 +142,7 @@ public class ApiItemController extends BaseController {
     @ResponseBody
     public Json updateItemOnline(HttpServletRequest request, Integer itemId) {
         Json j = new Json();
-        TokenWrap token = tokenService.getToken(request);
+        TokenWrap token = getTokenWrap(request);
         if(!F.empty(token.getShopId())) {
             shopItemService.updateItemOnline(itemId, token.getShopId());
             j.setSuccess(true);
@@ -164,7 +164,7 @@ public class ApiItemController extends BaseController {
     @ResponseBody
     public Json updateBatchShopItemOffline(HttpServletRequest request, String itemIds) {
         Json j = new Json();
-        TokenWrap token = tokenService.getToken(request);
+        TokenWrap token = getTokenWrap(request);
         if(!F.empty(token.getShopId())) {
             shopItemService.updateBatchShopItemOffline(itemIds, token.getShopId());
             j.setSuccess(true);
@@ -186,7 +186,7 @@ public class ApiItemController extends BaseController {
     @ResponseBody
     public Json updateShopItemOffline(HttpServletRequest request, Integer itemId) {
         Json j = new Json();
-        TokenWrap token = tokenService.getToken(request);
+        TokenWrap token = getTokenWrap(request);
         if(!F.empty(token.getShopId())) {
             shopItemService.updateShopItemOffline(itemId,token.getShopId());
             j.setSuccess(true);
@@ -208,7 +208,7 @@ public class ApiItemController extends BaseController {
     @ResponseBody
     public Json deleteBatchShopItem(HttpServletRequest request, String itemIds) {
         Json j = new Json();
-        TokenWrap token = tokenService.getToken(request);
+        TokenWrap token = getTokenWrap(request);
         if (!F.empty(token.getShopId())) {
             shopItemService.deleteBatchShopItem(itemIds, token.getShopId());
             j.setSuccess(true);
@@ -230,7 +230,7 @@ public class ApiItemController extends BaseController {
     @ResponseBody
     public Json deleteShopItem(HttpServletRequest request, Integer itemId) {
         Json j = new Json();
-        TokenWrap token = tokenService.getToken(request);
+        TokenWrap token = getTokenWrap(request);
         if(!F.empty(token.getShopId())) {
             shopItemService.deleteShopItem(itemId,token.getShopId());
             j.setSuccess(true);
@@ -253,7 +253,7 @@ public class ApiItemController extends BaseController {
     @ResponseBody
     public Json getShopItemQuantity(HttpServletRequest request, Integer itemId) {
         Json j = new Json();
-        TokenWrap token = tokenService.getToken(request);
+        TokenWrap token = getTokenWrap(request);
         if(!F.empty(token.getShopId())) {
             ShopItem shopItem = shopItemService.getByShopIdAndItemId(token.getShopId(),itemId);
             j.setObj(shopItem);
@@ -276,7 +276,7 @@ public class ApiItemController extends BaseController {
     @ResponseBody
     public Json updateShopItemQuantity(HttpServletRequest request, Integer itemId, Integer quantity) {
         Json j = new Json();
-        TokenWrap token = tokenService.getToken(request);
+        TokenWrap token = getTokenWrap(request);
         if(!F.empty(token.getShopId())) {
             shopItemService.updateShopItemQuantity(itemId,token.getShopId(), quantity);
             j.setSuccess(true);

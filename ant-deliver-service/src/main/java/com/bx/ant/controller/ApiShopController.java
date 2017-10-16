@@ -56,9 +56,8 @@ public class ApiShopController extends BaseController {
         Map<String, Object> data = new HashMap<String, Object>();
         //获取shopId
         //TODO 测试时设置shop ID值,若真正使用从token中获取
-//        TokenWrap token = getTokenWrap(request);
-//        Integer shopId = token.getShopId();
-        Integer shopId = 1332;
+        TokenWrap token = getTokenWrap(request);
+        Integer shopId = token.getShopId();
 
         //获取门店信息
         data.put("shop", mbShopService.get(shopId));
@@ -104,9 +103,8 @@ public class ApiShopController extends BaseController {
     @ResponseBody
     public  Json dataGrid(MbShop shop, PageHelper pageHelper, HttpServletRequest request) {
         Json j = new Json();
-//        TokenWrap token = getTokenWrap(request);
-//        shop.setContactPhone(token.getName());
-        shop.setContactPhone("18701959799");
+        TokenWrap token = getTokenWrap(request);
+        shop.setContactPhone(token.getName());
         j.setSuccess(true);
         j.setMsg("u know");
         j.setObj(mbShopService.dataGrid(shop, pageHelper));

@@ -147,9 +147,9 @@ public class ApiDeliverBalanceController extends BaseController {
     @ResponseBody
     public Json viewBalance(HttpServletRequest request) {
         Json j = new Json();
-//        TokenWrap tokenWrap = getTokenWrap(request);
-//        Integer shopId = tokenWrap.getShopId();
-        Integer shopId = 1332;
+        TokenWrap tokenWrap = getTokenWrap(request);
+        Integer shopId = tokenWrap.getShopId();
+
         Map<String, Object> objectMap = new HashMap<String, Object>();
         if (!F.empty(shopId)) {
             objectMap.put("deliverBalance", mbBalanceService.addOrGetMbBalanceDelivery(shopId));
@@ -196,9 +196,8 @@ public class ApiDeliverBalanceController extends BaseController {
     @ResponseBody
     public Json transformAmountDeliverToBalance(HttpServletRequest request, Integer amount, String vcode) {
         Json j = new Json();
-//        TokenWrap tokenWrap = getTokenWrap(request);
-//        Integer shopId = tokenWrap.getShopId();
-        Integer shopId = 1332;
+        TokenWrap tokenWrap = getTokenWrap(request);
+        Integer shopId = tokenWrap.getShopId();
 
 //        String oldCode = (String) redisUtil.getString(Key.build(Namespace.SHOP_BALANCE_ROLL_VALIDATE_CODE, tokenWrap.getName()));
 //        if(F.empty(oldCode)) {
@@ -225,9 +224,8 @@ public class ApiDeliverBalanceController extends BaseController {
     @ResponseBody
     public Json transformAmountBalanceToDeliver(HttpServletRequest request, Integer amount, String vcode) {
         Json j = new Json();
-//        TokenWrap tokenWrap = getTokenWrap(request);
-//        Integer shopId = tokenWrap.getShopId();
-        Integer shopId = 1332;
+        TokenWrap tokenWrap = getTokenWrap(request);
+        Integer shopId = tokenWrap.getShopId();
 
 //        String oldCode = (String) redisUtil.getString(Key.build(Namespace.SHOP_BALANCE_ROLL_VALIDATE_CODE, tokenWrap.getName()));
 //        if(F.empty(oldCode)) {

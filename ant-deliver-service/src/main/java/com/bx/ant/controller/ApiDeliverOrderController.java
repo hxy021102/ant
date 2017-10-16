@@ -1,5 +1,6 @@
 package com.bx.ant.controller;
 
+import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.bx.ant.pageModel.DeliverOrder;
@@ -39,9 +40,8 @@ public class ApiDeliverOrderController extends BaseController {
 
         //获取shopId
         //TODO 测试时设置shop ID值,若真正使用从token中获取
-//        TokenWrap token = getTokenWrap(request);
-//        Integer shopId = token.getShopId();
-        Integer shopId = 1332;
+        TokenWrap token = getTokenWrap(request);
+        Integer shopId = token.getShopId();
         deliverOrder.setShopId(shopId);
         json.setMsg("u know");
         json.setObj(deliverOrderService.dataGridExt(deliverOrder, pageHelper));
@@ -87,9 +87,8 @@ public class ApiDeliverOrderController extends BaseController {
 
         //获取shopId
         //TODO 测试时设置shop ID值,若真正使用从token中获取
-//        TokenWrap token = getTokenWrap(request);
-//        Integer shopId = token.getShopId();
-        Integer shopId = 1332;
+        TokenWrap token = getTokenWrap(request);
+        Integer shopId = token.getShopId();
         DeliverOrder deliverOrder =  new DeliverOrder();
         deliverOrder.setShopId(shopId);
         deliverOrder.setStatus(deliverOrderService.STATUS_SHOP_ACCEPT);
@@ -112,9 +111,8 @@ public class ApiDeliverOrderController extends BaseController {
 
         //获取shopId
         //TODO 测试时设置shop ID值,若真正使用从token中获取
-//        TokenWrap token = getTokenWrap(request);
-//        Integer shopId = token.getShopId();
-        Integer shopId = 1332;
+        TokenWrap token = getTokenWrap(request);
+        Integer shopId = token.getShopId();
         DeliverOrder deliverOrder =  new DeliverOrder();
         deliverOrder.setShopId(shopId);
         deliverOrder.setStatus(deliverOrderService.STATUS_SHOP_REFUSE);
@@ -137,9 +135,8 @@ public class ApiDeliverOrderController extends BaseController {
 
         //获取shopId
         //TODO 测试时设置shop ID值,若真正使用从token中获取
-//        TokenWrap token = getTokenWrap(request);
-//        Integer shopId = token.getShopId();
-        Integer shopId = 1332;
+        TokenWrap token = getTokenWrap(request);
+        Integer shopId = token.getShopId();
         DeliverOrder deliverOrder =  new DeliverOrder();
         deliverOrder.setShopId(shopId);
         deliverOrder.setStatus(deliverOrderService.STATUS_DELIVERING);
@@ -162,9 +159,8 @@ public class ApiDeliverOrderController extends BaseController {
 
         //获取shopId
         //TODO 测试时设置shop ID值,若真正使用从token中获取
-//        TokenWrap token = getTokenWrap(request);
-//        Integer shopId = token.getShopId();
-        Integer shopId = 1332;
+        TokenWrap token = getTokenWrap(request);
+        Integer shopId = token.getShopId();
         DeliverOrder deliverOrder =  new DeliverOrder();
         deliverOrder.setShopId(shopId);
         deliverOrder.setStatus(deliverOrderService.STATUS_DELIVERY_COMPLETE);
@@ -181,9 +177,8 @@ public class ApiDeliverOrderController extends BaseController {
 
         //获取shopId
         //TODO 测试时设置shop ID值,若真正使用从token中获取
-//        TokenWrap token = getTokenWrap(request);
-//        Integer shopId = token.getShopId();
-        Integer shopId = 1332;
+        TokenWrap token = getTokenWrap(request);
+        Integer shopId = token.getShopId();
         DeliverOrder deliverOrder =  new DeliverOrder();
         deliverOrder.setShopId(shopId);
         deliverOrder.setStatus(deliverOrderService.STATUS_CLOSED);
@@ -206,9 +201,8 @@ public class ApiDeliverOrderController extends BaseController {
 
         //获取shopId
         //TODO 测试时设置shop ID值,若真正使用从token中获取
-//        TokenWrap token = getTokenWrap(request);
-//        Integer shopId = token.getShopId();
-        Integer shopId = 1332;
+        TokenWrap token = getTokenWrap(request);
+        Integer shopId = token.getShopId();
 
         deliverOrderService.transformByShopIdAndStatus(id,shopId,deliverOrderService.STATUS_SHOP_ACCEPT);
         json.setMsg("u know");
@@ -228,11 +222,10 @@ public class ApiDeliverOrderController extends BaseController {
 
         //获取shopId
         //TODO 测试时设置shop ID值,若真正使用从token中获取
-//        TokenWrap token = getTokenWrap(request);
-//        Integer shopId = token.getShopId();
-        Integer shopId = 1332;
+        TokenWrap token = getTokenWrap(request);
+        Integer shopId = token.getShopId();
 
-deliverOrderService.transformByShopIdAndStatus(id,shopId,deliverOrderService.STATUS_SHOP_REFUSE);
+        deliverOrderService.transformByShopIdAndStatus(id,shopId,deliverOrderService.STATUS_SHOP_REFUSE);
         json.setMsg("u know");
         json.setSuccess(true);
         return json;
@@ -251,10 +244,8 @@ deliverOrderService.transformByShopIdAndStatus(id,shopId,deliverOrderService.STA
 
         //获取shopId
         //TODO 测试时设置shop ID值,若真正使用从token中获取
-//        TokenWrap token = getTokenWrap(request);
-//        Integer shopId = token.getShopId();
-        Integer shopId = 1332;
-
+        TokenWrap token = getTokenWrap(request);
+        Integer shopId = token.getShopId();
 
         deliverOrderService.transformByShopIdAndStatus(id,shopId,deliverOrderService.STATUS_DELIVERING);
         json.setMsg("u know");
@@ -275,9 +266,8 @@ deliverOrderService.transformByShopIdAndStatus(id,shopId,deliverOrderService.STA
 
         //获取shopId
         //TODO 测试时设置shop ID值,若真正使用从token中获取
-//        TokenWrap token = getTokenWrap(request);
-//        Integer shopId = token.getShopId();
-        Integer shopId = 1332;
+        TokenWrap token = getTokenWrap(request);
+        Integer shopId = token.getShopId();
 
         deliverOrderService.transformByShopIdAndStatus(id,shopId,deliverOrderService.STATUS_DELIVERY_COMPLETE);
 
@@ -299,9 +289,9 @@ deliverOrderService.transformByShopIdAndStatus(id,shopId,deliverOrderService.STA
 
         //获取shopId
         //TODO 测试时设置shop ID值,若真正使用从token中获取
-//        TokenWrap token = getTokenWrap(request);
-//        Integer shopId = token.getShopId();
-        Integer shopId = 1332;
+        TokenWrap token = getTokenWrap(request);
+        Integer shopId = token.getShopId();
+
         deliverOrderService.transformByShopIdAndStatus(id,shopId,deliverOrderService.STATUS_CLOSED);
         json.setMsg("u know");
         json.setSuccess(true);
