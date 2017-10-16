@@ -49,13 +49,13 @@ public class DeliverOrder40StateImpl implements DeliverOrderState {
         DeliverOrder orderNew = new DeliverOrder();
         orderNew.setId(deliverOrder.getId());
         orderNew.setStatus(prefix + getStateName());
-        deliverOrderService.editAndAddLog(orderNew, deliverOrderLogService.TYPE_COMPLETE_DELIVER_ORDER, "运单已完成");
+        deliverOrderService.editAndAddLog(orderNew, DeliverOrderLogServiceI.TYPE_COMPLETE_DELIVER_ORDER, "运单已完成");
 
         //修改运单门店状态
         DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
-        deliverOrderShop.setStatus(deliverOrderShopService.STATUS_ACCEPTED);
+        deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_ACCEPTED);
         deliverOrderShop.setDeliverOrderId(orderNew.getId());
-        deliverOrderShop = deliverOrderShopService.editStatus(deliverOrderShop,deliverOrderShopService.STATUS_COMPLETE);
+        deliverOrderShop = deliverOrderShopService.editStatus(deliverOrderShop,DeliverOrderShopServiceI.STATUS_COMPLETE);
 
         //门店结算
         //TODO 只做了给门店运费账增加,未做其他地方减少,要保持一致性,必须完成这一点

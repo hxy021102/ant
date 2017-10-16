@@ -51,21 +51,21 @@ public class DeliverOrder20StateImpl implements DeliverOrderState {
         DeliverOrder orderNew = new DeliverOrder();
         orderNew.setId(deliverOrder.getId());
         orderNew.setStatus(prefix + getStateName());
-        orderNew.setDeliveryStatus(deliverOrderService.DELIVER_STATUS_STANDBY);
-        orderNew.setShopPayStatus(deliverOrderService.PAY_STATUS_NOT_PAY);
+        orderNew.setDeliveryStatus(DeliverOrderServiceI.DELIVER_STATUS_STANDBY);
+        orderNew.setShopPayStatus(DeliverOrderServiceI.PAY_STATUS_NOT_PAY);
         deliverOrderService.editAndAddLog(orderNew,deliverOrderLogService.TYPE_ACCEPT_DELIVER_ORDER, "运单被接");
 
         //修改门店运单状态
         DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
-        deliverOrderShop.setStatus(deliverOrderShopService.STATUS_AUDITING);
+        deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_AUDITING);
         deliverOrderShop.setDeliverOrderId(orderNew.getId());
-        deliverOrderShop = deliverOrderShopService.editStatus(deliverOrderShop,deliverOrderShopService.STATUS_ACCEPTED);
+        deliverOrderShop = deliverOrderShopService.editStatus(deliverOrderShop,DeliverOrderShopServiceI.STATUS_ACCEPTED);
 
         //修改门店运单支付状态
         DeliverOrderShopPay deliverOrderShopPay = new DeliverOrderShopPay();
         deliverOrderShopPay.setDeliverOrderId(orderNew.getId());
         deliverOrderShopPay.setShopId(deliverOrder.getShopId());
-        deliverOrderShopPayService.editStatus(deliverOrderShopPay, deliverOrderService.PAY_STATUS_NOT_PAY);
+        deliverOrderShopPayService.editStatus(deliverOrderShopPay, DeliverOrderServiceI.PAY_STATUS_NOT_PAY);
         
 
 //        DeliverOrder order = new DeliverOrder();
