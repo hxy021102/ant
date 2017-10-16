@@ -38,6 +38,14 @@ public class ApiItemController extends BaseController {
         Json j = new Json();
         TokenWrap token = tokenService.getToken(request);
         if(!F.empty(token.getShopId())) {
+            if(ph.getRows() == 0 || ph.getRows() > 50) {
+                ph.setRows(10);
+            }
+            if(F.empty(ph.getSort())) {
+                ph.setSort("seq");
+                ph.setOrder("asc");
+            }
+
             DataGrid dataGridItem = shopItemService.dataGridWithQuantity(mbItem, ph, token.getShopId());
             j.setObj(dataGridItem);
             j.setSuccess(true);
