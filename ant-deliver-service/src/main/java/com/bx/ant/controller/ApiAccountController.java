@@ -20,6 +20,7 @@ import com.mobian.thirdpart.mns.MNSUtil;
 import com.mobian.thirdpart.redis.Key;
 import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.thirdpart.redis.RedisUtil;
+import com.mobian.thirdpart.wx.DownloadMediaUtil;
 import com.mobian.thirdpart.wx.HttpUtil;
 import com.mobian.thirdpart.wx.WeixinUtil;
 import com.mobian.util.ConvertNameUtil;
@@ -173,6 +174,9 @@ public class ApiAccountController extends BaseController {
                 j.setMsg("手机号码已绑定！");
                 return j;
             }
+
+            // 头像保存本地防止失效
+            account.setIcon(DownloadMediaUtil.downloadHeadImage(account.getIcon()));
 
             shopDeliverAccountService.add(account);
 
