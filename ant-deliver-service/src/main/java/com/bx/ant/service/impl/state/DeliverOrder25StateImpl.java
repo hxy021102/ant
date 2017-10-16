@@ -39,8 +39,8 @@ public class DeliverOrder25StateImpl implements DeliverOrderState {
         DeliverOrder orderNew = new DeliverOrder();
         orderNew.setId(deliverOrder.getId());
         orderNew.setStatus(prefix + getStateName());
-        orderNew.setDeliveryStatus(deliverOrderService.DELIVER_STATUS_DELIVERING);
-        deliverOrderService.editAndAddLog(orderNew, deliverOrderLogService.TYPE_DELIVERING_DELIVER_ORDER, "运单发货");
+        orderNew.setDeliveryStatus(DeliverOrderServiceI.DELIVER_STATUS_DELIVERING);
+        deliverOrderService.editAndAddLog(orderNew, DeliverOrderLogServiceI.TYPE_DELIVERING_DELIVER_ORDER, "运单发货");
 
         //修改门店运单状态
 //        DeliverOrderShop deliverOrderShop = new DeliverOrderShop();

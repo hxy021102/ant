@@ -39,7 +39,7 @@ public class DeliverOrder01StateImpl implements DeliverOrderState {
 
         DeliverOrderLog log = new DeliverOrderLog();
         log.setDeliverOrderId(deliverOrder.getId());
-        log.setLogType(deliverOrderLogService.TYPE_ADD_DELIVER_ORDER);
+        log.setLogType(DeliverOrderLogServiceI.TYPE_ADD_DELIVER_ORDER);
         log.setContent("加订单等待分配");
         deliverOrderLogService.add(log);
     }

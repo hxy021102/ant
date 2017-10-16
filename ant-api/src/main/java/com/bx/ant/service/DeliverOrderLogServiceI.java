@@ -12,13 +12,13 @@ import com.mobian.pageModel.SessionInfo;
  */
 public interface DeliverOrderLogServiceI {
 
-	String TYPE_ADD_DELIVER_ORDER = "DLT01";
-	String TYPE_ASSIGN_DELIVER_ORDER = "DLT02";
-	String TYPE_ACCEPT_DELIVER_ORDER = "DLT03";
-	String TYPE_REFUSE_DELIVER_ORDER = "DLT04";
-	String TYPE_DELIVERING_DELIVER_ORDER = "DLT05";
-	String TYPE_DELIVERED_DELIVER_ORDER = "DLT06";
-	String TYPE_COMPLETE_DELIVER_ORDER = "DLT07";
+	String TYPE_ADD_DELIVER_ORDER = "DLT01";//添加运单
+	String TYPE_ASSIGN_DELIVER_ORDER = "DLT02";//分配运单
+	String TYPE_ACCEPT_DELIVER_ORDER = "DLT03";//门店接受运单
+	String TYPE_REFUSE_DELIVER_ORDER = "DLT04";//门店拒绝运单
+	String TYPE_DELIVERING_DELIVER_ORDER = "DLT05";//运单发货
+	String TYPE_DELIVERED_DELIVER_ORDER = "DLT06";//运单已配送
+	String TYPE_COMPLETE_DELIVER_ORDER = "DLT07";//运单完成
 	/**
 	 * 获取DeliverOrderLog数据表格
 	 * 
