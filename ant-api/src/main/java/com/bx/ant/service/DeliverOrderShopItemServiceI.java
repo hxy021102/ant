@@ -67,4 +67,12 @@ public interface DeliverOrderShopItemServiceI {
 	 * @return
 	 */
 	List<DeliverOrderShopItem> list(DeliverOrderShopItem deliverOrderShopItem);
+
+	/**
+	 * 获取DeliverOrderShopItem集合列表及对应的名称
+	 * @param deliverOrderShopItem
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridWithName(DeliverOrderShopItem deliverOrderShopItem, PageHelper ph);
 }

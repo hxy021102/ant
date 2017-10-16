@@ -8,7 +8,7 @@ import com.bx.ant.pageModel.DeliverOrderItem;
 public class DeliverOrderItemExt extends DeliverOrderItem {
     private String itemName;
     private String pictureUrl;
-
+    private String itemCode;
     public String getItemName() {
         return itemName;
     }
@@ -23,5 +23,13 @@ public class DeliverOrderItemExt extends DeliverOrderItem {
 
     public void setPictureUrl(String pictureUrl) {
         this.pictureUrl = pictureUrl;
+    }
+
+    public String getItemCode() {
+        return itemCode;
+    }
+
+    public void setItemCode(String itemCode) {
+        this.itemCode = itemCode;
     }
 }

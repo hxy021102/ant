@@ -2,8 +2,7 @@ package com.bx.ant.service.impl;
 
 import com.bx.ant.dao.DeliverOrderItemDaoI;
 import com.bx.ant.model.TdeliverOrderItem;
-import com.bx.ant.pageModel.DeliverOrderItemExt;
-import com.bx.ant.pageModel.DeliverOrderItem;
+import com.bx.ant.pageModel.*;
 import com.bx.ant.service.DeliverOrderItemServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
@@ -13,7 +12,6 @@ import com.mobian.service.MbItemServiceI;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -172,5 +170,28 @@ public class DeliverOrderItemServiceImpl extends BaseServiceImpl<DeliverOrderIte
 		}
 		return ol;
 	}
+
+	@Override
+	public DataGrid dataGridWithName(DeliverOrderItem deliverOrderItem, PageHelper ph) {
+		DataGrid dataGrid = dataGrid(deliverOrderItem, ph);
+		List<DeliverOrderItem> deliverOrderItems = dataGrid.getRows();
+		if (CollectionUtils.isNotEmpty(deliverOrderItems)) {
+			List<DeliverOrderItemExt> deliverOrderItemExts = new ArrayList<DeliverOrderItemExt>();
+			for (DeliverOrderItem orderItem : deliverOrderItems) {
+				DeliverOrderItemExt deliverOrderItemExt = new DeliverOrderItemExt();
+				BeanUtils.copyProperties(orderItem, deliverOrderItemExt);
+				MbItem mbItem = mbItemService.getFromCache(orderItem.getItemId());
+				deliverOrderItemExt.setItemCode(mbItem.getCode());
+				deliverOrderItemExt.setItemName(mbItem.getName());
+				deliverOrderItemExts.add(deliverOrderItemExt);
+			}
+			DataGrid dg = new DataGrid();
+			dg.setRows(deliverOrderItemExts);
+			dg.setTotal(dataGrid.getTotal());
+			return dg;
+		}
+		return dataGrid;
+	}
+
 
 }

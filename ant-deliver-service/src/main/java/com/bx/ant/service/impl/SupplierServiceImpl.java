@@ -51,11 +51,7 @@ public class SupplierServiceImpl extends BaseServiceImpl<Supplier> implements Su
 			if (!F.empty(supplier.getTenantId())) {
 				whereHql += " and t.tenantId = :tenantId";
 				params.put("tenantId", supplier.getTenantId());
-			}		
-			if (!F.empty(supplier.getIsdeleted())) {
-				whereHql += " and t.isdeleted = :isdeleted";
-				params.put("isdeleted", supplier.getIsdeleted());
-			}		
+			}
 			if (!F.empty(supplier.getAppKey())) {
 				whereHql += " and t.appKey = :appKey";
 				params.put("appKey", supplier.getAppKey());
@@ -70,7 +66,7 @@ public class SupplierServiceImpl extends BaseServiceImpl<Supplier> implements Su
 			}		
 			if (!F.empty(supplier.getName())) {
 				whereHql += " and t.name LIKE :name";
-				params.put("name", "%" +supplier.getName() + "%");
+				params.put("name", "%" + supplier.getName() + "%");
 			}		
 			if (!F.empty(supplier.getAddress())) {
 				whereHql += " and t.address = :address";

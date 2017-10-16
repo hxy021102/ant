@@ -61,4 +61,12 @@ public interface DeliverOrderItemServiceI {
 	 * @return
 	 */
 	List<DeliverOrderItem> getDeliverOrderItemList(Long deliverOrderId);
+
+	/**
+	 * 获取DeliverOrderItem对象集合及对应的名称
+	 * @param deliverOrderItem
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridWithName(DeliverOrderItem deliverOrderItem, PageHelper ph);
 }

@@ -19,4 +19,8 @@
     <dubbo:reference id="supplierService" interface="com.bx.ant.service.SupplierServiceI"/>
     <dubbo:reference id="supplierItemRelationService" interface="com.bx.ant.service.SupplierItemRelationServiceI"/>
 
+    <dubbo:reference id="deliverOrderShopService" interface="com.bx.ant.service.DeliverOrderShopServiceI"/>
+    <dubbo:reference id="deliverOrderShopItemService" interface="com.bx.ant.service.DeliverOrderShopItemServiceI"/>
+    <dubbo:reference id="deliverOrderLogService" interface="com.bx.ant.service.DeliverOrderLogServiceI"/>
+    <dubbo:reference id="deliverOrderItemService" interface="com.bx.ant.service.DeliverOrderItemServiceI"/>
 </beans>

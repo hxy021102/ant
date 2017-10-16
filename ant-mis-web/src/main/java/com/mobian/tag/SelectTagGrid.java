@@ -4,6 +4,7 @@ package com.mobian.tag;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.bx.ant.service.ShopDeliverAccountServiceI;
+import com.bx.ant.service.SupplierServiceI;
 import com.mobian.absx.F;
 import com.mobian.listener.Application;
 import com.mobian.pageModel.*;
@@ -197,8 +198,14 @@ public class SelectTagGrid extends TagSupport {
                 data.put("parentName", mbCoupons.getCode());
                 data.put("pid", mbCoupons.getPrice());
             }
-        }
-        else {
+        }else if ("deliverSupplierId".equals(dataType)) {
+            SupplierServiceI supplierService =BeanUtil.getBean(SupplierServiceI.class);
+            Supplier supplier = supplierService.get(Integer.parseInt(value));
+            if (supplier != null) {
+                data.put("text", supplier.getName());
+                data.put("parentName", supplier.getContacter());
+            }
+        } else {
 
             //行政区划
             DiveRegionServiceI diveRegionService = BeanUtil.getBean(DiveRegionServiceI.class);
@@ -231,8 +238,9 @@ public class SelectTagGrid extends TagSupport {
             url = path + "/mbCouponsController/selectQuery";
         } else if ("accountId".equals(dataType)) {
             url = path + "/shopDeliverAccountController/selectQuery";
-        }
-        else {
+        }else if ("deliverSupplierId".equals(dataType)) {
+            url = path + "/supplierController/selectQuery";
+        } else {
             url = path + "/diveRegionController/selectQuery";
         }
         return url;
@@ -285,8 +293,13 @@ public class SelectTagGrid extends TagSupport {
             sb.append("{field:'text',title:'用户名',width:180},");
             sb.append("{field:'parentName',title:'昵称',width:180}");
             sb.append("]]");
-        }
-        else {
+        }else if ("deliverSupplierId".equals(dataType)) {
+            sb.append("		columns: [[");
+            sb.append("{field:'id',title:'ID',width:100},");
+            sb.append("{field:'text',title:'供应商名称',width:180},");
+            sb.append("{field:'parentName',title:'联系人',width:180}");
+            sb.append("]]");
+        } else {
             sb.append("		columns: [[");
             sb.append("{field:'id',title:'ID',width:100},");
             sb.append("{field:'text',title:'名称',width:180},");

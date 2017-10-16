@@ -3,6 +3,7 @@ package com.bx.ant.service;
 import com.bx.ant.pageModel.DeliverOrderLog;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.SessionInfo;
 
 /**
  * 
@@ -57,5 +58,13 @@ public interface DeliverOrderLogServiceI {
 	 * @param id
 	 */
 	 void delete(Integer id);
+
+	/**
+	 * 获取运单日子列表信息
+	 * @param deliverOrderLog
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridWithName(DeliverOrderLog deliverOrderLog, PageHelper ph);
 
 }

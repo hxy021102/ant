@@ -17,6 +17,7 @@
        <dubbo:reference id="mbItemService" interface="com.mobian.service.MbItemServiceI"/>
        <dubbo:reference id="mbBalanceLogService" interface="com.mobian.service.MbBalanceLogServiceI"/>
        <dubbo:reference id="mbBalanceService" interface="com.mobian.service.MbBalanceServiceI"/>
+       <dubbo:reference id="userService" interface="com.mobian.service.UserServiceI"/>
 
        <!-- 用dubbo协议在20880端口暴露服务 -->
        <dubbo:protocol name="${dubbo.protocol.name}" port="${dubbo.protocol.port}" />
@@ -26,4 +27,9 @@
        <dubbo:service interface="com.bx.ant.service.DeliverOrderAllocationServiceI" ref="deliverOrderAllocationServiceImpl" protocol="dubbo"/>
        <dubbo:service interface="com.bx.ant.service.SupplierServiceI" ref="supplierServiceImpl" protocol="dubbo"/>
        <dubbo:service interface="com.bx.ant.service.SupplierItemRelationServiceI" ref="supplierItemRelationServiceImpl" protocol="dubbo"/>
+
+       <dubbo:service interface="com.bx.ant.service.DeliverOrderShopServiceI" ref="deliverOrderShopServiceImpl" protocol="dubbo"/>
+       <dubbo:service interface="com.bx.ant.service.DeliverOrderShopItemServiceI" ref="deliverOrderShopItemServiceImpl" protocol="dubbo"/>
+       <dubbo:service interface="com.bx.ant.service.DeliverOrderLogServiceI" ref="deliverOrderLogServiceImpl" protocol="dubbo"/>
+       <dubbo:service interface="com.bx.ant.service.DeliverOrderItemServiceI" ref="deliverOrderItemServiceImpl" protocol="dubbo"/>
 </beans>

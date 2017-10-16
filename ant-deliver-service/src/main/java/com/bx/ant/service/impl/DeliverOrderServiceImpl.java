@@ -353,7 +353,6 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 				supplierIds[index++] = order.getSupplierId();
 			}
 			SupplierQuery supplierQuery = new SupplierQuery();
-			supplierQuery.setIsdeleted(false);
 			supplierQuery.setSupplierIds(supplierIds);
 			List<Supplier> suppliers = supplierService.query(supplierQuery);
 			if (CollectionUtils.isNotEmpty(suppliers)) {

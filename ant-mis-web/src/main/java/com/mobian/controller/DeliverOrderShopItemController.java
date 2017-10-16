@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,6 +33,7 @@ import com.alibaba.fastjson.JSON;
 @RequestMapping("/deliverOrderShopItemController")
 public class DeliverOrderShopItemController extends BaseController {
 
+	@Resource
 	private DeliverOrderShopItemServiceI deliverOrderShopItemService;
 
 
@@ -48,18 +50,18 @@ public class DeliverOrderShopItemController extends BaseController {
 	/**
 	 * 获取DeliverOrderShopItem数据表格
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 */
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(DeliverOrderShopItem deliverOrderShopItem, PageHelper ph) {
-		return deliverOrderShopItemService.dataGrid(deliverOrderShopItem, ph);
+		return deliverOrderShopItemService.dataGridWithName(deliverOrderShopItem, ph);
 	}
 	/**
 	 * 获取DeliverOrderShopItem数据表格excel
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 * @throws NoSuchMethodException 
 	 * @throws SecurityException 

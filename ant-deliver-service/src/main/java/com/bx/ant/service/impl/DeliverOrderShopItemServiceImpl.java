@@ -1,6 +1,6 @@
 package com.bx.ant.service.impl;
 
-import com.bx.ant.pageModel.DeliverOrderShopItemExt;
+import com.bx.ant.pageModel.*;
 import com.bx.ant.service.ShopItemServiceI;
 import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderShopItemDaoI;
@@ -8,10 +8,6 @@ import com.bx.ant.model.TdeliverOrderShopItem;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
 import com.bx.ant.service.DeliverOrderShopItemServiceI;
-import com.bx.ant.pageModel.DeliverOrderItem;
-import com.bx.ant.pageModel.DeliverOrderShop;
-import com.bx.ant.pageModel.DeliverOrderShopItem;
-import com.bx.ant.pageModel.ShopItem;
 import com.mobian.service.MbItemServiceI;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -19,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +30,7 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 	@Autowired
 	private ShopItemServiceI shopItemService;
 
-	@Autowired
+	@javax.annotation.Resource
 	private MbItemServiceI mbItemService;
 
 	@Override
@@ -189,6 +186,28 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 				deliverOrderShopItemExt.setQuantityUnitName(item.getQuantityUnitName());
 			}
 		}
+	}
+
+	@Override
+	public DataGrid dataGridWithName(DeliverOrderShopItem deliverOrderShopItem, PageHelper ph) {
+		DataGrid dataGrid = dataGrid(deliverOrderShopItem, ph);
+		List<DeliverOrderShopItem> deliverOrderShopItems = dataGrid.getRows();
+		if (CollectionUtils.isNotEmpty(deliverOrderShopItems)) {
+			List<DeliverOrderShopItemExt> deliverOrderShopItemExts = new ArrayList<DeliverOrderShopItemExt>();
+			for (DeliverOrderShopItem orderShopItem : deliverOrderShopItems) {
+				DeliverOrderShopItemExt deliverOrderShopItemExt = new DeliverOrderShopItemExt();
+				BeanUtils.copyProperties(orderShopItem, deliverOrderShopItemExt);
+				MbItem mbItem=mbItemService.getFromCache(orderShopItem.getItemId());
+				deliverOrderShopItemExt.setItemCode(mbItem.getCode());
+				deliverOrderShopItemExt.setItemName(mbItem.getName());
+				deliverOrderShopItemExts.add(deliverOrderShopItemExt);
+			}
+			DataGrid dg = new DataGrid();
+			dg.setRows(deliverOrderShopItemExts);
+			dg.setTotal(dataGrid.getTotal());
+			return dg;
+		}
+		return dataGrid;
 	}
 
 }

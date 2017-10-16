@@ -64,4 +64,12 @@ public interface DeliverOrderShopServiceI {
 	List<DeliverOrderShop> query(DeliverOrderShop deliverOrderShop);
 
 	DeliverOrderShop editStatus(DeliverOrderShop deliverOrderShop, String status);
+
+	/**
+	 * 获取DeliverOrderShop集合对象及对应信息名字
+	 * @param deliverOrderShop
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridWithName(DeliverOrderShop deliverOrderShop, PageHelper ph);
 }

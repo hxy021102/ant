@@ -162,7 +162,11 @@
         }); 
 	}
 	function searchFun() {
-		dataGrid.datagrid('load', $.serializeObject($('#searchForm')));
+        var options = {};
+        options.url = '${pageContext.request.contextPath}/deliverOrderController/dataGrid';
+        options.queryParams = $.serializeObject($('#searchForm'));
+        dataGrid.datagrid(options);
+		//dataGrid.datagrid('load', $.serializeObject($('#searchForm')));
 	}
 	function cleanFun() {
 		$('#searchForm input').val('');
