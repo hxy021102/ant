@@ -209,6 +209,12 @@ public class MbOrderItemController extends BaseController {
                     mbOrderCallbackItemList.clear();
                 }
 
+                if (mbOrder.getDeliveryCost() != null) {
+                    mbOrderItemExport.setDeliveryCostFormat(nf.format(mbOrder.getDeliveryCost() / 100f));
+                    mbOrder.setDeliveryCost(null);
+                }
+
+
             }
         } finally {
             ThreadCache.clear();
@@ -311,6 +317,12 @@ public class MbOrderItemController extends BaseController {
         colum.setField("deliveryDriverName");
         colum.setTitle("司机名称");
         colums.add(colum);
+
+        colum = new Colum();
+        colum.setField("deliveryCostFormat");
+        colum.setTitle("运费");
+        colums.add(colum);
+
         colum = new Colum();
         colum.setField("payStatus");
         colum.setTitle("支付状态");

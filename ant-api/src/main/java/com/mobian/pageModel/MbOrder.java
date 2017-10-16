@@ -47,6 +47,7 @@ public class MbOrder implements java.io.Serializable {
 	private String payStatusName;
 	private String deliveryDriver;
 	private String deliveryDriverName;
+	private Integer deliveryCost;
 
 	private Date deliveryTime;
 
@@ -516,5 +517,13 @@ public class MbOrder implements java.io.Serializable {
 
 	public void setShopIds(Integer[] shopIds) {
 		this.shopIds = shopIds;
+	}
+
+	public Integer getDeliveryCost() {
+		return deliveryCost;
+	}
+
+	public void setDeliveryCost(Integer deliveryCost) {
+		this.deliveryCost = deliveryCost;
 	}
 }
