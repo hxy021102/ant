@@ -424,7 +424,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			if (CollectionUtils.isNotEmpty(orderShops)) {
 				if (now.getTime() - orderShops.get(0) .getAddtime().getTime() > TIME_DIF_SHOP_PAY_SETTLED) {
 				    //设置下一个状态
-					order.setRemark("" + (TIME_DIF_SHOP_PAY_SETTLED / (24 * 60 * 60 * 1000)) + "天自动结算");
+					order.setRemark("" + (TIME_DIF_SHOP_PAY_SETTLED / (24 * 60 * 60 * 1000)) + "");
 					order.setStatus(STATUS_CLOSED);
 					transform(order);
 				}

@@ -217,7 +217,7 @@ public class ApiDeliverOrderController extends BaseController {
      */
     @RequestMapping("/editOrderRefuse")
     @ResponseBody
-    public Json refuseOrder(HttpServletRequest request, Long id){
+    public Json refuseOrder(HttpServletRequest request, Long id, String remark){
         Json json = new Json();
 
         //获取shopId
@@ -225,7 +225,15 @@ public class ApiDeliverOrderController extends BaseController {
         TokenWrap token = getTokenWrap(request);
         Integer shopId = token.getShopId();
 
-        deliverOrderService.transformByShopIdAndStatus(id,shopId,deliverOrderService.STATUS_SHOP_REFUSE);
+        //配置deliverOrder
+        DeliverOrder deliverOrder =  new DeliverOrder();
+        deliverOrder.setId(id);
+        deliverOrder.setShopId(shopId);
+        deliverOrder.setRemark(remark);
+        deliverOrder.setStatus(deliverOrderService.STATUS_SHOP_REFUSE);
+
+        //状态翻转
+        deliverOrderService.transform(deliverOrder);
         json.setMsg("u know");
         json.setSuccess(true);
         return json;
