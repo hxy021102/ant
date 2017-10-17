@@ -99,7 +99,15 @@ public class MbOrderItemExport extends MbOrderItem {
 	 */
 	private String contactPhone;
 
+	/**
+	 * 运费
+	 */
 	private String deliveryCostFormat;
+
+	/**
+	 * 发货仓
+	 */
+	private String deliveryWarehouseName;
 
 	private Map<String,Integer> extend;
 
@@ -294,5 +302,13 @@ public class MbOrderItemExport extends MbOrderItem {
 
 	public void setDeliveryCostFormat(String deliveryCostFormat) {
 		this.deliveryCostFormat = deliveryCostFormat;
+	}
+
+	public String getDeliveryWarehouseName() {
+		return deliveryWarehouseName;
+	}
+
+	public void setDeliveryWarehouseName(String deliveryWarehouseName) {
+		this.deliveryWarehouseName = deliveryWarehouseName;
 	}
 }

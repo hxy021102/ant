@@ -224,6 +224,11 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
                 whereHql += " and t.id in (:ids)";
                 params.put("ids", mbShop.getIds());
             }
+
+            if (!F.empty(mbShop.getShopType())) {
+                whereHql += " and t.shopType = :shopType";
+                params.put("shopType", mbShop.getShopType());
+            }
         }
         return whereHql;
     }
