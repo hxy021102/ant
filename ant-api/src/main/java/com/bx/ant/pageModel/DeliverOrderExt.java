@@ -13,6 +13,7 @@ import java.util.List;
  */
 public class DeliverOrderExt extends DeliverOrder {
 
+    private Long millisecond;
     private String[] statusList;
     private BigDecimal distance;
 
@@ -49,5 +50,13 @@ public class DeliverOrderExt extends DeliverOrder {
 
     public void setDistance(BigDecimal distance) {
         this.distance = distance;
+    }
+
+    public Long getMillisecond() {
+        return millisecond;
+    }
+
+    public void setMillisecond(Long millisecond) {
+        this.millisecond = millisecond;
     }
 }

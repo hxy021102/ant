@@ -69,4 +69,6 @@ public interface DeliverOrderItemServiceI {
 	 * @return
 	 */
 	DataGrid dataGridWithName(DeliverOrderItem deliverOrderItem, PageHelper ph);
+
+    void addBySupplier(DeliverOrderItem orderItem, Integer supplierId);
 }

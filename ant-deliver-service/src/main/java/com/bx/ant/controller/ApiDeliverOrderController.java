@@ -49,6 +49,12 @@ public class ApiDeliverOrderController extends BaseController {
         return json;
     }
 
+    @RequestMapping("/add")
+    @ResponseBody
+    public Json add()
+    {
+        return null;
+    }
 //    /**
 //     * 获取门店新订单审核列表DataGrid
 //     * @param request

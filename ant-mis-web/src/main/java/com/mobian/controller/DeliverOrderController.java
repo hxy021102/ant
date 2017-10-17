@@ -9,15 +9,18 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
+import com.alibaba.fastjson.JSONObject;
+import com.bx.ant.pageModel.DeliverOrderItem;
 import com.bx.ant.pageModel.DeliverOrderQuery;
-import com.mobian.pageModel.Colum;
+import com.bx.ant.service.DeliverOrderItemServiceI;
+import com.mobian.pageModel.*;
 import com.bx.ant.pageModel.DeliverOrder;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.Json;
-import com.mobian.pageModel.PageHelper;
 import com.bx.ant.service.DeliverOrderServiceI;
 
 
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -36,6 +39,9 @@ public class DeliverOrderController extends BaseController {
 
 	@Resource
 	private DeliverOrderServiceI deliverOrderService;
+
+	@Autowired
+	private DeliverOrderItemServiceI deliverOrderItemService;
 
 
 	/**
@@ -98,9 +104,19 @@ public class DeliverOrderController extends BaseController {
 	 */
 	@RequestMapping("/add")
 	@ResponseBody
-	public Json add(DeliverOrder deliverOrder) {
-		Json j = new Json();		
-		deliverOrderService.add(deliverOrder);
+	public Json add(DeliverOrder deliverOrder,String itemList, Integer supplierId) {
+		Json j = new Json();
+		List<MbItem> items = JSONObject.parseArray(itemList, MbItem.class);
+		if (CollectionUtils.isNotEmpty(items)) {
+			deliverOrderService.add(deliverOrder);
+			for (MbItem item : items) {
+				DeliverOrderItem orderItem = new DeliverOrderItem();
+				orderItem.setItemId(item.getId());
+				orderItem.setQuantity(item.getQuantity());
+				orderItem.setDeliverOrderId(deliverOrder.getId());
+				deliverOrderItemService.addBySupplier(orderItem, supplierId);
+			}
+		}
 		j.setSuccess(true);
 		j.setMsg("添加成功！");		
 		return j;

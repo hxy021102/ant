@@ -193,5 +193,9 @@ public class DeliverOrderItemServiceImpl extends BaseServiceImpl<DeliverOrderIte
 		return dataGrid;
 	}
 
+	@Override
+	public void addBySupplier(DeliverOrderItem orderItem, Integer supplierId) {
+
+	}
 
 }
