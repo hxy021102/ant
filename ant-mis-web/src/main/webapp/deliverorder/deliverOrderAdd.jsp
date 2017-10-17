@@ -211,7 +211,7 @@
             <input type="hidden" name="status" value="NS001"/>
             <table class="table table-hover table-condensed">
                 <tr>
-                    <th><%=TmbCoupons.ALIAS_NAME%>:
+                    <th>:
                     </th>
                     <td>
                         <input name="name" type="text" class="easyui-validatebox span2" data-options="required:true"/>

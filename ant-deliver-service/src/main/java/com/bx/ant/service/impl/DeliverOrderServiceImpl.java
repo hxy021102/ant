@@ -209,7 +209,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			if (CollectionUtils.isNotEmpty(deliverOrderShops) && deliverOrderShops.size() == 1) {
 				deliverOrderShop = deliverOrderShops.get(0);
 				deliverOrderExt.setDistance(deliverOrderShop.getDistance());
-				if (STATUS_SHOP_ALLOCATION.equals(deliverOrderExt.getStatus()) {
+				if (STATUS_SHOP_ALLOCATION.equals(deliverOrderExt.getStatus())) {
 					Date now = new Date();
 					deliverOrderExt.setMillisecond(DeliverOrderShopServiceI.TIME_OUT_TO_ACCEPT - now.getTime() + deliverOrderShop.getUpdatetime().getTime());
 				}
