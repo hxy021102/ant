@@ -1,6 +1,7 @@
 package com.bx.ant.service.impl;
 
 import com.bx.ant.pageModel.*;
+import com.bx.ant.service.DeliverOrderServiceI;
 import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderShopDaoI;
 import com.bx.ant.model.TdeliverOrderShop;
@@ -17,10 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderShop> implements DeliverOrderShopServiceI {
@@ -30,6 +28,10 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 
 	@Resource
 	private MbShopServiceI mbShopService;
+
+	@Autowired
+	private DeliverOrderServiceI deliverOrderService;
+
 	@Override
 	public DataGrid dataGrid(DeliverOrderShop deliverOrderShop, PageHelper ph) {
 		List<DeliverOrderShop> ol = new ArrayList<DeliverOrderShop>();
@@ -192,7 +194,26 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		}
 		return dataGrid;
 	}
-
+	@Override
+	public void checkTimeOutOrder() {
+		DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+		deliverOrderShop.setStatus(STATUS_AUDITING);
+		List<DeliverOrderShop> deliverOrderShops = dataGrid(deliverOrderShop, new PageHelper()).getRows();
+		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
+			Iterator<DeliverOrderShop> orderShopIterator = deliverOrderShops.iterator();
+			while (orderShopIterator.hasNext()) {
+				DeliverOrderShop orderShop = orderShopIterator.next();
+				Date now = new Date();
+				if (now.getTime() - orderShop.getUpdatetime().getTime() >TIME_OUT_TO_ACCEPT) {
+					DeliverOrder deliverOrder = new DeliverOrder();
+					deliverOrder.setId(orderShop.getDeliverOrderId());
+					deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_REFUSE);
+					deliverOrder.setRemark("超时未接单");
+					deliverOrderService.transform(deliverOrder);
+				}
+			}
+		}
+	}
 
 
 

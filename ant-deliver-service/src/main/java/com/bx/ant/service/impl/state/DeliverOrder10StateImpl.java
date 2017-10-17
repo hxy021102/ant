@@ -60,16 +60,10 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
         deliverOrderService.editAndAddLog(orderNew, DeliverOrderLogServiceI.TYPE_ASSIGN_DELIVER_ORDER,
                 "运单被分配");
 
-
         DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
         deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
         deliverOrderShop.setShopId(deliverOrder.getShopId());
         deliverOrderShopService.editStatus(deliverOrderShop,DeliverOrderShopServiceI.STATUS_AUDITING);
-
-
-
-
-
 
     }
 

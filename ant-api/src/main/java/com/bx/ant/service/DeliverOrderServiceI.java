@@ -48,6 +48,8 @@ public interface DeliverOrderServiceI {
 	String PAY_WAY_WECHAT = "DPW02"; //微信
 	String PAY_WAY_TRANSFER = "DPW03"; //汇款
 
+	//派单结算时间差
+	Long TIME_DIF_SHOP_PAY_SETTLED = new Long(7 * 24 * 60 * 60 * 1000) ;
 
     void transformByShopIdAndStatus(Long id, Integer shopId, String status);
 
@@ -181,4 +183,6 @@ public interface DeliverOrderServiceI {
 	 * @return
 	 */
 	DeliverOrderQuery getDeliverOrderView(Long id );
+
+	void settleShopPay();
 }

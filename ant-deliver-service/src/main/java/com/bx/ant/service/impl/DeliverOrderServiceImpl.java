@@ -9,16 +9,14 @@ import com.bx.ant.model.TdeliverOrder;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
 
+import com.mobian.thirdpart.redis.RedisUtil;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> implements DeliverOrderServiceI {
@@ -46,6 +44,9 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 
 	@Autowired
 	private SupplierServiceI supplierService;
+
+	@Autowired
+	private RedisUtil redisUtil;
 
 
 	@Override
@@ -393,4 +394,45 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		deliverOrderQuery.setDeliveryStatusName(deliverOrder.getDeliveryStatus());
 		return deliverOrderQuery;
 	}
+//	@Override
+//	public void completeOrder(Long deliverOrderId ) {
+//		DeliverOrder deliverOrder = get(deliverOrderId);
+//		//门店结算前提:提供商已付款,已配送完,门店未结算
+//		if (DeliverOrderServiceI.DELIVER_STATUS_DELIVERED.equals(deliverOrder.getDeliveryStatus())
+//				&& DeliverOrderServiceI.PAY_STATUS_SUCCESS.equals(deliverOrder.getPayStatus())
+//				&& DeliverOrderServiceI.SHOP_PAY_STATUS_NOT_PAY.equals(deliverOrder.getShopPayStatus())) {
+//
+//		}
+//	}
+	@Override
+	public void settleShopPay() {
+		DeliverOrder deliverOrder = new DeliverOrder();
+		deliverOrder.setDeliveryStatus(DELIVER_STATUS_DELIVERED);
+		deliverOrder.setPayStatus(PAY_STATUS_SUCCESS);
+		deliverOrder.setShopPayStatus(SHOP_PAY_STATUS_NOT_PAY);
+		deliverOrder.setStatus(STATUS_DELIVERY_COMPLETE);
+		PageHelper ph = new PageHelper();
+		List<DeliverOrder> deliverOrderList = dataGrid(deliverOrder, ph).getRows();
+		Date now = new Date();
+		Iterator<DeliverOrder> deliverIt = deliverOrderList.iterator();
+		while (deliverIt.hasNext()) {
+			DeliverOrder order = deliverIt.next();
+			DeliverOrderShop orderShop = new DeliverOrderShop();
+			orderShop.setDeliverOrderId(order.getId());
+			orderShop.setStatus(DeliverOrderShopServiceI.STATUS_ACCEPTED);
+			List<DeliverOrderShop> orderShops = deliverOrderShopService.query(orderShop);
+			if (CollectionUtils.isNotEmpty(orderShops)) {
+				if (now.getTime() - orderShops.get(0) .getAddtime().getTime() > TIME_DIF_SHOP_PAY_SETTLED) {
+				    //设置下一个状态
+					order.setRemark("" + (TIME_DIF_SHOP_PAY_SETTLED / (24 * 60 * 60 * 1000)) + "天自动结算");
+					order.setStatus(STATUS_CLOSED);
+					transform(order);
+				}
+			}
+//			else {
+//				throw new ServiceException("数据异常");
+//			}
+		}
+	}
+
 }

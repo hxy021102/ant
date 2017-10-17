@@ -19,6 +19,8 @@ public interface DeliverOrderShopServiceI {
 	String STATUS_COMPLETE = "DSS04"; //正常完成
 	String STATUS_INACTIVE = "DSS05"; //失效
 
+	Long TIME_OUT_TO_ACCEPT = new Long(10 * 60 * 1000);
+
 	/**
 	 * 获取DeliverOrderShop数据表格
 	 * 
@@ -59,10 +61,26 @@ public interface DeliverOrderShopServiceI {
 	 */
 	public void delete(Integer id);
 
+	/**
+	 * 通过deliverOrder添加DeliverOrderShop'
+	 * @param deliverOrder
+	 * @return
+	 */
 	DeliverOrderShop addByDeliverOrder(DeliverOrder deliverOrder);
 
+	/**
+	 * 查询deliverOrderShop
+	 * @param deliverOrderShop
+	 * @return
+	 */
 	List<DeliverOrderShop> query(DeliverOrderShop deliverOrderShop);
 
+	/**
+	 * 通过deliverOrderShop 找到订单并修改订单为status状态
+	 * @param deliverOrderShop
+	 * @param status
+	 * @return
+	 */
 	DeliverOrderShop editStatus(DeliverOrderShop deliverOrderShop, String status);
 
 	/**
@@ -72,4 +90,9 @@ public interface DeliverOrderShopServiceI {
 	 * @return
 	 */
 	DataGrid dataGridWithName(DeliverOrderShop deliverOrderShop, PageHelper ph);
+
+	/**
+	 * 自动拒绝所有超时订单
+	 */
+	void checkTimeOutOrder();
 }
