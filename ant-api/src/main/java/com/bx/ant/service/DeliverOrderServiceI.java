@@ -185,4 +185,6 @@ public interface DeliverOrderServiceI {
 	DeliverOrderQuery getDeliverOrderView(Long id );
 
 	void settleShopPay();
+
+    void addAndItems(DeliverOrder deliverOrder, String itemListStr);
 }

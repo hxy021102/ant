@@ -104,17 +104,7 @@ public class DeliverOrderController extends BaseController {
 	@ResponseBody
 	public Json add(DeliverOrder deliverOrder,String itemListStr) {
 		Json j = new Json();
-		List<SupplierItemRelationView> items = JSONObject.parseArray(itemListStr, SupplierItemRelationView.class);
-		if (CollectionUtils.isNotEmpty(items)) {
-			deliverOrderService.add(deliverOrder);
-			for (SupplierItemRelationView item : items) {
-				DeliverOrderItem orderItem = new DeliverOrderItem();
-				orderItem.setItemId(item.getItemId());
-				orderItem.setQuantity(item.getQuantity());
-				orderItem.setDeliverOrderId(deliverOrder.getId());
-				deliverOrderItemService.addAndFill(orderItem,deliverOrder);
-			}
-		}
+		deliverOrderService.addAndItems(deliverOrder, itemListStr);
 		j.setSuccess(true);
 		j.setMsg("添加成功！");		
 		return j;
