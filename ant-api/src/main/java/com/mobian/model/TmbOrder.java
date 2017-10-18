@@ -91,6 +91,7 @@ public class TmbOrder implements java.io.Serializable,IEntity{
 	private String deliveryAddress;
 	//
 	private Integer deliveryRegion;
+	private Integer deliveryCost;
 	//@Length(max=4)
 	private String payStatus;
 	//@Length(max=4)
@@ -361,6 +362,15 @@ public class TmbOrder implements java.io.Serializable,IEntity{
 
 	public void setShopId(Integer shopId) {
 		this.shopId = shopId;
+	}
+
+	@Column(name = "delivery_cost", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public Integer getDeliveryCost() {
+		return deliveryCost;
+	}
+
+	public void setDeliveryCost(Integer deliveryCost) {
+		this.deliveryCost = deliveryCost;
 	}
 
 	/*

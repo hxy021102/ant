@@ -24,6 +24,24 @@ public class MbSupplierStockInItem implements java.io.Serializable {
     private String code;
     private String quantityUnitName;
     private String categoryName;
+    private Integer supplierOrderId;
+    private String  supplierName;
+
+    public String getSupplierName() {
+        return supplierName;
+    }
+
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
+    }
+
+    public Integer getSupplierOrderId() {
+        return supplierOrderId;
+    }
+
+    public void setSupplierOrderId(Integer supplierOrderId) {
+        this.supplierOrderId = supplierOrderId;
+    }
 
     public String getCategoryName() {
         return categoryName;

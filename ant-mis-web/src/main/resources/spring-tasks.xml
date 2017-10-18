@@ -12,7 +12,9 @@
 
 		<task:scheduled ref="taskServiceImpl" method="deleteUnPayOrder" cron= "0 0 0 * * ?" />
 
-		<task:scheduled ref="taskServiceImpl" method="remindDrivers"    cron="0 0/5 8-19 * * ?"/>
+		<task:scheduled ref="taskServiceImpl" method="updateBatchShopLocation" cron= "0 23 23 * * ?" />
+
+		<task:scheduled ref="taskServiceImpl" method="remindDrivers" cron="0 0/5 8-19 * * ?"/>
 
 	</task:scheduled-tasks>
 

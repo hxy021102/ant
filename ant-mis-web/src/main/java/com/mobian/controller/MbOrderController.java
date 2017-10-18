@@ -67,6 +67,8 @@ public class MbOrderController extends BaseController {
 	private MbWarehouseServiceI mbWarehouseService;
 	@Autowired
 	private MbOrderRefundLogServiceI mbOrderRefundLogService;
+	@Autowired
+	private MbRechargeLogServiceI mbRechargeLogService;
 
 
 	@Resource(name = "order02StateImpl")
@@ -352,6 +354,10 @@ public class MbOrderController extends BaseController {
 		if("BT002".equals(type)) {
 			MbPayment mbPayment = mbPaymentService.get(id);
 			id = mbPayment.getOrderId();
+		}
+		if ("BT013".equals(type)) {
+			MbRechargeLog mbRechargeLog = mbRechargeLogService.get(id);
+			id = Integer.parseInt(mbRechargeLog.getPayCode());
 		}
 		MbOrder mbOrder = mbOrderService.get(id);
         Integer shopId = mbOrder.getShopId();
@@ -717,10 +723,10 @@ public class MbOrderController extends BaseController {
 
 	@RequestMapping("/updateDeliveryDriver")
 	@ResponseBody
-	public Json updateDeliveryDriver(Integer id, String deliveryDriver, String remark, HttpSession session) {
+	public Json updateDeliveryDriver(Integer id, String deliveryDriver,Integer deliveryCost, String remark, HttpSession session) {
 		Json json = new Json();
 		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
-		mbOrderService.editOrderDeliveryDriver(id, deliveryDriver, remark, sessionInfo.getId());
+		mbOrderService.editOrderDeliveryDriver(id, deliveryDriver,deliveryCost, remark, sessionInfo.getId());
 		json.setSuccess(true);
 		json.setMsg("分配司机成功！");
 		return json;

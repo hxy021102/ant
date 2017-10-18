@@ -91,7 +91,7 @@
                 hidden: $.canEdit ? false : true,
                 formatter: function (value, row, index) {
                     var str = '';
-                    if ($.canEdit) {
+                    if ($.canEdit&& ${readOnly!=true}) {
                         str = '<a onclick="editShow(' + row.id + ',' + row.isShow + ');" href="javascript:void(0);" class="switch" is-show="'+row.isShow+'">'+(row.isShow ? '点击影藏' : '点击显示')+'</a>';
                     }
 
@@ -201,10 +201,10 @@
     <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true"
        onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton"
                                        data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
-    <c:if test="${fn:contains(sessionInfo.resourceList, '/mbRechargeLogController/addShopMoneyPage')}">
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/mbRechargeLogController/addShopMoneyPage') and readOnly!=true}">
         <a onclick="addShopMoney();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'pencil_add'">充值</a>
     </c:if>
-    <c:if test="${fn:contains(sessionInfo.resourceList, '/mbRechargeLogController/addShopCashChargePage')}">
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/mbRechargeLogController/addShopCashChargePage') and readOnly!=true}">
         <a onclick="addShopCashCharge();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'pencil_add'">现金充值</a>
     </c:if>
 </div>

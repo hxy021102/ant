@@ -68,6 +68,13 @@ public interface MbBalanceServiceI {
 	MbBalance queryByShopId(Integer shopId);
 
 	/**
+	 * 通过真实余额
+	 * @param shopId
+	 * @return
+	 */
+	MbBalance queryByRealShopId(Integer shopId);
+
+	/**
 	 * 桶押金账户
 	 * @param shopId
 	 * @return

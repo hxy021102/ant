@@ -67,4 +67,18 @@ public interface MbWarehouseServiceI {
 	 */
 	List<TmbWarehouse> getWarehouseListByWarehouseType(String warehouseType);
 
+	/**
+	 * 查询仓库信息列表
+	 * @param mbWarehouse
+	 * @return
+	 */
+	List<MbWarehouse>  queryWarehouseList(MbWarehouse mbWarehouse);
+
+	/**
+	 * 获取仓库地图数据
+	 * @param mbWarehouse
+	 * @return
+	 */
+	List<MbWarehouse>  getWarehouseMapData(MbWarehouse mbWarehouse);
+
 }
