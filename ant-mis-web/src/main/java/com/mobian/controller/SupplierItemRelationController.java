@@ -2,6 +2,7 @@ package com.mobian.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,11 +10,14 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bx.ant.pageModel.SupplierItemRelationView;
+import com.mobian.absx.F;
 import com.mobian.pageModel.*;
 import com.bx.ant.pageModel.SupplierItemRelation;
 import com.bx.ant.service.SupplierItemRelationServiceI;
 
 import com.mobian.service.MbItemServiceI;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -169,5 +173,41 @@ public class SupplierItemRelationController extends BaseController {
 		j.setSuccess(true);
 		return j;
 	}
-
+	@RequestMapping("/selectQuery")
+	@ResponseBody
+	public List<ItemTree> query(String q, Integer supplierId) {
+		MbItem item = new MbItem();
+		List<ItemTree> lt = new ArrayList<ItemTree>();
+		if (!F.empty(q)) {
+			item.setKeyword(q);
+		} else {
+			return lt;
+		}
+		PageHelper ph = new PageHelper();
+		ph.setHiddenTotal(true);
+		ph.setPage(100);
+		DataGrid diveRegionList = mbItemService.dataGrid(item, ph);
+		List<MbItem> rows = diveRegionList.getRows();
+		if (!CollectionUtils.isEmpty(rows)) {
+			for (MbItem d : rows) {
+				SupplierItemRelation itemRelation = new SupplierItemRelation();
+				itemRelation.setItemId(d.getId());
+				itemRelation.setSupplierId(supplierId);
+				itemRelation.setOnline(true);
+				List<SupplierItemRelation> itemRelations = supplierItemRelationService.dataGrid(itemRelation, ph).getRows();
+				if (CollectionUtils.isNotEmpty(itemRelations)) {
+					itemRelation = itemRelations.get(0);
+					ItemTree tree = new ItemTree();
+					tree.setId(d.getId() + "");
+					tree.setPid(d.getCategoryId() + "");
+					tree.setText(d.getName());
+					tree.setParentName(d.getCategoryName());
+					tree.setCode(d.getCode());
+					tree.setMarketPrice(itemRelation.getPrice());
+					lt.add(tree);
+				}
+			}
+		}
+		return lt;
+	}
 }

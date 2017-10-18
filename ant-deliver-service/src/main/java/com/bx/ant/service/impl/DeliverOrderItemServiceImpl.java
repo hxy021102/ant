@@ -4,6 +4,7 @@ import com.bx.ant.dao.DeliverOrderItemDaoI;
 import com.bx.ant.model.TdeliverOrderItem;
 import com.bx.ant.pageModel.*;
 import com.bx.ant.service.DeliverOrderItemServiceI;
+import com.bx.ant.service.SupplierItemRelationServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbItem;
@@ -28,6 +29,9 @@ public class DeliverOrderItemServiceImpl extends BaseServiceImpl<DeliverOrderIte
 
 	@Resource
 	private MbItemServiceI mbItemService;
+
+	@Resource
+	private SupplierItemRelationServiceI suplierItemRelations;
 
 	@Override
 	public DataGrid dataGrid(DeliverOrderItem deliverOrderItem, PageHelper ph) {
@@ -194,7 +198,24 @@ public class DeliverOrderItemServiceImpl extends BaseServiceImpl<DeliverOrderIte
 	}
 
 	@Override
-	public void addBySupplier(DeliverOrderItem orderItem, Integer supplierId) {
+	public void addAndFill(DeliverOrderItem orderItem, DeliverOrder deliverOrder) {
+		if (!F.empty(orderItem.getItemId()) && !F.empty(deliverOrder.getSupplierId())) {
+			SupplierItemRelation itemRelation = new SupplierItemRelation();
+			itemRelation.setSupplierId(deliverOrder.getSupplierId());
+			itemRelation.setItemId(orderItem.getItemId());
+			itemRelation.setOnline(true);
+
+			//获取供应商item信息
+
+			List<SupplierItemRelation> itemRelations = suplierItemRelations.dataGrid(itemRelation, new PageHelper()).getRows();
+			if (CollectionUtils.isNotEmpty(itemRelations)) {
+				itemRelation = itemRelations.get(0);
+				orderItem.setPrice(itemRelation.getPrice());
+				orderItem.setInPrice(itemRelation.getInPrice());
+				orderItem.setQuantity(itemRelation.getFreight());
+				add(orderItem);
+			}
+		}
 
 	}
 

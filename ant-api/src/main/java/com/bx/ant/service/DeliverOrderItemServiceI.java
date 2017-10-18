@@ -1,5 +1,6 @@
 package com.bx.ant.service;
 
+import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.DeliverOrderItem;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
@@ -70,5 +71,9 @@ public interface DeliverOrderItemServiceI {
 	 */
 	DataGrid dataGridWithName(DeliverOrderItem deliverOrderItem, PageHelper ph);
 
-    void addBySupplier(DeliverOrderItem orderItem, Integer supplierId);
+	/**
+	 * 填充基本数据并保存
+	 * @param orderItem
+	 */
+    void addAndFill(DeliverOrderItem orderItem, DeliverOrder deliverOrder);
 }

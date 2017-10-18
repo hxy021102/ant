@@ -11,11 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.fastjson.JSONObject;
-import com.bx.ant.pageModel.DeliverOrderItem;
-import com.bx.ant.pageModel.DeliverOrderQuery;
+import com.bx.ant.pageModel.*;
 import com.bx.ant.service.DeliverOrderItemServiceI;
 import com.mobian.pageModel.*;
-import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.service.DeliverOrderServiceI;
 
 
@@ -37,7 +35,7 @@ import com.alibaba.fastjson.JSON;
 @RequestMapping("/deliverOrderController")
 public class DeliverOrderController extends BaseController {
 
-	@Resource
+	@Autowired
 	private DeliverOrderServiceI deliverOrderService;
 
 	@Autowired
@@ -92,8 +90,8 @@ public class DeliverOrderController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/addPage")
-	public String addPage(HttpServletRequest request) {
-		DeliverOrder deliverOrder = new DeliverOrder();
+	public String addPage(HttpServletRequest request, Integer supplierId) {
+		request.setAttribute("supplierId", supplierId);
 		return "/deliverorder/deliverOrderAdd";
 	}
 
@@ -104,17 +102,17 @@ public class DeliverOrderController extends BaseController {
 	 */
 	@RequestMapping("/add")
 	@ResponseBody
-	public Json add(DeliverOrder deliverOrder,String itemList, Integer supplierId) {
+	public Json add(DeliverOrder deliverOrder,String itemListStr) {
 		Json j = new Json();
-		List<MbItem> items = JSONObject.parseArray(itemList, MbItem.class);
+		List<SupplierItemRelationView> items = JSONObject.parseArray(itemListStr, SupplierItemRelationView.class);
 		if (CollectionUtils.isNotEmpty(items)) {
 			deliverOrderService.add(deliverOrder);
-			for (MbItem item : items) {
+			for (SupplierItemRelationView item : items) {
 				DeliverOrderItem orderItem = new DeliverOrderItem();
-				orderItem.setItemId(item.getId());
+				orderItem.setItemId(item.getItemId());
 				orderItem.setQuantity(item.getQuantity());
 				orderItem.setDeliverOrderId(deliverOrder.getId());
-				deliverOrderItemService.addBySupplier(orderItem, supplierId);
+				deliverOrderItemService.addAndFill(orderItem,deliverOrder);
 			}
 		}
 		j.setSuccess(true);

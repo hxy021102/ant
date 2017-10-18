@@ -12,7 +12,8 @@
             onSubmit: function (extraParams) {
                 var rows = getRows();
                 if(rows != undefined || rows != null){
-                    extraParams.couponsItems = JSON.stringify(rows);
+                    extraParams.itemListStr = JSON.stringify(rows);
+                    console.log( extraParams.itemListStr )
                 }
                 parent.$.messager.progress({
                     title: '提示',
@@ -79,7 +80,7 @@
                     onChange: function (nValue, oValue) {
                         queryStr = nValue;
                     },
-                    url: '${pageContext.request.contextPath}/mbItemController/selectQuery',
+                    url: '${pageContext.request.contextPath}/supplierItemRelationController/selectQuery?supplierId=' + ${supplierId},
                     data: queryStr,
                     columns: [[
                         {
@@ -99,11 +100,16 @@
                 return row.itemName;
                 }
             }, {
-                field:'itemCode',
+            field: 'quantity',
+            title: '数量',
+            width: 50,
+            editor:{type:'numberbox',options:{required: true}}
+            }, {
+                field:'code',
                 title:'<%=TmbItem.ALIAS_CODE%>',
                 width:200
             }, {
-                field:'itemMarketPrice',
+                field:'price',
                 title:'<%=TmbItem.ALIAS_MARKET_PRICE%>',
                 width:100,
                 align:'right',
@@ -197,8 +203,8 @@
         row.itemName = $(ed.target).combobox('getText');
         var g = $(ed.target).combogrid('grid').datagrid('getSelected');
         if (g != null) {
-            row.itemMarketPrice = g.marketPrice ;
-            row.itemCode = g.code;
+            row.price = g.marketPrice ;
+            row.code = g.code;
             row.itemId = g.id;
         }
     }
@@ -206,50 +212,43 @@
 <div class="easyui-layout" data-options="fit:true,border:false">
     <div data-options="region:'center',border:false" title="" style="overflow: hidden;">
         <form id="form" method="post">
-            <input type="hidden" name="id"/>
-            <input type="hidden" name="itemList">
-            <input type="hidden" name="status" value="NS001"/>
+            <input type="hidden" name="itemList"/>
+            <input type="hidden" name="supplierId" value="${supplierId}"/>
             <table class="table table-hover table-condensed">
                 <tr>
-                    <th>:
+                    <th>总价:
                     </th>
                     <td>
-                        <input name="name" type="text" class="easyui-validatebox span2" data-options="required:true"/>
+                        <input name="amountStr" type="text" class="easyui-validatebox span2 money_input" data-options="required:true" />元
+                        <input name="amount" type="hidden" />
                     </td>
-                    <th><%=TmbCoupons.ALIAS_CODE%>:
+                    <th>收货人:
                     </th>
                     <td>
-                        <input name="code" type="text" class="easyui-validatebox span2" data-options="required:true"/>
+                        <input name="contactPeople" type="text" class="easyui-validatebox span2" data-options="required:true"/>
                     </td>
-                    <th><%=TmbCoupons.ALIAS_TYPE%>:
+                    <th>收货电话:
                     </th>
                     <td>
-                        <jb:select name="type" dataType="CT" onselect="outputValue" required="true"></jb:select>
+                        <input name="contactPhone" type="text" class="easyui-validatebox span2" data-options="required:true"/>
                     </td>
                 </tr>
                 <tr>
-                    <th><%=TmbCoupons.ALIAS_PRICE%></th>
-                    <td>
-                        <input name="priceTemp" type="text" class="easyui-validatebox span2 money_input" data-options="required:true" />元
-                        <input name="price" type="hidden" />
-                    </td>
-                    <th><%=TmbCoupons.ALIAS_QUANTITY_TOTAL%>:</th>
-                    <td></td>
-                    <th><%=TmbCoupons.ALIAS_DISCOUNT%>:</th>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th><%=TmbCoupons.ALIAS_MONEY_THRESHOLD%>:</th>
-                    <td></td>
-                    <th><%=TmbCoupons.ALIAS_TIME_OPEN%>:</th>
-                    <td></td>
-                    <th><%=TmbCoupons.ALIAS_TIME_CLOSE%>:</th>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th><%=TmbCoupons.ALIAS_DESCRIPTION%></th>
+                    <th>要求配送时间</th>
                     <td colspan="6">
-                            <textarea name="description" class="span2 " style="width: 95%;"></textarea>
+                        <input type="text" class="span2" onclick="WdatePicker()" id="deliveryRequireTime" name="deliveryRequireTime"/>
+
+                    </td>
+                </tr>
+                 <tr>
+                    <th>收货地址</th>
+                    <td colspan="6">
+                        <textarea name="deliverddress"  class="easyui-validatebox span2" data-options="required:true" style="width: 95%"/>
+                    </td>
+            </tr >
+                    <th>备注:</th>
+                    <td colspan="6">
+                        <textarea name="remark" rows="4" style="width: 95%"/>
                     </td>
                 </tr>
             </table>
@@ -258,7 +257,7 @@
                 <a href="javascript:void(0)" class="easyui-linkbutton item_add" data-options="iconCls:'pencil_delete',plain:true" onclick="removeit()">删除</a>
             </div>
             <div style="overflow: auto;height: 150px">
-                <table id="itemListTable" title="可优惠/兑换商品列表"></table>
+                <table id="itemListTable" title="商品列表"></table>
             </div>
         </form>
 

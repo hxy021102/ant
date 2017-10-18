@@ -22,6 +22,11 @@
 		$.canView = true;
 	</script>
 </c:if>
+	<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/add')}">
+		<script type="text/javascript">
+            $.canAddOrder = true;
+		</script>
+	</c:if>
 <script type="text/javascript">
 	var dataGrid;
 	$(function() {
@@ -87,6 +92,9 @@
 					if ($.canDelete) {
 						str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/cancel.png');
 					}
+                    if ($.canAddOrder) {
+                        str += $.formatString('<img onclick="addOrderFun(\'{0}\');" src="{1}" title="下单"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/pencil.png');
+                    }
 					return str;
 				}
 			} ] ],
@@ -144,6 +152,26 @@
 			} ]
 		});
 	}
+    function addOrderFun(id) {
+        if (id == undefined) {
+            var rows = dataGrid.datagrid('getSelections');
+            id = rows[0].id;
+        }
+        parent.$.modalDialog({
+            title : '编辑数据',
+            width : 780,
+            height : 500,
+            href : '${pageContext.request.contextPath}/deliverOrderController/addPage?supplierId=' + id,
+            buttons : [ {
+                text : '确认下单',
+                handler : function() {
+                    parent.$.modalDialog.openner_dataGrid = dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                    var f = parent.$.modalDialog.handler.find('#form');
+                    f.submit();
+                }
+            } ]
+        });
+    }
 
 	function viewFun(id,appkey) {
         if (id == undefined) {
