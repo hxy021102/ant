@@ -206,6 +206,7 @@
             row.price = g.marketPrice ;
             row.code = g.code;
             row.itemId = g.id;
+            row.quantity = g.quantity;
         }
     }
 </script>

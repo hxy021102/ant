@@ -212,7 +212,7 @@ public class DeliverOrderItemServiceImpl extends BaseServiceImpl<DeliverOrderIte
 				itemRelation = itemRelations.get(0);
 				orderItem.setPrice(itemRelation.getPrice());
 				orderItem.setInPrice(itemRelation.getInPrice());
-				orderItem.setQuantity(itemRelation.getFreight());
+				orderItem.setFreight(itemRelation.getFreight());
 				add(orderItem);
 			}
 		}

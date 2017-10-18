@@ -443,7 +443,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	public void addAndItems(DeliverOrder deliverOrder, String itemListStr) {
 		List<SupplierItemRelationView> items = JSONObject.parseArray(itemListStr, SupplierItemRelationView.class);
 		if (CollectionUtils.isNotEmpty(items)) {
-			add(deliverOrder);
+			transform(deliverOrder);
 			for (SupplierItemRelationView item : items) {
 				DeliverOrderItem orderItem = new DeliverOrderItem();
 				orderItem.setItemId(item.getItemId());

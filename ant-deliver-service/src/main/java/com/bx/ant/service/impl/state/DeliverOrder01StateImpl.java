@@ -1,8 +1,7 @@
 package com.bx.ant.service.impl.state;
 
-import com.bx.ant.service.DeliverOrderLogServiceI;
-import com.bx.ant.service.DeliverOrderServiceI;
-import com.bx.ant.service.DeliverOrderState;
+import com.bx.ant.pageModel.DeliverOrderShop;
+import com.bx.ant.service.*;
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.DeliverOrderLog;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,12 +34,16 @@ public class DeliverOrder01StateImpl implements DeliverOrderState {
     @Override
     public void handle(DeliverOrder deliverOrder) {
         deliverOrder.setStatus(prefix + getStateName());
+        deliverOrder.setPayStatus(DeliverOrderServiceI.PAY_STATUS_NOT_PAY);
+        deliverOrder.setShopPayStatus(DeliverOrderServiceI.PAY_STATUS_NOT_PAY);
+        deliverOrder.setDeliveryStatus(DeliverOrderServiceI.DELIVER_STATUS_STANDBY);
+
         deliverOrderService.add(deliverOrder);
 
         DeliverOrderLog log = new DeliverOrderLog();
         log.setDeliverOrderId(deliverOrder.getId());
         log.setLogType(DeliverOrderLogServiceI.TYPE_ADD_DELIVER_ORDER);
-        log.setContent("加订单等待分配");
+        log.setContent("添加订单等待分配");
         deliverOrderLogService.add(log);
     }
 
