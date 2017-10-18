@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="com.mobian.model.TmbCoupons" %>
 <%@ page import="com.mobian.model.TmbItem" %>
+<%@ page import="com.mobian.util.Constants" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag" %>
@@ -237,14 +237,13 @@
                 <tr>
                     <th>要求配送时间</th>
                     <td colspan="6">
-                        <input type="text" class="span2" onclick="WdatePicker()" id="deliveryRequireTime" name="deliveryRequireTime"/>
-
+                        <input type="text" class="span2 easyui-validatebox" data-options="required:false" onclick="WdatePicker({dateFmt:'<%=Constants.DATE_FORMAT_FOR_ENTITY%>',minDate:'#F{$dp.$D(\'endDate\',{M:-1});}',maxDate:'#F{$dp.$D(\'endDate\',{d:-1});}'})" id="deliveryRequireTime" name="deliveryRequireTime"/>
                     </td>
                 </tr>
                  <tr>
                     <th>收货地址</th>
                     <td colspan="6">
-                        <textarea name="deliverddress"  class="easyui-validatebox span2" data-options="required:true" style="width: 95%"/>
+                        <textarea name="deliveryAddress"  class="easyui-validatebox span2" data-options="required:true" style="width: 95%"/>
                     </td>
             </tr >
                     <th>备注:</th>
