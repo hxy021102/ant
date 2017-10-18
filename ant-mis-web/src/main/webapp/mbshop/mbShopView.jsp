@@ -772,6 +772,17 @@
                 closable: true
             });
         }
+        //历史流水
+        function viewRealBalance(id) {
+            var href = '${pageContext.request.contextPath}/mbUserController/viewBalance?realShopId=' + id;
+            parent.$("#index_tabs").tabs('add', {
+                title: '余额-' + id,
+                content: '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+                closable: true
+            });
+        }
+
+
         //桶余额
         function viewCashBalance(balanceId,shopId) {
             var href = '${pageContext.request.contextPath}/mbBalanceController/viewCash?id=' + balanceId+"&shopId="+shopId;
@@ -841,6 +852,9 @@
                 </th>
                 <td>
                     <a href="javascript:void(0);" onclick="viewBalance('${mbShopExt.id}')" class="money_input">${mbShopExt.balanceAmount}</a>
+                    <c:if test="${(mbShopExt.parentId != null and mbShopExt.parentId != -1)and mbShopExt.auditStatus == 'AS02' }">
+                        &nbsp;&nbsp;<a href="javascript:void(0);" onclick="viewRealBalance('${mbShopExt.id}')">历史账单</a>
+                    </c:if>
                 </td>
                 <th>欠款订单金额
                 </th>
