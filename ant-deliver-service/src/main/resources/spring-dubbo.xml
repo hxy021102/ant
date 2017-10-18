@@ -31,5 +31,6 @@
        <dubbo:service interface="com.bx.ant.service.DeliverOrderShopServiceI" ref="deliverOrderShopServiceImpl" protocol="dubbo"/>
        <dubbo:service interface="com.bx.ant.service.DeliverOrderShopItemServiceI" ref="deliverOrderShopItemServiceImpl" protocol="dubbo"/>
        <dubbo:service interface="com.bx.ant.service.DeliverOrderLogServiceI" ref="deliverOrderLogServiceImpl" protocol="dubbo"/>
-       <dubbo:service interface="com.bx.ant.service.DeliverOrderItemServiceI" ref="deliverOrderItemServiceImpl" protocol="dubbo"/>
+       <dubbo:service interface="com.bx.ant.service.ShopOrderBillServiceI" ref="shopOrderBillServiceImpl" protocol="dubbo"/>
+       <dubbo:service interface="com.bx.ant.service.DeliverOrderShopPayServiceI" ref="deliverOrderShopPayServiceImpl" protocol="dubbo"/>
 </beans>

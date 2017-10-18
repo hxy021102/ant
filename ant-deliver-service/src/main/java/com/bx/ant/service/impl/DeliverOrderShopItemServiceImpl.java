@@ -1,6 +1,7 @@
 package com.bx.ant.service.impl;
 
 import com.bx.ant.pageModel.*;
+import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.bx.ant.service.ShopItemServiceI;
 import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderShopItemDaoI;
@@ -32,6 +33,9 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 
 	@javax.annotation.Resource
 	private MbItemServiceI mbItemService;
+
+	@Autowired
+	private DeliverOrderShopServiceI  deliverOrderShopService;
 
 	@Override
 	public DataGrid dataGrid(DeliverOrderShopItem deliverOrderShopItem, PageHelper ph) {
@@ -190,24 +194,31 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 
 	@Override
 	public DataGrid dataGridWithName(DeliverOrderShopItem deliverOrderShopItem, PageHelper ph) {
-		DataGrid dataGrid = dataGrid(deliverOrderShopItem, ph);
-		List<DeliverOrderShopItem> deliverOrderShopItems = dataGrid.getRows();
-		if (CollectionUtils.isNotEmpty(deliverOrderShopItems)) {
-			List<DeliverOrderShopItemExt> deliverOrderShopItemExts = new ArrayList<DeliverOrderShopItemExt>();
-			for (DeliverOrderShopItem orderShopItem : deliverOrderShopItems) {
-				DeliverOrderShopItemExt deliverOrderShopItemExt = new DeliverOrderShopItemExt();
-				BeanUtils.copyProperties(orderShopItem, deliverOrderShopItemExt);
-				MbItem mbItem=mbItemService.getFromCache(orderShopItem.getItemId());
-				deliverOrderShopItemExt.setItemCode(mbItem.getCode());
-				deliverOrderShopItemExt.setItemName(mbItem.getName());
-				deliverOrderShopItemExts.add(deliverOrderShopItemExt);
+		DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+		deliverOrderShop.setDeliverOrderId(deliverOrderShopItem.getDeliverOrderId());
+		deliverOrderShop.setStatus("DSS02");
+		List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(deliverOrderShop);
+		DataGrid dg = new DataGrid();
+		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
+			deliverOrderShopItem.setDeliverOrderShopId(deliverOrderShops.get(0).getId());
+			DataGrid dataGrid = dataGrid(deliverOrderShopItem, ph);
+			List<DeliverOrderShopItem> deliverOrderShopItems = dataGrid.getRows();
+			if (CollectionUtils.isNotEmpty(deliverOrderShopItems)) {
+				List<DeliverOrderShopItemExt> deliverOrderShopItemExts = new ArrayList<DeliverOrderShopItemExt>();
+				for (DeliverOrderShopItem orderShopItem : deliverOrderShopItems) {
+					DeliverOrderShopItemExt deliverOrderShopItemExt = new DeliverOrderShopItemExt();
+					BeanUtils.copyProperties(orderShopItem, deliverOrderShopItemExt);
+					MbItem mbItem = mbItemService.getFromCache(orderShopItem.getItemId());
+					deliverOrderShopItemExt.setItemCode(mbItem.getCode());
+					deliverOrderShopItemExt.setItemName(mbItem.getName());
+					deliverOrderShopItemExts.add(deliverOrderShopItemExt);
+				}
+				dg.setRows(deliverOrderShopItemExts);
+				dg.setTotal(dataGrid.getTotal());
+				return dg;
 			}
-			DataGrid dg = new DataGrid();
-			dg.setRows(deliverOrderShopItemExts);
-			dg.setTotal(dataGrid.getTotal());
-			return dg;
 		}
-		return dataGrid;
+		return dg;
 	}
 
 }

@@ -14,6 +14,7 @@ public class DeliverOrderShopPay implements java.io.Serializable {
 	private Boolean isdeleted;
 	private Long deliverOrderShopId;
 	private Long deliverOrderId;
+	private Long shopOrderBillId;
 	private Integer shopId;
 	private String status;
 	private Integer amount;
@@ -101,4 +102,11 @@ public class DeliverOrderShopPay implements java.io.Serializable {
 		return this.payWay;
 	}
 
+	public Long getShopOrderBillId() {
+		return shopOrderBillId;
+	}
+
+	public void setShopOrderBillId(Long shopOrderBillId) {
+		this.shopOrderBillId = shopOrderBillId;
+	}
 }

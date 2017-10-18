@@ -60,8 +60,8 @@ public class DeliverOrderController extends BaseController {
 	 */
 	@RequestMapping("/dataGrid")
 	@ResponseBody
-	public DataGrid dataGrid(DeliverOrder deliverOrder, PageHelper ph) {
-		return deliverOrderService.dataGridWithName(deliverOrder, ph);
+	public DataGrid dataGrid(DeliverOrderQuery deliverOrderQuery, PageHelper ph) {
+		return deliverOrderService.dataGridWithName(deliverOrderQuery, ph);
 	}
 	/**
 	 * 获取DeliverOrder数据表格excel
@@ -76,8 +76,8 @@ public class DeliverOrderController extends BaseController {
 	 * @throws IOException 
 	 */
 	@RequestMapping("/download")
-	public void download(DeliverOrder deliverOrder, PageHelper ph,String downloadFields,HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException{
-		DataGrid dg = dataGrid(deliverOrder,ph);		
+	public void download(DeliverOrderQuery deliverOrderQuery, PageHelper ph,String downloadFields,HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException{
+		DataGrid dg = dataGrid(deliverOrderQuery,ph);
 		downloadFields = downloadFields.replace("&quot;", "\"");
 		downloadFields = downloadFields.substring(1,downloadFields.length()-1);
 		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);

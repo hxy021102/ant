@@ -187,4 +187,19 @@ public interface DeliverOrderServiceI {
 	void settleShopPay();
 
     void addAndItems(DeliverOrder deliverOrder, String itemListStr);
+
+	/**
+	 *获取需要支付给门店的订单
+	 * @param deliverOrder
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridShopArtificialPay(DeliverOrder deliverOrder,PageHelper ph);
+
+	/**
+	 * 查询DeliverOrder集合列表
+	 * @param deliverOrder
+	 * @return
+	 */
+	List<DeliverOrder> query(DeliverOrder deliverOrder);
 }
