@@ -154,6 +154,7 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 				deliverOrderShopItem.setInPrice(shopItem.getInPrice());
 				deliverOrderShopItem.setShopId(deliverOrderShop.getShopId());
 				deliverOrderShopItem.setItemId(d.getItemId());
+				deliverOrderShopItem.setQuantity(d.getQuantity());
 				add(deliverOrderShopItem);
 			}
 		}
