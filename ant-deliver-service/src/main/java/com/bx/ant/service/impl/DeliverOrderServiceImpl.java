@@ -1,5 +1,6 @@
 package com.bx.ant.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bx.ant.dao.DeliverOrderItemDaoI;
 import com.bx.ant.pageModel.*;
 import com.bx.ant.service.*;
@@ -456,6 +457,22 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 //			else {
 //				throw new ServiceException("数据异常");
 //			}
+		}
+	}
+	@Override
+	public void addAndItems(DeliverOrder deliverOrder, String itemListStr) {
+		List<SupplierItemRelationView> items = JSONObject.parseArray(itemListStr, SupplierItemRelationView.class);
+		if (CollectionUtils.isNotEmpty(items)) {
+			add(deliverOrder);
+			for (SupplierItemRelationView item : items) {
+				DeliverOrderItem orderItem = new DeliverOrderItem();
+				orderItem.setItemId(item.getItemId());
+				orderItem.setQuantity(item.getQuantity());
+				orderItem.setDeliverOrderId(deliverOrder.getId());
+				deliverOrderItemService.addAndFill(orderItem,deliverOrder);
+			}
+		} else {
+			throw new ServiceException("items不能为空");
 		}
 	}
 

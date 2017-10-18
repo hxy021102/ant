@@ -186,6 +186,8 @@ public interface DeliverOrderServiceI {
 
 	void settleShopPay();
 
+    void addAndItems(DeliverOrder deliverOrder, String itemListStr);
+
 	/**
 	 *获取需要支付给门店的订单
 	 * @param deliverOrder
