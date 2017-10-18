@@ -1,5 +1,6 @@
 ﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page import="com.mobian.model.TmbSupplierOrderItem" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%> 
 <!DOCTYPE html>
@@ -34,14 +35,18 @@
 			columns : [ [ {
 				field : 'id',
 				title : '运单ID',
-				width : 50,
+				width : 30,
                 formatter : function (value, row, index) {
                     return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
                 }
 				},  {
+                field : 'addtime',
+                title : '创建时间',
+                width : 50
+                }, {
 				field : 'supplierId',
 				title : '供应商ID',
-				width : 50		
+				width : 30
 				}, {
                 field : 'supplierName',
                 title : '供应商名称',
@@ -50,15 +55,20 @@
 				field : 'amount',
 				title : '总金额',
 				align:"right",
-				width : 50		
+				width : 30	,
+                formatter: function (value) {
+                    if (value == null)
+                        return "";
+                    return $.formatMoney(value);
+                }
 				}, {
 				field : 'statusName',
 				title : '订单状态',
-				width : 50		
+				width : 40
 				}, {
 				field : 'deliveryStatusName',
 				title : '配送状态',
-				width : 50		
+				width : 40
 				}, {
 				field : 'shopPayStatusName',
 				title : '结算状态',
@@ -198,10 +208,14 @@
 						<td>
 							<jb:select dataType="SPS" name="shopPayStatus"></jb:select>
 						</td>
-						<th></th><td></td>
 						<th>配送状态</th>
 						<td >
 							<jb:select dataType="DDS" name="deliveryStatus"></jb:select>
+						</td>
+						<th>订单时间</th>
+						<td>
+							<input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'<%=TmbSupplierOrderItem.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'endDate\',{M:-1});}',maxDate:'#F{$dp.$D(\'endDate\',{d:-1});}'})" id="startDate" name="startDate"/>
+							至	<input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'<%=TmbSupplierOrderItem.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'startDate\',{d:1});}',maxDate:'#F{$dp.$D(\'startDate\',{M:1});}'})" id="endDate" name="endDate"/>
 						</td>
 					</tr>
 				</table>

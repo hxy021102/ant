@@ -56,6 +56,8 @@ public class TdeliverOrderShopPay implements java.io.Serializable,IEntity{
 	//
 	private Long deliverOrderId;
 	//
+	private Long shopOrderBillId;
+	//
 	private Integer shopId;
 	//@Length(max=10)
 	private String status;
@@ -175,8 +177,15 @@ public class TdeliverOrderShopPay implements java.io.Serializable,IEntity{
 	public void setPayWay(String payWay) {
 		this.payWay = payWay;
 	}
-	
-	
+
+	@Column(name = "shop_order_bill_id", unique = false, nullable = true, insertable = true, updatable = true, length = 19)
+	public Long getShopOrderBillId() {
+		return shopOrderBillId;
+	}
+
+	public void setShopOrderBillId(Long shopOrderBillId) {
+		this.shopOrderBillId = shopOrderBillId;
+	}
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

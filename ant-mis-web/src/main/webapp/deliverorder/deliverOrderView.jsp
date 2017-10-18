@@ -44,7 +44,12 @@
                  field : 'amount',
                  title : '总金额',
 				 align:"right",
-                 width : 50
+                 width : 50,
+                 formatter: function (value) {
+                     if (value == null)
+                         return "";
+                     return $.formatMoney(value);
+                 }
              }] ],
              onLoadSuccess : function() {
                  parent.$.messager.progress('close');
@@ -87,12 +92,22 @@
                      field : 'inPrice',
                      title : '成本价',
                      align:"right",
-                     width : 30
+                     width : 30,
+                     formatter: function (value) {
+                         if (value == null)
+                             return "";
+                         return $.formatMoney(value);
+                     }
                  }, {
                      field : 'freight',
                      title : '运费',
                      align:"right",
-                     width : 30
+                     width : 30,
+                     formatter: function (value) {
+                         if (value == null)
+                             return "";
+                         return $.formatMoney(value);
+                     }
                  }, {
                      field : 'quantity',
                      title : '数量',
@@ -138,12 +153,22 @@
                      field : 'inPrice',
                      title : '成本价',
                      align:"right",
-                     width : 30
+                     width : 30,
+                     formatter: function (value) {
+                         if (value == null)
+                             return "";
+                         return $.formatMoney(value);
+                     }
                  }, {
                      field : 'freight',
                      title : '运费',
                      align:"right",
-                     width : 30
+                     width : 30,
+                     formatter: function (value) {
+                         if (value == null)
+                             return "";
+                         return $.formatMoney(value);
+                     }
                  }, {
                      field : 'quantity',
                      title : '数量',
@@ -238,7 +263,7 @@
 </head>
 <body>
 <div class="easyui-layout" data-options="fit : true,border:false">
-	<div data-options="region:'north',title:'基本信息',border:false" style="height: 220px; overflow: hidden;">
+	<div data-options="region:'north',title:'基本信息',border:false" style="height: 180px; overflow: hidden;">
 		<table class="table">
 			<tr>
 				<th>运单ID</th>
@@ -253,12 +278,12 @@
 				<td>
 					${deliverOrder.statusName}
 				</td>
-			</tr>
-			<tr>
 				<th>结算状态</th>
 				<td>
 					${deliverOrder.shopPayStatusName}
 				</td>
+			</tr>
+			<tr>
 				<th>配送状态</th>
 				<td>
 					${deliverOrder.deliveryStatusName}
@@ -267,8 +292,6 @@
 				<td>
 					<fmt:formatDate value="${deliverOrder.addtime}" pattern="yyyy-MM-dd HH:mm:ss"/>
 				</td>
-			</tr>
-			<tr>
 				<th>修改时间</th>
 				<td>
 					<fmt:formatDate value="${deliverOrder.updatetime}" pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -277,12 +300,12 @@
 				<td >
 					${deliverOrder.contactPeople}
 				</td>
+			</tr>
+			<tr>
 				<th>联系电话</th>
 				<td>
 					${deliverOrder.contactPhone}
 				</td>
-			</tr>
-			<tr>
 				<th>配送地址</th>
 				<td>
 					${deliverOrder.deliveryAddress}

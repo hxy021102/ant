@@ -56,4 +56,19 @@ public interface DeliverOrderShopPayServiceI {
     List<DeliverOrderShopPay> list(DeliverOrderShopPay deliverOrderShopPay);
 
     void editStatus(DeliverOrderShopPay deliverOrderShopPay, String status);
+
+	/**
+	 * 获取DeliverOrderShopPay集合列表及对应的名称
+	 * @param deliverOrderShopPay
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataWithNameGrid(DeliverOrderShopPay deliverOrderShopPay, PageHelper ph);
+
+	/**
+	 * 查询DeliverOrderShopPay集合对象
+	 * @param deliverOrderShopPay
+	 * @return
+	 */
+	List<DeliverOrderShopPay> query(DeliverOrderShopPay deliverOrderShopPay);
 }

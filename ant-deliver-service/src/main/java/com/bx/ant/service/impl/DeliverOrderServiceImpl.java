@@ -9,6 +9,7 @@ import com.bx.ant.model.TdeliverOrder;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
 
+import com.mobian.service.MbShopServiceI;
 import com.mobian.thirdpart.redis.RedisUtil;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -47,6 +48,9 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 
 	@Autowired
 	private RedisUtil redisUtil;
+
+	@javax.annotation.Resource
+	private MbShopServiceI mbShopService;
 
 
 	@Override
@@ -140,7 +144,23 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 				whereHql += " and t.id = :id";
 				params.put("id", deliverOrder.getId());
 			}
-		}	
+			if (!F.empty(deliverOrder.getShopId())) {
+				whereHql += " and t.shopId = :shopId";
+				params.put("shopId", deliverOrder.getShopId());
+			}
+			if (deliverOrder instanceof DeliverOrderQuery) {
+				DeliverOrderQuery orderQuery = (DeliverOrderQuery) deliverOrder;
+				if (orderQuery.getStartDate() != null) {
+					whereHql += " and t.addtime >= :startDate ";
+					params.put("startDate", orderQuery.getStartDate());
+				}
+				if (orderQuery.getEndDate() != null) {
+					whereHql += " and t.addtime <= :endDate ";
+					params.put("endDate", orderQuery.getEndDate());
+
+				}
+			}
+		}
 		return whereHql;
 	}
 
@@ -439,4 +459,45 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		}
 	}
 
+
+	@Override
+	public DataGrid dataGridShopArtificialPay(DeliverOrder deliverOrder, PageHelper ph) {
+		DataGrid dataGrid = dataGrid(deliverOrder, ph);
+		List<DeliverOrder> deliverOrders = dataGrid.getRows();
+		if (CollectionUtils.isNotEmpty(deliverOrders)) {
+			List<DeliverOrderQuery> deliverOrderQueries = new ArrayList<DeliverOrderQuery>();
+			for (DeliverOrder order : deliverOrders) {
+				DeliverOrderQuery deliverOrderQuery = new DeliverOrderQuery();
+				BeanUtils.copyProperties(order, deliverOrderQuery);
+				deliverOrderQuery.setStatusName(order.getStatus());
+				MbShop shop = mbShopService.get(order.getShopId());
+				if (shop != null) {
+					deliverOrderQuery.setShopName(shop.getName());
+				}
+				deliverOrderQueries.add(deliverOrderQuery);
+			}
+			DataGrid dg = new DataGrid();
+			dg.setRows(deliverOrderQueries);
+			dg.setTotal(dataGrid.getTotal());
+			return dg;
+		}
+		return dataGrid;
+	}
+
+	@Override
+	public List<DeliverOrder> query(DeliverOrder deliverOrder) {
+		List<DeliverOrder> ol = new ArrayList<DeliverOrder>();
+		String hql = " from TdeliverOrder t ";
+		Map<String, Object> params = new HashMap<String, Object>();
+		String where = whereHql(deliverOrder, params);
+		List<TdeliverOrder> l = deliverOrderDao.find(hql + where, params);
+		if (CollectionUtils.isNotEmpty(l)) {
+			for (TdeliverOrder t : l) {
+				DeliverOrder o = new DeliverOrder();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		return ol;
+	}
 }

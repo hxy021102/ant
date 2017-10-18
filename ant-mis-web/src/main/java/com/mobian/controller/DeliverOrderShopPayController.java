@@ -3,8 +3,8 @@ package com.mobian.controller;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.UUID;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,7 +15,7 @@ import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
 import com.bx.ant.service.DeliverOrderShopPayServiceI;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,6 +32,7 @@ import com.alibaba.fastjson.JSON;
 @RequestMapping("/deliverOrderShopPayController")
 public class DeliverOrderShopPayController extends BaseController {
 
+	@Resource
 	private DeliverOrderShopPayServiceI deliverOrderShopPayService;
 
 
@@ -54,7 +55,7 @@ public class DeliverOrderShopPayController extends BaseController {
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(DeliverOrderShopPay deliverOrderShopPay, PageHelper ph) {
-		return deliverOrderShopPayService.dataGrid(deliverOrderShopPay, ph);
+		return deliverOrderShopPayService.dataWithNameGrid(deliverOrderShopPay, ph);
 	}
 	/**
 	 * 获取DeliverOrderShopPay数据表格excel

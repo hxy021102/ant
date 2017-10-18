@@ -53,7 +53,7 @@
 				width : 50		
 				}, {
                 field : 'accountId',
-                title : '门店账号ID',
+                title : '门店账号',
                 width : 50
                 },  {
                 field : 'statusName',
@@ -192,6 +192,10 @@
 						<th style="width: 50px">门店名称</th>
 						<td>
 							<jb:selectGrid dataType="shopId" name="shopId"></jb:selectGrid>
+						</td>
+						<th style="width: 50px">门店账号</th>
+						<td>
+							<input type="text" name="accountId" maxlength="10" class="span2"/>
 						</td>
 						<th style="width: 50px">审核状态
 						</th>
