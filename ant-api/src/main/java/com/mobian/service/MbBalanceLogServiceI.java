@@ -71,4 +71,12 @@ public interface MbBalanceLogServiceI {
 	 */
 	DataGrid dataGridWithShopName(MbBalanceLog mbBalanceLog, PageHelper ph);
 
+	/**
+	 * 导出余额流水
+	 * @param mbBalanceLog
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridBalanceLogDownload(MbBalanceLog mbBalanceLog, PageHelper ph);
+
 }
