@@ -1,7 +1,6 @@
 package com.bx.ant.pageModel;
 
 import com.mobian.util.ConvertNameUtil;
-import javafx.application.Application;
 
 import java.util.Date;
 
