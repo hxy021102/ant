@@ -1335,8 +1335,8 @@
         <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderCallbackItemController/add') and mbOrder.deliveryStatus=='DS30' and mbOrder.status=='OD35'}">
             <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addMbOrderCallbackItem();" data-options="plain:true,iconCls:'pencil_add'">添加</a>
         </c:if>
-        <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderCallbackItemController/addCallback') and mbOrder.payStatus=='PS05' and mbOrder.status=='OD40'}">
-            <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addMbOrderCallback();" data-options="plain:true,iconCls:'pencil_add'">添加</a>
+        <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderCallbackItemController/addCallback') and mbOrder.status=='OD40'}">
+            <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addMbOrderCallback();" data-options="plain:true,iconCls:'pencil_add'">红冲</a>
         </c:if>
     </div>
     </div>
@@ -1344,8 +1344,8 @@
         <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderRefundItemController/add') and mbOrder.deliveryStatus=='DS30' and mbOrder.status=='OD35'}">
         <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addMbOrderRefundItem();" data-options="plain:true,iconCls:'pencil_add'">添加</a>
         </c:if>
-        <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderRefundItemController/addRefund') and mbOrder.payStatus=='PS05' and mbOrder.status=='OD40'}">
-            <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addMbOrderRefund();" data-options="plain:true,iconCls:'pencil_add'">添加</a>
+        <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderRefundItemController/addRefund') and mbOrder.status=='OD40'}">
+            <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addMbOrderRefund();" data-options="plain:true,iconCls:'pencil_add'">红冲</a>
         </c:if>
     </div>
     <iframe id="printIframe" style="display: none;"></iframe>

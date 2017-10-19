@@ -5,16 +5,16 @@ import com.mobian.dao.MbOrderCallbackItemDaoI;
 import com.mobian.model.TmbOrderCallbackItem;
 import com.mobian.pageModel.*;
 import com.mobian.service.*;
+import com.mobian.service.impl.order.Order40StateImpl;
+import com.mobian.service.impl.order.OrderState;
 import com.mobian.util.MyBeanUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.*;
+import java.util.*;
 
 @Service
 public class MbOrderCallbackItemServiceImpl extends BaseServiceImpl<MbOrderCallbackItem> implements MbOrderCallbackItemServiceI {
@@ -37,6 +37,9 @@ public class MbOrderCallbackItemServiceImpl extends BaseServiceImpl<MbOrderCallb
 	private MbBalanceServiceI mbBalanceService;
 	@Autowired
 	private MbBalanceLogServiceI mbBalanceLogService;
+
+	@javax.annotation.Resource(name = "order40StateImpl")
+	private Order40StateImpl orderState40;
 
 	private static Logger log = Logger.getLogger(MbOrderCallbackItemServiceImpl.class);
 
@@ -170,37 +173,7 @@ public class MbOrderCallbackItemServiceImpl extends BaseServiceImpl<MbOrderCallb
 		//空桶入总仓 : 总仓+ ,分仓-
 		MbOrder mbOrderOld = mbOrderService.get(mbOrderCallbackItem.getOrderId());
 		MbShop mbShop = mbShopService.getFromCache(mbOrderOld.getShopId());
-			//总仓增加空桶
-			if (mbOrderOld.getDeliveryWarehouseId() != null) {
-				MbItemStock mbItemStock = mbItemStockService.getByWareHouseIdAndItemId(mbOrderOld.getDeliveryWarehouseId(), mbOrderCallbackItem.getItemId());
-				MbItemStock change = new MbItemStock();
-				change.setId(mbItemStock.getId());
-				change.setAdjustment(mbOrderCallbackItem.getQuantity());
-				change.setLogType("SL02");
-				change.setReason(String.format("订单ID:%s空桶入库，库存：%s", mbOrderCallbackItem.getOrderId(), mbItemStock.getQuantity() + mbOrderCallbackItem.getQuantity()));
-				mbItemStockService.editAndInsertLog(change, mbOrderCallbackItem.getLoginId());
-			}
-
-			//分仓减少空桶
-			MbItemStock mbItemStockShop = mbItemStockService.getByWareHouseIdAndItemId(mbShop.getWarehouseId(), mbOrderCallbackItem.getItemId());
-			MbItemStock changeShop = new MbItemStock();
-			changeShop.setId(mbItemStockShop.getId());
-			changeShop.setAdjustment(-mbOrderCallbackItem.getQuantity());
-			changeShop.setLogType("SL03");
-			changeShop.setReason(String.format("订单ID:%s空桶出库，库存：%s", mbOrderCallbackItem.getOrderId(), mbItemStockShop.getQuantity() - mbOrderCallbackItem.getQuantity()));
-			mbItemStockService.editAndInsertLog(changeShop, mbOrderCallbackItem.getLoginId());
-
-			//加桶钱
-			MbBalance mbBalance = mbBalanceService.addOrGetMbBalanceCash(mbOrderOld.getShopId());
-			MbItem packItem = mbItemService.getFromCache(mbOrderCallbackItem.getItemId());
-			MbBalanceLog mbBalanceLog = new MbBalanceLog();
-			mbBalanceLog.setAmount(packItem.getMarketPrice() * mbOrderCallbackItem.getQuantity());
-			mbBalanceLog.setRefId(mbOrderOld.getId() + "");
-			mbBalanceLog.setRefType("BT018");
-			mbBalanceLog.setBalanceId(mbBalance.getId());
-			mbBalanceLog.setReason(String.format("订单ID：%s回桶出库 商品[%s],数量[%s]", mbOrderOld.getId(), packItem.getName(), mbOrderCallbackItem.getQuantity()));
-			mbBalanceLogService.addAndUpdateBalance(mbBalanceLog);
-
-		}
+		orderState40.updateCallback(Arrays.asList(mbOrderCallbackItem), mbOrderOld, mbShop, mbOrderCallbackItem.getLoginId());
+	}
 
 }

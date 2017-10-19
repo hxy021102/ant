@@ -45,7 +45,7 @@
                     </td>
                     <th><%=TmbOrderRefundItem.ALIAS_QUANTITY%></th>
                     <td>
-                        <input class="span2 easyui-validatebox" name="quantity" type="number" data-options="required:true" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"/>
+                        <input class="span2 easyui-validatebox" name="quantity" type="number" data-options="required:true"/>
                     </td>
                 </tr>
                 <tr>

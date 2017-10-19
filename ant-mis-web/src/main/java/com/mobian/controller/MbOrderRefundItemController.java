@@ -133,6 +133,18 @@ public class MbOrderRefundItemController extends BaseController {
 	@ResponseBody
 	public Json add(MbOrderRefundItem mbOrderRefundItem, HttpSession session) {
 		Json j = new Json();
+
+		if(validateRefund(j,mbOrderRefundItem)) {
+			SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+			mbOrderRefundItem.setLoginId(sessionInfo.getId());
+			mbOrderRefundItemService.add(mbOrderRefundItem);
+			j.setSuccess(true);
+			j.setMsg("添加成功！");
+		}
+		return j;
+	}
+
+	private boolean validateRefund(Json j,MbOrderRefundItem mbOrderRefundItem){
 		MbOrderItem mbOrderItem = new MbOrderItem();
 		mbOrderItem.setOrderId(mbOrderRefundItem.getOrderId());
 		mbOrderItem.setItemId(mbOrderRefundItem.getItemId());
@@ -160,63 +172,30 @@ public class MbOrderRefundItemController extends BaseController {
 			}
 		}
 		//判断退货商品数量是否超过发货数量
-		if(mbOrderItemQuantity == null   || mbOrderItemQuantity < mbOrderRefundItemQuantity){
+		if (mbOrderItemQuantity == null || mbOrderItemQuantity < mbOrderRefundItemQuantity) {
 			j.setSuccess(false);
 			j.setMsg("添加的退货商品数量不能超过该商品的发货量");
-			return j;
+			return false;
 		}
-
-		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
-		mbOrderRefundItem.setLoginId(sessionInfo.getId());
-		mbOrderRefundItemService.add(mbOrderRefundItem);
-		j.setSuccess(true);
-		j.setMsg("添加成功！");
-
-		return j;
+		if (mbOrderRefundItemQuantity<0) {
+			j.setSuccess(false);
+			j.setMsg("退回商品合计不能为负数");
+			return false;
+		}
+		return true;
 	}
+
 	@RequestMapping("/addRefund")
 	@ResponseBody
 	public Json addRefund(MbOrderRefundItem mbOrderRefundItem, HttpSession session) {
 		Json j = new Json();
-		MbOrderItem mbOrderItem = new MbOrderItem();
-		mbOrderItem.setOrderId(mbOrderRefundItem.getOrderId());
-		mbOrderItem.setItemId(mbOrderRefundItem.getItemId());
-		List<MbOrderItem> mbOrderItemList = mbOrderItemService.query(mbOrderItem);
-		Integer mbOrderItemQuantity = 0;
-		for (MbOrderItem orderItem : mbOrderItemList) {
-			mbOrderItemQuantity += orderItem.getQuantity();
+		if(validateRefund(j,mbOrderRefundItem)) {
+			SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+			mbOrderRefundItem.setLoginId(sessionInfo.getId());
+			mbOrderRefundItemService.addRefund(mbOrderRefundItem);
+			j.setSuccess(true);
+			j.setMsg("添加成功！");
 		}
-
-		//初始化退回商品总数
-		Integer mbOrderRefundItemQuantity ;
-		if((mbOrderRefundItemQuantity = mbOrderRefundItem.getQuantity()) == null)	{
-			mbOrderRefundItemQuantity=0;
-		}
-		//根据MborderRefundItem中的orderId和ItemId搜索数据库并遍历
-		MbOrderRefundItem mbOrderRefundItemA = new MbOrderRefundItem();
-		mbOrderRefundItemA.setItemId(mbOrderRefundItem.getItemId());
-		mbOrderRefundItemA.setOrderId(mbOrderRefundItem.getOrderId());
-		List<MbOrderRefundItem> mbOrderRefundItems =	mbOrderRefundItemService.query(mbOrderRefundItemA);
-		//遍历从数据库中获取到的退回商品序列,累加不同类型的数量和判断是否存在已经添加的同类型商品
-		for (MbOrderRefundItem m : mbOrderRefundItems) {
-			//累加订单中已经添加的退回商品的数量
-			if (m.getQuantity() != null) {
-				mbOrderRefundItemQuantity += m.getQuantity();
-			}
-		}
-		//判断退货商品数量是否超过发货数量
-		if(mbOrderItemQuantity == null   || mbOrderItemQuantity < mbOrderRefundItemQuantity){
-			j.setSuccess(false);
-			j.setMsg("添加的退货商品数量不能超过该商品的发货量");
-			return j;
-		}
-
-		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
-		mbOrderRefundItem.setLoginId(sessionInfo.getId());
-		mbOrderRefundItemService.addRefund(mbOrderRefundItem);
-		j.setSuccess(true);
-		j.setMsg("添加成功！");
-
 		return j;
 	}
 
