@@ -18,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.*;
 import java.util.*;
 
 @Service
@@ -52,6 +53,9 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 
 	@javax.annotation.Resource
 	private MbShopServiceI mbShopService;
+
+	@javax.annotation.Resource
+	private SupplierItemRelationServiceI supplierItemRelationService;
 
 
 	@Override
@@ -462,6 +466,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	@Override
 	public void addAndItems(DeliverOrder deliverOrder, String itemListStr) {
 		List<SupplierItemRelationView> items = JSONObject.parseArray(itemListStr, SupplierItemRelationView.class);
+		int amount = 0 ;
 		if (CollectionUtils.isNotEmpty(items)) {
 			transform(deliverOrder);
 			for (SupplierItemRelationView item : items) {
@@ -469,8 +474,22 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 				orderItem.setItemId(item.getItemId());
 				orderItem.setQuantity(item.getQuantity());
 				orderItem.setDeliverOrderId(deliverOrder.getId());
+
+				SupplierItemRelation supplierItemRelation = new SupplierItemRelation();
+				supplierItemRelation.setSupplierId(deliverOrder.getSupplierId());
+				supplierItemRelation.setItemId(item.getItemId());
+				supplierItemRelation.setOnline(true);
+				List<SupplierItemRelation> supplierItemRelations = supplierItemRelationService.dataGrid(supplierItemRelation, new PageHelper()).getRows();
+				if (CollectionUtils.isNotEmpty(supplierItemRelations)) {
+					supplierItemRelation = supplierItemRelations.get(0);
+					amount += supplierItemRelation.getPrice() * item.getQuantity();
+				}
 				deliverOrderItemService.addAndFill(orderItem,deliverOrder);
 			}
+			DeliverOrder order = new DeliverOrder();
+			order.setId(deliverOrder.getId());
+			order.setAmount(amount);
+			edit(order);
 		} else {
 			throw new ServiceException("items不能为空");
 		}

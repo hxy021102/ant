@@ -221,12 +221,6 @@
             <input type="hidden" name="supplierId" value="${supplierId}"/>
             <table class="table table-hover table-condensed">
                 <tr>
-                    <th>总价:
-                    </th>
-                    <td>
-                        <input name="amountStr" type="text" class="easyui-validatebox span2 money_input" data-options="required:true" />元
-                        <input name="amount" type="hidden" />
-                    </td>
                     <th>收货人:
                     </th>
                     <td>
@@ -237,8 +231,6 @@
                     <td>
                         <input name="contactPhone" type="text" class="easyui-validatebox span2" data-options="required:true"/>
                     </td>
-                </tr>
-                <tr>
                     <th>要求配送时间</th>
                     <td colspan="6">
                         <input type="text" class="span2 easyui-validatebox" data-options="required:false" onclick="WdatePicker({dateFmt:'<%=Constants.DATE_FORMAT_FOR_ENTITY%>',minDate:'#F{$dp.$D(\'endDate\',{M:-1});}',maxDate:'#F{$dp.$D(\'endDate\',{d:-1});}'})" id="deliveryRequireTime" name="deliveryRequireTime"/>
