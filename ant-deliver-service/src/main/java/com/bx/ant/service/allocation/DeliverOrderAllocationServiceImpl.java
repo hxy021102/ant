@@ -63,8 +63,11 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                 if ((deliverOrder.getLongitude() == null || deliverOrder.getLatitude() == null)
                         && !F.empty(deliverOrder.getDeliveryAddress())) {
                     BigDecimal[] point = GeoUtil.getPosition(deliverOrder.getDeliveryAddress());
-                    deliverOrder.setLongitude(point[0]);
-                    deliverOrder.setLatitude(point[1]);
+                    if(point != null) {
+                        deliverOrder.setLongitude(point[0]);
+                        deliverOrder.setLatitude(point[1]);
+                    }
+
                 }
                 //4、计算最近距离点
                 MbShop minMbShop = null;
@@ -93,12 +96,13 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                     DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
                     deliverOrderShop.setAmount(deliverOrder.getAmount());
                     deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
-                    deliverOrderShop.setShopId(deliverOrder.getShopId());
+                    deliverOrderShop.setShopId(minMbShop.getId());
                     deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_AUDITING);
                     deliverOrderShop.setDistance(new BigDecimal(minDistance));
                     deliverOrderShopService.add(deliverOrderShop);
                     List<DeliverOrderItem> deliverOrderItemList = deliverOrderItemService.getDeliverOrderItemList(deliverOrder.getId());
                     deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItemList, deliverOrderShop);
+                    deliverOrder.setShopId(minMbShop.getId());
                     deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_ALLOCATION);
                     deliverOrderService.edit(deliverOrder);
                 }
