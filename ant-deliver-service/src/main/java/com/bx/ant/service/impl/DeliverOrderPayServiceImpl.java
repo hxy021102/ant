@@ -1,5 +1,6 @@
 package com.bx.ant.service.impl;
 
+import com.bx.ant.pageModel.session.DeliverOrderPayExt;
 import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderPayDaoI;
 import com.bx.ant.model.TdeliverOrderPay;
@@ -113,4 +114,17 @@ public class DeliverOrderPayServiceImpl extends BaseServiceImpl<DeliverOrderPay>
 		//deliverOrderPayDao.delete(deliverOrderPayDao.get(TdeliverOrderPay.class, id));
 	}
 
+	@Override
+	public List<DeliverOrderPay> getBySupplierOrderBillId(Integer id) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("supplierOrderBillId", id);
+		List<DeliverOrderPay> l = new ArrayList<DeliverOrderPay>();
+	 	List<TdeliverOrderPay> list = deliverOrderPayDao.find("from TdeliverOrderPay t  where t.supplierOrderBillId = :supplierOrderBillId",params);
+	 	for(TdeliverOrderPay t : list) {
+	 		DeliverOrderPay d = new DeliverOrderPay();
+	 		BeanUtils.copyProperties(t,d);
+	 		l.add(d);
+		}
+		return l;
+	}
 }

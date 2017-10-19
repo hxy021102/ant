@@ -70,15 +70,24 @@
                 },{
                     field : 'price',
                     title : '单价',
-                    width : 50
+                    width : 50,
+					formatter: function (value,row,index) {
+                        return $.formatMoney(row.price);
+					}
                 },{
                     field : 'inPrice',
                     title : '采购价',
-                    width : 50
+                    width : 50,
+                    formatter: function (value,row,index) {
+                        return $.formatMoney(row.inPrice);
+                    }
                 },{
                     field : 'freight',
                     title : '运费',
-                    width : 50
+                    width : 50 ,
+                    formatter: function (value,row,index) {
+                        return $.formatMoney(row.freight);
+                    }
                 },{
                     field : 'online',
                     title : '上下架',
@@ -205,9 +214,21 @@
 					</td>							
 				</tr>
 				<tr>
+					<th style="width: 60px">登陆名</th>
+				    <td>${loginName}</td>
+					<th>营业执照</th>
+					<td>
+						${supplier.charterUrl}
+					</td>
+				</tr>
+				<tr>
 				<th style="width: 60px">地址</th>
-				<td colspan="3">
+				<td>
 					${supplier.address}
+				</td>
+				<th>备注</th>
+				<td>
+					${supplier.remark}
 				</td>
 				</tr>
 		</table>

@@ -4,6 +4,8 @@ import com.bx.ant.pageModel.DeliverOrderPay;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
+import java.util.List;
+
 /**
  * 
  * @author John
@@ -51,4 +53,5 @@ public interface DeliverOrderPayServiceI {
 	 */
 	public void delete(Integer id);
 
+	List<DeliverOrderPay> getBySupplierOrderBillId(Integer id);
 }

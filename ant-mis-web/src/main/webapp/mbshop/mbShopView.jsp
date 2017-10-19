@@ -947,7 +947,7 @@
                 <c:if test="${mbShopExt.deliver == 1}">
                     <th>派单钱包</th>
                     <td>
-                        <a href="javascript:void(0);" onclick="viewDeliverMoney(${mbShopExt.id})">查看</a>
+                        <a href="javascript:void(0);" onclick="viewDeliverMoney(${mbShopExt.id})" class="money_input">${money}</a>
                     </td>
                 </c:if>
             </tr>

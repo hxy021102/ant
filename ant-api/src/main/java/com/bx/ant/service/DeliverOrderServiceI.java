@@ -68,6 +68,8 @@ public interface DeliverOrderServiceI {
 	 * @return
 	 */
 	public DataGrid dataGrid(DeliverOrder deliverOrder, PageHelper ph);
+	DataGrid unPayOrderDataGrid(DeliverOrder deliverOrder,PageHelper ph);
+
 
 	/**
 	 * 添加DeliverOrder
@@ -202,4 +204,5 @@ public interface DeliverOrderServiceI {
 	 * @return
 	 */
 	List<DeliverOrder> query(DeliverOrder deliverOrder);
+	void addOrderBill(List<DeliverOrder> list,Integer supplierId);
 }

@@ -189,9 +189,11 @@ public class MbShopController extends BaseController {
         }else {
             mbShopExt.setDeliver(0);
         }
+        MbBalance balance = mbBalanceService.addOrGetMbBalanceDelivery(id);
         request.setAttribute("mbShopExt", mbShopExt);
         request.setAttribute("debt", debt);
         request.setAttribute("accountId",accountId);
+        request.setAttribute("money",balance.getAmount());
         return "/mbshop/mbShopView";
     }
 

@@ -18,6 +18,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.annotation.*;
 import java.util.*;
 
@@ -47,6 +53,10 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 
 	@Autowired
 	private SupplierServiceI supplierService;
+	@Resource
+	private SupplierOrderBillServiceI supplierOrderBillService;
+	@Resource
+	private DeliverOrderPayServiceI deliverOrderPayService;
 
 	@Autowired
 	private RedisUtil redisUtil;
@@ -166,6 +176,16 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 				}
 			}
 		}
+//			if (deliverOrder.getAddtimeBegin() != null) {
+//				whereHql += " and t.addtime >= :addtimeBegin";
+//				params.put("addtimeBegin",deliverOrder.getAddtimeBegin());
+//			}
+//			if (deliverOrder.getAddtimeEnd() != null) {
+//				whereHql += " and t.addtime <= :getAddtimeEnd";
+//				params.put("getAddtimeEnd",deliverOrder.getAddtimeEnd());
+//			}
+//
+//		}
 		return whereHql;
 	}
 
@@ -422,6 +442,52 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		deliverOrderQuery.setShopPayStatusName(deliverOrder.getShopPayStatus());
 		deliverOrderQuery.setDeliveryStatusName(deliverOrder.getDeliveryStatus());
 		return deliverOrderQuery;
+	}
+
+	@Override
+	public DataGrid unPayOrderDataGrid(DeliverOrder deliverOrder, PageHelper ph) {
+		List<DeliverOrder> ol = new ArrayList<DeliverOrder>();
+		String hql = " from TdeliverOrder t ";
+		deliverOrder.setPayStatus("DPS01");//未结算状态
+		DataGrid dg = dataGridQuery(hql, ph, deliverOrder, deliverOrderDao);
+		@SuppressWarnings("unchecked")
+		List<TdeliverOrder> l = dg.getRows();
+		if (l != null && l.size() > 0) {
+			for (TdeliverOrder t : l) {
+				DeliverOrder o = new DeliverOrder();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		dg.setRows(ol);
+		return dg;
+	}
+
+	@Override
+	public void addOrderBill(List<DeliverOrder> list,Integer supplierId) {
+		Integer amount = 0;//订单总金额
+		for(DeliverOrder d : list) {
+			if(d.getAmount() !=null) {
+				amount += d.getAmount();
+			}
+		}
+		//创建账单
+		SupplierOrderBill supplierOrderBill = new SupplierOrderBill();
+		supplierOrderBill.setSupplierId(supplierId);
+		supplierOrderBill.setStatus("BAS01");//待审核状态
+		supplierOrderBill.setAmount(amount);
+		supplierOrderBill.setPayWay(list.get(0).getPayWay());
+		supplierOrderBillService.add(supplierOrderBill);
+		//生成订单对账单明细
+		for(DeliverOrder d : list) {
+			DeliverOrderPay deliverOrderPay = new DeliverOrderPay();
+			deliverOrderPay.setDeliverOrderId(d.getId());
+			deliverOrderPay.setSupplierOrderBillId(supplierOrderBill.getId().intValue());
+			deliverOrderPay.setSupplierId(supplierId);
+			deliverOrderPay.setAmount(d.getAmount());
+			deliverOrderPay.setStatus("SPS02");//结算待审核状态
+			deliverOrderPayService.add(deliverOrderPay);
+		}
 	}
 //	@Override
 //	public void completeOrder(Long deliverOrderId ) {

@@ -2,12 +2,17 @@ package com.mobian.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bx.ant.pageModel.Supplier;
+import com.bx.ant.pageModel.session.DeliverOrderPayExt;
+import com.bx.ant.service.SupplierServiceI;
 import com.mobian.pageModel.Colum;
 import com.bx.ant.pageModel.DeliverOrderPay;
 import com.mobian.pageModel.DataGrid;
@@ -15,6 +20,8 @@ import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
 import com.bx.ant.service.DeliverOrderPayServiceI;
 
+import net.sf.json.JSONArray;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,8 +38,10 @@ import com.alibaba.fastjson.JSON;
 @Controller
 @RequestMapping("/deliverOrderPayController")
 public class DeliverOrderPayController extends BaseController {
-
+    @Resource
 	private DeliverOrderPayServiceI deliverOrderPayService;
+    @Resource
+	private SupplierServiceI supplierService;
 
 
 	/**
@@ -48,18 +57,34 @@ public class DeliverOrderPayController extends BaseController {
 	/**
 	 * 获取DeliverOrderPay数据表格
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 */
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(DeliverOrderPay deliverOrderPay, PageHelper ph) {
-		return deliverOrderPayService.dataGrid(deliverOrderPay, ph);
+		DataGrid dataGrid = new DataGrid();
+		List<DeliverOrderPayExt> l = new ArrayList<DeliverOrderPayExt>();
+		DataGrid dg = deliverOrderPayService.dataGrid(deliverOrderPay, ph);
+	 	List<DeliverOrderPay> list = dg.getRows();
+	 	for(DeliverOrderPay d : list) {
+	 		DeliverOrderPayExt o = new DeliverOrderPayExt();
+			BeanUtils.copyProperties(d,o);
+	 		if(o.getSupplierId() !=null) {
+	 		Supplier s = supplierService.get(d.getSupplierId());
+	 			o.setSupplierName(s.getName());
+			}
+			l.add(o);
+		}
+
+	 	dataGrid.setRows(l);
+	 	dataGrid.setTotal(dg.getTotal());
+		return  dataGrid;
 	}
 	/**
 	 * 获取DeliverOrderPay数据表格excel
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 * @throws NoSuchMethodException 
 	 * @throws SecurityException 

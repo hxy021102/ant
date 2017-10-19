@@ -2,6 +2,7 @@ package com.mobian.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -9,6 +10,15 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
+import com.bx.ant.pageModel.*;
+import com.bx.ant.service.DeliverOrderPayServiceI;
+import com.bx.ant.service.SupplierOrderBillServiceI;
+import com.bx.ant.service.SupplierServiceI;
+import com.mobian.pageModel.Colum;
+import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.Json;
+import com.mobian.pageModel.PageHelper;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.fastjson.JSONObject;
 import com.bx.ant.pageModel.*;
@@ -18,6 +28,10 @@ import com.bx.ant.service.DeliverOrderServiceI;
 
 
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.mobian.util.BeanUtil;
+import net.sf.json.JSONArray;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,8 +49,12 @@ import com.alibaba.fastjson.JSON;
 @RequestMapping("/deliverOrderController")
 public class DeliverOrderController extends BaseController {
 
-	@Autowired
+	@Resource
 	private DeliverOrderServiceI deliverOrderService;
+	@Resource
+	private SupplierServiceI supplierService;
+
+
 
 	@Autowired
 	private DeliverOrderItemServiceI deliverOrderItemService;
@@ -52,6 +70,17 @@ public class DeliverOrderController extends BaseController {
 		return "/deliverorder/deliverOrder";
 	}
 
+
+	/**
+	 * 跳转到DeliverOrder管理页面
+	 *
+	 * @return
+	 */
+	@RequestMapping("/unPayOrderManager")
+	public String unPayOrdermanager(HttpServletRequest request) {
+		return "/deliverorder/unPayDeliverOrder";
+	}
+
 	/**
 	 * 获取DeliverOrder数据表格
 	 * 
@@ -62,6 +91,35 @@ public class DeliverOrderController extends BaseController {
 	@ResponseBody
 	public DataGrid dataGrid(DeliverOrderQuery deliverOrderQuery, PageHelper ph) {
 		return deliverOrderService.dataGridWithName(deliverOrderQuery, ph);
+	}
+	@RequestMapping("/unPayOrderDataGrid")
+	@ResponseBody
+	public DataGrid unPayOrderDataGrid(DeliverOrder deliverOrder, PageHelper ph) {
+		DataGrid g = deliverOrderService.unPayOrderDataGrid(deliverOrder, ph);
+		List<DeliverOrder> list = g.getRows();
+		List<DeliverOrderQuery>  deliverOrderQueries = new ArrayList<DeliverOrderQuery>();
+		for(DeliverOrder d : list) {
+			DeliverOrderQuery deliverOrderQuery  = new DeliverOrderQuery();
+			BeanUtils.copyProperties(d,deliverOrderQuery);
+			if(d.getSupplierId() != null) {
+				Supplier s = supplierService.get(d.getSupplierId());
+				deliverOrderQuery.setSupplierName(s.getName());
+			}
+			if(d.getStatus() != null) {
+				deliverOrderQuery.setStatusName(d.getStatus());
+			}
+			if(d.getDeliveryStatus() != null) {
+				deliverOrderQuery.setDeliveryStatusName(d.getDeliveryStatus());
+			}
+			if(d.getPayStatus() != null) {
+				deliverOrderQuery.setPayStatusName(d.getPayStatus());
+			}
+			deliverOrderQueries.add(deliverOrderQuery);
+		}
+		DataGrid dg = new DataGrid();
+		dg.setRows(deliverOrderQueries);
+		dg.setTotal(g.getTotal());
+		return  dg;
 	}
 	/**
 	 * 获取DeliverOrder数据表格excel
@@ -184,5 +242,17 @@ public class DeliverOrderController extends BaseController {
 		j.setMsg("编辑成功");
 		j.setSuccess(true);
 		return j;
+	}
+
+	@RequestMapping("/addOrderBill")
+	@ResponseBody
+	public Json addOrderBill(Integer supplierId,String unpayDeliverOrders) {
+		Json j = new Json();
+		JSONArray jsonArray = JSONArray.fromObject(unpayDeliverOrders);
+	   	List<DeliverOrder> list = (List<DeliverOrder>) jsonArray.toCollection(jsonArray,DeliverOrder.class);
+	   	deliverOrderService.addOrderBill(list,supplierId);
+	   	j.setMsg("生成账单成功");
+	   	j.setSuccess(true);
+	   	return  j;
 	}
 }

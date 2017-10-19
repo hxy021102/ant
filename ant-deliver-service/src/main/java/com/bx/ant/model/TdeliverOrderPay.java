@@ -60,6 +60,8 @@ public class TdeliverOrderPay implements java.io.Serializable,IEntity{
 	private Integer amount;
 	//@Length(max=10)
 	private String payWay;
+	//
+	private Integer supplierOrderBillId;
 	//columns END
 
 
@@ -163,9 +165,16 @@ public class TdeliverOrderPay implements java.io.Serializable,IEntity{
 	public void setPayWay(String payWay) {
 		this.payWay = payWay;
 	}
-	
-	
-	/*
+
+
+	@Column(name = "supplier_order_bill_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public Integer getSupplierOrderBillId() {
+		return supplierOrderBillId;
+	}
+	public void setSupplierOrderBillId(Integer supplierOrderBillId) {
+		this.supplierOrderBillId = supplierOrderBillId;
+	}
+/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
 			.append("Id",getId())
