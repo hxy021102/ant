@@ -3,22 +3,19 @@ package com.mobian.service.impl;
 import com.mobian.absx.F;
 import com.mobian.dao.MbOrderRefundItemDaoI;
 import com.mobian.model.TmbOrderRefundItem;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.MbOrderRefundItem;
-import com.mobian.pageModel.PageHelper;
-import com.mobian.service.MbItemServiceI;
-import com.mobian.service.MbOrderRefundItemServiceI;
-import com.mobian.service.UserServiceI;
+import com.mobian.pageModel.*;
+import com.mobian.service.*;
+import com.mobian.service.impl.order.Order40StateImpl;
+import com.mobian.service.impl.order.OrderState;
+import com.mobian.util.ConfigUtil;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpSession;
+import java.util.*;
 
 @Service
 public class MbOrderRefundItemServiceImpl extends BaseServiceImpl<MbOrderRefundItem> implements MbOrderRefundItemServiceI {
@@ -27,10 +24,14 @@ public class MbOrderRefundItemServiceImpl extends BaseServiceImpl<MbOrderRefundI
 	private MbOrderRefundItemDaoI mbOrderRefundItemDao;
 
 	@Autowired
-	private MbItemServiceI mbItemService;
-	@Autowired
-	private UserServiceI userService;
+	private MbOrderServiceI mbOrderService;
 
+	@Autowired
+	private MbShopServiceI mbShopService;
+
+
+	@javax.annotation.Resource(name = "order40StateImpl")
+	private Order40StateImpl orderState40;
 	@Override
 	public DataGrid dataGrid(MbOrderRefundItem mbOrderRefundItem, PageHelper ph) {
 		List<MbOrderRefundItem> ol = new ArrayList<MbOrderRefundItem>();
@@ -160,5 +161,20 @@ public class MbOrderRefundItemServiceImpl extends BaseServiceImpl<MbOrderRefundI
 		return ol;
 
 
+	}
+
+	@Override
+	public void addRefund(MbOrderRefundItem mbOrderRefundItem) {
+
+		MbOrder mbOrderOld = mbOrderService.get(mbOrderRefundItem.getOrderId());
+		Integer amount = orderState40.getIncrementRefundAmount(mbOrderRefundItem, mbOrderOld);
+		add(mbOrderRefundItem);
+		MbShop mbShop = mbShopService.getFromCache(mbOrderOld.getShopId());
+		orderState40.updateRefundItem(Arrays.asList(mbOrderRefundItem), mbOrderOld, mbShop, mbOrderRefundItem.getLoginId());
+		orderState40.addRefundAmount(mbOrderOld, amount, mbOrderRefundItem.getLoginId());
+		if (amount != 0) {
+			mbOrderOld.setTotalRefundAmount((mbOrderOld.getTotalRefundAmount() == null ? 0 : mbOrderOld.getTotalRefundAmount()) + amount);
+			mbOrderService.edit(mbOrderOld);
+		}
 	}
 }
