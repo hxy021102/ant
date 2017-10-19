@@ -2,13 +2,16 @@ package com.mobian.service.impl;
 
 import com.mobian.absx.F;
 import com.mobian.dao.MbWarehouseDaoI;
+import com.mobian.model.TmbOrder;
 import com.mobian.model.TmbWarehouse;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbWarehouse;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.DiveRegionServiceI;
 import com.mobian.service.MbWarehouseServiceI;
+import com.mobian.util.BeanUtil;
 import com.mobian.util.MyBeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -162,5 +165,39 @@ public class MbWarehouseServiceImpl extends BaseServiceImpl<MbWarehouse> impleme
 		params.put("warehouseType", warehouseType);
 		List<TmbWarehouse> warehouseList = mbWarehouseDao.find("from TmbWarehouse w  where w.isdeleted = 0 and w.warehouseType = :warehouseType", params);
 		return warehouseList;
+	}
+
+	@Override
+	public List<MbWarehouse> queryWarehouseList(MbWarehouse mbWarehouse) {
+		List<MbWarehouse> mbWarehouseList = new ArrayList<>();
+		String hql = "from TmbWarehouse t";
+		Map<String, Object> params = new HashMap<String, Object>();
+		String whereHql = whereHql(mbWarehouse, params);
+		List<TmbWarehouse> list = mbWarehouseDao.find(hql + whereHql, params);
+		if (CollectionUtils.isNotEmpty(list)) {
+			for (TmbWarehouse t : list) {
+				MbWarehouse w = new MbWarehouse();
+				BeanUtils.copyProperties(t, w);
+				mbWarehouseList.add(w);
+			}
+		}
+		return mbWarehouseList;
+	}
+
+	@Override
+	public List<MbWarehouse> getWarehouseMapData(MbWarehouse mbWarehouse) {
+		List<MbWarehouse> mbWarehouseList = queryWarehouseList(mbWarehouse);
+		if (CollectionUtils.isNotEmpty(mbWarehouseList)) {
+			List<MbWarehouse> mbWarehouses = new ArrayList<MbWarehouse>();
+			for (MbWarehouse warehouse : mbWarehouseList) {
+				MbWarehouse house = new MbWarehouse();
+				house.setAddress("仓库名称：" + warehouse.getName() + "<br/>仓库类型：" + warehouse.getWarehouseTypeName() + "<br/>仓库地址:" + warehouse.getAddress());
+				house.setLongitude(warehouse.getLongitude());
+				house.setLatitude(warehouse.getLatitude());
+				mbWarehouses.add(house);
+			}
+			return mbWarehouses;
+		}
+		return null;
 	}
 }

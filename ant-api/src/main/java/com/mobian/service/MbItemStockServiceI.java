@@ -147,4 +147,11 @@ public interface MbItemStockServiceI {
 	 * @return
 	 */
 	List<TmbItemStock> queryItemStockListByWarehouseId(Integer warehouseId);
+
+	/**
+	 * 获取所要查询的商品Id
+	 * @param mbItemStock
+	 * @return
+	 */
+	MbItemStock getStockItemIdNumbersValue(MbItemStock mbItemStock);
 }

@@ -36,55 +36,16 @@
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;">	
 		<form id="form" method="post">		
 				<input type="hidden" name="id"/>
+				<input type="hidden" name="orderId" value="${param.orderId}"/>
+				<input type="hidden" name = "logType">
 			<table class="table table-hover table-condensed">
-				<tr>	
-					<th><%=TmbOrderLog.ALIAS_TENANT_ID%></th>	
-					<td>
-											<input class="span2" name="tenantId" type="text"/>
-					</td>							
-					<th><%=TmbOrderLog.ALIAS_ADDTIME%></th>	
-					<td>
-					<input class="span2" name="addtime" type="text" onclick="WdatePicker({dateFmt:'<%=TmbOrderLog.FORMAT_ADDTIME%>'})"  maxlength="0" class="required " />
-					</td>							
-				</tr>	
-				<tr>	
-					<th><%=TmbOrderLog.ALIAS_UPDATETIME%></th>	
-					<td>
-					<input class="span2" name="updatetime" type="text" onclick="WdatePicker({dateFmt:'<%=TmbOrderLog.FORMAT_UPDATETIME%>'})"  maxlength="0" class="required " />
-					</td>							
-					<th><%=TmbOrderLog.ALIAS_ISDELETED%></th>	
-					<td>
-					
-											<input  name="isdeleted" type="text" class="easyui-validatebox span2" data-options="required:true"/>
-					</td>							
-				</tr>	
-				<tr>	
-					<th><%=TmbOrderLog.ALIAS_ORDER_ID%></th>	
-					<td>
-					
-											<input  name="orderId" type="text" class="easyui-validatebox span2" data-options="required:true"/>
-					</td>							
-					<th><%=TmbOrderLog.ALIAS_LOGIN_ID%></th>	
-					<td>
-											<input class="span2" name="loginId" type="text"/>
-					</td>							
-				</tr>	
-				<tr>	
-					<th><%=TmbOrderLog.ALIAS_CONTENT%></th>	
-					<td>
-											<input class="span2" name="content" type="text"/>
-					</td>							
-					<th><%=TmbOrderLog.ALIAS_REMARK%></th>	
-					<td>
-											<input class="span2" name="remark" type="text"/>
-					</td>							
-				</tr>	
-				<tr>	
-					<th><%=TmbOrderLog.ALIAS_LOG_TYPE%></th>	
-					<td>
-											<input class="span2" name="logType" type="text"/>
-					</td>							
-				</tr>	
+				<tr>
+					<th><%=TmbOrderLog.ALIAS_REMARK%>
+					</th>
+					<td colspan="3">
+						<textarea class="span4 easyui-validatebox" style="width: 96%;" name="remark"  data-options="required:true"></textarea>
+					</td>
+				</tr>
 			</table>		
 		</form>
 	</div>

@@ -47,6 +47,7 @@ public class MbOrder implements java.io.Serializable {
 	private String payStatusName;
 	private String deliveryDriver;
 	private String deliveryDriverName;
+	private Integer deliveryCost;
 
 	private Date deliveryTime;
 
@@ -69,13 +70,13 @@ public class MbOrder implements java.io.Serializable {
 
 	private List<MbOrderItem> mbOrderItemList; //订单商品信息
 	private MbOrderInvoice mbOrderInvoice; //订单发票信息
-	private Date   orderTimeBegin;//订单开始时间
-	private Date   orderTimeEnd;
+	private Date orderTimeBegin;//订单开始时间
+	private Date orderTimeEnd;
 	private Integer[] shopIds;//主店和其包含的分店ID
 
 
-	private Date   deliveryTimeBegin;//订单发货时间
-	private Date   deliveryTimeEnd;
+	private Date deliveryTimeBegin;//订单发货时间
+	private Date deliveryTimeEnd;
 
 	public Date getDeliveryTimeBegin() {
 		return deliveryTimeBegin;
@@ -516,5 +517,13 @@ public class MbOrder implements java.io.Serializable {
 
 	public void setShopIds(Integer[] shopIds) {
 		this.shopIds = shopIds;
+	}
+
+	public Integer getDeliveryCost() {
+		return deliveryCost;
+	}
+
+	public void setDeliveryCost(Integer deliveryCost) {
+		this.deliveryCost = deliveryCost;
 	}
 }

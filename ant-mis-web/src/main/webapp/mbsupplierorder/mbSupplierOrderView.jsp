@@ -43,8 +43,8 @@
                 idField : 'id',
                 pageSize : 10,
                 pageList : [ 10, 20, 30, 40, 50 ],
-                sortName : 'id',
-                sortOrder : 'desc',
+                sortName : 'addtime',
+                sortOrder : 'asc',
                 checkOnSelect : false,
                 selectOnCheck : false,
                 nowrap : false,
@@ -59,8 +59,14 @@
                 }, {
                     field : 'itemName',
                     title : '<%=TmbSupplierOrderItem.ALIAS_ITEM_NAME%>',
-                    width : 50,
-					align:"center"
+                    width : 150,
+					align:"center",
+                    formatter: function (value, row) {
+                        if (row.price == 0 && row.itemName != "总量")
+                            value += '<font color="red">【赠送】</font>';
+                        return value;
+                    }
+
                 }, {
                     field : 'quantity',
                     title : '<%=TmbSupplierOrderItem.ALIAS_QUANTITY%>',
@@ -90,7 +96,8 @@
                 }, ] ],
                 onLoadSuccess : function() {
                     computeSupplierOrder();
-                }
+                },
+                toolbar : '#itemDataToolbar'
             });
 		 })
          function loadStockInItem() {
@@ -229,7 +236,22 @@
                  });
              }
          }
-
+         function addItemFun() {
+             parent.$.modalDialog({
+                 title : '添加赠品',
+                 width : 780,
+                 height : 300,
+                 href : '${pageContext.request.contextPath}/mbSupplierOrderItemController/addPage?supplierOrderId=${mbSupplierOrder.id}',
+                 buttons : [ {
+                     text : '添加',
+                     handler : function() {
+                         parent.$.modalDialog.openner_dataGrid = window;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                         var f = parent.$.modalDialog.handler.find('#form');
+                         f.submit();
+                     }
+                 } ]
+             });
+         }
 	 </script>
 </head>
 <body>
@@ -301,6 +323,11 @@
 				<table id="stockInItem"></table>
 			</div>
 		</div>
+        <div id="itemDataToolbar" style="display: none;">
+            <c:if test="${fn:contains(sessionInfo.resourceList, '/mbSupplierOrderItemController/addPage')}">
+                <a onclick="addItemFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'pencil_add'">添加赠品</a>
+            </c:if>
+        </div>
 	</div>
 </div>
 </body>

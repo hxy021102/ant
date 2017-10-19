@@ -88,9 +88,9 @@ public class MbSupplierOrderItemController extends BaseController {
      * @return
      */
     @RequestMapping("/addPage")
-    public String addPage(HttpServletRequest request, Integer supplier_order_id) {
-        MbSupplierOrderItem mbSupplierOrderItem = new MbSupplierOrderItem();
-        request.setAttribute("supplier_order_id", supplier_order_id);
+    public String addPage(HttpServletRequest request, Integer supplierOrderId) {
+        //MbSupplierOrderItem mbSupplierOrderItem = new MbSupplierOrderItem();
+        request.setAttribute("supplierOrderId", supplierOrderId);
         return "/mbsupplierorderitem/mbSupplierOrderItemAdd";
     }
 

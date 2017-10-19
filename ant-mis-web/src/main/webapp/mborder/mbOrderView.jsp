@@ -27,6 +27,11 @@
             $.viewOrderInvoice = true;
         </script>
     </c:if>
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderLogController/delete')}">
+        <script type="text/javascript">
+            $.canDeleteOrderLog = true;
+        </script>
+    </c:if>
 
 <script type="text/javascript">
     function doInvoiceOrder() {
@@ -373,6 +378,10 @@
                 invoke: function () {
                     gridMap.handle(this, loadMbOrderRefundItemDataGrid);
                 }, grid: null
+            },8: {
+                invoke: function () {
+                    gridMap.handle(this, loadMbOrderShopBalanceDataGrid);
+                }, grid: null
             }
 
         };
@@ -388,6 +397,9 @@
         gridMap[0].invoke();
         //$('#order_view_tabs').tabs('select',0);
 
+        if ('${mbOrder.status}' == "OD35") {
+            $('#order_view_tabs').tabs('select', 6);
+        }
         if($('#scanInp').length != 0) {
             $('#scanInp').focus();
 
@@ -535,7 +547,7 @@
                 title: '<%=TmbOrder.ALIAS_DELIVERY_WAY%>',
                 width: 60
             }, {
-                field: 'deliveryPrice',
+                field: 'deliveryCost',
                 title: '<%=TmbOrder.ALIAS_DELIVERY_PRICE%>',
                 width: 40,
                 align:'right',
@@ -790,9 +802,9 @@
             ]]
         });
     }
-
+    var logDataGrid;
     function loadLogDataGrid() {
-        return $('#logDataGrid').datagrid({
+        return logDataGrid=$('#logDataGrid').datagrid({
             url: '${pageContext.request.contextPath}/mbOrderLogController/dataGrid?orderId=${mbOrder.id}',
             fitColumns: true,
             fit:true,
@@ -817,7 +829,7 @@
             }, {
                 field : 'updatetime',
                 title : '<%=TmbOrderLog.ALIAS_UPDATETIME%>',
-                width : 50
+                width : 70
             }, {
                 field : 'logTypeName',
                 title : '<%=TmbOrderLog.ALIAS_LOG_TYPE%>',
@@ -834,7 +846,20 @@
                 field : 'loginName',
                 title : '<%=TmbOrderLog.ALIAS_LOGIN_NAME%>',
                 width : 30
-            }]]
+            } ,{
+                field : 'action',
+                title : '操作',
+                width : 20,
+                formatter : function(value, row, index) {
+                    var str = '';
+                    str += '&nbsp;';
+                    if ($.canDeleteOrderLog && (row.logType=="LT011" || row.logType=="LT012" || row.logType=="LT013")) {
+                        str += $.formatString('<img onclick="deleteOrderLog(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/cancel.png');
+                    }
+                    return str;
+                }
+            }]],
+            toolbar:"#logDataGridbar"
         });
     }
 
@@ -1147,6 +1172,127 @@
             } ]
         });
     }
+    var mbOrderShopBalanceDataGrid;
+    function loadMbOrderShopBalanceDataGrid(){
+        var orderId =${mbOrder.id}+"";
+        return  mbOrderShopBalanceDataGrid=$('#mbOrderShopBalanceDataGrid').datagrid({
+            url : '${pageContext.request.contextPath}/mbRechargeLogController/dataGrid?payCode='+orderId,
+            fit : true,
+            fitColumns : true,
+            border : false,
+            pagination : true,
+            idField : 'id',
+            pageSize : 10,
+            pageList : [ 10, 20, 30, 40, 50 ],
+            sortName : 'id',
+            sortOrder : 'desc',
+            checkOnSelect : false,
+            selectOnCheck : false,
+            nowrap : true,
+            striped : true,
+            rownumbers : true,
+            singleSelect : true,
+            columns : [ [ {
+                field : 'addtime',
+                title : '申请时间',
+                width : 60
+            },{
+                field : 'refTypeName',
+                title : '<%=TmbRechargeLog.ALIAS_REF_TYPE%>',
+                width : 40
+            }, {
+                field : 'shopId',
+                title : '门店ID',
+                width : 30
+            }, {
+                field : 'shopName',
+                title : '门店名称',
+                width : 80
+            }, {
+
+                field : 'payCode',
+                title : '订单ID',
+                width : 30
+            },  {
+                field : 'amount',
+                title : '<%=TmbRechargeLog.ALIAS_AMOUNT%>',
+                width : 30	,
+                align:'right',
+                formatter:function(value){
+                    return $.formatMoney(value);
+                }
+            }, {
+                field : 'applyLoginName',
+                title : '<%=TmbRechargeLog.ALIAS_APPLY_LOGIN_ID%>',
+                width : 25
+            } , {
+                field : 'content',
+                title : '<%=TmbRechargeLog.ALIAS_CONTENT%>',
+                width :120
+            } , {
+                field : 'handleStatusName',
+                title : '<%=TmbRechargeLog.ALIAS_HANDLE_STATUS%>',
+                width : 40,
+            } ] ],
+            toolbar:"#mbOrderShopBalanceToolbar"
+        });
+    }
+    function addOrderShopBalance() {
+        parent.$.modalDialog({
+            title : '添加数据',
+            width : 780,
+            height : 250,
+            href : '${pageContext.request.contextPath}/mbRechargeLogController/addOrderRechargePage?shopId=${mbOrder.shopId}&orderId=${mbOrder.id}',
+            buttons : [ {
+                text : '添加',
+                handler : function() {
+                    parent.$.modalDialog.openner_dataGrid = mbOrderShopBalanceDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                    var f = parent.$.modalDialog.handler.find('#form');
+                    f.submit();
+                }
+            } ]
+        });
+    }
+    function addOrderLog(title,logType) {
+        parent.$.modalDialog({
+            title : title,
+            width : 780,
+            height : 230,
+            href : '${pageContext.request.contextPath}/mbOrderLogController/addPage?orderId='+${mbOrder.id},
+            buttons : [ {
+                text : '保存',
+                handler : function() {
+                    parent.$.modalDialog.openner_dataGrid = logDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                    var f = parent.$.modalDialog.handler.find('#form');
+                    f.find("input[name=logType]").val(logType);
+                    f.submit();
+                }
+            } ]
+        });
+    }
+    function deleteOrderLog(id) {
+        if (id == undefined) {
+            var rows = logDataGrid.datagrid('getSelections');
+            id = rows[0].id;
+        }
+        parent.$.messager.confirm('询问', '您是否要删除当前数据？', function (b) {
+            if (b) {
+                parent.$.messager.progress({
+                    title: '提示',
+                    text: '数据处理中，请稍后....'
+                });
+                $.post('${pageContext.request.contextPath}/mbOrderLogController/delete', {
+                    id: id
+                }, function (result) {
+                    if (result.success) {
+                        parent.$.messager.alert('提示', result.msg, 'info');
+                        logDataGrid.datagrid('reload');
+                    }
+                    parent.$.messager.progress('close');
+                }, 'JSON');
+            }
+        });
+    }
 </script>
 </head>
 <body>
@@ -1195,7 +1341,7 @@
                         <c:if test="${fn:contains(sessionInfo.resourceList,'/mbOrderController/confirmMbOrderCallbackItem' ) and mbOrder.deliveryStatus=='DS30' and mbOrder.status=='OD35'}">
                             <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="confirmMbOrderCallbackItemAlert();">回桶确认</a>
                         </c:if>
-                        <c:if test="${fn:contains(sessionInfo.resourceList,'/mbOrderController/updateDeliveryDriverPage' ) and (mbOrder.status=='OD12' or mbOrder.status=='OD15' or mbOrder.status=='OD20')}">
+                        <c:if test="${fn:contains(sessionInfo.resourceList,'/mbOrderController/updateDeliveryDriverPage' ) and (mbOrder.status=='OD12' or mbOrder.status=='OD15' or mbOrder.status=='OD20' or mbOrder.status=='OD30' or mbOrder.status=='OD35' or mbOrder.status=='OD40')}">
                             <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="updateDeliveryDriver();">分配司机</a>
                         </c:if>
                         <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderController/printOrderView') and mbOrder.status=='OD12'}">
@@ -1279,10 +1425,13 @@
 
                 <tr>
                     <th>发货地：</th>
-                    <td colspan="7">
+                    <td>
                         ${warehouseName}
                     </td>
-
+                    <th>运费：</th>
+                    <td colspan="5" class="moneyFormatter">
+                        ${mbOrder.deliveryCost}
+                    </td>
 
                 </tr>
 
@@ -1322,6 +1471,9 @@
                 <div title="商品退回">
                     <table id="mbOrderRefundItemDataGrid"></table>
                 </div>
+                <div title="金额冲正">
+                    <table id="mbOrderShopBalanceDataGrid"></table>
+                </div>
             </div>
         </div>
     </div>
@@ -1346,6 +1498,20 @@
         </c:if>
         <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderRefundItemController/addRefund') and mbOrder.status=='OD40'}">
             <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addMbOrderRefund();" data-options="plain:true,iconCls:'pencil_add'">红冲</a>
+        </c:if>
+    </div>
+    <div id="mbOrderShopBalanceToolbar" style="display: none;">
+        <c:if test="${fn:contains(sessionInfo.resourceList, '/mbRechargeLogController/addOrderRecharge') and mbOrder.payStatus=='PS05' and mbOrder.status=='OD40'}">
+            <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addOrderShopBalance();" data-options="plain:true,iconCls:'pencil_add'">添加</a>
+        </c:if>
+    </div>
+    <div id="logDataGridbar" style="display: none;">
+        <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderLogController/add') }">
+            <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addOrderLog('催送','LT011');" data-options="plain:true,iconCls:'pencil_add'">催送</a>
+            <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addOrderLog('催回','LT012');" data-options="plain:true,iconCls:'pencil_add'">催回</a>
+            <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addOrderLog('留言','LT013');" data-options="plain:true,iconCls:'pencil_add'">留言</a>
+
+
         </c:if>
     </div>
     <iframe id="printIframe" style="display: none;"></iframe>

@@ -110,7 +110,7 @@ public interface MbOrderServiceI {
 	 * @param remark
 	 * @param loginId
 	 */
-	void editOrderDeliveryDriver(Integer id, String deliveryDriver, String remark, String loginId);
+	void editOrderDeliveryDriver(Integer id, String deliveryDriver,Integer deliveryCost, String remark, String loginId);
 
 
 	DataGrid queryOrderDataGrid(MbOrder mbOrder, PageHelper ph);
@@ -150,4 +150,12 @@ public interface MbOrderServiceI {
 	 * @return
 	 */
 	MbOrderDistribution setOrderDayNumberAndOrderDayNameValue(List<TmbOrder> mbOrders, MbOrderDistribution orderDistribution, String[] timeName);
+
+	/**
+	 * 获取订单列表和订单日志信息
+	 * @param mbOrder
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridWithOrderLogMessage(MbOrder mbOrder, PageHelper ph);
 }

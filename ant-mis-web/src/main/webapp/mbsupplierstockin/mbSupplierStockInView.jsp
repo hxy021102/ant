@@ -28,7 +28,12 @@
                 {
                     field: 'productName',
                     title: '<%=TmbSupplierStockInItem.ALIAS_ITEM_NAME%>',
-                    width: 100
+                    width: 100,
+                    formatter: function (value, row) {
+                        if (row.price == 0 )
+                            value += '<font color="red">【赠送】</font>';
+                        return value;
+                    }
                 }, {
                     field: 'quantity',
                     title: '<%=TmbSupplierStockInItem.ALIAS_QUANTITY%>',

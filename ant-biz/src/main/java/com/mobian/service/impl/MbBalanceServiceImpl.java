@@ -155,6 +155,17 @@ public class MbBalanceServiceImpl extends BaseServiceImpl<MbBalance> implements 
 	}
 
 	@Override
+	public MbBalance queryByRealShopId(Integer shopId) {
+		TmbBalance tmbBalance = mbBalanceDao.get("from TmbBalance t where t.refType = 1 and t.refId=" + shopId);
+		if (tmbBalance != null) {
+			MbBalance mbBalance = new MbBalance();
+			BeanUtils.copyProperties(tmbBalance, mbBalance);
+			return mbBalance;
+		}
+		return null;
+	}
+
+	@Override
 	public MbBalance addOrGetMbBalanceCash(Integer shopId) {
 		MbShop mbShop = mbShopService.getFromCache(shopId);
 		if (mbShop != null && !F.empty(mbShop.getParentId()) && mbShop.getParentId() != -1) {

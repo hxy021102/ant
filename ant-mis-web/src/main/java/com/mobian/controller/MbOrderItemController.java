@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,12 +46,18 @@ public class MbOrderItemController extends BaseController {
     private MbOrderServiceI mbOrderService;
     @Autowired
     private MbShopServiceI mbShopService;
+
+    @Autowired
+    private MbWarehouseServiceI mbWarehouseService;
+
     @Autowired
     private UserServiceI userService;
     @Autowired
     private MbOrderRefundItemServiceI mbOrderRefundItemService;
     @Autowired
     private MbOrderLogServiceI mbOrderLogService;
+    @Autowired
+    private MbOrderCallbackItemServiceI mbOrderCallbackItemService;
 
 
     /**
@@ -76,7 +84,7 @@ public class MbOrderItemController extends BaseController {
     @RequestMapping("/download")
     public void downloadComplex(MbOrderItem mbOrderItem, HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
         PageHelper ph = new PageHelper();
-        ph.setRows(5000);
+        ph.setRows(10000);
         ph.setHiddenTotal(true);
         DataGrid dg = mbOrderItemService.dataGrid(mbOrderItem, ph);
         List<MbOrderItemExport> mbOrderItemExports = new ArrayList<MbOrderItemExport>();
@@ -96,7 +104,7 @@ public class MbOrderItemController extends BaseController {
         ThreadCache userCache = new ThreadCache(User.class) {
             @Override
             protected Object handle(Object key) {
-                return userService.get((String) key);
+                return userService.getFromCache((String) key);
             }
         };
         ThreadCache shopCache = new ThreadCache(MbShop.class) {
@@ -105,6 +113,25 @@ public class MbOrderItemController extends BaseController {
                 return mbShopService.getFromCache((Integer) key);
             }
         };
+
+        ThreadCache wareHouseCache = new ThreadCache(MbWarehouse.class) {
+            @Override
+            protected Object handle(Object key) {
+                return mbShopService.getFromCache((Integer) key);
+            }
+        };
+
+        ThreadCache callbackItemCache = new ThreadCache(ArrayList.class) {
+            @Override
+            protected Object handle(Object key) {
+                MbOrderCallbackItem mbOrderCallbackItemA = new MbOrderCallbackItem();
+                mbOrderCallbackItemA.setOrderId((Integer)key);
+                mbOrderCallbackItemA.setIsdeleted(false);
+                List<MbOrderCallbackItem> mbOrderCallbackItems = mbOrderCallbackItemService.query(mbOrderCallbackItemA);
+                return mbOrderCallbackItems;
+            }
+        };
+
         final Map<String, String> statusMap = new HashMap<String, String>();
         statusMap.put("OD12","LT005");
         statusMap.put("OD15","LT015");
@@ -125,18 +152,23 @@ public class MbOrderItemController extends BaseController {
             }
         };
         //mbOrderLogService
-        Integer total = 0, backTotal = 0;
+        Integer total = 0, backTotal = 0,totalAmount = 0;
+        NumberFormat nf = new DecimalFormat("#,###.##");
         try {
             for (MbOrderItem itemExport : itemExports) {
                 MbOrder mbOrder = mbOrderCache.getValue(itemExport.getOrderId());
-                if (mbOrder == null || mbOrder.getId() == null || "OD01".equals(mbOrder.getStatus())) continue;
+                if (mbOrder == null || mbOrder.getId() == null || "OD01_OD31_OD32".indexOf(mbOrder.getStatus())>-1) continue;
                 MbOrderItemExport mbOrderItemExport = new MbOrderItemExport();
                 BeanUtils.copyProperties(itemExport, mbOrderItemExport);
+                mbOrderItemExport.setMarketPriceFormat(nf.format(mbOrderItemExport.getMarketPrice() / 100f));
+                mbOrderItemExport.setBuyPriceFormat(nf.format(mbOrderItemExport.getBuyPrice()/100f));
                 mbOrderItemExports.add(mbOrderItemExport);
                 mbOrderItemExport.setShopId(mbOrder.getShopId());
                 mbOrderItemExport.setShopName(mbOrder.getShopName());
                 mbOrderItemExport.setDeliveryDriver(mbOrder.getDeliveryDriver());
                 mbOrderItemExport.setDeliveryTime(mbOrder.getDeliveryTime());
+                mbOrderItemExport.setUserRemark(mbOrder.getUserRemark());
+                mbOrderItemExport.setContactPhone(mbOrder.getContactPhone());
                 if (!F.empty(mbOrder.getDeliveryDriver())) {
                     User user = userCache.getValue(mbOrder.getDeliveryDriver());
                     if (user != null)
@@ -147,6 +179,13 @@ public class MbOrderItemController extends BaseController {
                     MbShop mbShop = shopCache.getValue(mbOrderItemExport.getShopId());
                     if (mbShop != null) {
                         mbOrderItemExport.setShopTypeName(mbShop.getShopTypeName());
+                    }
+                }
+
+                if (!F.empty(mbOrder.getDeliveryWarehouseId())) {
+                    MbWarehouse mbWarehouse = mbWarehouseService.getFromCache(mbOrder.getDeliveryWarehouseId());
+                    if (mbWarehouse != null) {
+                        mbOrderItemExport.setDeliveryWarehouseName(mbWarehouse.getName());
                     }
                 }
 
@@ -168,16 +207,33 @@ public class MbOrderItemController extends BaseController {
                     mbOrderItemExport.setRefundQuantity(refundItem.getQuantity());
                     mbOrderItemExport.setRefundType(ConvertNameUtil.getString(refundItem.getType()));
                 }
-                mbOrderItemExport.setChannel(mbOrder.getAddLoginId()==null?"公众号":"客服");
+                mbOrderItemExport.setChannel(mbOrder.getAddLoginId() == null ? "公众号" : "客服");
                 MbOrderLog mbOrderLog = orderLogCache.getValue(mbOrder.getId()+"|"+mbOrder.getStatus());
                 if (mbOrderLog != null)
                     mbOrderItemExport.setNodeTime(mbOrderLog.getAddtime());
-                if (itemExport.getQuantity() !=null) {
+                if (itemExport.getQuantity() != null) {
                     total += itemExport.getQuantity();
+                    totalAmount += itemExport.getQuantity() * itemExport.getBuyPrice();
                 }
                 if(mbOrderItemExport.getRefundQuantity() != null) {
                     backTotal += mbOrderItemExport.getRefundQuantity();
                 }
+
+                List<MbOrderCallbackItem> mbOrderCallbackItemList = callbackItemCache.getValue(mbOrder.getId());
+                if (CollectionUtils.isNotEmpty(mbOrderCallbackItemList)) {
+                    mbOrderItemExport.setExtend(new HashMap<String, Integer>());
+                    for (MbOrderCallbackItem mbOrderCallbackItem : mbOrderCallbackItemList) {
+                        mbOrderItemExport.getExtend().put(mbOrderCallbackItem.getItemId()+"",mbOrderCallbackItem.getQuantity());
+                    }
+                    mbOrderCallbackItemList.clear();
+                }
+
+                if (mbOrder.getDeliveryCost() != null) {
+                    mbOrderItemExport.setDeliveryCostFormat(nf.format(mbOrder.getDeliveryCost() / 100f));
+                    mbOrder.setDeliveryCost(null);
+                }
+
+
             }
         } finally {
             ThreadCache.clear();
@@ -187,6 +243,7 @@ public class MbOrderItemController extends BaseController {
             MbOrderItemExport mbOrderItemExport = new MbOrderItemExport();
             mbOrderItemExport.setShopName("合计");
             mbOrderItemExport.setQuantity(total);
+            mbOrderItemExport.setBuyPriceFormat(nf.format(totalAmount / 100f));
             mbOrderItemExport.setRefundQuantity(backTotal);
             mbOrderItemExports.add(mbOrderItemExport);
         }
@@ -241,12 +298,12 @@ public class MbOrderItemController extends BaseController {
         colum.setTitle("商品名称");
         colums.add(colum);
         colum = new Colum();
-        colum.setField("marketPrice");
+        colum.setField("marketPriceFormat");
         colum.setTitle("市场价");
         colums.add(colum);
         colum = new Colum();
-        colum.setField("buyPrice");
-        colum.setTitle("合同价");
+        colum.setField("buyPriceFormat");
+        colum.setTitle("成交价");
         colums.add(colum);
         colum = new Colum();
         colum.setField("quantity");
@@ -260,6 +317,17 @@ public class MbOrderItemController extends BaseController {
         colum.setField("refundType");
         colum.setTitle("退回类型");
         colums.add(colum);
+
+        MbItem mbItem = new MbItem();
+        mbItem.setIspack(true);
+        List<MbItem> items = mbItemService.query(mbItem);
+        for (MbItem item : items) {
+            colum = new Colum();
+            colum.setField(MAP_+item.getId());
+            colum.setTitle(item.getName());
+            colums.add(colum);
+        }
+
         colum = new Colum();
         colum.setField("deliveryDriver");
         colum.setTitle("司机编码");
@@ -268,6 +336,12 @@ public class MbOrderItemController extends BaseController {
         colum.setField("deliveryDriverName");
         colum.setTitle("司机名称");
         colums.add(colum);
+
+        colum = new Colum();
+        colum.setField("deliveryCostFormat");
+        colum.setTitle("运费");
+        colums.add(colum);
+
         colum = new Colum();
         colum.setField("payStatus");
         colum.setTitle("支付状态");
@@ -279,6 +353,20 @@ public class MbOrderItemController extends BaseController {
         colum = new Colum();
         colum.setField("channel");
         colum.setTitle("渠道");
+        colums.add(colum);
+
+        colum = new Colum();
+        colum.setField("deliveryWarehouseName");
+        colum.setTitle("发货仓");
+        colums.add(colum);
+
+        colum = new Colum();
+        colum.setField("contactPhone");
+        colum.setTitle("联系电话");
+        colums.add(colum);
+        colum = new Colum();
+        colum.setField("userRemark");
+        colum.setTitle("备注");
         colums.add(colum);
         downloadTable(colums, dg, response);
     }
