@@ -26,7 +26,7 @@ public class MbSupplierStockInItem implements java.io.Serializable {
     private String categoryName;
     private Integer supplierOrderId;
     private String  supplierName;
-    private double  totalPrice;
+    private Double  totalPrice;
 
     public String getSupplierName() {
         return supplierName;
@@ -165,11 +165,11 @@ public class MbSupplierStockInItem implements java.io.Serializable {
         this.updatetimeEnd = updatetimeEnd;
     }
 
-    public double getTotalPrice() {
+    public Double getTotalPrice() {
         return totalPrice;
     }
 
-    public void setTotalPrice(double totalPrice) {
+    public void setTotalPrice(Double totalPrice) {
         this.totalPrice = totalPrice;
     }
 }

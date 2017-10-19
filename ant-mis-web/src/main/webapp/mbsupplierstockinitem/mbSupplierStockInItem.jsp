@@ -33,9 +33,9 @@
 			fit : true,
 			fitColumns : true,
 			border : false,
-			pagination : true,
+			pagination : false,
 			idField : 'id',
-			pageSize : 10,
+			/*pageSize : 10,*/
 			pageList : [ 10, 20, 30, 40, 50 ],
 			sortName : 'id',
 			sortOrder : 'desc',
@@ -51,7 +51,7 @@
 				title : '编号',
 				width : 150,
 				hidden : true
-				}, {
+				},  {
                 field : 'supplierName',
                 title : '<%=TmbSupplierStockInItem.ALIAS_SUPPLIER_NAME%>',
                 width : 80
@@ -59,11 +59,11 @@
                 field : 'supplierOrderId',
                 title : '<%=TmbSupplierStockInItem.ALIAS_SUPPLIER_ORDER_ID%>',
                 width : 30
-            	}, {
+            	},{
                 field : 'updatetime',
                 title : '<%=TmbSupplierStockInItem.ALIAS_UPDATETIME%>',
                 width : 60
-                }, {
+                },{
 				field : 'itemId',
 				title : '<%=TmbSupplierStockInItem.ALIAS_ITEM_ID%>',
 				width : 30
@@ -87,17 +87,17 @@
                     if (value != null)
                         return $.formatMoney(value);
                     return "";
-                }
-			    }, {
-                field : 'totalPrice',
-                title : '总金额',
-                width : 30,
+                }},{
+                field: 'totalPrice',
+                title: '总金额',
+                width: 30,
                 formatter: function (value) {
-                    return $.formatMoney(value)
-                }
-			} ] ],
-			toolbar : '#toolbar',
-			onLoadSuccess : function() {
+                    if (value != null)
+                        return $.formatMoney(value);
+                    return "";
+                }}] ],
+			   toolbar : '#toolbar',
+			   onLoadSuccess : function() {
 				$('#searchForm table').show();
 				parent.$.messager.progress('close');
 
@@ -207,12 +207,12 @@
         	options.url = '${pageContext.request.contextPath}/mbSupplierStockInItemController/dataGridStockInItem';
         	options.queryParams = $.serializeObject($('#searchForm'));
         	dataGrid.datagrid(options);
+	}
 
-	function cleanFun() {
-		$('#searchForm input').val('');
-		dataGrid.datagrid('load', {});
-	}
-	}
+    function cleanFun() {
+        $('#searchForm input').val('');
+        dataGrid.datagrid('load', {});
+    }
 </script>
 </head>
 <body>
