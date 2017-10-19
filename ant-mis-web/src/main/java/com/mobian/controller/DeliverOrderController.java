@@ -104,9 +104,14 @@ public class DeliverOrderController extends BaseController {
 	@ResponseBody
 	public Json add(DeliverOrder deliverOrder,String itemListStr) {
 		Json j = new Json();
-		deliverOrderService.addAndItems(deliverOrder, itemListStr);
-		j.setSuccess(true);
-		j.setMsg("添加成功！");		
+		if (!"[{\"status\":\"P\"}]".equals(itemListStr)) {
+			deliverOrderService.addAndItems(deliverOrder, itemListStr);
+			j.setSuccess(true);
+			j.setMsg("添加成功！");
+		} else {
+			j.setSuccess(false);
+			j.setMsg("请确认已经选中商品列表中的商品");
+		}
 		return j;
 	}
 

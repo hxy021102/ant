@@ -103,7 +103,10 @@
             field: 'quantity',
             title: '数量',
             width: 50,
-            editor:{type:'numberbox',options:{required: true}}
+            editor:{
+                type:'numberbox',
+                options:{required: true
+                }}
             }, {
                 field:'code',
                 title:'<%=TmbItem.ALIAS_CODE%>',
@@ -181,6 +184,7 @@
     }
     function onClickCell(index,field) {
         console.log("index,field,itemEditIndex,endEditing:"+index+','+field+','+itemEditIndex+','+endEditing());
+        $('#itemListTable').datagrid('endEdit', index);
         if (itemEditIndex != index) {
             if (endEditing()) {
                 $('#itemListTable').datagrid('selectRow', index)
@@ -206,7 +210,7 @@
             row.price = g.marketPrice ;
             row.code = g.code;
             row.itemId = g.id;
-            row.quantity = g.quantity;
+//            row.quantity = g.quantity;
         }
     }
 </script>
