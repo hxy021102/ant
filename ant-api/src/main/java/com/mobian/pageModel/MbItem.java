@@ -36,6 +36,8 @@ public class MbItem implements java.io.Serializable {
 
 	private String keyword;
 
+	private Boolean online;
+
 	public String getUrl() {
 		return url;
 	}
@@ -250,4 +252,12 @@ public class MbItem implements java.io.Serializable {
 	public Integer getPurchasePrice() { return purchasePrice;}
 
 	public void setPurchasePrice(Integer purchasePrice) { this.purchasePrice = purchasePrice; }
+
+	public Boolean getOnline() {
+		return online;
+	}
+
+	public void setOnline(Boolean online) {
+		this.online = online;
+	}
 }

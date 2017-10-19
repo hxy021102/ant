@@ -297,6 +297,35 @@ public class ApiAccountController extends BaseController {
     }
 
     /**
+     * 更新营业状态
+     * @param request
+     * @return
+     */
+    @RequestMapping("/updateOnline")
+    @ResponseBody
+    public Json updateOnline(ShopDeliverApply apply, HttpServletRequest request){
+        Json j = new Json();
+        try{
+            TokenWrap token = tokenService.getToken(request);
+            if(!F.empty(token.getUid())) {
+                ShopDeliverApply shopDeliverApply = shopDeliverApplyService.getByAccountId(Integer.valueOf(token.getUid()));
+                if(shopDeliverApply != null) {
+                    apply.setId(shopDeliverApply.getId());
+                    shopDeliverApplyService.edit(apply);
+                    j.setSuccess(true);
+                    j.setMsg("切换成功！");
+                }
+            }
+
+        }catch(Exception e){
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
+            logger.error("更新营业状态接口异常", e);
+        }
+
+        return j;
+    }
+
+    /**
      * 绑定门店申请
      * @param shopDeliverApply
      * @param request
