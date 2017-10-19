@@ -224,6 +224,11 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
                 whereHql += " and t.id in (:ids)";
                 params.put("ids", mbShop.getIds());
             }
+
+            if (!F.empty(mbShop.getShopType())) {
+                whereHql += " and t.shopType = :shopType";
+                params.put("shopType", mbShop.getShopType());
+            }
         }
         return whereHql;
     }
@@ -611,5 +616,22 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
             mbShop.setLongitude(point[0]);
             mbShop.setLatitude(point[1]);
         }
+    }
+
+    @Override
+    public List<MbShopMap> getShopMapData(MbShop mbShop) {
+        List<MbShop> mbShopList = query(mbShop);
+        if (CollectionUtils.isNotEmpty(mbShopList)) {
+            List<MbShopMap> mbShopMaps = new ArrayList<MbShopMap>();
+            for (MbShop shop : mbShopList) {
+                MbShopMap mbShopMap = new MbShopMap();
+                mbShopMap.setAddress("门店名称：" + shop.getName() + "<br/>联系人：" + shop.getContactPeople() + "<br/>联系电话：" + shop.getContactPhone() + "<br/>地址：" + shop.getAddress());
+                mbShopMap.setLongitude(shop.getLongitude());
+                mbShopMap.setLatitude(shop.getLatitude());
+                mbShopMaps.add(mbShopMap);
+            }
+            return mbShopMaps;
+        }
+        return null;
     }
 }

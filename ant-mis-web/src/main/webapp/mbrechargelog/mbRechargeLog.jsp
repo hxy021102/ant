@@ -104,8 +104,11 @@
 				title : '<%=TmbRechargeLog.ALIAS_HANDLE_STATUS%>',
 				width : 50,
 				formatter:function(value, row){
-					if(row.refType != 'BT003') return '';
-					return value;
+					if(row.refType == 'BT003' ||(row.refType == 'BT013'&&row.payCode)){
+						return value;
+					}else{
+						return '';
+					}
 				}
 				} , {
 				field : 'action',
@@ -113,9 +116,8 @@
 				width : 30,
 				formatter : function(value, row, index) {
 					var str = '';
-					if ($.canEditAudit && row.refType == 'BT003' && row.handleStatus == 'HS01') {
+                    if ($.canEditAudit && (row.refType == 'BT003' ||(row.refType == 'BT013'&&row.payCode)) && row.handleStatus == 'HS01') {
 						str += $.formatString('<img onclick="editAuditFun(\'{0}\');" src="{1}" title="审核"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/joystick.png');
-                        //str += "<a href='javascript:void(0);' onclick='editAuditFun(" + row.id + ")'>审核</a>";
 					}
 					return str;
 				}

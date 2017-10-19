@@ -46,6 +46,10 @@ public class MbOrderItemController extends BaseController {
     private MbOrderServiceI mbOrderService;
     @Autowired
     private MbShopServiceI mbShopService;
+
+    @Autowired
+    private MbWarehouseServiceI mbWarehouseService;
+
     @Autowired
     private UserServiceI userService;
     @Autowired
@@ -109,6 +113,14 @@ public class MbOrderItemController extends BaseController {
                 return mbShopService.getFromCache((Integer) key);
             }
         };
+
+        ThreadCache wareHouseCache = new ThreadCache(MbWarehouse.class) {
+            @Override
+            protected Object handle(Object key) {
+                return mbShopService.getFromCache((Integer) key);
+            }
+        };
+
         ThreadCache callbackItemCache = new ThreadCache(ArrayList.class) {
             @Override
             protected Object handle(Object key) {
@@ -170,6 +182,13 @@ public class MbOrderItemController extends BaseController {
                     }
                 }
 
+                if (!F.empty(mbOrder.getDeliveryWarehouseId())) {
+                    MbWarehouse mbWarehouse = mbWarehouseService.getFromCache(mbOrder.getDeliveryWarehouseId());
+                    if (mbWarehouse != null) {
+                        mbOrderItemExport.setDeliveryWarehouseName(mbWarehouse.getName());
+                    }
+                }
+
                 MbItem mbItem = mbItemCache.getValue(itemExport.getItemId());
                 if (mbItem != null) {
                     mbOrderItemExport.setItemCode(mbItem.getCode());
@@ -208,6 +227,12 @@ public class MbOrderItemController extends BaseController {
                     }
                     mbOrderCallbackItemList.clear();
                 }
+
+                if (mbOrder.getDeliveryCost() != null) {
+                    mbOrderItemExport.setDeliveryCostFormat(nf.format(mbOrder.getDeliveryCost() / 100f));
+                    mbOrder.setDeliveryCost(null);
+                }
+
 
             }
         } finally {
@@ -311,6 +336,12 @@ public class MbOrderItemController extends BaseController {
         colum.setField("deliveryDriverName");
         colum.setTitle("司机名称");
         colums.add(colum);
+
+        colum = new Colum();
+        colum.setField("deliveryCostFormat");
+        colum.setTitle("运费");
+        colums.add(colum);
+
         colum = new Colum();
         colum.setField("payStatus");
         colum.setTitle("支付状态");
@@ -323,6 +354,12 @@ public class MbOrderItemController extends BaseController {
         colum.setField("channel");
         colum.setTitle("渠道");
         colums.add(colum);
+
+        colum = new Colum();
+        colum.setField("deliveryWarehouseName");
+        colum.setTitle("发货仓");
+        colums.add(colum);
+
         colum = new Colum();
         colum.setField("contactPhone");
         colum.setTitle("联系电话");

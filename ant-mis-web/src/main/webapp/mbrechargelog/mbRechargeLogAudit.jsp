@@ -39,11 +39,22 @@
 				<input name="handleStatus" type="hidden"/>
 			<table class="table table-hover table-condensed">
 				<tr>
-					<th><%=TmbRechargeLog.ALIAS_PAYCODE%></th>
-					<td>
-						<input type="text" name="payCode" style="width: 90%" />
-					</td>
+
 				</tr>
+				<c:choose>
+					<c:when test="${mbRechargeLog.bankCode == 'TB10'}">
+						<th>订单ID</th>
+						<td>
+							<input type="text" name="payCode" readonly = "true" value="${mbRechargeLog.payCode}"/>
+						</td>
+					</c:when>
+					<c:otherwise>
+						<th><%=TmbRechargeLog.ALIAS_PAYCODE%></th>
+						<td>
+							<input type="text" name="payCode" style="width: 90%" />
+						</td>
+					</c:otherwise>
+				</c:choose>
 				<tr>
 					<th>原因</th>
 					<td>
