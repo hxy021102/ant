@@ -282,6 +282,11 @@ public class ApiAccountController extends BaseController {
 
             if(!F.empty(token.getUid())) {
                 account.setId(Integer.valueOf(token.getUid()));
+
+                // 头像保存本地防止失效
+                if(!F.empty(account.getIcon()))
+                    account.setIcon(DownloadMediaUtil.downloadHeadImage(account.getIcon()));
+
                 shopDeliverAccountService.edit(account);
 
                 j.setSuccess(true);
