@@ -57,15 +57,15 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
         List<DeliverOrder> deliverOrderList = dataGrid.getRows();
         for (DeliverOrder deliverOrder : deliverOrderList) {
             try {
-                updateOrderOwnerShopId(deliverOrder);
+                allocationOrderOwnerShopId(deliverOrder);
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error("分单失败", e);
             }
         }
     }
-
-    private void updateOrderOwnerShopId(DeliverOrder deliverOrder) {
+    //PROPAGATION_REQUIRES_NEW
+    public void allocationOrderOwnerShopId(DeliverOrder deliverOrder) {
         //2、查开通了派单功能，且状态开启配送的门店List
         List<ShopDeliverApply> shopDeliverApplyList = shopDeliverApplyService.getAvailableAndWorkShop();
 
