@@ -11,7 +11,7 @@
 
 		<task:scheduled ref="deliverOrderServiceImpl" method="settleShopPay" cron="0 0/5  * * * ?" />
 
-		<task:scheduled ref="deliverOrderShopServiceImpl" method="checkTimeOutOrder" cron="0/10 * * * * ? "/>
+		<task:scheduled ref="deliverOrderShopServiceImpl" method="checkTimeOutOrder" cron="0/1 * * * * ? "/>
 	</task:scheduled-tasks>
 
 </beans>
