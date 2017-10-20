@@ -4,7 +4,6 @@ import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.mobian.pageModel.*;
-import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.DeliverOrderShop;
 import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbBalanceServiceI;
@@ -77,7 +76,7 @@ public class ApiShopController extends BaseController {
         mbBalanceLog.setUpdatetimeBegin(todayStart);
         mbBalanceLog.setUpdatetimeEnd(todayEnd);
         mbBalanceLog.setShopId(shopId);
-        DataGrid dataGrid = mbBalanceLogService.getDeliveryBalanceLogDataGrid(mbBalanceLog,new PageHelper());
+        DataGrid dataGrid = mbBalanceLogService.updateDeliveryBalanceLogDataGrid(mbBalanceLog,new PageHelper());
         data.put("balanceLogDataGrid", dataGrid);
        //获取有效订单数量
         DeliverOrderShop deliverOrderShop = new DeliverOrderShop();

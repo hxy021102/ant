@@ -131,7 +131,7 @@ public class ApiDeliverBalanceController extends BaseController {
 //        Integer shopId = token.getShopId();
         Integer shopId = 1332;
         mbBalanceLog.setShopId(shopId);
-        dataGrid = mbBalanceLogService.getDeliveryBalanceLogDataGrid(mbBalanceLog, pageHelper);
+        dataGrid = mbBalanceLogService.updateDeliveryBalanceLogDataGrid(mbBalanceLog, pageHelper);
         j.setObj(dataGrid);
         j.setMsg("u know");
         j.setSuccess(true);
