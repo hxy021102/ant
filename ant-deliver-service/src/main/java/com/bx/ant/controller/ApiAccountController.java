@@ -177,6 +177,7 @@ public class ApiAccountController extends BaseController {
 
             // 头像保存本地防止失效
             account.setIcon(DownloadMediaUtil.downloadHeadImage(account.getIcon()));
+            account.setNickName(Util.filterEmoji(account.getNickName()));
 
             shopDeliverAccountService.add(account);
 
@@ -284,8 +285,8 @@ public class ApiAccountController extends BaseController {
                 account.setId(Integer.valueOf(token.getUid()));
 
                 // 头像保存本地防止失效
-                if(!F.empty(account.getIcon()))
-                    account.setIcon(DownloadMediaUtil.downloadHeadImage(account.getIcon()));
+                account.setIcon(DownloadMediaUtil.downloadHeadImage(account.getIcon()));
+                account.setNickName(Util.filterEmoji(account.getNickName()));
 
                 shopDeliverAccountService.edit(account);
 
