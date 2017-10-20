@@ -13,7 +13,12 @@ import com.mobian.util.GeoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -44,6 +49,9 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
     @Autowired
     private DeliverOrderItemServiceI deliverOrderItemService;
 
+    @Autowired
+    private HibernateTransactionManager transactionManager;
+
 
     @Override
     public void orderAllocation() {
@@ -55,10 +63,20 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
         request.setStatusList(new String[]{DeliverOrderServiceI.STATUS_NOT_ALLOCATION, DeliverOrderServiceI.STATUS_SHOP_REFUSE});
         DataGrid dataGrid = deliverOrderService.dataGrid(request, ph);
         List<DeliverOrder> deliverOrderList = dataGrid.getRows();
+
         for (DeliverOrder deliverOrder : deliverOrderList) {
-            try {
+
+            DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+
+            def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);// 事物隔离级别，开启新事务
+
+            TransactionStatus status = transactionManager.getTransaction(def); // 获得事务状态
+
+            try{
                 allocationOrderOwnerShopId(deliverOrder);
-            } catch (Exception e) {
+                transactionManager.commit(status);
+            }catch(Exception e){
+                transactionManager.rollback(status);
                 e.printStackTrace();
                 logger.error("分单失败", e);
             }
