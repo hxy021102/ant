@@ -68,10 +68,10 @@ public class BaseController extends Objectx {
 		String tokenId = request.getParameter(TokenServiceI.TOKEN_FIELD);
 		TokenWrap tokenWrap = tokenService.getToken(tokenId);
 		// TODO 上线去除
-		if(tokenWrap == null) {
-			tokenWrap = new TokenWrap();
-			tokenWrap.setShopId(1332);
-		}
+//		if(tokenWrap == null) {
+//			tokenWrap = new TokenWrap();
+//			tokenWrap.setShopId(1332);
+//		}
 
 		return tokenWrap;
 	}

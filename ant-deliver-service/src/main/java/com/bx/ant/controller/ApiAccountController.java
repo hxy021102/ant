@@ -160,7 +160,7 @@ public class ApiAccountController extends BaseController {
                 j.setMsg("验证码不能为空！");
                 return j;
             }
-            /*String oldCode = (String) redisUtil.getString(Key.build(Namespace.SHOP_LOGIN_VALIDATE_CODE, userName));
+            String oldCode = (String) redisUtil.getString(Key.build(Namespace.SHOP_LOGIN_VALIDATE_CODE, userName));
             if(F.empty(oldCode)) {
                 j.setMsg("验证码已过期！");
                 return j;
@@ -168,7 +168,7 @@ public class ApiAccountController extends BaseController {
             if(!oldCode.equals(vcode)) {
                 j.setMsg("验证码错误！");
                 return j;
-            }*/
+            }
             // 验证手机号码是否已绑定
             if(shopDeliverAccountService.checkUserName(userName)) {
                 j.setMsg("手机号码已绑定！");

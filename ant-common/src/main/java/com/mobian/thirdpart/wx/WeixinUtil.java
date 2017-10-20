@@ -33,8 +33,8 @@ public class WeixinUtil {
 	public final static String TOKEN = "WP007";
 	public final static String KF_ONLINE_TIME = "WP300";
 
-	public final static String WXAPPID = "WA001";
-	public final static String WXAPPSECRET = "WA002";
+	public final static String APPLET_APPID = "WA001";
+	public final static String APPLET_APPSECRET = "WA002";
 
 	private static RedisUtil redisUtil = BeanUtil.getBean(RedisUtil.class);
 
@@ -364,8 +364,8 @@ public class WeixinUtil {
 
 	public static String getJscode2sessionUrl(String code) {
 		String authorize_url = WXAPP_JSCODE2SESSION
-				.replace("APPID", ConvertNameUtil.getString(WXAPPID))
-				.replace("SECRET", ConvertNameUtil.getString(WXAPPSECRET))
+				.replace("APPID", ConvertNameUtil.getString(APPLET_APPID))
+				.replace("SECRET", ConvertNameUtil.getString(APPLET_APPSECRET))
 				.replace("JSCODE", code);
 		return authorize_url;
 	}

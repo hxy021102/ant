@@ -94,7 +94,7 @@ public class ApiDeliverBalanceController extends BaseController {
      */
     @RequestMapping("/viewDeliverBanlanceLogDataGrid")
     @ResponseBody
-    public Json viewDeliverBanlanceLogDataGrid(String date,PageHelper pageHelper) {
+    public Json viewDeliverBanlanceLogDataGrid(String date,PageHelper pageHelper, HttpServletRequest request) {
         Json j = new Json();
         DataGrid dataGrid;
         MbBalanceLog mbBalanceLog = new MbBalanceLog();
@@ -127,9 +127,8 @@ public class ApiDeliverBalanceController extends BaseController {
 
 
         //TODO 测试时设置shop ID值,若真正使用从token中获取
-//        TokenWrap token = getTokenWrap(request);
-//        Integer shopId = token.getShopId();
-        Integer shopId = 1332;
+        TokenWrap token = getTokenWrap(request);
+        Integer shopId = token.getShopId();
         mbBalanceLog.setShopId(shopId);
         dataGrid = mbBalanceLogService.updateDeliveryBalanceLogDataGrid(mbBalanceLog, pageHelper);
         j.setObj(dataGrid);
@@ -199,15 +198,15 @@ public class ApiDeliverBalanceController extends BaseController {
         TokenWrap tokenWrap = getTokenWrap(request);
         Integer shopId = tokenWrap.getShopId();
 
-//        String oldCode = (String) redisUtil.getString(Key.build(Namespace.SHOP_BALANCE_ROLL_VALIDATE_CODE, tokenWrap.getName()));
-//        if(F.empty(oldCode)) {
-//            j.setMsg("验证码已过期！");
-//            return j;
-//        }
-//        if(!oldCode.equals(vcode)) {
-//            j.setMsg("验证码错误！");
-//            return j;
-//        }
+        String oldCode = (String) redisUtil.getString(Key.build(Namespace.SHOP_BALANCE_ROLL_VALIDATE_CODE, tokenWrap.getName()));
+        if(F.empty(oldCode)) {
+            j.setMsg("验证码已过期！");
+            return j;
+        }
+        if(!oldCode.equals(vcode)) {
+            j.setMsg("验证码错误！");
+            return j;
+        }
 
         mbBalanceService.transform(shopId, amount, 10, 1, 0);
         j.setMsg("u know");
@@ -227,15 +226,15 @@ public class ApiDeliverBalanceController extends BaseController {
         TokenWrap tokenWrap = getTokenWrap(request);
         Integer shopId = tokenWrap.getShopId();
 
-//        String oldCode = (String) redisUtil.getString(Key.build(Namespace.SHOP_BALANCE_ROLL_VALIDATE_CODE, tokenWrap.getName()));
-//        if(F.empty(oldCode)) {
-//            j.setMsg("验证码已过期！");
-//            return j;
-//        }
-//        if(!oldCode.equals(vcode)) {
-//            j.setMsg("验证码错误！");
-//            return j;
-//        }
+        String oldCode = (String) redisUtil.getString(Key.build(Namespace.SHOP_BALANCE_ROLL_VALIDATE_CODE, tokenWrap.getName()));
+        if(F.empty(oldCode)) {
+            j.setMsg("验证码已过期！");
+            return j;
+        }
+        if(!oldCode.equals(vcode)) {
+            j.setMsg("验证码错误！");
+            return j;
+        }
 
         mbBalanceService.transform(shopId, amount, 1, 10, 0);
         j.setMsg("u know");
