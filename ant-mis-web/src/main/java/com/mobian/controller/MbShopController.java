@@ -430,11 +430,26 @@ public class MbShopController extends BaseController {
 
     @RequestMapping("/getShopMap")
     @ResponseBody
-    public Json getShopMap(HttpServletRequest request,MbShop mbShop) {
+    public Json getShopMap(PageHelper ph ,MbShop mbShop) {
         Json j = new Json();
-        List<MbShopMap> mbShopMaps=mbShopService.getShopMapData(mbShop);
-        j.setSuccess(true);
-        j.setObj(mbShopMaps);
+        DataGrid dataGrid = dataGrid(mbShop, ph);
+        List<MbShop> mbShopList = dataGrid.getRows();
+        if (CollectionUtils.isNotEmpty(mbShopList)) {
+            List<MbShopMap> mbShopMaps = new ArrayList<MbShopMap>();
+            for (MbShop shop : mbShopList) {
+                MbShopMap mbShopMap = new MbShopMap();
+                BeanUtils.copyProperties(shop, mbShopMap);
+                mbShopMap.setAddress("门店名称：" + shop.getName() + "<br/>联系人：" + shop.getContactPeople() + "<br/>联系电话：" + shop.getContactPhone() + "<br/>地址：" + shop.getAddress());
+                mbShopMap.setLongitude(shop.getLongitude());
+                mbShopMap.setLatitude(shop.getLatitude());
+                mbShopMap.setShopType(shop.getShopType());
+                mbShopMaps.add(mbShopMap);
+            }
+            j.setSuccess(true);
+            j.setObj(mbShopMaps);
+            return j;
+        }
+        j.setSuccess(false);
         return j;
     }
 
