@@ -507,26 +507,28 @@
                         console.log(map)
                         map.centerAndZoom(new BMap.Point(121.56, 31.12), 12.5);
                         map.enableScrollWheelZoom(true);     //开启鼠标滚缩放
-                        var joinIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/directStoreIcon.png', new BMap.Size(30,50));
-                        var directUnitIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/directUnitIcon.jpg', new BMap.Size(30,50));
-                        var directStoreIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/fictitiousIcon.png', new BMap.Size(30,50));
-                        var testIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/joinIcon.jpg', new BMap.Size(30,50));
-                        var fictitiousIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/testIcon.png', new BMap.Size(30,50));
+                       // var joinIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/directStoreIcon.png', new BMap.Size(20,40));
+                        var directUnitIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/directUnitIcon.jpg', new BMap.Size(20,40));
+                        var directStoreIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/directStoreIcon.png', new BMap.Size(20,40));
+                        var testIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/testIcon.png', new BMap.Size(20,40));
                         for (var i = 0; i < mapArray.length; i++) {
                             var storeIcon;
                             switch (mapArray[i][3]){
                                 case "ST01":
-                                    storeIcon = joinIcon;break;
+                                    storeIcon = null;break;
                                 case  "ST02":
                                     storeIcon = directUnitIcon;break;
                                 case "ST03" :
                                     storeIcon = directStoreIcon;break;
                                 case "ST10":
                                     storeIcon = testIcon;break;
-                                case "ST11":
-                                    storeIcon = fictitiousIcon;break;
                             }
-                            var marker = new BMap.Marker(new BMap.Point(mapArray[i][0], mapArray[i][1]),{icon:storeIcon});  // 创建标注
+                            if(storeIcon ==null) {
+                                var marker = new BMap.Marker(new BMap.Point(mapArray[i][0], mapArray[i][1]));  // 创建标注
+                            }else{
+                                var marker = new BMap.Marker(new BMap.Point(mapArray[i][0], mapArray[i][1]), {icon: storeIcon});  // 创建标注
+
+                            }
                             var content = mapArray[i][2];
                             map.addOverlay(marker);               // 将标注添加到地图中
                             addClickHandler(content, marker);

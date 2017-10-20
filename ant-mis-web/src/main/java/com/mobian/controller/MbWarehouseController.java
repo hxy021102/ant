@@ -206,10 +206,13 @@ public class MbWarehouseController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/getWarehouseMap")
-	public String getWarehouseMap(HttpServletRequest request,MbWarehouse mbWarehouse) {
+	@ResponseBody
+	public Json getWarehouseMap(HttpServletRequest request,MbWarehouse mbWarehouse) {
+		Json j = new Json();
 		List<MbWarehouse> mbWarehouses=mbWarehouseService.getWarehouseMapData(mbWarehouse);
-		request.setAttribute("mbWarehouseData",JSON.toJSONString(mbWarehouses));
-		return "/mbwarehouse/mbWarehouseMap";
+		j.setSuccess(true);
+		j.setObj(mbWarehouses);
+		return j;
 	}
 
 }
