@@ -231,7 +231,7 @@ public class ApiAccountController extends BaseController {
                 mbBalanceLog.setUpdatetimeBegin(todayStart);
                 mbBalanceLog.setUpdatetimeEnd(todayEnd);
                 mbBalanceLog.setShopId(shopDeliverApply.getShopId());
-                DataGrid dataGrid = mbBalanceLogService.getDeliveryBalanceLogDataGrid(mbBalanceLog,new PageHelper());
+                DataGrid dataGrid = mbBalanceLogService.updateDeliveryBalanceLogDataGrid(mbBalanceLog,new PageHelper());
                 Integer todayAmount = new Integer(0) ;
                 if (dataGrid.getFooter() != null && CollectionUtils.isNotEmpty(dataGrid.getFooter())) {
                     MbBalanceLog  balanceLog =(MbBalanceLog) dataGrid.getFooter().get(0);

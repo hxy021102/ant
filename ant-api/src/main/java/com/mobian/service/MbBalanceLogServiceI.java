@@ -75,5 +75,5 @@ public interface MbBalanceLogServiceI {
 
     List<MbBalanceLog> list(MbBalanceLog mbBalanceLog);
 
-    DataGrid getDeliveryBalanceLogDataGrid(MbBalanceLog mbBalanceLog, PageHelper pageHelper);
+    DataGrid updateDeliveryBalanceLogDataGrid(MbBalanceLog mbBalanceLog, PageHelper pageHelper);
 }
