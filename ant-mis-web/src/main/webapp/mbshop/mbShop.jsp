@@ -487,7 +487,7 @@
                     function renderMap(mapData) {
                         var mapArray = new Array(mapData.length);
                         for (var k = 0; k < mapArray.length; k++) {
-                            mapArray[k] = new Array(3);
+                            mapArray[k] = new Array(4);
                         }
                         for (var i = 0; i < mapArray.length; i++) {
                             for (var j = 0; j < mapArray[i].length; j++) {
@@ -507,13 +507,26 @@
                         console.log(map)
                         map.centerAndZoom(new BMap.Point(121.56, 31.12), 12.5);
                         map.enableScrollWheelZoom(true);     //开启鼠标滚缩放
-                        var joinIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/map1.jpg', new BMap.Size(30,50));
-                        var directUnitIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/map1.jpg', new BMap.Size(30,50));
-                        var directStoreIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/map1.jpg', new BMap.Size(30,50));
-                        var testIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/map1.jpg', new BMap.Size(30,50));
-                        var fictitiousIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/map1.jpg', new BMap.Size(30,50));
+                        var joinIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/directStoreIcon.png', new BMap.Size(30,50));
+                        var directUnitIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/directUnitIcon.jpg', new BMap.Size(30,50));
+                        var directStoreIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/fictitiousIcon.png', new BMap.Size(30,50));
+                        var testIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/joinIcon.jpg', new BMap.Size(30,50));
+                        var fictitiousIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/testIcon.png', new BMap.Size(30,50));
                         for (var i = 0; i < mapArray.length; i++) {
-                            var marker = new BMap.Marker(new BMap.Point(mapArray[i][0], mapArray[i][1]),{icon:myIcon});  // 创建标注
+                            var storeIcon;
+                            switch (mapArray[i][3]){
+                                case "ST01":
+                                    storeIcon = joinIcon;break;
+                                case  "ST02":
+                                    storeIcon = directUnitIcon;break;
+                                case "ST03" :
+                                    storeIcon = directStoreIcon;break;
+                                case "ST10":
+                                    storeIcon = testIcon;break;
+                                case "ST11":
+                                    storeIcon = fictitiousIcon;break;
+                            }
+                            var marker = new BMap.Marker(new BMap.Point(mapArray[i][0], mapArray[i][1]),{icon:storeIcon});  // 创建标注
                             var content = mapArray[i][2];
                             map.addOverlay(marker);               // 将标注添加到地图中
                             addClickHandler(content, marker);
