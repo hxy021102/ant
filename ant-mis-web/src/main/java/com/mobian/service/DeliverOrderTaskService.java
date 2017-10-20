@@ -13,7 +13,7 @@ public class DeliverOrderTaskService {
     @Resource
     private DeliverOrderAllocationServiceI deliverOrderAllocationService;
 
-    public void updateOrderOwnerShopId(){
-        deliverOrderAllocationService.updateOrderOwnerShopId();
+    public void orderAllocation(){
+        deliverOrderAllocationService.orderAllocation();
     }
 }

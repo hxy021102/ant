@@ -8,6 +8,6 @@ public interface DeliverOrderAllocationServiceI {
     /**
      * 分单函数
      */
-    void updateOrderOwnerShopId();
+    void orderAllocation();
 
 }

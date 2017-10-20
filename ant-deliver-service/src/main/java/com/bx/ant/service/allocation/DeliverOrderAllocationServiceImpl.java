@@ -46,11 +46,9 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
 
 
     @Override
-    public void updateOrderOwnerShopId() {
-        //1、查开通了派单功能，且状态开启配送的门店List
-        List<ShopDeliverApply> shopDeliverApplyList = shopDeliverApplyService.getAvailableAndWorkShop();
+    public void orderAllocation() {
 
-        //2、获取待分配的订单
+        //1、获取待分配的订单
         DeliverOrderExt request = new DeliverOrderExt();
         PageHelper ph = new PageHelper();
         ph.setHiddenTotal(true);
@@ -59,57 +57,65 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
         List<DeliverOrder> deliverOrderList = dataGrid.getRows();
         for (DeliverOrder deliverOrder : deliverOrderList) {
             try {
-                //3、计算待分配订单的数字地址
-                if ((deliverOrder.getLongitude() == null || deliverOrder.getLatitude() == null)
-                        && !F.empty(deliverOrder.getDeliveryAddress())) {
-                    BigDecimal[] point = GeoUtil.getPosition(deliverOrder.getDeliveryAddress());
-                    if(point != null) {
-                        deliverOrder.setLongitude(point[0]);
-                        deliverOrder.setLatitude(point[1]);
-                    }
-
-                }
-                //4、计算最近距离点
-                MbShop minMbShop = null;
-                double minDistance = 0;
-                //拒接的状态下，查询拒接过的门店
-                List<Integer> excludeShop = new ArrayList<Integer>();
-                if (DeliverOrderServiceI.STATUS_SHOP_REFUSE.equals(deliverOrder.getStatus())) {
-                    DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
-                    deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_REFUSED);
-                    List<DeliverOrderShop> deliverOrderShopList = deliverOrderShopService.query(deliverOrderShop);
-                    for (DeliverOrderShop orderShop : deliverOrderShopList) {
-                        excludeShop.add(orderShop.getShopId());
-                    }
-                }
-                for (ShopDeliverApply shopDeliverApply : shopDeliverApplyList) {
-                    MbShop mbShop = shopDeliverApply.getMbShop();
-                    if (excludeShop.contains(mbShop.getId())) continue;
-                    double distance = GeoUtil.getDistance(deliverOrder.getLongitude().doubleValue(), deliverOrder.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
-                    if (distance < minDistance || minDistance == 0) {
-                        minMbShop = mbShop;
-                        minDistance = distance;
-                    }
-                }
-                //5、计算分单价格
-                if (minMbShop != null && !F.empty(minMbShop.getId())) {
-                    DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
-                    deliverOrderShop.setAmount(deliverOrder.getAmount());
-                    deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
-                    deliverOrderShop.setShopId(minMbShop.getId());
-                    deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_AUDITING);
-                    deliverOrderShop.setDistance(new BigDecimal(minDistance));
-                    deliverOrderShopService.add(deliverOrderShop);
-                    List<DeliverOrderItem> deliverOrderItemList = deliverOrderItemService.getDeliverOrderItemList(deliverOrder.getId());
-                    deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItemList, deliverOrderShop);
-                    deliverOrder.setShopId(minMbShop.getId());
-                    deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_ALLOCATION);
-                    deliverOrderService.edit(deliverOrder);
-                }
+                updateOrderOwnerShopId(deliverOrder);
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error("分单失败", e);
             }
         }
+    }
+
+    private void updateOrderOwnerShopId(DeliverOrder deliverOrder) {
+        //2、查开通了派单功能，且状态开启配送的门店List
+        List<ShopDeliverApply> shopDeliverApplyList = shopDeliverApplyService.getAvailableAndWorkShop();
+
+        //3、计算待分配订单的数字地址
+        if ((deliverOrder.getLongitude() == null || deliverOrder.getLatitude() == null)
+                && !F.empty(deliverOrder.getDeliveryAddress())) {
+            BigDecimal[] point = GeoUtil.getPosition(deliverOrder.getDeliveryAddress());
+            if(point != null) {
+                deliverOrder.setLongitude(point[0]);
+                deliverOrder.setLatitude(point[1]);
+            }
+
+        }
+        //4、计算最近距离点
+        MbShop minMbShop = null;
+        double minDistance = 0;
+        //拒接的状态下，查询拒接过的门店
+        List<Integer> excludeShop = new ArrayList<Integer>();
+        if (DeliverOrderServiceI.STATUS_SHOP_REFUSE.equals(deliverOrder.getStatus())) {
+            DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+            deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_REFUSED);
+            List<DeliverOrderShop> deliverOrderShopList = deliverOrderShopService.query(deliverOrderShop);
+            for (DeliverOrderShop orderShop : deliverOrderShopList) {
+                excludeShop.add(orderShop.getShopId());
+            }
+        }
+        for (ShopDeliverApply shopDeliverApply : shopDeliverApplyList) {
+            MbShop mbShop = shopDeliverApply.getMbShop();
+            if (excludeShop.contains(mbShop.getId())) continue;
+            double distance = GeoUtil.getDistance(deliverOrder.getLongitude().doubleValue(), deliverOrder.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
+            if (distance < minDistance || minDistance == 0) {
+                minMbShop = mbShop;
+                minDistance = distance;
+            }
+        }
+        //5、计算分单价格
+        if (minMbShop != null && !F.empty(minMbShop.getId())) {
+            DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+            deliverOrderShop.setAmount(deliverOrder.getAmount());
+            deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
+            deliverOrderShop.setShopId(minMbShop.getId());
+            deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_AUDITING);
+            deliverOrderShop.setDistance(new BigDecimal(minDistance));
+            deliverOrderShopService.add(deliverOrderShop);
+            List<DeliverOrderItem> deliverOrderItemList = deliverOrderItemService.getDeliverOrderItemList(deliverOrder.getId());
+            deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItemList, deliverOrderShop);
+            deliverOrder.setShopId(minMbShop.getId());
+            deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_ALLOCATION);
+            deliverOrderService.edit(deliverOrder);
+        }
+
     }
 }
