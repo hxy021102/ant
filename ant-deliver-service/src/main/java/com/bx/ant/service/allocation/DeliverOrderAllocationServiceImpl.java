@@ -92,7 +92,7 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                     }
                 }
                 //5、计算分单价格
-                if (minMbShop != null) {
+                if (minMbShop != null && !F.empty(minMbShop.getId())) {
                     DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
                     deliverOrderShop.setAmount(deliverOrder.getAmount());
                     deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
