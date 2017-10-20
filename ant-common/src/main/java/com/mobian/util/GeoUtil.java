@@ -51,7 +51,7 @@ public class GeoUtil {
     }*/
     public static BigDecimal[] getPosition(String address) {
         address = address.replaceAll(" ", "");
-        String requestUrl = "http://api.map.baidu.com/geocoder/v2/?output=json&address=" + address + "&ak=yDOmoXl5HIFt6KZe3BMeL4NRHBGLmCHe";
+        String requestUrl = "http://api.map.baidu.com/geocoder/v2/?output=json&address=" + address + "&ak="+ConvertNameUtil.getString("AK001");
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.httpRequest(requestUrl, "GET", null));
         if (jsonObject != null) {
             if (jsonObject.getInteger("status") == 0) {
