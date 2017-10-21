@@ -32,7 +32,7 @@ public class MbShopDaoImpl extends BaseDaoImpl<TmbShop> implements MbShopDaoI {
         } else {
             shop = super.get(TmbShop.class, id);
             if (shop != null) {
-                redisUtil.set(key, JSONObject.toJSONString(shop), 7* 24 * 60 * 60, TimeUnit.SECONDS);
+                redisUtil.set(key, JSONObject.toJSONString(shop), 10 * 60, TimeUnit.SECONDS);
             }
         }
         return shop;
