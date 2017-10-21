@@ -7,10 +7,7 @@ import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderShopPayServiceI;
 import com.bx.ant.service.ShopOrderBillServiceI;
 import com.mobian.absx.F;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.MbShop;
-import com.mobian.pageModel.PageHelper;
-import com.mobian.pageModel.User;
+import com.mobian.pageModel.*;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.service.UserServiceI;
 import com.mobian.util.MyBeanUtils;
@@ -167,24 +164,39 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 	}
 
 	@Override
-	public void addShopOrderBillAndShopPay(ShopOrderBill shopOrderBill) {
-		shopOrderBill.setStatus("BAS01");
-		Long shopOrderBillId=add(shopOrderBill);
-		DeliverOrderQuery deliverOrderQuery = new DeliverOrderQuery();
-		deliverOrderQuery.setStartDate(shopOrderBill.getStartDate());
-		deliverOrderQuery.setEndDate(shopOrderBill.getEndDate());
-		deliverOrderQuery.setShopId(shopOrderBill.getShopId());
-		deliverOrderQuery.setStatus("DOS30");
-		List<DeliverOrder> deliverOrders = deliverOrderService.query(deliverOrderQuery);
-		if (CollectionUtils.isNotEmpty(deliverOrders)) {
-			for (DeliverOrder deliverOrder : deliverOrders) {
-				DeliverOrderShopPay orderShopPay = new DeliverOrderShopPay();
-				orderShopPay.setShopId(shopOrderBill.getShopId());
-				orderShopPay.setDeliverOrderId(deliverOrder.getId());
-				orderShopPay.setStatus("SPS02");
-				orderShopPay.setShopOrderBillId(shopOrderBillId);
-				deliverOrderShopPayService.add(orderShopPay);
+	public Json addShopOrderBillAndShopPay(ShopOrderBillQuery shopOrderBillQuery) {
+		ShopOrderBill shopOrderBill = new ShopOrderBill();
+		DeliverOrderShopPayQuery shopPayQuery = new DeliverOrderShopPayQuery();
+		shopPayQuery.setDeliverOrderIds(shopOrderBillQuery.getDeliverOrderIds());
+		List<DeliverOrderShopPay> orderShopPays = deliverOrderShopPayService.query(shopPayQuery);
+		Json j = new Json();
+		if (CollectionUtils.isEmpty(orderShopPays)) {
+			BeanUtils.copyProperties(shopOrderBillQuery, shopOrderBill);
+			shopOrderBill.setStatus("BAS01");
+			Long shopOrderBillId = add(shopOrderBill);
+			DeliverOrderQuery deliverOrderQuery = new DeliverOrderQuery();
+			deliverOrderQuery.setStartDate(shopOrderBill.getStartDate());
+			deliverOrderQuery.setEndDate(shopOrderBill.getEndDate());
+			deliverOrderQuery.setShopId(shopOrderBill.getShopId());
+			deliverOrderQuery.setStatus("DOS30");
+			List<DeliverOrder> deliverOrders = shopOrderBillQuery.getDeliverOrderList();
+			if (CollectionUtils.isNotEmpty(deliverOrders)) {
+				for (DeliverOrder deliverOrder : deliverOrders) {
+					DeliverOrderShopPay orderShopPay = new DeliverOrderShopPay();
+					orderShopPay.setShopId(shopOrderBill.getShopId());
+					orderShopPay.setDeliverOrderId(deliverOrder.getId());
+					orderShopPay.setStatus("SPS02");
+					orderShopPay.setShopOrderBillId(shopOrderBillId);
+					deliverOrderShopPayService.add(orderShopPay);
+				}
 			}
+			j.setSuccess(true);
+			j.setMsg("创建门店账单成功！");
+			return j;
+		} else {
+			j.setSuccess(false);
+			j.setMsg("创建失败，有订单已经被创建！");
+			return j;
 		}
 	}
 
