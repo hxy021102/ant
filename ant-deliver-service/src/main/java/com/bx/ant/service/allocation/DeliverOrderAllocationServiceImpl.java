@@ -141,7 +141,7 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                 MNSTemplate template = new MNSTemplate();
                 template.setTemplateCode("SMS_105685061");
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("orderId", deliverOrder.getId().toString());
+                params.put("orderId", "(" + deliverOrder.getId() + ")");
                 params.put("address", deliverOrder.getDeliveryAddress());
                 params.put("time", ConvertNameUtil.getString("DSV100", "10") + "分钟");
                 template.setParams(params);
