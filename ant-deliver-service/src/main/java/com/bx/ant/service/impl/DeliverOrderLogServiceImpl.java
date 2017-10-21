@@ -126,10 +126,12 @@ public class DeliverOrderLogServiceImpl extends BaseServiceImpl<DeliverOrderLog>
 			for (DeliverOrderLog orderLog : deliverOrderLogs) {
 				DeliverOrderLogQuery orderLogQuery = new DeliverOrderLogQuery();
 				BeanUtils.copyProperties(orderLog, orderLogQuery);
-				orderLogQuery.setLogTypeName(orderLog.getLogType());
-				User user = userService.getFromCache(orderLog.getLoginId());
-				if (user != null) {
-					orderLogQuery.setLoginName(user.getName());
+				if (!F.empty(orderLog.getLoginId())) {
+					orderLogQuery.setLogTypeName(orderLog.getLogType());
+					User user = userService.getFromCache(orderLog.getLoginId());
+					if (user != null) {
+						orderLogQuery.setLoginName(user.getName());
+					}
 				}
 				deliverOrderLogQueries.add(orderLogQuery);
 			}

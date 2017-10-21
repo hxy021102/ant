@@ -133,7 +133,7 @@
             var delIndex = delRows.length - 1;
             while (delIndex > 0){
                 $('#itemListTable').datagrid('cancelEdit',delIndex)
-                    .datagrid('deleteRow', delIndex);
+                   .datagrid('deleteRow', delIndex);
                 delIndex--;
             }
         }
@@ -233,7 +233,8 @@
                     </td>
                     <th>要求配送时间</th>
                     <td colspan="6">
-                        <input type="text" class="span2 easyui-validatebox" data-options="required:false" onclick="WdatePicker({dateFmt:'<%=Constants.DATE_FORMAT_FOR_ENTITY%>',minDate:'#F{$dp.$D(\'endDate\',{M:-1});}',maxDate:'#F{$dp.$D(\'endDate\',{d:-1});}'})" id="deliveryRequireTime" name="deliveryRequireTime"/>
+                        <%--<input type="text" class="span2 easyui-validatebox" data-options="required:false" onclick="WdatePicker({dateFmt:'<%=TmbItem.FORMAT_ADDTIME%>',minDate:'#F{$dp.$D(\'endDate\',{M:-1});}',maxDate:'#F{$dp.$D(\'endDate\',{d:-1});}'})" id="deliveryRequireTime" name="deliveryRequireTime"/>--%>
+                        <input type="text" class="span2"data-options="required:true"   onclick="WdatePicker({dateFmt:'<%=TmbItem.FORMAT_ADDTIME%>',minDate:'%y-%M-%d'})" id="deliveryRequireTime" name="deliveryRequireTime"/>
                     </td>
                 </tr>
                  <tr>

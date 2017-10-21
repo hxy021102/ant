@@ -9,6 +9,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 
 import com.bx.ant.pageModel.*;
@@ -27,6 +28,7 @@ import com.mobian.pageModel.*;
 import com.bx.ant.service.DeliverOrderServiceI;
 
 
+import com.mobian.util.ConfigUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.mobian.util.BeanUtil;
@@ -160,9 +162,11 @@ public class DeliverOrderController extends BaseController {
 	 */
 	@RequestMapping("/add")
 	@ResponseBody
-	public Json add(DeliverOrder deliverOrder,String itemListStr) {
+	public Json add(DeliverOrder deliverOrder, String itemListStr, HttpSession  session) {
 		Json j = new Json();
 		if (!"[{\"status\":\"P\"}]".equals(itemListStr)) {
+			SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName()) ;
+			String loginId = sessionInfo.getId();
 			deliverOrderService.addAndItems(deliverOrder, itemListStr);
 			j.setSuccess(true);
 			j.setMsg("添加成功！");
