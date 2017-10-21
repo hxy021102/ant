@@ -137,7 +137,7 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
             deliverOrderService.edit(deliverOrder);
 
             // 发送短信通知
-            if(!F.empty(minMbShop.getContactPeople()) && Integer.valueOf(ConvertNameUtil.getString("DSV100", "1")) == 1) {
+            if(!F.empty(minMbShop.getContactPeople()) && Integer.valueOf(ConvertNameUtil.getString("DSV101", "1")) == 1) {
                 MNSTemplate template = new MNSTemplate();
                 template.setTemplateCode("SMS_105685061");
                 Map<String, String> params = new HashMap<String, String>();
