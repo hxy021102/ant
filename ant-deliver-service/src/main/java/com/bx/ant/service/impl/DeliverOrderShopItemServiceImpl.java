@@ -144,7 +144,7 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 			for (DeliverOrderItem d : deliverOrderItems) {
 				ShopItem shopItem = shopItemService.getByShopIdAndItemId(deliverOrderShop.getShopId(), d.getItemId());
 				if (shopItem == null) throw new ServiceException("无法找到门店对应商品");
-
+				if (d.getQuantity() > shopItem.getQuantity()) throw new ServiceException("门店对应商品库存不足");
 
 				DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
 				deliverOrderShopItem.setDeliverOrderId(d.getDeliverOrderId());
