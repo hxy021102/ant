@@ -104,7 +104,7 @@
 					</td>
 					<th>总金额</th>
 					<td>
-						<font class="money_input">${supplierOrderBill.amount}</font>
+						<font  class="money_input">${supplierOrderBill.amount}</font>
 					</td>							
 				</tr>		
 				<tr>	

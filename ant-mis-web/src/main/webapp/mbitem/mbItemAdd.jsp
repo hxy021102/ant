@@ -176,7 +176,7 @@
 					</td>
 				</tr>
 
-			</table>		
+			</table>
 		</form>
 	</div>
 </div>

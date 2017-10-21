@@ -214,23 +214,25 @@
 					</td>							
 				</tr>
 				<tr>
-					<th style="width: 60px">登陆名</th>
-				    <td>${loginName}</td>
-					<th>营业执照</th>
+					<th style="width: 60px">地址</th>
 					<td>
-						${supplier.charterUrl}
+						${supplier.address}
+					</td>
+					<th>营业执照</th>
+					<td rowspan="2">
+						<img src="${supplier.charterUrl}" width="80px" height="80px"/>
 					</td>
 				</tr>
 				<tr>
-				<th style="width: 60px">地址</th>
-				<td>
-					${supplier.address}
-				</td>
+					<th>操作人</th>
+					<td>${supplier.loginName}</td>
+				</tr>
+			<tr>
 				<th>备注</th>
 				<td>
-					${supplier.remark}
+				${supplier.remark}
 				</td>
-				</tr>
+			</tr>
 		</table>
 	</div>
 	<div data-options="region:'center',border:false">

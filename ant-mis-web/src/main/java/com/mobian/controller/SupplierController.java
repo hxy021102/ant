@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.UUID;
 
 
 import javax.annotation.Resource;
@@ -17,13 +17,17 @@ import com.mobian.pageModel.*;
 import com.bx.ant.service.SupplierServiceI;
 
 import com.bx.ant.pageModel.Supplier;
+import com.mobian.service.UserServiceI;
 import com.mobian.util.ConfigUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Supplier管理控制器
@@ -34,8 +38,16 @@ import com.alibaba.fastjson.JSON;
 @Controller
 @RequestMapping("/supplierController")
 public class SupplierController extends BaseController {
+	public static final String SUPPLIER = "supplier";
+	//图标最大上传数据尺寸200kB
+	public static final Integer ICON_FILE_MAX_SIZE = 204800;
+	//图标格式要求
+	public String[] ICON_TYPE = {"png","PNG","jgp","JPG","jpeg","JPEG","gif","GIF"};
+
     @Resource
 	private SupplierServiceI supplierService;
+    @Autowired
+	private UserServiceI userService;
 
 
 	/**
@@ -102,14 +114,62 @@ public class SupplierController extends BaseController {
 	 */
 	@RequestMapping("/add")
 	@ResponseBody
-	public Json add(Supplier supplier) {
-		Json j = new Json();		
-		supplierService.add(supplier);
+	public Json add(Supplier supplier,@RequestParam MultipartFile equipIconFile) {
+		Json j = new Json();
+		supplier.setAppKey(UUID.randomUUID().toString());
+		supplier.setAppSecret(UUID.randomUUID().toString());
+		boolean checkResult = checkIconImage(equipIconFile,j);
+		if (checkResult){
+			supplier.setCharterUrl(uploadFile(SUPPLIER, equipIconFile));
+			supplierService.add(supplier);
+		}
 		j.setSuccess(true);
 		j.setMsg("添加成功！");		
 		return j;
 	}
-
+	/**
+	 * 对上传的图片格式进行验证,是否为ICON_TYPE数组内的格式之一
+	 * 对上传的图片的大小进行验证,是否为小于ICON_FILE_MAX_SIZE
+	 * @param equipIconFile
+	 * @param j
+	 * @return boolean
+	 */
+	private boolean checkIconImage(MultipartFile equipIconFile, Json j){
+		boolean checkResult = false;
+		String iconType ;
+		String iconTypes = "";
+		int i = 0 ;
+		if(equipIconFile == null) return checkResult;
+		if(equipIconFile.getSize()==0){
+			j.setSuccess(true);
+			j.setMsg("图片未更改！");
+			checkResult = true ;
+			return checkResult;
+		}
+		else if(equipIconFile.getSize()>=ICON_FILE_MAX_SIZE){
+			j.setSuccess(false);
+			j.setMsg("基本信息栏-上传图片大小不能超过" + (ICON_FILE_MAX_SIZE/1024) +"kB");
+		}
+		else {
+			do{
+				iconType = "image/" + ICON_TYPE[i];
+				if(iconType.equals(equipIconFile.getContentType())){
+					j.setSuccess(true);
+					j.setMsg("编辑成功！");
+					checkResult = true ;
+					break;
+				}else{
+					iconTypes += ICON_TYPE[i]+",";
+				}
+				i++;
+			}while (i<ICON_TYPE.length);
+			if(i==ICON_TYPE.length) {
+				j.setSuccess(false);
+				j.setMsg("基本信息栏-上传图片格式要求:" + iconTypes.substring(0,iconTypes.length()-1));
+			}
+		}
+		return checkResult;
+	}
 	/**
 	 * 跳转到Supplier查看页面
 	 * 
@@ -118,6 +178,8 @@ public class SupplierController extends BaseController {
 	@RequestMapping("/view")
 	public String view(HttpServletRequest request, Integer id) {
 		Supplier supplier = supplierService.get(id);
+		User user = userService.get(supplier.getLoginId());
+		supplier.setLoginName(user.getNickname());
 		request.setAttribute("supplier", supplier);
 		return "/supplier/supplierView";
 	}

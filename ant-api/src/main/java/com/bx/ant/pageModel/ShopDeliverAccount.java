@@ -21,6 +21,7 @@ public class ShopDeliverAccount implements java.io.Serializable {
 	private String refType;
 
 	private String keyword;
+	private Integer shopId;
 
 	
 
@@ -119,5 +120,13 @@ public class ShopDeliverAccount implements java.io.Serializable {
 
 	public void setKeyword(String keyword) {
 		this.keyword = keyword;
+	}
+
+	public Integer getShopId() {
+		return shopId;
+	}
+
+	public void setShopId(Integer shopId) {
+		this.shopId = shopId;
 	}
 }

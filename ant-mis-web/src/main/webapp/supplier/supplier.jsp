@@ -43,22 +43,20 @@
 			sortOrder : 'desc',
 			checkOnSelect : false,
 			selectOnCheck : false,
-			nowrap : false,
+			nowrap : true,
 			striped : true,
 			rownumbers : true,
 			singleSelect : true,
 			columns : [ [ {
 				field : 'id',
 				title : '编号',
-				width : 150,
-				hidden : true
-				}, {
+				width : 50,
+                formatter : function(value,row,index) {
+                    return  '<a onclick="viewFun('+ row.id +')">'+ row.id + '</a>';
+                }}, {
 				field : 'appKey',
 				title : 'appKey',
-				width : 50,
-				formatter : function(value,row,index) {
-				    return  '<a onclick="viewFun(' + row.id + ','+row.appKey+')">'+ row.appKey + '</a>';
-				}
+				width : 50
 				}, {
 				field : 'name',
 				title : '接入方名称',
@@ -173,14 +171,14 @@
         });
     }
 
-	function viewFun(id,appkey) {
+	function viewFun(id) {
         if (id == undefined) {
             var rows = dataGrid.datagrid('getSelections');
             id = rows.id;
         }
         var href = '${pageContext.request.contextPath}/supplierController/view?id=' + id;
         parent.$("#index_tabs").tabs('add', {
-            title : '接入方详情-appKey：' + appkey,
+            title : '接入方详情：' + id,
             content : '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
             closable : true
         });

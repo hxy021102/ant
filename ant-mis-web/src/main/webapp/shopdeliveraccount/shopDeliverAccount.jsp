@@ -34,7 +34,6 @@
 			idField : 'id',
 			pageSize : 10,
 			pageList : [ 10, 20, 30, 40, 50 ],
-			sortName : 'id',
 			sortOrder : 'desc',
 			checkOnSelect : false,
 			selectOnCheck : false,
@@ -58,6 +57,13 @@
 				title : '昵称',
 				width : 50		
 				}, {
+                field : 'shopId',
+                title : '所绑门店',
+                width : 50 ,
+				formatter : function (value,row,index) {
+					return '<a onclick="viewShop('+ value +')" >' + row.shopId + '</a>';
+                }
+            	}, {
 				field : 'sex',
 				title : '性别',
 				width : 50	,
@@ -144,7 +150,14 @@
             closable : true
         });
 	}
-
+    function viewShop(id) {
+        var href = '${pageContext.request.contextPath}/mbShopController/view?id=' + id;
+        parent.$("#index_tabs").tabs('add', {
+            title: '门店详情-' + id,
+            content: '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            closable: true
+        });
+    }
 	function addFun() {
 		parent.$.modalDialog({
 			title : '添加数据',

@@ -9,7 +9,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bx.ant.pageModel.ShopDeliverApply;
 import com.bx.ant.service.ShopDeliverAccountServiceI;
+import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.*;
 import com.mobian.pageModel.Colum;
@@ -38,6 +40,8 @@ import com.alibaba.fastjson.JSON;
 public class ShopDeliverAccountController extends BaseController {
 	@Resource
     private ShopDeliverAccountServiceI shopDeliverAccountService;
+	@Resource
+	private ShopDeliverApplyServiceI shopDeliverApplyService;
 
 
 	/**
@@ -59,7 +63,18 @@ public class ShopDeliverAccountController extends BaseController {
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(ShopDeliverAccount shopDeliverAccount, PageHelper ph) {
-		return shopDeliverAccountService.dataGrid(shopDeliverAccount, ph);
+		DataGrid g = shopDeliverAccountService.dataGrid(shopDeliverAccount, ph);
+		List<ShopDeliverAccount> l = new ArrayList<ShopDeliverAccount>();
+		List<ShopDeliverAccount> list =	g.getRows();
+		for(ShopDeliverAccount s : list) {
+		ShopDeliverApply shopDeliverApply =	shopDeliverApplyService.getByAccountId(s.getId());
+		s.setShopId(shopDeliverApply.getShopId());
+		l.add(s);
+		}
+		DataGrid dg = new DataGrid();
+		dg.setRows(l);
+		dg.setTotal(g.getTotal());
+		return dg;
 	}
 	/**
 	 * 获取ShopDeliverAccount数据表格excel
@@ -116,6 +131,8 @@ public class ShopDeliverAccountController extends BaseController {
 	@RequestMapping("/view")
 	public String view(HttpServletRequest request, Integer id) {
 		ShopDeliverAccount shopDeliverAccount = shopDeliverAccountService.get(id);
+		ShopDeliverApply shopDeliverApply = shopDeliverApplyService.getByAccountId(shopDeliverAccount.getId());
+		shopDeliverAccount.setShopId(shopDeliverApply.getShopId());
 		request.setAttribute("shopDeliverAccount", shopDeliverAccount);
 		return "/shopdeliveraccount/shopDeliverAccountView";
 	}

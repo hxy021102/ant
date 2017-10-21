@@ -8,6 +8,14 @@
 	$(function() {
 		parent.$.messager.progress('close');
 	});
+    function viewShop(id) {
+        var href = '${pageContext.request.contextPath}/mbShopController/view?id=' + id;
+        parent.$("#index_tabs").tabs('add', {
+            title: '门店详情-' + id,
+            content: '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            closable: true
+        });
+    }
 </script>
 </head>
 <body>
@@ -28,7 +36,7 @@
 						<c:if test="${shopDeliverAccount.sex == 1}">
 							男
 						</c:if>
-						<c:if test="${shopDeliverAccount.sex == 2}">
+						<c:if test="${shopDeliverAccount.sex == 0}">
 							女
 						</c:if>
 
@@ -44,8 +52,12 @@
 						${shopDeliverAccount.refId}							
 					</td>
 					<th>第三方类型：</th>
-					<td colspan="4">
+					<td>
 						${shopDeliverAccount.refType}							
+					</td>
+					<th>所绑门店：</th>
+					<td colspan="2">
+						<a href="javascript:void(0);" onclick="viewShop(${shopDeliverAccount.shopId})" class="money_input">${shopDeliverAccount.shopId}</a>
 					</td>
 				</tr>		
 		</table>
