@@ -93,7 +93,7 @@
 						str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/cancel.png');
 					}
                     if ($.canAddOrder) {
-                        str += $.formatString('<img onclick="addOrderFun(\'{0}\');" src="{1}" title="下单"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/pencil.png');
+                        str += $.formatString('<img onclick="addOrderFun(\'{0}\');" src="{1}" title="下单"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/book_previous.png');
                     }
 					return str;
 				}

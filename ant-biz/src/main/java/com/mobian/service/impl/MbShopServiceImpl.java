@@ -417,6 +417,7 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
 
     @Override
     public void edit(MbShop mbShop) {
+        mbShopDao.clearShopCache(mbShop);
         TmbShop tmbShop = mbShopDao.get(TmbShop.class, mbShop.getId());
         if (tmbShop != null) {
             MyBeanUtils.copyProperties(mbShop, tmbShop, new String[]{"id", "addtime", "isdeleted", "updatetime"}, true);
@@ -467,6 +468,11 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
 
     @Override
     public void delete(Integer id) {
+
+        MbShop shop = new MbShop();
+        shop.setId(id);
+        mbShopDao.clearShopCache(shop);
+
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("id", id);
         mbShopDao.executeHql("update TmbShop t set t.isdeleted = 1 where t.id = :id", params);
