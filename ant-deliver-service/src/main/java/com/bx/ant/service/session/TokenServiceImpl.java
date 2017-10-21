@@ -53,10 +53,9 @@ public class TokenServiceImpl implements TokenServiceI {
 
     @Override
     public TokenWrap getTokenByShopId(Integer shopId) {
-        String key = Key.build(Namespace.SHOP_USER_SHOPID_TOKEN, shopId + "");
-        String json = (String) redisUtil.get(key);
-        if (F.empty(json)) return null;
-        return JSONObject.parseObject(json, TokenWrap.class);
+        String tokenId = (String) redisUtil.get(Key.build(Namespace.SHOP_USER_SHOPID_TOKEN, shopId + ""));
+        TokenWrap tokenWrap = getToken(tokenId);
+        return tokenWrap;
     }
 
     @Override
