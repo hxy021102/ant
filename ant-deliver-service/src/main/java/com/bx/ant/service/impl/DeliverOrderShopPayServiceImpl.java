@@ -87,6 +87,13 @@ public class DeliverOrderShopPayServiceImpl extends BaseServiceImpl<DeliverOrder
 				whereHql += " and t.shopOrderBillId = :shopOrderBillId";
 				params.put("shopOrderBillId", deliverOrderShopPay.getShopOrderBillId());
 			}
+			if(deliverOrderShopPay instanceof  DeliverOrderShopPayQuery) {
+				DeliverOrderShopPayQuery deliverOrderShopPayQuery=(DeliverOrderShopPayQuery)deliverOrderShopPay;
+				if (deliverOrderShopPayQuery.getDeliverOrderIds() != null && deliverOrderShopPayQuery.getDeliverOrderIds().length > 0) {
+					whereHql += " and t.deliverOrderId <= :deliverOrderIds ";
+					params.put("deliverOrderIds",deliverOrderShopPayQuery.getDeliverOrderIds());
+				}
+			}
 		}	
 		return whereHql;
 	}

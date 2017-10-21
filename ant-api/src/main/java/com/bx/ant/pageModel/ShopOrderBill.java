@@ -117,4 +117,5 @@ public class ShopOrderBill implements java.io.Serializable {
 	public void setReviewerId(String reviewerId) {
 		this.reviewerId = reviewerId;
 	}
+
 }

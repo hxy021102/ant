@@ -1,15 +1,17 @@
 package com.mobian.controller;
 
 import com.bx.ant.pageModel.DeliverOrderQuery;
-import com.bx.ant.pageModel.ShopDeliverApply;
 import com.bx.ant.pageModel.ShopOrderBill;
+import com.bx.ant.pageModel.ShopOrderBillQuery;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.ShopOrderBillServiceI;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
@@ -57,34 +59,14 @@ public class DeliverShopArtificialPayController extends BaseController {
 	}
 
 	/**
-	 * 跳转到创建门店订单账单页
-	 * @param
-	 * @return
-	 */
-	@RequestMapping("/addShopOrderBillPage")
-	public String addShopOrderBillPage(HttpServletRequest request,Date startDate,Date endDate,Integer shopId,Integer totalAmount) {
-		ShopOrderBill shopOrderBill = new ShopOrderBill();
-		shopOrderBill.setStartDate(startDate);
-		shopOrderBill.setEndDate(endDate);
-		shopOrderBill.setShopId(shopId);
-		shopOrderBill.setAmount(totalAmount);
-		request.setAttribute("shopOrderBill",shopOrderBill);
-		return "shopartificialpay/shopOrderBillAdd";
-	}
-
-	/**
 	 * 创建门店订单账单
-	 * @param shopOrderBill
+	 * @param shopOrderBillQuery
 	 * @return
 	 */
-	@RequestMapping("/addShopOrderBill")
+	@RequestMapping(value="/addShopOrderBill", method = RequestMethod.POST)
 	@ResponseBody
-	public Json addShopOrderBill(ShopOrderBill shopOrderBill) {
-		Json j = new Json();
-		shopOrderBillService.addShopOrderBillAndShopPay(shopOrderBill);
-		j.setSuccess(true);
-		j.setMsg("添加成功！");
-		return j;
+	public Json addShopOrderBill(@RequestBody ShopOrderBillQuery shopOrderBillQuery) {
+		return  shopOrderBillService.addShopOrderBillAndShopPay(shopOrderBillQuery);
 	}
 
 	/**
