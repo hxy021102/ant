@@ -19,4 +19,5 @@ public interface Namespace {
     String SHOP_LOGIN_VALIDATE_CODE = "shop_login_validate_code";
     String SHOP_BALANCE_ROLL_VALIDATE_CODE = "shop_balance_roll_validate_code";
     String ORDERLOG_MESSAGE="order_log_message";
+    String MB_SHOP = "mb_shop_pool";
 }

@@ -2,7 +2,9 @@ package com.bx.ant.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.mns.model.TopicMessage;
+import com.bx.ant.pageModel.DeliverOrderShopQuery;
 import com.bx.ant.pageModel.session.TokenWrap;
+import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.bx.ant.service.ShopDeliverAccountServiceI;
 import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.bx.ant.service.impl.DeliverOrderShopServiceImpl;
@@ -232,6 +234,7 @@ public class ApiAccountController extends BaseController {
                 mbBalanceLog.setUpdatetimeBegin(todayStart);
                 mbBalanceLog.setUpdatetimeEnd(todayEnd);
                 mbBalanceLog.setShopId(shopDeliverApply.getShopId());
+                mbBalanceLog.setRefType("BT060");
                 DataGrid dataGrid = mbBalanceLogService.updateDeliveryBalanceLogDataGrid(mbBalanceLog,new PageHelper());
                 Integer todayAmount = new Integer(0) ;
                 if (dataGrid.getFooter() != null && CollectionUtils.isNotEmpty(dataGrid.getFooter())) {
@@ -240,8 +243,10 @@ public class ApiAccountController extends BaseController {
                 }
                 //获取有效订单数量
                 Integer todayQuantity = new Integer(0);
-                DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+                DeliverOrderShopQuery deliverOrderShop = new DeliverOrderShopQuery();
                 deliverOrderShop.setShopId(shopDeliverApply.getShopId());
+                String[] statusList = {DeliverOrderShopServiceI.STATUS_ACCEPTED,DeliverOrderShopServiceI.STATUS_COMPLETE};
+                deliverOrderShop.setStatusList(statusList);
                 deliverOrderShop.setUpdatetimeBegin(todayStart);
                 deliverOrderShop.setUpdatetimeEnd(todayEnd);
                 List<DeliverOrderShop> deliverOrderShopList = deliverOrderShopService.dataGrid(deliverOrderShop, new PageHelper()).getRows();
