@@ -1,19 +1,19 @@
 package com.bx.ant.service.allocation;
 
-import com.bx.ant.pageModel.DeliverOrderExt;
+import com.bx.ant.pageModel.*;
 import com.bx.ant.service.*;
 import com.mobian.absx.F;
-import com.mobian.pageModel.*;
-import com.bx.ant.pageModel.DeliverOrder;
-import com.bx.ant.pageModel.DeliverOrderItem;
-import com.bx.ant.pageModel.DeliverOrderShop;
-import com.bx.ant.pageModel.ShopDeliverApply;
+import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.MbShop;
+import com.mobian.pageModel.PageHelper;
 import com.mobian.service.MbShopServiceI;
+import com.mobian.thirdpart.mns.MNSTemplate;
+import com.mobian.thirdpart.mns.MNSUtil;
+import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.GeoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
@@ -23,7 +23,9 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by john on 17/10/11.
@@ -133,6 +135,19 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
             deliverOrder.setShopId(minMbShop.getId());
             deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_ALLOCATION);
             deliverOrderService.edit(deliverOrder);
+
+            // 发送短信通知
+            if(!F.empty(minMbShop.getContactPeople())) {
+                MNSTemplate template = new MNSTemplate();
+                template.setTemplateCode("SMS_105685061");
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("orderId", deliverOrder.getId().toString());
+                params.put("address", deliverOrder.getDeliveryAddress());
+                params.put("time", ConvertNameUtil.getString("DSV100") + "分钟");
+                template.setParams(params);
+                MNSUtil.sendMns(minMbShop.getContactPeople(), template);
+            }
+
         }
 
     }

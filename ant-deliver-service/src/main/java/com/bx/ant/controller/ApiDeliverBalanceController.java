@@ -258,10 +258,9 @@ public class ApiDeliverBalanceController extends BaseController {
 
                 String code = Util.CreateNonceNumstr(6); //生成短信验证码
                 MNSTemplate template = new MNSTemplate();
-                template.setTemplateCode("SMS_63345368");
+                template.setTemplateCode("SMS_105720074");
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("code", code);
-                params.put("product", "骆驼送");
                 template.setParams(params);
                 TopicMessage topicMessage = MNSUtil.sendMns(phone, template);
                 if(topicMessage != null) {

@@ -124,7 +124,7 @@ public class ApiAccountController extends BaseController {
             template.setTemplateCode("SMS_63345368");
             Map<String, String> params = new HashMap<String, String>();
             params.put("code", code);
-            params.put("product", "骆驼送");
+            params.put("product", "仓蚁管家门店版");
             template.setParams(params);
             TopicMessage topicMessage = MNSUtil.sendMns(mobile, template);
             if(topicMessage != null) {
