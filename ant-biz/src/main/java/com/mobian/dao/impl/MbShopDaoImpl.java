@@ -24,7 +24,7 @@ public class MbShopDaoImpl extends BaseDaoImpl<TmbShop> implements MbShopDaoI {
     @Override
 //    @Cacheable(value = "mbShopDaoCache", key = "#id")
     public TmbShop getById(Integer id) {
-        String key = Key.build(Namespace.MB_SHOP, id + "");
+        String key = Key.build(Namespace.MB_SHOP_CACHE, id + "");
         String shopStr = (String) redisUtil.get(key);
         TmbShop shop;
         if (!F.empty(shopStr)) {
@@ -40,7 +40,7 @@ public class MbShopDaoImpl extends BaseDaoImpl<TmbShop> implements MbShopDaoI {
 
 //    @CacheEvict(value = "mbShopDaoCache", key = "#mbShop.getId()")
     public void clearShopCache(MbShop mbShop) {
-        String key = Key.build(Namespace.MB_SHOP, mbShop.getId() + "");
+        String key = Key.build(Namespace.MB_SHOP_CACHE, mbShop.getId() + "");
         redisUtil.delete(key);
     }
 }
