@@ -33,6 +33,7 @@ public interface TokenServiceI {
      * @return
      */
     TokenWrap getToken(String tokenId);
+    TokenWrap getTokenByShopId(Integer shopId);
     TokenWrap getToken(HttpServletRequest request);
 
 }

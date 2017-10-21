@@ -2,11 +2,12 @@ package com.bx.ant.service.allocation;
 
 import com.bx.ant.pageModel.*;
 import com.bx.ant.service.*;
+import com.bx.ant.service.session.TokenServiceI;
 import com.mobian.absx.F;
+import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.PageHelper;
-import com.mobian.service.MbShopServiceI;
 import com.mobian.thirdpart.mns.MNSTemplate;
 import com.mobian.thirdpart.mns.MNSUtil;
 import com.mobian.util.ConvertNameUtil;
@@ -33,8 +34,6 @@ import java.util.Map;
 @Service
 public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocationServiceI {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    @Resource
-    private MbShopServiceI mbShopService;
 
     @Autowired
     private DeliverOrderServiceI deliverOrderService;
@@ -53,6 +52,9 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
 
     @Autowired
     private HibernateTransactionManager transactionManager;
+
+    @Resource
+    private TokenServiceI tokenService;
 
 
     @Override
@@ -123,6 +125,9 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
         }
         //5、计算分单价格
         if (minMbShop != null && !F.empty(minMbShop.getId())) {
+
+            if(tokenService.getTokenByShopId(minMbShop.getId()) == null) throw new ServiceException("门店不在线，token已失效");
+
             DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
             deliverOrderShop.setAmount(deliverOrder.getAmount());
             deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
