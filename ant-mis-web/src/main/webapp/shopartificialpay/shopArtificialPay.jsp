@@ -18,7 +18,7 @@
             fit : true,
             fitColumns : true,
             border : false,
-            pagination : true,
+            pagination : false,
             idField : 'id',
             pageSize : 10,
             pageList : [ 10, 20, 30, 40, 50 ],

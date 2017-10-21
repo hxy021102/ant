@@ -16,6 +16,9 @@ public class DeliverOrderQuery extends DeliverOrder {
     private Date startDate;
     private Date endDate;
     private String shopName;
+    private double amountElement;
+    private String createDate;
+    private String requiredDate;
 
     public String getStatusName() {
         return ConvertNameUtil.getString(this.statusName);
@@ -79,5 +82,29 @@ public class DeliverOrderQuery extends DeliverOrder {
 
     public void setShopName(String shopName) {
         this.shopName = shopName;
+    }
+
+    public double getAmountElement() {
+        return amountElement;
+    }
+
+    public void setAmountElement(double amountElement) {
+        this.amountElement = amountElement;
+    }
+
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getRequiredDate() {
+        return requiredDate;
+    }
+
+    public void setRequiredDate(String requiredDate) {
+        this.requiredDate = requiredDate;
     }
 }

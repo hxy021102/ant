@@ -296,7 +296,7 @@
 				<td>
 					<fmt:formatDate value="${deliverOrder.updatetime}" pattern="yyyy-MM-dd HH:mm:ss"/>
 				</td>
-				<th>联系人</th>
+				<th>收货人</th>
 				<td >
 					${deliverOrder.contactPeople}
 				</td>
@@ -311,13 +311,17 @@
 					${deliverOrder.deliveryAddress}
 				</td>
 				<th>配送地区</th>
-				<td colspan="3">
+				<td>
 					${deliverOrder.deliveryRegion}
+				</td>
+				<th>送达时间</th>
+				<td>
+					<fmt:formatDate value="${deliverOrder.deliveryRequireTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
 				</td>
 			</tr>
 			<tr>
 				<th>备注</th>
-				<td colspan="5">
+				<td colspan="7">
 					${deliverOrder.remark}
 				</td>
 			</tr>

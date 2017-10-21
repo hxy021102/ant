@@ -33,7 +33,7 @@
 					</td>
 				</tr>		
 				<tr>
-					<th>门店账号ID</th>
+					<th>门店账号</th>
 					<td>
 						${shopDeliverApplyQuery.accountId}
 					</td>

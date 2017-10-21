@@ -1,45 +1,30 @@
 package com.mobian.controller;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.fastjson.JSON;
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderQuery;
+import com.bx.ant.pageModel.Supplier;
+import com.bx.ant.service.DeliverOrderItemServiceI;
+import com.bx.ant.service.DeliverOrderServiceI;
+import com.bx.ant.service.SupplierServiceI;
+import com.mobian.pageModel.*;
+import com.mobian.util.ConfigUtil;
+import net.sf.json.JSONArray;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-
-import com.bx.ant.pageModel.*;
-import com.bx.ant.service.DeliverOrderPayServiceI;
-import com.bx.ant.service.SupplierOrderBillServiceI;
-import com.bx.ant.service.SupplierServiceI;
-import com.mobian.pageModel.Colum;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.Json;
-import com.mobian.pageModel.PageHelper;
-import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
-import com.alibaba.fastjson.JSONObject;
-import com.bx.ant.pageModel.*;
-import com.bx.ant.service.DeliverOrderItemServiceI;
-import com.mobian.pageModel.*;
-import com.bx.ant.service.DeliverOrderServiceI;
-
-
-import com.mobian.util.ConfigUtil;
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.mobian.util.BeanUtil;
-import net.sf.json.JSONArray;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.alibaba.fastjson.JSON;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * DeliverOrder管理控制器
@@ -55,10 +40,7 @@ public class DeliverOrderController extends BaseController {
 	private DeliverOrderServiceI deliverOrderService;
 	@Resource
 	private SupplierServiceI supplierService;
-
-
-
-	@Autowired
+	@Resource
 	private DeliverOrderItemServiceI deliverOrderItemService;
 
 
@@ -136,11 +118,37 @@ public class DeliverOrderController extends BaseController {
 	 * @throws IOException 
 	 */
 	@RequestMapping("/download")
-	public void download(DeliverOrderQuery deliverOrderQuery, PageHelper ph,String downloadFields,HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException{
-		DataGrid dg = dataGrid(deliverOrderQuery,ph);
+	public void download(DeliverOrderQuery deliverOrderQuery, PageHelper ph, String downloadFields, HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
+		DataGrid dg = dataGrid(deliverOrderQuery, ph);
+		List<DeliverOrderQuery> deliverOrderQueries = dg.getRows();
+		if (CollectionUtils.isNotEmpty(deliverOrderQueries)) {
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			for (DeliverOrderQuery orderQuery : deliverOrderQueries) {
+				String addDateStr= formatter.format(orderQuery.getAddtime());
+				String requiredDateStr = formatter.format(orderQuery.getDeliveryRequireTime());
+				orderQuery.setCreateDate(addDateStr);
+				orderQuery.setRequiredDate(requiredDateStr);
+				orderQuery.setAmountElement(orderQuery.getAmount() / 100.0);
+			}
+		}
 		downloadFields = downloadFields.replace("&quot;", "\"");
-		downloadFields = downloadFields.substring(1,downloadFields.length()-1);
+		downloadFields = downloadFields.substring(1, downloadFields.length() - 1);
 		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
+		if (CollectionUtils.isNotEmpty(colums)) {
+			for (Colum colum : colums) {
+				switch (colum.getField()) {
+					case "amount":
+						colum.setField("amountElement");
+						break;
+					case "addtime":
+						colum.setField("createDate");
+						break;
+					case "deliveryRequireTime":
+						colum.setField("requiredDate");
+						break;
+				}
+			}
+		}
 		downloadTable(colums, dg, response);
 	}
 	/**

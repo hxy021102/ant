@@ -64,15 +64,23 @@
 				}, {
 				field : 'statusName',
 				title : '订单状态',
-				width : 40
+				width : 35
 				}, {
 				field : 'deliveryStatusName',
 				title : '配送状态',
 				width : 40
-				}, {
+				},{
+                field : 'contactPeople',
+                title : '收货人',
+                width : 30
+                }, {
+                field : 'deliveryRequireTime',
+                title : '送达时间',
+                width : 50
+                }, {
 				field : 'shopPayStatusName',
 				title : '结算状态',
-				width : 50		
+				width : 35
 				}] ],
 			toolbar : '#toolbar',
 			onLoadSuccess : function() {
@@ -214,8 +222,8 @@
 						</td>
 						<th>订单时间</th>
 						<td>
-							<input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'<%=TmbSupplierOrderItem.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'endDate\',{M:-1});}',maxDate:'#F{$dp.$D(\'endDate\',{d:-1});}'})" id="startDate" name="startDate"/>
-							至	<input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'<%=TmbSupplierOrderItem.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'startDate\',{d:1});}',maxDate:'#F{$dp.$D(\'startDate\',{M:1});}'})" id="endDate" name="endDate"/>
+							<input type="text" class="span2 easyui-validatebox" data-options="required:false" onclick="WdatePicker({dateFmt:'<%=TmbSupplierOrderItem.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'endDate\',{M:-1});}',maxDate:'#F{$dp.$D(\'endDate\',{d:-1});}'})" id="startDate" name="startDate"/>
+							至	<input type="text" class="span2 easyui-validatebox" data-options="required:false" onclick="WdatePicker({dateFmt:'<%=TmbSupplierOrderItem.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'startDate\',{d:1});}',maxDate:'#F{$dp.$D(\'startDate\',{M:1});}'})" id="endDate" name="endDate"/>
 						</td>
 					</tr>
 				</table>
