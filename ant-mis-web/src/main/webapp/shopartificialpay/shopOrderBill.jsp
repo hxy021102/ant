@@ -79,18 +79,7 @@
                         return "";
                     return $.formatMoney(value);
                 }
-            },{
-                field : 'action',
-                title : '操作',
-                width : 20,
-                formatter : function(value, row, index) {
-                    var str = '';
-                    if ($.canExamine&&row.status=="BAS01") {
-                        str += $.formatString('<img onclick="examineFun(\'{0}\');" src="{1}" title="审核"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/joystick.png');
-                    }
-                    return str;
-                }
-            } ] ],
+            }] ],
             toolbar : '#toolbar',
             onLoadSuccess : function() {
                 parent.$.messager.progress('close');
@@ -98,38 +87,7 @@
             }
         });
 	});
-    function examineFun(id) {
-        if (id == undefined) {
-            var rows = dataGrid.datagrid('getSelections');
-            id = rows[0].id;
-        }
-        parent.$.modalDialog({
-            title : '审核派单',
-            width : 780,
-            height : 300,
-            href : '${pageContext.request.contextPath}/shopOrderBillController/examinePage?id=' + id,
-            buttons: [{
-                text: '通过',
-                handler: function () {
-                    parent.$.modalDialog.openner_dataGrid =  dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
-                    var f = parent.$.modalDialog.handler.find('#form');
-                    f.find("input[name=status]").val("BAS02");
-                    f.submit();
-                }
-            },
-                {
-                    text: '拒绝',
-                    handler: function () {
-                        parent.$.modalDialog.openner_dataGrid =  dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
-                        var f = parent.$.modalDialog.handler.find('#form');
-                        f.find("input[name=status]").val("BAS03");
-                        f.submit();
 
-                    }
-                }
-            ]
-        });
-    }
 	function viewFun(id) {
         var href = '${pageContext.request.contextPath}/deliverShopArtificialPayController/viewBill?id=' + id;
         parent.$("#index_tabs").tabs('add', {
