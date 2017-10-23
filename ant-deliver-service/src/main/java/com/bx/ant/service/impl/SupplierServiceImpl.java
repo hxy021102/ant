@@ -48,6 +48,10 @@ public class SupplierServiceImpl extends BaseServiceImpl<Supplier> implements Su
 		String whereHql = "";	
 		if (supplier != null) {
 			whereHql += " where t.isdeleted = 0 ";
+			if (!F.empty(supplier.getId())) {
+				whereHql += " and t.id = :id";
+				params.put("id", supplier.getId());
+			}
 			if (!F.empty(supplier.getTenantId())) {
 				whereHql += " and t.tenantId = :tenantId";
 				params.put("tenantId", supplier.getTenantId());
@@ -99,6 +103,7 @@ public class SupplierServiceImpl extends BaseServiceImpl<Supplier> implements Su
 					params.put("supplierIds", supplierQuery.getSupplierIds());
 				}
 			}
+
 		}	
 		return whereHql;
 	}
