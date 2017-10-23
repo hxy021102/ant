@@ -2,6 +2,7 @@ package com.mobian.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderExt;
 import com.bx.ant.pageModel.DeliverOrderQuery;
 import com.bx.ant.pageModel.Supplier;
 import com.bx.ant.service.DeliverOrderItemServiceI;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -82,7 +84,11 @@ public class DeliverOrderController extends BaseController {
 		DataGrid g = deliverOrderService.unPayOrderDataGrid(deliverOrder, ph);
 		List<DeliverOrder> list = g.getRows();
 		List<DeliverOrderQuery>  deliverOrderQueries = new ArrayList<DeliverOrderQuery>();
+		Integer amount = 0;
 		for(DeliverOrder d : list) {
+			if(d.getAmount() != null) {
+				amount += d.getAmount();
+			}
 			DeliverOrderQuery deliverOrderQuery  = new DeliverOrderQuery();
 			BeanUtils.copyProperties(d,deliverOrderQuery);
 			if(d.getSupplierId() != null) {
@@ -101,8 +107,15 @@ public class DeliverOrderController extends BaseController {
 			deliverOrderQueries.add(deliverOrderQuery);
 		}
 		DataGrid dg = new DataGrid();
-		dg.setRows(deliverOrderQueries);
 		dg.setTotal(g.getTotal());
+		dg.setRows(deliverOrderQueries);
+		List<DeliverOrderQuery> footer = new ArrayList<DeliverOrderQuery>();
+		DeliverOrderQuery totalRow = new DeliverOrderQuery();
+		totalRow.setId(null);
+		totalRow.setSupplierName("总计");
+		totalRow.setAmount(amount);
+		footer.add(totalRow);
+		dg.setFooter(footer);
 		return  dg;
 	}
 	/**
@@ -258,11 +271,15 @@ public class DeliverOrderController extends BaseController {
 
 	@RequestMapping("/addOrderBill")
 	@ResponseBody
-	public Json addOrderBill(Integer supplierId,String unpayDeliverOrders) {
+	public Json addOrderBill(Integer supplierId, String unpayDeliverOrders, Date startTime, Date endTime) {
 		Json j = new Json();
 		JSONArray jsonArray = JSONArray.fromObject(unpayDeliverOrders);
 	   	List<DeliverOrder> list = (List<DeliverOrder>) jsonArray.toCollection(jsonArray,DeliverOrder.class);
-	   	deliverOrderService.addOrderBill(list,supplierId);
+	   	deliverOrderService.addOrderBill(list,supplierId,startTime,endTime);
+	   	for(DeliverOrder d : list) {
+	   		d.setPayStatus("DPS03");//结算中
+			deliverOrderService.edit(d);
+		}
 	   	j.setMsg("生成账单成功");
 	   	j.setSuccess(true);
 	   	return  j;

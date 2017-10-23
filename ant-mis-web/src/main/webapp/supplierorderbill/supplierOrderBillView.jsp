@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%>
 <script type="text/javascript">
     var dataGrid;
     $(function () {
@@ -23,6 +25,9 @@
                     parent.$.messager.alert('错误', result.msg, 'error');
                 }
             }
+        });
+        $('.money_input').each(function(){
+            $(this).text($.formatMoney($(this).text().trim()));
         });
         dataGrid = $('#dataGrid').datagrid({
             url: '${pageContext.request.contextPath}/deliverOrderPayController/dataGrid?supplierOrderBillId='+${supplierOrderBill.id},
@@ -83,7 +88,7 @@
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<form id="form" method="post">
-		<input type="hidden" name="supplierOrderBillId" value="${supplierOrderBill.id}">
+		<input type="hidden" name="id" value="${supplierOrderBill.id}">
 		<input type="hidden" name="isAgree">
 	<div data-options="region:'north',border:false" style="height: 170px">
 		<table class="table table-hover table-condensed">
@@ -96,12 +101,21 @@
 					<td>
 						${supplierOrderBill.statusName}
 					</td>							
-				</tr>		
+				</tr>
+					<c:if test="${isView == 1}">
 				<tr>
-					<th>支付方式</th>
-					<td>
-						${supplierOrderBill.payWay}
-					</td>
+						<th>支付方式</th>
+						<td>
+								${supplierOrderBill.payWayName}
+						</td>
+					</c:if>
+					<c:if test="${isView == null}">
+				<tr>
+						<th>支付方式</th>
+						<td>
+								<jb:select dataType="DPW" name="payWay"></jb:select>
+						</td>
+					</c:if>
 					<th>总金额</th>
 					<td>
 						<font  class="money_input">${supplierOrderBill.amount}</font>
@@ -110,11 +124,11 @@
 				<tr>	
 					<th>开始日期</th>
 					<td>
-						${supplierOrderBill.startDate}							
+						<fmt:formatDate value="${supplierOrderBill.startDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
 					</td>							
 					<th>结束日期</th>
 					<td>
-						${supplierOrderBill.endDate}							
+						<fmt:formatDate value="${supplierOrderBill.endDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
 					</td>							
 				</tr>
 			<c:if test="${isView == 1}">

@@ -85,7 +85,7 @@ public class Supplier implements java.io.Serializable {
 	}
 	
 	public String getStatus() {
-		return ConvertNameUtil.getString(this.status);
+		return this.status;
 	}
 
 	public String getStatusName() {

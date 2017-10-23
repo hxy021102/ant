@@ -33,7 +33,7 @@
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;">
-		<form id="form" method="post">
+		<form id="form" method="post" enctype="multipart/form-data">
 				<input type="hidden" name="id" value = "${supplier.id}"/>
 			<table class="table table-hover table-condensed">
 				<tr>
@@ -43,7 +43,7 @@
 					</td>
 					<th>状态</th>
 					<td>
-											<jb:select dataType="SLS" name="status" value="${supplier.status}"></jb:select>	
+						<jb:select dataType="SLS" name="status" value="${supplier.status}"></jb:select>
 					</td>
 
 				</tr>
@@ -60,7 +60,24 @@
 				<tr>
 					<th>地址</th>
 					<td colspan="3">
-						<input class="span2" name="address" type="text" value="${supplier.address}"/>
+						<input class="span2" name="address" type="text" value="${supplier.address}" style="width:610px"/>
+					</td>
+				</tr>
+				<tr>
+					<td>备注</td>
+					<td colspan="3">
+						<textarea style="width: 90%" cols="30" rows="3" name="remark">${supplier.remark}</textarea>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="4">
+						<img src="${supplier.charterUrl}" style="width: 220px;height: 120px"/>
+					</td>
+				</tr>
+				<tr>
+					<th style="width: 50px;">营业执照</th>
+					<td colspan="4">
+						<input type="file" id="iconFile" name="equipIconFile">
 					</td>
 				</tr>
 			</table>				

@@ -7,6 +7,7 @@ import com.bx.ant.pageModel.DeliverOrderQuery;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -204,5 +205,11 @@ public interface DeliverOrderServiceI {
 	 * @return
 	 */
 	List<DeliverOrder> query(DeliverOrder deliverOrder);
-	void addOrderBill(List<DeliverOrder> list,Integer supplierId);
+
+	/**
+	 * 创建账单
+	 * @param list
+	 * @param supplierId
+	 */
+	void addOrderBill(List<DeliverOrder> list, Integer supplierId, Date startTime, Date endTime);
 }

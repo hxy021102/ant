@@ -86,7 +86,15 @@ public class SupplierOrderBillServiceImpl extends BaseServiceImpl<SupplierOrderB
 			if (!F.empty(supplierOrderBill.getPayWay())) {
 				whereHql += " and t.payWay = :payWay";
 				params.put("payWay", supplierOrderBill.getPayWay());
-			}		
+			}
+			if (supplierOrderBill.getStartDate() != null) {
+				whereHql += " and t.startDate >= :startDate";
+				params.put("startDate", supplierOrderBill.getStartDate());
+			}
+			if (supplierOrderBill.getEndDate() != null) {
+				whereHql += " and t.endDate <= :endDate";
+				params.put("endDate", supplierOrderBill.getEndDate());
+			}
 		}	
 		return whereHql;
 	}

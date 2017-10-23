@@ -1,5 +1,6 @@
 package com.bx.ant.service;
 
+import com.bx.ant.pageModel.DeliverOrder;
 import com.mobian.pageModel.MbItem;
 import com.bx.ant.pageModel.ShopItem;
 import com.mobian.pageModel.DataGrid;
@@ -54,8 +55,21 @@ public interface ShopItemServiceI {
 	 */
 	public void delete(Integer id);
 
+	/**
+	 * 通过门店Id和商品Id和上架状态获取门店商品
+	 * @param shopId
+	 * @param itemId
+	 * @param isOnline
+	 * @return
+	 */
     ShopItem getByShopIdAndItemId(Integer shopId, Integer itemId, boolean isOnline);
 
+	/**
+	 * 通过门店Id和商品Id获取上架的门店商品
+	 * @param shopId
+	 * @param itemId
+	 * @return
+	 */
 	ShopItem getByShopIdAndItemId(Integer shopId, Integer itemId);
 
 	/**
@@ -131,5 +145,12 @@ public interface ShopItemServiceI {
 	 * @param shopId
 	 */
 	void deleteShopItem(Integer itemId,Integer shopId);
+
+	/**
+	 * 通过deliverOrder返还shopItem商品数量
+	 * deliverOrder必须包含:id,shopId属性
+	 * @param deliverOrder
+	 */
+	void refundByDeliverOrder(DeliverOrder deliverOrder);
 
 }

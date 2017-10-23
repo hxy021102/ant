@@ -126,7 +126,7 @@
 					</td>
 				</tr>
 				<tr>
-					<th style="width: 50px;">图标</th>
+					<th style="width: 50px;">营业执照</th>
 					<td colspan="3">
 						<input type="file" id="iconFile" name="equipIconFile">
 					</td>

@@ -177,20 +177,21 @@ public class SupplierOrderBillController extends BaseController {
 		j.setSuccess(true);
 		return j;
 	}
+	//结算审核
 	@RequestMapping("/editStatus")
 	@ResponseBody
-	public Json editStatus(Long supplierOrderBillId, Boolean isAgree,String remark) {
+	public Json editStatus(SupplierOrderBill supplierOrderBill, Boolean isAgree) {
 		Json j = new Json();
-        SupplierOrderBill supplierOrderBill = new SupplierOrderBill();
-        supplierOrderBill.setId(supplierOrderBillId);
-        supplierOrderBill.setRemark(remark);
+//        SupplierOrderBill supplierOrderBill = new SupplierOrderBill();
+//        supplierOrderBill.setId(supplierOrderBillId);
+//        supplierOrderBill.setRemark(remark);
         if(isAgree) {
 			supplierOrderBill.setStatus("BAS02");//审核通过
 		}else {
 			supplierOrderBill.setStatus("BAS03");//审核拒绝
 		}
         supplierOrderBillService.edit(supplierOrderBill);
-       	List<DeliverOrderPay> list = deliverOrderPayService.getBySupplierOrderBillId(supplierOrderBillId.intValue());
+       	List<DeliverOrderPay> list = deliverOrderPayService.getBySupplierOrderBillId(supplierOrderBill.getId().intValue());
         for(DeliverOrderPay d : list) {
 			DeliverOrder deliverOrder = deliverOrderService.get(d.getDeliverOrderId());
         	if(isAgree) {
@@ -199,6 +200,7 @@ public class SupplierOrderBillController extends BaseController {
 			}else {
 				d.setStatus("SPS03");//审核拒绝
 			}
+			d.setPayWay(supplierOrderBill.getPayWay());
 			deliverOrderPayService.edit(d);
 			deliverOrderService.edit(deliverOrder);
 		}
