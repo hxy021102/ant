@@ -123,8 +123,7 @@ public class SupplierController extends BaseController {
 			supplier.setCharterUrl(uploadFile(SUPPLIER, equipIconFile));
 			supplierService.add(supplier);
 		}
-		j.setSuccess(true);
-		j.setMsg("添加成功！");		
+
 		return j;
 	}
 	/**
@@ -134,7 +133,7 @@ public class SupplierController extends BaseController {
 	 * @param j
 	 * @return boolean
 	 */
-	private boolean checkIconImage(MultipartFile equipIconFile, Json j){
+	private boolean checkIconImage(MultipartFile equipIconFile,Json j){
 		boolean checkResult = false;
 		String iconType ;
 		String iconTypes = "";
@@ -145,10 +144,6 @@ public class SupplierController extends BaseController {
 			j.setMsg("图片未更改！");
 			checkResult = true ;
 			return checkResult;
-		}
-		else if(equipIconFile.getSize()>=ICON_FILE_MAX_SIZE){
-			j.setSuccess(false);
-			j.setMsg("基本信息栏-上传图片大小不能超过" + (ICON_FILE_MAX_SIZE/1024) +"kB");
 		}
 		else {
 			do{
@@ -204,11 +199,13 @@ public class SupplierController extends BaseController {
 	 */
 	@RequestMapping("/edit")
 	@ResponseBody
-	public Json edit(Supplier supplier) {
-		Json j = new Json();		
-		supplierService.edit(supplier);
-		j.setSuccess(true);
-		j.setMsg("编辑成功！");		
+	public Json edit(Supplier supplier,@RequestParam MultipartFile equipIconFile) {
+		Json j = new Json();
+		boolean checkResult = checkIconImage(equipIconFile,j);
+		if (checkResult){
+			supplier.setCharterUrl(uploadFile(SUPPLIER, equipIconFile));
+			supplierService.edit(supplier);
+		}
 		return j;
 	}
 

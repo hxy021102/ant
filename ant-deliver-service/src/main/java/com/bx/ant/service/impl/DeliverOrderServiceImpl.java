@@ -449,6 +449,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		List<DeliverOrder> ol = new ArrayList<DeliverOrder>();
 		String hql = " from TdeliverOrder t ";
 		deliverOrder.setPayStatus("DPS01");//未结算状态
+		deliverOrder.setDeliveryStatus("DDS04");//订单已送达状态
 		DataGrid dg = dataGridQuery(hql, ph, deliverOrder, deliverOrderDao);
 		@SuppressWarnings("unchecked")
 		List<TdeliverOrder> l = dg.getRows();
@@ -464,7 +465,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	}
 
 	@Override
-	public void addOrderBill(List<DeliverOrder> list,Integer supplierId) {
+	public void addOrderBill(List<DeliverOrder> list,Integer supplierId,Date startTime,Date endTime) {
 		Integer amount = 0;//订单总金额
 		for(DeliverOrder d : list) {
 			if(d.getAmount() !=null) {
@@ -476,6 +477,8 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		supplierOrderBill.setSupplierId(supplierId);
 		supplierOrderBill.setStatus("BAS01");//待审核状态
 		supplierOrderBill.setAmount(amount);
+		supplierOrderBill.setStartDate(startTime);
+		supplierOrderBill.setEndDate(endTime);
 		supplierOrderBill.setPayWay(list.get(0).getPayWay());
 		supplierOrderBillService.add(supplierOrderBill);
 		//生成订单对账单明细

@@ -210,10 +210,10 @@
 							</td>
 						</tr>
 						<tr>
-							<td colspan="4" height="50">
-								<img class="img-preview" src="${mbItem.url}"/>
-							</td>
-						</tr>
+						<td colspan="4" height="50">
+							<img class="img-preview" src="${mbItem.url}"/>
+						</td>
+					</tr>
 						<tr>
 							<th>图标</th>
 							<td colspan="3">

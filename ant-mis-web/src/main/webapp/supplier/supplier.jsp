@@ -62,7 +62,7 @@
 				title : '接入方名称',
 				width : 120
 				}, {
-                field : 'status',
+                field : 'statusName',
                 title : '状态',
                 width : 50
             	}, {

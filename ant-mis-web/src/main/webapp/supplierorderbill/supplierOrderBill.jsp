@@ -82,7 +82,7 @@
 				title : '结束日期',
 				width : 80
 				}, {
-				field : 'payWay',
+				field : 'payWayName',
 				title : '结算方式',
 				width : 50
 			}, {
@@ -245,7 +245,7 @@
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit : true,border : false">
-		<div data-options="region:'north',title:'查询条件',border:false" style="height: 120px; overflow: hidden;">
+		<div data-options="region:'north',title:'查询条件',border:false" style="height: 65px; overflow: hidden;">
 			<form id="searchForm">
 				<table class="table table-hover table-condensed" style="display: none;">
 						<tr>	
@@ -253,31 +253,21 @@
 							<td>
 								<jb:selectGrid  dataType="deliverSupplierId" name="supplierId" required="true"></jb:selectGrid>
 							</td>
-							<th>结算方式</th>
+							<th>创建时间</th>
 							<td>
-								<jb:select dataType="DPW" name="payWay"></jb:select>
+								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=com.mobian.util.Constants.DATE_FORMAT_FOR_ENTITY%>'})" id="startDateBegin" name="startDate"/>
+							至
+								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=com.mobian.util.Constants.DATE_FORMAT_FOR_ENTITY%>'})" id="endDateBegin" name="endDate"/>
 							</td>
-							<th>审核状态</th>
-							<td>
-											<jb:select dataType="BAS" name="status"></jb:select>	
-							</td>
-						</tr>	
-						<tr>	
-							<th>开始日期</th>
-							<td>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=com.mobian.util.Constants.DATE_FORMAT_FOR_ENTITY%>'})" id="startDateBegin" name="startDateBegin"/>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=com.mobian.util.Constants.DATE_FORMAT_FOR_ENTITY%>'})" id="startDateEnd" name="startDateEnd"/>
-							</td>
-							<th>结束日期</th>
-							<td>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=com.mobian.util.Constants.DATE_FORMAT_FOR_ENTITY%>'})" id="endDateBegin" name="endDateBegin"/>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=com.mobian.util.Constants.DATE_FORMAT_FOR_ENTITY%>'})" id="endDateEnd" name="endDateEnd"/>
-							</td>
-							<th></th>
-							<td>
-
-							</td>
-						</tr>	
+							<%--<th>结算方式</th>--%>
+							<%--<td>--%>
+								<%--<jb:select dataType="DPW" name="payWay"></jb:select>--%>
+							<%--</td>--%>
+							<%--<th>审核状态</th>--%>
+							<%--<td>--%>
+											<%--<jb:select dataType="BAS" name="status"></jb:select>	--%>
+							<%--</td>--%>
+						</tr>
 				</table>
 			</form>
 		</div>

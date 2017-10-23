@@ -66,32 +66,32 @@
                 }, {
                     field : 'itemName',
                     title : '商品名称',
-                    width : 50
+                    width : 120
                 },{
                     field : 'price',
                     title : '单价',
-                    width : 50,
+                    width : 40,
 					formatter: function (value,row,index) {
                         return $.formatMoney(row.price);
 					}
                 },{
                     field : 'inPrice',
                     title : '采购价',
-                    width : 50,
+                    width : 40,
                     formatter: function (value,row,index) {
                         return $.formatMoney(row.inPrice);
                     }
                 },{
                     field : 'freight',
                     title : '运费',
-                    width : 50 ,
+                    width : 40 ,
                     formatter: function (value,row,index) {
                         return $.formatMoney(row.freight);
                     }
                 },{
                     field : 'online',
                     title : '上下架',
-                    width : 50,
+                    width : 30,
 					formatter : function (value,row,index) {
                         if(row.online == 0) {
                             return '已下架';
@@ -200,7 +200,7 @@
 					</td>
 					<th style="width: 60px">状态</th>
 					<td>
-						${supplier.status}							
+						${supplier.statusName}
 					</td>
 				</tr>
 				<tr>	
@@ -219,17 +219,17 @@
 						${supplier.address}
 					</td>
 					<th>营业执照</th>
-					<td rowspan="2">
-						<img src="${supplier.charterUrl}" width="80px" height="80px"/>
+					<td rowspan="3" height="60">
+						<img src="${supplier.charterUrl}" style="height: 120px;width: 220px"/>
 					</td>
 				</tr>
 				<tr>
 					<th>操作人</th>
-					<td>${supplier.loginName}</td>
+					<td colspan="2">${supplier.loginName}</td>
 				</tr>
 			<tr>
 				<th>备注</th>
-				<td>
+				<td colspan="2">
 				${supplier.remark}
 				</td>
 			</tr>

@@ -29,6 +29,20 @@
 				}
 			}
 		});
+        $('.money_input').blur(function () {
+            var source = $(this);
+            var target = source.next();
+            if (!/^([1-9]\d*|0)(\.\d{2})?$/.test(source.val())) {
+                source.val("").focus();
+            }
+            var val = source.val().trim();
+            if (val.indexOf('.') > -1) {
+                val = val.replace('.', "");
+            } else if (val != '') {
+                val += "00";
+            }
+            target.val(val);
+        });
 	});
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
@@ -46,17 +60,21 @@
 				<tr>	
 					<th>价格</th>
 					<td>
-											<input class="span2" name="price" type="text"/>
+											<input class="span2 money_input" name="priceStr" type="text"/>
+						   <input type="hidden" name="price">
 					</td>							
 					<th>采购价</th>
 					<td>
-											<input class="span2" name="inPrice" type="text"/>
+											<input class="span2 money_input" name="inPriceStr" type="text"/>
+							<input type="hidden" name="inPrice">
+
 					</td>							
 				</tr>	
 				<tr>	
 					<th>运费</th>
 					<td>
-											<input class="span2" name="freight" type="text"/>
+											<input class="span2 money_input" name="freightStr" type="text"/>
+						<input type="hidden" name="freight">
 					</td>							
 					<th>上下架</th>
 					<td>

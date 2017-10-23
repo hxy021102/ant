@@ -23,6 +23,7 @@ public class SupplierOrderBill implements java.io.Serializable {
 	private String payWay;
 	//
 	private String supplierName;
+	private String payWayName;
 
 	
 
@@ -122,5 +123,13 @@ public class SupplierOrderBill implements java.io.Serializable {
 
 	public void setSupplierName(String supplierName) {
 		this.supplierName = supplierName;
+	}
+
+	public String getPayWayName() {
+		return ConvertNameUtil.getString(this.payWay);
+	}
+
+	public void setPayWayName(String payWayName) {
+		this.payWayName = payWayName;
 	}
 }

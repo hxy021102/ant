@@ -16,13 +16,12 @@
 	var dataGrid;
 	$(function() {
 		dataGrid = $('#dataGrid').datagrid({
-			url :'',
 			fit : true,
 			fitColumns : true,
 			border : false,
 			pagination : true,
 			idField : 'id',
-			pageSize : 10,
+			pageSize : 0,
 			pageList : [ 10, 20, 30, 40, 50 ],
 			sortOrder : 'desc',
 			checkOnSelect : false,
@@ -51,7 +50,10 @@
 				field : 'amount',
 				title : '总金额',
 				align:"right",
-				width : 50		
+				width : 50	,
+				formatter : function (value,row,index) {
+					return $.formatMoney(value);
+                }
 				}, {
                 field : 'payStatusName',
                 title : '接入方结算状态',
@@ -176,17 +178,30 @@
 	}
     function addOrderBill() {
         var rows = $('#dataGrid').datagrid('getChecked');
-        console.log(rows);
-        $.post('${pageContext.request.contextPath}/deliverOrderController/addOrderBill',{supplierId: rows[0].supplierId,unpayDeliverOrders: JSON.stringify(rows)},function (result) {
+        var footer = $('#dataGrid').datagrid('getFooterRows');
+        if(rows.length == 0) {
+            alert("您还没有选择订单！")
+		}
+        if(rows.length != 0) {
+                parent.$.messager.confirm('询问', '账单总金额为：'+$.formatMoney(footer[0].amount) +'</br> 开始时间为：'+ $('#startDate').val() +'</br>结束时间为：'+$('#endDate').val()+' </br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;您确认创建账单？', function(b) {
+                    if (b) {
+                        parent.$.messager.progress({
+                            title : '提示',
+                            text : '数据处理中，请稍后....'
+                        });
+                        $.post('${pageContext.request.contextPath}/deliverOrderController/addOrderBill',{supplierId: rows[0].supplierId,unpayDeliverOrders: JSON.stringify(rows),startTime:$('#startDate').val(),endTime:$('#endDate').val()},function (result) {
+                            if(result.success) {
+                                parent.$.messager.alert('提示', result.msg, 'info');
+                                dataGrid.datagrid('reload');
+                            }
+                            parent.$.messager.progress('close');
+                        },"JSON");
+                    }
+                });
+            }
 
-            console.log(result);
-            if(result.success) {
-                parent.$.messager.alert('提示', result.msg, 'info');
-//                dataGrid.datagrid('reload');
-			}
-            parent.$.messager.progress('close');
-        },"JSON");
 	}
+
 </script>
 </head>
 <body>
@@ -199,19 +214,10 @@
 						<td>
 							<jb:selectGrid  dataType="deliverSupplierId" name="supplierId" required="true"></jb:selectGrid>
 						</td>
-						<th style="width: 50px">下单时间</th>
+						<th style="width: 50px">订单时间</th>
 						<td>
-						<input class="span2"
-							   name="addtimeBegin"
-								placeholder="点击选择时间"
-								onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})"
-								readonly="readonly"/>
-						至<input class="span2"
-								name="addtimeEnd"
-								placeholder="点击选择时间"
-								onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})"
-								readonly="readonly"/>
-						</td>
+							<input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'#F{$dp.$D(\'endDate\',{M:-1});}',maxDate:'#F{$dp.$D(\'endDate\',{d:-1});}'})" id="startDate" name="addtimeBegin"/>
+							至	<input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'#F{$dp.$D(\'startDate\',{d:1});}',maxDate:'#F{$dp.$D(\'startDate\',{M:1});}'})" id="endDate" name="addtimeEnd"/>
 					</tr>
 				</table>
 			</form>
@@ -230,7 +236,7 @@
 		</c:if>
 		<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/addOrderBill')}">
 			<a onclick="addOrderBill();" href="javascript:void(0);" class="easyui-linkbutton"
-			   data-options="plain:true,iconCls:'pencil'">生成账单</a>
+			   data-options="plain:true,iconCls:'pencil'">创建账单</a>
 		</c:if>
 	</div>	
 </body>
