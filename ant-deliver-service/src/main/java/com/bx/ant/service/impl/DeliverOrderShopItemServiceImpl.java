@@ -151,8 +151,8 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 				//扣除库存
                 ShopItem shopItemN = new ShopItem();
                 shopItemN.setId(shopItem.getId());
-                shopItemN.setQuantity(shopItem.getQuantity() - d.getQuantity());
-				shopItemService.edit(shopItemN);
+                shopItemN.setQuantity( - d.getQuantity());
+				shopItemService.updateQunatity(shopItemN);
 
 				//添加deliverOrderShopItem
 				DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
