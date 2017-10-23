@@ -299,25 +299,35 @@
 			<form id="searchForm">
 				<table class="table table-hover table-condensed" style="display: none;">
 					<tr>
+						<th><%=TmbSupplierStockIn.ALIAS_SUPPLIER_ORDER_ID%></th>
 						<td>
-							<strong><%=TmbSupplierStockIn.ALIAS_SUPPLIER_ORDER_ID%></strong>&nbsp;&nbsp;<input type="text" name="supplierOrderId" maxlength="10" class="span2"/>
+							<input type="text" name="supplierOrderId" maxlength="10" class="span2"/>
 						</td>
+						<th>供应商</th>
 						<td>
-							&nbsp;&nbsp;&nbsp;&nbsp;<strong><%=TmbSupplierStockIn.ALIAS_SIGN_PEOPLE_ID%></strong>&nbsp;&nbsp;<jb:selectSql dataType="SQ010" name="signPeopleId"></jb:selectSql>
+							<jb:selectGrid dataType="supplierId" name="supplierId"></jb:selectGrid>
 						</td>
+						<th><%=TmbSupplierStockIn.ALIAS_SIGN_PEOPLE_ID%></th>
 						<td>
-							&nbsp;&nbsp;&nbsp;&nbsp;<strong>&nbsp;&nbsp;<%=TmbSupplierStockIn.ALIAS_WAREHOUSE_ID%></strong>&nbsp;&nbsp;<jb:selectSql dataType="SQ005" name="warehouseId"></jb:selectSql>
+							<jb:selectSql dataType="SQ010" name="signPeopleId"></jb:selectSql>
+						</td>
+						<th><%=TmbSupplierStockIn.ALIAS_WAREHOUSE_ID%></th>
+						<td>
+							<jb:selectSql dataType="SQ005" name="warehouseId"></jb:selectSql>
 						</td>
 					</tr>
 					<tr>
+						<th><%=TmbSupplierStockIn.ALIAS_PAY_STATUS%></th>
 						<td>
-							&nbsp;&nbsp;&nbsp;<strong><%=TmbSupplierStockIn.ALIAS_PAY_STATUS%></strong>&nbsp;&nbsp;<jb:select dataType="FS" name="payStatus"></jb:select>
+							<jb:select dataType="FS" name="payStatus"></jb:select>
 						</td>
+						<th><%=TmbSupplierStockIn.ALIAS_INVOICE_STATUS%></th>
 						<td>
-							<strong><%=TmbSupplierStockIn.ALIAS_INVOICE_STATUS%></strong>&nbsp;&nbsp;<jb:select dataType="IS" name="invoiceStatus"></jb:select>
+							<jb:select dataType="IS" name="invoiceStatus"></jb:select>
 						</td>
-						<td>
-							<strong>入库时间</strong>&nbsp;&nbsp;<input class="span2" name="stockinTimeBegin"
+						<th>入库时间</th>
+						<td colspan="3">
+							<input class="span2" name="stockinTimeBegin"
 								   placeholder="点击选择时间"
 								   onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})"
 								   readonly="readonly"/>
