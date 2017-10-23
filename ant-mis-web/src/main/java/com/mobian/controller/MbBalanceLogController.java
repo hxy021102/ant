@@ -7,6 +7,7 @@ import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.util.ConvertNameUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -270,10 +271,17 @@ public class MbBalanceLogController extends BaseController {
 	@RequestMapping("/downloadBalanceLog")
 	public void downloadBalanceLog(MbBalanceLog mbBalanceLog, PageHelper ph, String downloadFields, HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
 		ph.setRows(0);
-		DataGrid dg = dataGridFlow(mbBalanceLog, ph);
+		DataGrid dg = mbBalanceLogService.dataGridBalanceLogDownload(mbBalanceLog, ph);
 		downloadFields = downloadFields.replace("&quot;", "\"");
 		downloadFields = downloadFields.substring(1, downloadFields.length() - 1);
 		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
+		if (CollectionUtils.isNotEmpty(colums)) {
+			for (Colum colum : colums) {
+				if ("amount".equals(colum.getField())) {
+					colum.setField("amountElement");
+				}
+			}
+		}
 		downloadTable(colums, dg, response);
 	}
 
