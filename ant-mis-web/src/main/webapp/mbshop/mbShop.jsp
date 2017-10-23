@@ -487,7 +487,7 @@
                     function renderMap(mapData) {
                         var mapArray = new Array(mapData.length);
                         for (var k = 0; k < mapArray.length; k++) {
-                            mapArray[k] = new Array(3);
+                            mapArray[k] = new Array(4);
                         }
                         for (var i = 0; i < mapArray.length; i++) {
                             for (var j = 0; j < mapArray[i].length; j++) {
@@ -497,6 +497,8 @@
                                     mapArray[i][j] = mapData[i].latitude
                                 } else if (j == 2) {
                                     mapArray[i][j] = mapData[i].address
+                                } else if (j == 3) {
+                                    mapArray[i][j] = mapData[i].shopType;
                                 }
                             }
                         }
@@ -505,9 +507,28 @@
                         console.log(map)
                         map.centerAndZoom(new BMap.Point(121.56, 31.12), 12.5);
                         map.enableScrollWheelZoom(true);     //开启鼠标滚缩放
-
+                       // var joinIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/directStoreIcon.png', new BMap.Size(20,40));
+                        var directUnitIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/directUnitIcon.jpg', new BMap.Size(20,40));
+                        var directStoreIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/directStoreIcon.png', new BMap.Size(20,40));
+                        var testIcon = new  BMap.Icon('${pageContext.request.contextPath}/style/images/map/testIcon.png', new BMap.Size(20,40));
                         for (var i = 0; i < mapArray.length; i++) {
-                            var marker = new BMap.Marker(new BMap.Point(mapArray[i][0], mapArray[i][1]));  // 创建标注
+                            var storeIcon;
+                            switch (mapArray[i][3]){
+                                case "ST01":
+                                    storeIcon = null;break;
+                                case  "ST02":
+                                    storeIcon = directUnitIcon;break;
+                                case "ST03" :
+                                    storeIcon = directStoreIcon;break;
+                                case "ST10":
+                                    storeIcon = testIcon;break;
+                            }
+                            if(storeIcon ==null) {
+                                var marker = new BMap.Marker(new BMap.Point(mapArray[i][0], mapArray[i][1]));  // 创建标注
+                            }else{
+                                var marker = new BMap.Marker(new BMap.Point(mapArray[i][0], mapArray[i][1]), {icon: storeIcon});  // 创建标注
+
+                            }
                             var content = mapArray[i][2];
                             map.addOverlay(marker);               // 将标注添加到地图中
                             addClickHandler(content, marker);

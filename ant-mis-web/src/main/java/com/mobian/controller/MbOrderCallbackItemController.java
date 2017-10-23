@@ -3,16 +3,16 @@ package com.mobian.controller;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.UUID;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.mobian.pageModel.*;
-import com.mobian.service.MbOrderCallbackItemServiceI;
+import com.mobian.service.*;
 
-import com.mobian.service.MbOrderServiceI;
+
 import com.mobian.util.ConfigUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,7 +35,12 @@ public class MbOrderCallbackItemController extends BaseController {
 	private MbOrderCallbackItemServiceI mbOrderCallbackItemService;
 
 	@Autowired
-	private MbOrderServiceI mbOrderService;
+	private MbBalanceLogServiceI mbBalanceLogService;
+	@Autowired
+	private MbBalanceServiceI mbBalanceService;
+	@Autowired
+	private MbItemServiceI mbItemService;
+
 
 
 	/**
@@ -86,9 +91,14 @@ public class MbOrderCallbackItemController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/addPage")
-	public String addPage(HttpServletRequest request,Integer id ) {
+	public String addPage(HttpServletRequest request,Integer id) {
 		request.setAttribute("orderId",id);
 		return "/mbordercallbackitem/mbOrderCallbackItemAddPage";
+	}
+	@RequestMapping("/addCallbackPage")
+	public String addCallbackPage(HttpServletRequest request,Integer id ) {
+		request.setAttribute("orderId",id);
+		return "/mbordercallbackitem/mbOrderCallbackItemAddCallbackPage";
 	}
 
 	/**
@@ -106,6 +116,18 @@ public class MbOrderCallbackItemController extends BaseController {
 		mbOrderCallbackItemService.add(mbOrderCallbackItem);
 		j.setSuccess(true);
 		j.setMsg("添加成功！");		
+		return j;
+	}
+	@RequestMapping("/addCallback")
+	@ResponseBody
+	public Json addCallback(MbOrderCallbackItem mbOrderCallbackItem, HttpSession session,Integer packId) {
+		Json j = new Json();
+		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+		mbOrderCallbackItem.setItemId(packId);
+		mbOrderCallbackItem.setLoginId(sessionInfo.getId());
+		mbOrderCallbackItemService.addCallbackItem(mbOrderCallbackItem);
+		j.setSuccess(true);
+		j.setMsg("添加成功！");
 		return j;
 	}
 

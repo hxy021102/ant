@@ -176,6 +176,8 @@ public class MbSupplierStockInItemServiceImpl extends BaseServiceImpl<MbSupplier
 		@SuppressWarnings("unchecked")
 		List<TmbSupplierStockInItem> l = dg.getRows();
 		if (l != null && l.size() > 0) {
+			Integer totalQuantity= 0;
+			double totalPrice = 0;
 			for (TmbSupplierStockInItem t : l) {
 				MbSupplierStockInItem o = new MbSupplierStockInItem();
 				BeanUtils.copyProperties(t, o);
@@ -192,7 +194,19 @@ public class MbSupplierStockInItemServiceImpl extends BaseServiceImpl<MbSupplier
 					o.setProductName(mbItem.getName());
 					o.setCode(mbItem.getCode());
 				}
+				if (o.getPrice()!=null && o.getQuantity()!=null) {
+					o.setTotalPrice((double) o.getQuantity() * o.getPrice());
+					totalPrice +=o.getTotalPrice();
+					totalQuantity += o.getQuantity();
+				}
 			}
+			List<MbSupplierStockInItem> footer = new ArrayList<MbSupplierStockInItem>();
+			MbSupplierStockInItem totalRow = new MbSupplierStockInItem();
+            totalRow.setSupplierName("合计");
+            totalRow.setTotalPrice(totalPrice);
+            totalRow.setQuantity(totalQuantity);
+            footer.add(totalRow);
+            dg.setFooter(footer);
 		}
 		dg.setRows(ol);
 		return dg;

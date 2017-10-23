@@ -139,6 +139,11 @@ public class UserServiceImpl implements UserServiceI {
 				params.put("orgName", user.getOrgName());
 
 			}
+			if (!F.empty(user.getUtype())) {
+				hql += " and t.utype =:utype";
+				params.put("utype", user.getUtype());
+
+			}
 		}
 		return hql;
 	}
