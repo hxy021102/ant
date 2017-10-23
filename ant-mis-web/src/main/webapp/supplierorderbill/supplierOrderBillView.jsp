@@ -74,7 +74,7 @@
 						}
                     }
                 }, {
-                    field : 'payWay',
+                    field : 'payWayName',
                     title : '支付方式',
                     width : 50
                 }, {

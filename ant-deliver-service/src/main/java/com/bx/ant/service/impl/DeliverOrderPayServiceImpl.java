@@ -74,7 +74,11 @@ public class DeliverOrderPayServiceImpl extends BaseServiceImpl<DeliverOrderPay>
 			if (!F.empty(deliverOrderPay.getPayWay())) {
 				whereHql += " and t.payWay = :payWay";
 				params.put("payWay", deliverOrderPay.getPayWay());
-			}		
+			}
+			if (!F.empty(deliverOrderPay.getSupplierOrderBillId())) {
+				whereHql += " and t.supplierOrderBillId = :supplierOrderBillId";
+				params.put("supplierOrderBillId",deliverOrderPay.getSupplierOrderBillId());
+			}
 		}	
 		return whereHql;
 	}

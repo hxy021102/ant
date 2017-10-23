@@ -19,6 +19,7 @@ public class DeliverOrderPay implements java.io.Serializable {
 	private String status;
 	private Integer amount;
 	private String payWay;
+	private String payWayName;
 	private Integer supplierOrderBillId;
 
 
@@ -104,5 +105,13 @@ public class DeliverOrderPay implements java.io.Serializable {
 
 	public void setSupplierOrderBillId(Integer supplierOrderBillId) {
 		this.supplierOrderBillId = supplierOrderBillId;
+	}
+
+	public String getPayWayName() {
+		return ConvertNameUtil.getString(this.payWay);
+	}
+
+	public void setPayWayName(String payWayName) {
+		this.payWayName = payWayName;
 	}
 }
