@@ -80,6 +80,10 @@
             totalAmount += rows[i].amount;
             deliverOrderIds[i] = rows[i].id;
         }
+        var statu = confirm("总金额："+totalAmount/100.0+"\n起始时间："+shopOrderBillQuery.startDate+"\n结束时间:"+shopOrderBillQuery.endDate+"\n是否确认创建账单?");
+        if(!statu){
+            return false;
+        }
         shopOrderBillQuery.deliverOrderIds=deliverOrderIds;
         shopOrderBillQuery.amount=totalAmount;
         shopOrderBillQuery.deliverOrderList=rows;

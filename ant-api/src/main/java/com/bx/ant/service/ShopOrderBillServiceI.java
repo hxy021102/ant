@@ -81,4 +81,10 @@ public interface ShopOrderBillServiceI {
 	 */
 	void editBillStatusAndPayStatus(ShopOrderBill shopOrderBill);
 
+	/**
+	 *修改门店账单结算方式和账单支付状态及方式、以及运单和门店订单状态
+	 * 同时修改门店账单余额
+	 * @param shopOrderBill
+	 */
+	void editDeliverOrderStatusAndShopBalance(ShopOrderBill shopOrderBill);
 }

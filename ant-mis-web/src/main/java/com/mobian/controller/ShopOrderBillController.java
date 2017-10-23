@@ -9,11 +9,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.bx.ant.pageModel.ShopOrderBillQuery;
 import com.bx.ant.service.ShopOrderBillServiceI;
 import com.mobian.pageModel.*;
 import com.bx.ant.pageModel.ShopOrderBill;
 
+import com.mobian.service.MbShopServiceI;
 import com.mobian.util.ConfigUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,6 +35,8 @@ public class ShopOrderBillController extends BaseController {
 
 	@Resource
 	private ShopOrderBillServiceI shopOrderBillService;
+	@Resource
+	private MbShopServiceI mbShopService;
 
 
 	/**
@@ -187,5 +192,40 @@ public class ShopOrderBillController extends BaseController {
 		j.setMsg("编辑成功！");
 		return j;
 	}
+
+	/**
+	 * 跳转到门店账单支付页面
+	 * @param request
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/payShopBillPage")
+	public String payShopBillPage(HttpServletRequest request, Long id) {
+		ShopOrderBill shopOrderBill = shopOrderBillService.get(id);
+		if(shopOrderBill!=null){
+ 			MbShop shop =mbShopService.getFromCache(shopOrderBill.getShopId());
+			ShopOrderBillQuery shopOrderBillQuery = new ShopOrderBillQuery();
+			BeanUtils.copyProperties(shopOrderBill,shopOrderBillQuery);
+			shopOrderBillQuery.setShopName(shop.getName());
+			request.setAttribute("shopOrderBill", shopOrderBillQuery);
+		}
+		return "/shoporderbill/shopOrderBillPay";
+	}
+
+	/**
+	 * 支付门店账单
+	 * @param shopOrderBill
+	 * @return
+	 */
+	@RequestMapping("/payShopBill")
+	@ResponseBody
+	public Json payShopBill(ShopOrderBill shopOrderBill) {
+		Json j = new Json();
+		shopOrderBillService.editDeliverOrderStatusAndShopBalance(shopOrderBill);
+		j.setSuccess(true);
+		j.setMsg("支付成功！");
+		return j;
+	}
+
 
 }
