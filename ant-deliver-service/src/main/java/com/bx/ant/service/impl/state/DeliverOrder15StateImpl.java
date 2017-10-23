@@ -1,15 +1,16 @@
 package com.bx.ant.service.impl.state;
 
-import com.bx.ant.service.DeliverOrderLogServiceI;
-import com.bx.ant.service.DeliverOrderServiceI;
-import com.bx.ant.service.DeliverOrderShopServiceI;
-import com.bx.ant.service.DeliverOrderState;
+import com.bx.ant.pageModel.DeliverOrderShopItem;
+import com.bx.ant.pageModel.ShopItem;
+import com.bx.ant.service.*;
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.DeliverOrderShop;
+import com.mobian.absx.F;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 门店拒绝接单状态
@@ -31,6 +32,12 @@ public class DeliverOrder15StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderLogServiceI deliverOrderLogService;
 
+    @Autowired
+    private DeliverOrderShopItemServiceI deliverOrderShopItemService;
+
+    @Autowired
+    private ShopItemServiceI shopItemService;
+
     @Override
     public String getStateName() {
         return "15";
@@ -51,6 +58,8 @@ public class DeliverOrder15StateImpl implements DeliverOrderState {
         deliverOrderShop.setDeliverOrderId(orderNew.getId());
         deliverOrderShopService.editStatus(deliverOrderShop,DeliverOrderShopServiceI.STATUS_REFUSED);
 
+        //返还门店商品库存
+        shopItemService.refundByDeliverOrder(deliverOrder);
         //TODO 这里应该执行重新分配订单方法
 
     }

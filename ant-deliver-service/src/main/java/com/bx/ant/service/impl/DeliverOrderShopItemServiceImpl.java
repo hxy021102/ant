@@ -16,7 +16,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +35,9 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 
 	@Autowired
 	private DeliverOrderShopServiceI  deliverOrderShopService;
+
+	@Autowired
+	private DeliverOrderShopItemServiceImpl deliverOrderShopItemService;
 
 	@Override
 	public DataGrid dataGrid(DeliverOrderShopItem deliverOrderShopItem, PageHelper ph) {
@@ -221,5 +223,6 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 		}
 		return dg;
 	}
+
 
 }
