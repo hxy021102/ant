@@ -1,12 +1,16 @@
 package com.bx.ant.service.impl.state;
 
+import com.bx.ant.pageModel.DeliverOrderItem;
 import com.bx.ant.service.*;
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.DeliverOrderShop;
+import com.bx.ant.service.impl.DeliverOrderShopItemServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 已分配订单,待接单状态
@@ -35,6 +39,12 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderLogServiceI deliverOrderLogService;
 
+    @Autowired
+    private DeliverOrderItemServiceI deliverOrderItemService;
+
+    @Autowired
+    private DeliverOrderShopItemServiceI deliverOrderShopItemService;
+
     @Override
     public String getStateName() {
         return "10";
@@ -43,28 +53,21 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
     @Override
     public void handle(DeliverOrder deliverOrder) {
 
-
-//        DeliverOrderPay deliverOrderPay = new DeliverOrderPay();
-
-//        deliverOrderPay.setAmount(deliverOrder.getAmount());
-//        deliverOrderPay.setDeliverOrderId(deliverOrder.getId());
-//        deliverOrderPay.setPayWay(deliverOrder.getPayWay());
-//        deliverOrderPay.setSupplierId(deliverOrder.getSupplierId());
-//        deliverOrderPay.setStatus(deliverOrder.getPayStatus());
-//        deliverOrderPayService.add(deliverOrderPay);
-
-        DeliverOrder orderNew = new DeliverOrder();
-
-        orderNew.setId(deliverOrder.getId());
-        orderNew.setStatus(prefix + getStateName());
-        deliverOrderService.editAndAddLog(orderNew, DeliverOrderLogServiceI.TYPE_ASSIGN_DELIVER_ORDER,
-                "运单被分配");
-
+        //添加门店订单
         DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+        deliverOrderShop.setAmount(deliverOrder.getAmount());
         deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
         deliverOrderShop.setShopId(deliverOrder.getShopId());
-        deliverOrderShopService.editStatus(deliverOrderShop,DeliverOrderShopServiceI.STATUS_AUDITING);
+        deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_AUDITING);
+        deliverOrderShop.setDistance(new BigDecimal(deliverOrder.getShopDistance()));
+        deliverOrderShopService.add(deliverOrderShop);
+        List<DeliverOrderItem> deliverOrderItemList = deliverOrderItemService.getDeliverOrderItemList(deliverOrder.getId());
+        deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItemList, deliverOrderShop);
 
+        //编辑订单并添加修改记录
+        deliverOrder.setStatus(prefix + getStateName());
+
+        deliverOrderService.editAndAddLog(deliverOrder, DeliverOrderLogServiceI.TYPE_ASSIGN_DELIVER_ORDER, "系统自动分配订单");
     }
 
     @Override

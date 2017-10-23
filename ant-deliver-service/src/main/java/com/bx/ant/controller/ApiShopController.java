@@ -1,5 +1,6 @@
 package com.bx.ant.controller;
 
+import com.bx.ant.pageModel.DeliverOrderShopQuery;
 import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderShopServiceI;
@@ -79,8 +80,11 @@ public class ApiShopController extends BaseController {
         DataGrid dataGrid = mbBalanceLogService.updateDeliveryBalanceLogDataGrid(mbBalanceLog,new PageHelper());
         data.put("balanceLogDataGrid", dataGrid);
        //获取有效订单数量
-        DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+        Integer todayQuantity = new Integer(0);
+        DeliverOrderShopQuery deliverOrderShop = new DeliverOrderShopQuery();
         deliverOrderShop.setShopId(shopId);
+        String[] statusList = {DeliverOrderShopServiceI.STATUS_ACCEPTED,DeliverOrderShopServiceI.STATUS_COMPLETE};
+        deliverOrderShop.setStatusList(statusList);
         deliverOrderShop.setUpdatetimeBegin(todayStart);
         deliverOrderShop.setUpdatetimeEnd(todayEnd);
         List<DeliverOrderShop> deliverOrderShopList = deliverOrderShopService.dataGrid(deliverOrderShop, new PageHelper()).getRows();

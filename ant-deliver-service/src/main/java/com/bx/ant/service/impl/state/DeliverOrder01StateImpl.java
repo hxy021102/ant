@@ -35,7 +35,7 @@ public class DeliverOrder01StateImpl implements DeliverOrderState {
     public void handle(DeliverOrder deliverOrder) {
         deliverOrder.setStatus(prefix + getStateName());
         deliverOrder.setPayStatus(DeliverOrderServiceI.PAY_STATUS_NOT_PAY);
-        deliverOrder.setShopPayStatus(DeliverOrderServiceI.PAY_STATUS_NOT_PAY);
+        deliverOrder.setShopPayStatus(DeliverOrderServiceI.SHOP_PAY_STATUS_NOT_PAY);
         deliverOrder.setDeliveryStatus(DeliverOrderServiceI.DELIVER_STATUS_STANDBY);
 
         deliverOrderService.add(deliverOrder);

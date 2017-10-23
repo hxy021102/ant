@@ -75,7 +75,7 @@
                 width : 30
                 }, {
                 field : 'deliveryRequireTime',
-                title : '送达时间',
+                title : '要求送达时间',
                 width : 50
                 }, {
 				field : 'shopPayStatusName',
@@ -241,6 +241,14 @@
 			</form>
 			<iframe id="downloadIframe" name="downloadIframe" style="display: none;"></iframe>
 		</c:if>
+
+		<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/upload')}">
+			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_go',plain:true" onclick="uploadTable();">导入</a>
+			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">
+			</form>
+			<iframe id="downloadIframe" name="downloadIframe" style="display: none;"></iframe>
+		</c:if>
+
 	</div>	
 </body>
 </html>

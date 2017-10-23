@@ -161,7 +161,7 @@ public class MbShopController extends BaseController {
      */
     @RequestMapping("/view")
     public String view(HttpServletRequest request, Integer id) {
-        MbShop mbShop = mbShopService.get(id);
+        MbShop mbShop = mbShopService.getFromCache(id);
         MbShopExt mbShopExt = new MbShopExt();
         BeanUtils.copyProperties(mbShop, mbShopExt);
         MbBalance mbBalance = mbBalanceService.queryByShopId(mbShop.getId());

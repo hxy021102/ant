@@ -87,6 +87,13 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 				whereHql += " and t.updatetime < :updatetimeEnd";
 				params.put("updatetimeEnd",deliverOrderShop.getUpdatetimeEnd());
 			}
+			if (deliverOrderShop instanceof DeliverOrderShopQuery) {
+				DeliverOrderShopQuery ext = (DeliverOrderShopQuery) deliverOrderShop;
+				if (ext.getStatusList() != null && ext.getStatusList().length > 0) {
+					whereHql += " and t.status in (:alist)";
+					params.put("alist", ext.getStatusList());
+				}
+			}
 		}	
 		return whereHql;
 	}

@@ -2,11 +2,12 @@ package com.bx.ant.service.allocation;
 
 import com.bx.ant.pageModel.*;
 import com.bx.ant.service.*;
+import com.bx.ant.service.session.TokenServiceI;
 import com.mobian.absx.F;
+import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.PageHelper;
-import com.mobian.service.MbShopServiceI;
 import com.mobian.thirdpart.mns.MNSTemplate;
 import com.mobian.thirdpart.mns.MNSUtil;
 import com.mobian.util.ConvertNameUtil;
@@ -33,8 +34,6 @@ import java.util.Map;
 @Service
 public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocationServiceI {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    @Resource
-    private MbShopServiceI mbShopService;
 
     @Autowired
     private DeliverOrderServiceI deliverOrderService;
@@ -53,6 +52,12 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
 
     @Autowired
     private HibernateTransactionManager transactionManager;
+
+    @Resource
+    private TokenServiceI tokenService;
+
+    @Autowired
+    private DeliverOrderLogServiceI deliverOrderLogService;
 
 
     @Override
@@ -101,7 +106,7 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
         }
         //4、计算最近距离点
         MbShop minMbShop = null;
-        double minDistance = 0;
+        double minDistance = 0, maxDistance;
         //拒接的状态下，查询拒接过的门店
         List<Integer> excludeShop = new ArrayList<Integer>();
         if (DeliverOrderServiceI.STATUS_SHOP_REFUSE.equals(deliverOrder.getStatus())) {
@@ -112,29 +117,29 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                 excludeShop.add(orderShop.getShopId());
             }
         }
+        // TODO 查询门店最大配送距离
+        maxDistance = Double.valueOf(ConvertNameUtil.getString("DSV200", "5000"));
+
         for (ShopDeliverApply shopDeliverApply : shopDeliverApplyList) {
             MbShop mbShop = shopDeliverApply.getMbShop();
             if (excludeShop.contains(mbShop.getId())) continue;
             double distance = GeoUtil.getDistance(deliverOrder.getLongitude().doubleValue(), deliverOrder.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
+            if(distance > maxDistance) continue;
+
             if (distance < minDistance || minDistance == 0) {
                 minMbShop = mbShop;
                 minDistance = distance;
+
+                if(distance == 0) break; // 解决同一个地址不分配的问题
             }
         }
         //5、计算分单价格
         if (minMbShop != null && !F.empty(minMbShop.getId())) {
-            DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
-            deliverOrderShop.setAmount(deliverOrder.getAmount());
-            deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
-            deliverOrderShop.setShopId(minMbShop.getId());
-            deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_AUDITING);
-            deliverOrderShop.setDistance(new BigDecimal(minDistance));
-            deliverOrderShopService.add(deliverOrderShop);
-            List<DeliverOrderItem> deliverOrderItemList = deliverOrderItemService.getDeliverOrderItemList(deliverOrder.getId());
-            deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItemList, deliverOrderShop);
+
+            if(tokenService.getTokenByShopId(minMbShop.getId()) == null) throw new ServiceException("门店不在线，token已失效");
             deliverOrder.setShopId(minMbShop.getId());
-            deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_ALLOCATION);
-            deliverOrderService.edit(deliverOrder);
+            deliverOrder.setShopDistance(minDistance);
+            deliverOrderService.transform(deliverOrder);
 
             // 发送短信通知
             if(!F.empty(minMbShop.getContactPhone()) && Integer.valueOf(ConvertNameUtil.getString("DSV101", "1")) == 1) {

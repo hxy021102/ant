@@ -9,8 +9,9 @@
 	<title>DeliverOrder管理</title>
 	<jsp:include page="../inc.jsp"></jsp:include>
 	 <script type="text/javascript">
+		 var shopBillDataGrid;
          $(function() {
-             $('#shopBillDataGrid').datagrid({
+             shopBillDataGrid= $('#shopBillDataGrid').datagrid({
              url : '${pageContext.request.contextPath}/deliverOrderShopPayController/dataGrid?shopOrderBillId='+${shopOrderBill.id},
              fit : true,
              fitColumns : true,
@@ -64,6 +65,34 @@
              }
          });
 	 })
+
+         function examineFun(id) {
+             parent.$.modalDialog({
+                 title : '审核派单',
+                 width : 780,
+                 height : 300,
+                 href : '${pageContext.request.contextPath}/shopOrderBillController/examinePage?id=' + ${shopOrderBill.id},
+                 buttons: [{
+                     text: '通过',
+                     handler: function () {
+                         parent.$.modalDialog.openner_dataGrid =  shopBillDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                         var f = parent.$.modalDialog.handler.find('#form');
+                         f.find("input[name=status]").val("BAS02");
+                         f.submit();
+                     }
+                 },
+                     {
+                         text: '拒绝',
+                         handler: function () {
+                             parent.$.modalDialog.openner_dataGrid =  shopBillDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                             var f = parent.$.modalDialog.handler.find('#form');
+                             f.find("input[name=status]").val("BAS03");
+                             f.submit();
+                         }
+                     }
+                 ]
+             });
+         }
 	 </script>
 </head>
 <body>
@@ -74,6 +103,9 @@
 				<th>账单ID</th>
 				<td>
 					${shopOrderBill.id}
+					    <c:if test="${fn:contains(sessionInfo.resourceList, '/shopOrderBillController/examinePage') and shopOrderBill.status=='BAS01' }">
+							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="examineFun();">审核</a>
+						</c:if>
 				</td>
 				<th>创建时间</th>
 				<td>

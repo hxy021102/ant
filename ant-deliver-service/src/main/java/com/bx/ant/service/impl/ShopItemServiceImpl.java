@@ -2,6 +2,8 @@ package com.bx.ant.service.impl;
 
 import com.bx.ant.dao.ShopItemDaoI;
 import com.bx.ant.model.TshopItem;
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderShopItem;
 import com.bx.ant.pageModel.ShopItemQuery;
 import com.bx.ant.service.ShopItemServiceI;
 import com.mobian.absx.F;
@@ -28,6 +30,12 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 	private ShopItemDaoI shopItemDao;
 	@javax.annotation.Resource
 	private MbItemServiceI mbItemService;
+
+	@Autowired
+	private DeliverOrderShopItemServiceImpl deliverOrderShopItemService;
+
+	@Autowired
+	private ShopItemServiceImpl shopItemService;
 
 	@Override
 	public DataGrid dataGrid(ShopItem shopItem, PageHelper ph) {
@@ -357,6 +365,31 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 	public void deleteShopItem(Integer itemId, Integer shopId) {
 		ShopItem shopItem = getByShopIdAndItemId(shopId, itemId);
 		delete(shopItem.getId());
+	}
+	@Override
+	public void refundByDeliverOrder(DeliverOrder deliverOrder){
+		if (!F.empty(deliverOrder.getId()) || !F.empty(deliverOrder.getShopId())) {
+			//通过deliverOrder获取deliverOrderShopItem
+			DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
+			deliverOrderShopItem.setDeliverOrderId(deliverOrder.getId());
+			deliverOrderShopItem.setShopId(deliverOrder.getShopId());
+			List<DeliverOrderShopItem> items = deliverOrderShopItemService.list(deliverOrderShopItem);
+			//遍历deliverOrderShopItem找到对应的shopItem
+			for (DeliverOrderShopItem orderShopItem : items) {
+				ShopItem shopItem = new ShopItem();
+				shopItem.setShopId(deliverOrder.getShopId());
+				shopItem.setItemId(orderShopItem.getItemId());
+				List<ShopItem> shopItems = shopItemService.query(shopItem);
+				//通过shopItem修改对应的数量
+				if (CollectionUtils.isNotEmpty(shopItems)) {
+					ShopItem shopItem1 = shopItems.get(0);
+					ShopItem si = new ShopItem();
+					si.setId(shopItem1.getId());
+					si.setQuantity(si.getQuantity() == null ? 0 : si.getQuantity());
+					shopItemService.edit(si);
+				}
+			}
+		}
 	}
 
 }

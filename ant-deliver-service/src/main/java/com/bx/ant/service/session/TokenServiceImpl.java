@@ -37,6 +37,9 @@ public class TokenServiceImpl implements TokenServiceI {
     public boolean setToken(TokenWrap tokenWrap) {
         String key = Key.build(Namespace.SHOP_USER_LOGIN_TOKEN, tokenWrap.getTokenId());
         redisUtil.set(key, JSONObject.toJSONString(tokenWrap), timeout, TimeUnit.SECONDS);
+        if(!F.empty(tokenWrap.getShopId())) {
+            redisUtil.set(Key.build(Namespace.SHOP_USER_SHOPID_TOKEN, tokenWrap.getShopId().toString()), tokenWrap.getTokenId());
+        }
         return false;
     }
 
@@ -46,6 +49,13 @@ public class TokenServiceImpl implements TokenServiceI {
         String json = (String) redisUtil.get(key);
         if (F.empty(json)) return null;
         return JSONObject.parseObject(json, TokenWrap.class);
+    }
+
+    @Override
+    public TokenWrap getTokenByShopId(Integer shopId) {
+        String tokenId = (String) redisUtil.get(Key.build(Namespace.SHOP_USER_SHOPID_TOKEN, shopId + ""));
+        TokenWrap tokenWrap = getToken(tokenId);
+        return tokenWrap;
     }
 
     @Override

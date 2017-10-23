@@ -2,11 +2,14 @@ package com.bx.ant.pageModel;
 
 import com.mobian.util.ConvertNameUtil;
 
+import java.util.List;
+
 
 @SuppressWarnings("serial")
 public class DeliverOrderShopQuery extends DeliverOrderShop {
 	private String shopName;
 	private String statusName;
+	private String[] statusList;
 
 	public String getShopName() {
 		return shopName;
@@ -22,5 +25,13 @@ public class DeliverOrderShopQuery extends DeliverOrderShop {
 
 	public void setStatusName(String statusName) {
 		this.statusName = statusName;
+	}
+
+	public String[] getStatusList() {
+		return statusList;
+	}
+
+	public void setStatusList(String[] statusList) {
+		this.statusList = statusList;
 	}
 }

@@ -29,11 +29,15 @@
             striped : true,
             rownumbers : true,
             singleSelect : true,
-            columns : [ [ {
+            columns : [ [  {
+                field : 'ck',
+                checkbox:true,
+                width : 30
+            }, {
                 field : 'id',
                 title : '订单ID',
                 width : 30,
-            }, {
+            },{
                 field : 'addtime',
                 title : '创建时间',
                 width : 50,
@@ -66,31 +70,46 @@
             }
         });
 	});
+
     function addShopOrderBill() {
-        var rows = $('#dataGrid').datagrid('getRows');
+        var rows = $('#dataGrid').datagrid('getChecked');
+        var shopOrderBillQuery = $.serializeObject($('#searchForm'));
         var totalAmount = 0;
+        var deliverOrderIds = new Array(rows.length);
         for (var i = 0; i < rows.length; i++) {
             totalAmount += rows[i].amount;
+            deliverOrderIds[i] = rows[i].id;
         }
-        var startDate = $.serializeObject($('#searchForm')).startDate;
-        var endDate = $.serializeObject($('#searchForm')).endDate;
-        var shopId = $.serializeObject($('#searchForm')).shopId;
-        parent.$.modalDialog({
-            title: '创建账单',
-            width: 780,
-            height: 230,
-            href: '${pageContext.request.contextPath}/deliverShopArtificialPayController/addShopOrderBillPage?shopId=' + shopId + "&startDate=" + startDate + "&endDate=" + endDate + "&totalAmount=" + totalAmount,
-            buttons: [{
-                text: '确定',
-                handler: function () {
-                    parent.$.modalDialog.openner_dataGrid = dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
-                    var f = parent.$.modalDialog.handler.find('#form');
-                    f.submit();
-                }
-            }]
-        });
-    }
+        shopOrderBillQuery.deliverOrderIds=deliverOrderIds;
+        shopOrderBillQuery.amount=totalAmount;
+        shopOrderBillQuery.deliverOrderList=rows;
+        $.ajax({
+            url:  '${pageContext.request.contextPath}/deliverShopArtificialPayController/addShopOrderBill',
+            data: JSON.stringify(shopOrderBillQuery),
+            dataType: "json",
+            type: "POST",
+            contentType: "application/json;charset=UTF-8",
+            beforeSend: function (request) {
+                parent.$.messager.progress({
+                    title: '提示',
+                    text: '数据处理中，请稍后....'
+                });
+            },
 
+            success: function (result) {
+                parent.$.messager.progress('close');
+                if(result.success) {
+                    parent.$.messager.alert('提示', result.msg);
+                }else{
+                    parent.$.messager.alert('错误', result.msg);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                parent.$.messager.progress('close');
+            }
+        });
+
+    }
 
     $(function() {
         $('#searchForm table').show();

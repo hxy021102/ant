@@ -3,7 +3,10 @@ package com.bx.ant.service;
 import com.bx.ant.pageModel.ShopOrderBill;
 import com.bx.ant.pageModel.ShopOrderBillQuery;
 import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
+
+
 
 /**
  * 
@@ -63,7 +66,7 @@ public interface ShopOrderBillServiceI {
 	/**
 	 * 创建门店结算对账单和运单门店结算明细
 	 */
-	void addShopOrderBillAndShopPay(ShopOrderBill shopOrderBill);
+	Json addShopOrderBillAndShopPay(ShopOrderBillQuery shopOrderBillQuery);
 
 	/**
 	 * 获取ShopOrderBill详情页面信息

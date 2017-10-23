@@ -29,6 +29,7 @@ public class DeliverOrder implements java.io.Serializable {
 	private BigDecimal latitude;
 	private String remark;
 	private Integer shopId;
+	private Double shopDistance;
 
 
 
@@ -185,5 +186,13 @@ public class DeliverOrder implements java.io.Serializable {
 
 	public void setLatitude(BigDecimal latitude) {
 		this.latitude = latitude;
+	}
+
+	public Double getShopDistance() {
+		return shopDistance;
+	}
+
+	public void setShopDistance(Double shopDistance) {
+		this.shopDistance = shopDistance;
 	}
 }

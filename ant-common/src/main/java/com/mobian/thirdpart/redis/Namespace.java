@@ -16,7 +16,9 @@ public interface Namespace {
     String REMIND_DRIVERS="remind_drivers";
     String ACTIVITY_TYPE_REFID = "activity_type_refid";
     String SHOP_USER_LOGIN_TOKEN = "shop_user_login_token";
+    String SHOP_USER_SHOPID_TOKEN = "shop_user_shopId_token";
     String SHOP_LOGIN_VALIDATE_CODE = "shop_login_validate_code";
     String SHOP_BALANCE_ROLL_VALIDATE_CODE = "shop_balance_roll_validate_code";
     String ORDERLOG_MESSAGE="order_log_message";
+    String MB_SHOP_CACHE = "mb_shop_cache";
 }

@@ -241,6 +241,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		//填充明细信息
 		DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
 		deliverOrderShopItem.setDeliverOrderId(deliverOrderExt.getId());
+		deliverOrderShopItem.setShopId(deliverOrderExt.getShopId());
 		List<DeliverOrderShopItem> deliverOrderShopItems = deliverOrderShopItemService.list(deliverOrderShopItem);
 		deliverOrderExt.setDeliverOrderShopItemList(deliverOrderShopItems);
 	}

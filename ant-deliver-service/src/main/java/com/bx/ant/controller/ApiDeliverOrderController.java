@@ -1,12 +1,16 @@
 package com.bx.ant.controller;
 
+import com.bx.ant.pageModel.DeliverOrderShop;
 import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.bx.ant.pageModel.DeliverOrder;
+import com.mobian.absx.F;
+import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.MbShopServiceI;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +18,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by  wanxp 2017/9/22.
@@ -114,16 +120,27 @@ public class ApiDeliverOrderController extends BaseController {
     @ResponseBody
     public Json viewRefusedDataGrid(HttpServletRequest request, PageHelper pageHelper){
         Json json = new Json();
-
+        DataGrid dataGrid = new DataGrid();
+        List<DeliverOrder> ol = new ArrayList<DeliverOrder>();
         //获取shopId
-        //TODO 测试时设置shop ID值,若真正使用从token中获取
         TokenWrap token = getTokenWrap(request);
         Integer shopId = token.getShopId();
-        DeliverOrder deliverOrder =  new DeliverOrder();
-        deliverOrder.setShopId(shopId);
-        deliverOrder.setStatus(deliverOrderService.STATUS_SHOP_REFUSE);
-        json.setMsg("u know");
-        json.setObj(deliverOrderService.dataGridExt(deliverOrder, pageHelper));
+        //获取拒绝的deliverOrderShop
+        DeliverOrderShop orderShop = new DeliverOrderShop();
+        orderShop.setStatus(DeliverOrderShopServiceI.STATUS_REFUSED);
+        orderShop.setShopId(shopId);
+        List<DeliverOrderShop> orderShops = deliverOrderShopService.query(orderShop);
+        if (CollectionUtils.isNotEmpty(orderShops)) {
+            //通过deliverOrderShop获取deliverOrder
+            for (DeliverOrderShop deliverOrderShop : orderShops) {
+                if (!F.empty(deliverOrderShop.getDeliverOrderId())) {
+                    ol.add(deliverOrderService.getDeliverOrderExt(deliverOrderShop.getDeliverOrderId()));
+                }
+            }
+            dataGrid.setRows(ol);
+            json.setMsg("u know");
+            json.setObj(dataGrid);
+        }
         json.setSuccess(true);
         return json;
     }
