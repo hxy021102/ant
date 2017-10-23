@@ -3,11 +3,11 @@ package com.bx.ant.service.impl;
 import com.bx.ant.dao.ShopOrderBillDaoI;
 import com.bx.ant.model.TshopOrderBill;
 import com.bx.ant.pageModel.*;
-import com.bx.ant.service.DeliverOrderServiceI;
-import com.bx.ant.service.DeliverOrderShopPayServiceI;
-import com.bx.ant.service.ShopOrderBillServiceI;
+import com.bx.ant.service.*;
 import com.mobian.absx.F;
 import com.mobian.pageModel.*;
+import com.mobian.service.MbBalanceLogServiceI;
+import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.service.UserServiceI;
 import com.mobian.util.MyBeanUtils;
@@ -36,7 +36,12 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 	 private DeliverOrderShopPayServiceI deliverOrderShopPayService;
 	 @Resource
 	 private UserServiceI userService;
-
+     @Resource
+	 private MbBalanceServiceI mbBalanceService;
+     @Resource
+	 private MbBalanceLogServiceI mbBalanceLogService;
+     @Autowired
+	 private DeliverOrderShopServiceI deliverOrderShopService;
 
 	@Override
 	public DataGrid dataGrid(ShopOrderBill shopOrderBill, PageHelper ph) {
@@ -186,6 +191,7 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 					orderShopPay.setShopId(shopOrderBill.getShopId());
 					orderShopPay.setDeliverOrderId(deliverOrder.getId());
 					orderShopPay.setStatus("SPS02");
+					orderShopPay.setAmount(deliverOrder.getAmount());
 					orderShopPay.setShopOrderBillId(shopOrderBillId);
 					deliverOrderShopPayService.add(orderShopPay);
 				}
@@ -232,6 +238,43 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 			}
 		}
 
+	}
+
+	@Override
+	public void editDeliverOrderStatusAndShopBalance(ShopOrderBill shopOrderBill) {
+		edit(shopOrderBill);
+		DeliverOrderShopPay deliverOrderShopPay = new DeliverOrderShopPay();
+		deliverOrderShopPay.setStatus("SPS01");
+		deliverOrderShopPay.setShopOrderBillId(shopOrderBill.getId());
+		List<DeliverOrderShopPay> deliverOrderShopPays =deliverOrderShopPayService.query(deliverOrderShopPay);
+		if(CollectionUtils.isNotEmpty(deliverOrderShopPays)){
+			for(DeliverOrderShopPay orderShopPay :deliverOrderShopPays){
+				//修改门店支付状态
+ 				orderShopPay.setStatus("SPS04");
+				orderShopPay.setPayWay(shopOrderBill.getPayWay());
+				deliverOrderShopPayService.edit(orderShopPay);
+				//修改订单状态
+				DeliverOrder deliverOrder =deliverOrderService.get(orderShopPay.getDeliverOrderId());
+				deliverOrder.setStatus("DOS40");
+				deliverOrder.setDeliveryStatus(DeliverOrderServiceI.DELIVER_STATUS_USER_CHECK);
+				deliverOrder.setShopPayStatus(DeliverOrderServiceI.SHOP_PAY_STATUS_SUCCESS);
+				deliverOrderService.editAndAddLog(deliverOrder, DeliverOrderLogServiceI.TYPE_COMPLETE_DELIVER_ORDER, "运单已完成");
+				//修改运单门店状态
+				DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+				deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_ACCEPTED);
+				deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
+				deliverOrderShopService.editStatus(deliverOrderShop,DeliverOrderShopServiceI.STATUS_COMPLETE);
+			}
+            MbBalance mbBalance = mbBalanceService.addOrGetMbBalanceDelivery(shopOrderBill.getShopId());
+			if(mbBalance!=null){
+				MbBalanceLog mbBalanceLog = new MbBalanceLog();
+				mbBalanceLog.setBalanceId(mbBalance.getId());
+				mbBalanceLog.setRefType("BT061");
+				mbBalanceLog.setRemark("门店手动账单结算");
+				mbBalanceLog.setAmount(shopOrderBill.getAmount());
+				mbBalanceLogService.addAndUpdateBalance(mbBalanceLog);
+			}
+		}
 	}
 
 }

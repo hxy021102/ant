@@ -93,6 +93,23 @@
                  ]
              });
          }
+
+         function payShopBill() {
+             parent.$.modalDialog({
+                 title : '结算账单',
+                 width : 780,
+                 height : 230,
+                 href : '${pageContext.request.contextPath}/shopOrderBillController/payShopBillPage?id=' +${shopOrderBill.id},
+                 buttons : [ {
+                     text : '确认',
+                     handler : function() {
+                         parent.$.modalDialog.openner_dataGrid = shopBillDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                         var f = parent.$.modalDialog.handler.find('#form');
+                         f.submit();
+                     }
+                 } ]
+             });
+         }
 	 </script>
 </head>
 <body>
@@ -105,6 +122,9 @@
 					${shopOrderBill.id}
 					    <c:if test="${fn:contains(sessionInfo.resourceList, '/shopOrderBillController/examinePage') and shopOrderBill.status=='BAS01' }">
 							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="examineFun();">审核</a>
+						</c:if>
+						<c:if test="${fn:contains(sessionInfo.resourceList, '/shopOrderBillController/examinePage') and shopOrderBill.status=='BAS02' }">
+							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="payShopBill();">支付</a>
 						</c:if>
 				</td>
 				<th>创建时间</th>
