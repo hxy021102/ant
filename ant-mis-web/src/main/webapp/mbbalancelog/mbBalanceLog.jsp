@@ -80,26 +80,7 @@
 				field : 'remark',
 				title : '<%=TmbBalanceLog.ALIAS_REMARK%>',
 				width : 50		
-			}, /*{
-				field : 'action',
-				title : '操作',
-				width : 100,
-				formatter : function(value, row, index) {
-					var str = '';
-					if ($.canEdit) {
-						str += $.formatString('<img onclick="editFun(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/pencil.png');
-					}
-					str += '&nbsp;';
-					if ($.canDelete) {
-						str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/cancel.png');
-					}
-					str += '&nbsp;';
-					if ($.canView) {
-						str += $.formatString('<img onclick="viewFun(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/link.png');
-					}
-					return str;
-				}
-			}*/ ] ],
+			}] ],
 			toolbar : '#toolbar',
 			onLoadSuccess : function() {
 				$('#searchForm table').show();
@@ -225,7 +206,7 @@
 							<strong>门店名称&nbsp;&nbsp;</strong><jb:selectGrid dataType="shopId" name="shopId" params="{onlyMain:true}"></jb:selectGrid>
 						</td>
 						<td>
-							<strong>业务类型&nbsp;&nbsp;</strong><jb:selectSql dataType="SQ016" name="refType" ></jb:selectSql>
+							<strong>业务类型&nbsp;&nbsp;</strong><jb:selectSql dataType="SQ016" name="refTypes"  multiple="true" ></jb:selectSql>
 						</td>
 					</tr>
 				</table>
