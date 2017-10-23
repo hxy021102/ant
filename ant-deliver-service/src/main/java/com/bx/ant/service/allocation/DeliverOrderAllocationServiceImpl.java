@@ -121,6 +121,8 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
             if (distance < minDistance || minDistance == 0) {
                 minMbShop = mbShop;
                 minDistance = distance;
+
+                if(distance == 0) break; // 解决同一个地址不分配的问题
             }
         }
         //5、计算分单价格
