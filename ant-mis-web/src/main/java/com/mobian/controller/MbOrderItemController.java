@@ -160,8 +160,10 @@ public class MbOrderItemController extends BaseController {
                 if (mbOrder == null || mbOrder.getId() == null || "OD01_OD31_OD32".indexOf(mbOrder.getStatus())>-1) continue;
                 MbOrderItemExport mbOrderItemExport = new MbOrderItemExport();
                 BeanUtils.copyProperties(itemExport, mbOrderItemExport);
-                mbOrderItemExport.setMarketPriceFormat(nf.format(mbOrderItemExport.getMarketPrice() / 100f));
-                mbOrderItemExport.setBuyPriceFormat(nf.format(mbOrderItemExport.getBuyPrice()/100f));
+                if (mbOrderItemExport.getMarketPrice() != null)
+                    mbOrderItemExport.setMarketPriceFormat(nf.format(mbOrderItemExport.getMarketPrice() / 100f));
+                if (mbOrderItemExport.getBuyPrice() != null)
+                    mbOrderItemExport.setBuyPriceFormat(nf.format(mbOrderItemExport.getBuyPrice() / 100f));
                 mbOrderItemExports.add(mbOrderItemExport);
                 mbOrderItemExport.setShopId(mbOrder.getShopId());
                 mbOrderItemExport.setShopName(mbOrder.getShopName());
