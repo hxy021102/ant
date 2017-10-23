@@ -60,12 +60,12 @@
 				<tr>	
 					<th>价格</th>
 					<td>
-											<input class="span2 money_input" name="priceStr" type="text"/>
+											<input class="span2 money_input easyui-validatebox" name="priceStr" type="text" data-options="required:true"/>
 						   <input type="hidden" name="price">
 					</td>							
 					<th>采购价</th>
 					<td>
-											<input class="span2 money_input" name="inPriceStr" type="text"/>
+											<input class="span2 money_input easyui-validatebox" name="inPriceStr" type="text" data-options="required:true"/>
 							<input type="hidden" name="inPrice">
 
 					</td>							
@@ -73,7 +73,7 @@
 				<tr>	
 					<th>运费</th>
 					<td>
-											<input class="span2 money_input" name="freightStr" type="text"/>
+											<input class="span2 money_input easyui-validatebox" name="freightStr" type="text" data-options="required:true"/>
 						<input type="hidden" name="freight">
 					</td>							
 					<th>上下架</th>

@@ -100,7 +100,7 @@
 					</td>
 					<th style="width: 50px">状态</th>
 					<td>
-						<jb:select dataType="SLS" name="status"></jb:select>
+						<jb:select dataType="SLS" name="status" required="true"></jb:select>
 					</td>
 				</tr>
 				<tr>	

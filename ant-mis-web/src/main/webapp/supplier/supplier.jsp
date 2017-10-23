@@ -233,15 +233,15 @@
 				<table class="table table-hover table-condensed" style="display: none;">
 
 						<tr>	
-							<th>appkey</th>
+							<th style="width: 50px">编号</th>
 							<td>
-											<input type="text" name="appKey" maxlength="32" class="span2"/>
+											<input type="text" name="id" maxlength="32" class="span2"/>
 							</td>
-							<th>接入方名称</th>
+							<th style="width: 60px">接入方名称</th>
 							<td>
 								<input type="text" name="name" maxlength="128" class="span2"/>
 							</td>
-							<th>状态</th>
+							<th style="width: 50px">状态</th>
 							<td>
 											<jb:select dataType="SLS" name="status"></jb:select>	
 							</td>
