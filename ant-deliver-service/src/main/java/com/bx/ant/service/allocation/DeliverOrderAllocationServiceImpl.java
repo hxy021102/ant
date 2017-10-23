@@ -103,7 +103,7 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
         }
         //4、计算最近距离点
         MbShop minMbShop = null;
-        double minDistance = 0;
+        double minDistance = 0, maxDistance;
         //拒接的状态下，查询拒接过的门店
         List<Integer> excludeShop = new ArrayList<Integer>();
         if (DeliverOrderServiceI.STATUS_SHOP_REFUSE.equals(deliverOrder.getStatus())) {
@@ -114,10 +114,15 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                 excludeShop.add(orderShop.getShopId());
             }
         }
+        // TODO 查询门店最大配送距离
+        maxDistance = Double.valueOf(ConvertNameUtil.getString("DSV200", "5000"));
+
         for (ShopDeliverApply shopDeliverApply : shopDeliverApplyList) {
             MbShop mbShop = shopDeliverApply.getMbShop();
             if (excludeShop.contains(mbShop.getId())) continue;
             double distance = GeoUtil.getDistance(deliverOrder.getLongitude().doubleValue(), deliverOrder.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
+            if(distance > maxDistance) continue;
+
             if (distance < minDistance || minDistance == 0) {
                 minMbShop = mbShop;
                 minDistance = distance;
