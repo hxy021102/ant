@@ -134,6 +134,7 @@ public class MbItemServiceImpl extends BaseServiceImpl<MbItem> implements MbItem
 	@Override
 	public MbItem getFromCache(Integer id) {
 		TmbItem source = mbItemDao.getById(id);
+		if (source == null) return null;
 		MbItem target = new MbItem();
 		BeanUtils.copyProperties(source, target);
 		return target;

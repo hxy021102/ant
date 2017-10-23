@@ -33,9 +33,9 @@
 			fit : true,
 			fitColumns : true,
 			border : false,
-			pagination : true,
+			pagination : false,
 			idField : 'id',
-			pageSize : 10,
+			/*pageSize : 10,*/
 			pageList : [ 10, 20, 30, 40, 50 ],
 			sortName : 'id',
 			sortOrder : 'desc',
@@ -44,17 +44,14 @@
 			nowrap : true,
 			striped : true,
 			rownumbers : true,
+            showFooter : true,
 			singleSelect : true,
 			columns : [ [ {
 				field : 'id',
 				title : '编号',
 				width : 150,
 				hidden : true
-				}, {
-				field : 'updatetime',
-				title : '<%=TmbSupplierStockInItem.ALIAS_UPDATETIME%>',
-				width : 60
-				}, {
+				},  {
                 field : 'supplierName',
                 title : '<%=TmbSupplierStockInItem.ALIAS_SUPPLIER_NAME%>',
                 width : 80
@@ -62,7 +59,11 @@
                 field : 'supplierOrderId',
                 title : '<%=TmbSupplierStockInItem.ALIAS_SUPPLIER_ORDER_ID%>',
                 width : 30
-            	}, {
+            	},{
+                field : 'updatetime',
+                title : '<%=TmbSupplierStockInItem.ALIAS_UPDATETIME%>',
+                width : 60
+                },{
 				field : 'itemId',
 				title : '<%=TmbSupplierStockInItem.ALIAS_ITEM_ID%>',
 				width : 30
@@ -79,15 +80,24 @@
 				title : '<%=TmbSupplierStockInItem.ALIAS_QUANTITY%>',
 				width : 30
 				}, {
-				field : 'price',
-				title : '<%=TmbSupplierStockInItem.ALIAS_PRICE%>',
-				width : 30,
-				formatter: function (value) {
-				    return $.formatMoney(value)
-				}
-			} ] ],
-			toolbar : '#toolbar',
-			onLoadSuccess : function() {
+                field: 'price',
+                title: '<%=TmbSupplierStockInItem.ALIAS_PRICE%>',
+                width: 30,
+                formatter: function (value) {
+                    if (value != null)
+                        return $.formatMoney(value);
+                    return "";
+                }},{
+                field: 'totalPrice',
+                title: '总金额',
+                width: 30,
+                formatter: function (value) {
+                    if (value != null)
+                        return $.formatMoney(value);
+                    return "";
+                }}] ],
+			   toolbar : '#toolbar',
+			   onLoadSuccess : function() {
 				$('#searchForm table').show();
 				parent.$.messager.progress('close');
 
@@ -197,12 +207,12 @@
         	options.url = '${pageContext.request.contextPath}/mbSupplierStockInItemController/dataGridStockInItem';
         	options.queryParams = $.serializeObject($('#searchForm'));
         	dataGrid.datagrid(options);
+	}
 
-	function cleanFun() {
-		$('#searchForm input').val('');
-		dataGrid.datagrid('load', {});
-	}
-	}
+    function cleanFun() {
+        $('#searchForm input').val('');
+        dataGrid.datagrid('load', {});
+    }
 </script>
 </head>
 <body>

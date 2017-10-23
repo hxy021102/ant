@@ -30,6 +30,7 @@ public class MbSupplierStockInItemExport extends MbSupplierStockInItem {
 	private String driverName;
 
 	private String invoiceNo;
+	private double priceElement;
 
 	public String getItemCode() {
 		return itemCode;
@@ -125,5 +126,13 @@ public class MbSupplierStockInItemExport extends MbSupplierStockInItem {
 
 	public void setInvoiceNo(String invoiceNo) {
 		this.invoiceNo = invoiceNo;
+	}
+
+	public double getPriceElement() {
+		return priceElement;
+	}
+
+	public void setPriceElement(double priceElement) {
+		this.priceElement = priceElement;
 	}
 }
