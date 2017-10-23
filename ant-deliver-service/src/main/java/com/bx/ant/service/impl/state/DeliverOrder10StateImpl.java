@@ -53,6 +53,7 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
 //        deliverOrderPay.setStatus(deliverOrder.getPayStatus());
 //        deliverOrderPayService.add(deliverOrderPay);
 
+        //修改订单状态并增加记录
         DeliverOrder orderNew = new DeliverOrder();
 
         orderNew.setId(deliverOrder.getId());

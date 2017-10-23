@@ -56,6 +56,9 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
     @Resource
     private TokenServiceI tokenService;
 
+    @Autowired
+    private DeliverOrderLogServiceI deliverOrderLogService;
+
 
     @Override
     public void orderAllocation() {
@@ -146,7 +149,13 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
             deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItemList, deliverOrderShop);
             deliverOrder.setShopId(minMbShop.getId());
             deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_ALLOCATION);
-            deliverOrderService.edit(deliverOrder);
+
+            //添加订单并添加修改记录
+            deliverOrderService.editAndAddLog(deliverOrder, "DLT02", "系统自动分配订单");
+
+
+
+
 
             // 发送短信通知
             if(!F.empty(minMbShop.getContactPhone()) && Integer.valueOf(ConvertNameUtil.getString("DSV101", "1")) == 1) {
