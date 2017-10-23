@@ -1,6 +1,7 @@
 package com.mobian.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.mobian.absx.F;
 import com.mobian.pageModel.*;
 import com.mobian.service.*;
 import com.mobian.service.impl.MbWarehouseServiceImpl;
@@ -71,7 +72,17 @@ public class MbSupplierStockInController extends BaseController {
      */
     @RequestMapping("/dataGrid")
     @ResponseBody
-    public DataGrid dataGrid(MbSupplierStockIn mbSupplierStockIn, PageHelper ph) {
+    public DataGrid dataGrid(MbSupplierStockIn mbSupplierStockIn,Integer supplierId, PageHelper ph) {
+        if(!F.empty(supplierId)) {
+            MbSupplierOrder mbSupplierOrder = new MbSupplierOrder();
+            mbSupplierOrder.setSupplierId(supplierId);
+            List<MbSupplierOrder> mbSupplierOrderList = mbSupplierOrderService.query(mbSupplierOrder);
+            Integer[] orderIds = new Integer[mbSupplierOrderList.size()];
+            for (int i = 0; i < mbSupplierOrderList.size(); i++) {
+                orderIds[i] = mbSupplierOrderList.get(i).getId();
+            }
+            mbSupplierStockIn.setSupplierOrderIdList(orderIds);
+        }
         return mbSupplierStockInService.dataGrid(mbSupplierStockIn, ph);
 
     }
@@ -90,7 +101,7 @@ public class MbSupplierStockInController extends BaseController {
      */
     @RequestMapping("/download")
     public void download(MbSupplierStockIn mbSupplierStockIn, PageHelper ph, String downloadFields, HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-        DataGrid dg = dataGrid(mbSupplierStockIn, ph);
+        DataGrid dg = dataGrid(mbSupplierStockIn,null, ph);
         downloadFields = downloadFields.replace("&quot;", "\"");
         downloadFields = downloadFields.substring(1, downloadFields.length() - 1);
         List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
