@@ -51,7 +51,7 @@ public class SelectTagBySql extends TagSupport{
 				out.print("<select name=\"" + name + "\" class=\"easyui-combobox easyui-validatebox\" data-options=\"width:140,height:29,editable:false,required:true,");
 			}else{
 				if(multiple) {
-					out.print("<select name=\"" + name + "\" class=\"easyui-combobox easyui-validatebox\" data-options=\"width:140,height:29,editable:false,required:true,multiple:true,");
+					out.print("<select name=\"" + name + "\" class=\"easyui-combobox\" data-options=\"width:140,height:29,editable:false,multiple:true,");
 				}else {
 					out.print("<select name=\"" + name + "\" class=\"easyui-combobox\" data-options=\"width:140,height:29,editable:false,");
 				}
