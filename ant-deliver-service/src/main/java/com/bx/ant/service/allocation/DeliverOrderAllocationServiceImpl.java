@@ -137,25 +137,9 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
         if (minMbShop != null && !F.empty(minMbShop.getId())) {
 
             if(tokenService.getTokenByShopId(minMbShop.getId()) == null) throw new ServiceException("门店不在线，token已失效");
-
-            DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
-            deliverOrderShop.setAmount(deliverOrder.getAmount());
-            deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
-            deliverOrderShop.setShopId(minMbShop.getId());
-            deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_AUDITING);
-            deliverOrderShop.setDistance(new BigDecimal(minDistance));
-            deliverOrderShopService.add(deliverOrderShop);
-            List<DeliverOrderItem> deliverOrderItemList = deliverOrderItemService.getDeliverOrderItemList(deliverOrder.getId());
-            deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItemList, deliverOrderShop);
             deliverOrder.setShopId(minMbShop.getId());
-            deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_ALLOCATION);
-
-            //添加订单并添加修改记录
-            deliverOrderService.editAndAddLog(deliverOrder, "DLT02", "系统自动分配订单");
-
-
-
-
+            deliverOrder.setShopDistance(minDistance);
+            deliverOrderService.transform(deliverOrder);
 
             // 发送短信通知
             if(!F.empty(minMbShop.getContactPhone()) && Integer.valueOf(ConvertNameUtil.getString("DSV101", "1")) == 1) {
