@@ -4,6 +4,7 @@ import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbOrderRefundItem;
 import com.mobian.pageModel.PageHelper;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -54,4 +55,8 @@ public interface MbOrderRefundItemServiceI {
 
 	List<MbOrderRefundItem> query(MbOrderRefundItem mbOrderRefundItem);
 	List<MbOrderRefundItem> queryListByOrderIds(Integer[] orderIds);
+	/**
+	 * addRefound
+	 */
+	void addRefund(MbOrderRefundItem mbOrderRefundItem);
 }

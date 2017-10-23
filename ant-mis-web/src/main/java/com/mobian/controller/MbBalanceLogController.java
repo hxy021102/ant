@@ -296,6 +296,9 @@ public class MbBalanceLogController extends BaseController {
 	public DataGrid dataGridFlow(MbBalanceLog mbBalanceLog, PageHelper ph) {
 		if (mbBalanceLog.getUpdatetimeBegin() == null || mbBalanceLog.getUpdatetimeEnd() == null)
 			return new DataGrid();
+		if("".equals(mbBalanceLog.getRefTypes())){
+			mbBalanceLog.setRefTypes(null);
+		}
 		return mbBalanceLogService.dataGridWithShopName(mbBalanceLog, ph);
 	}
 

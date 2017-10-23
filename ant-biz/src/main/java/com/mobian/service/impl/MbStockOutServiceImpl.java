@@ -2,6 +2,7 @@ package com.mobian.service.impl;
 
 import com.mobian.absx.F;
 import com.mobian.dao.MbStockOutDaoI;
+import com.mobian.exception.ServiceException;
 import com.mobian.model.TmbStockOut;
 import com.mobian.pageModel.*;
 import com.mobian.service.*;
@@ -29,6 +30,8 @@ public class MbStockOutServiceImpl extends BaseServiceImpl<MbStockOut> implement
     private MbItemStockServiceI mbItemStockService;
     @Autowired
     private MbWarehouseServiceI mbWarehouseService;
+    @Autowired
+    private MbItemServiceI mbItemService;
 
     @Override
     public DataGrid dataGrid(MbStockOut mbStockOut, PageHelper ph) {
@@ -123,9 +126,11 @@ public class MbStockOutServiceImpl extends BaseServiceImpl<MbStockOut> implement
             mbStockOutItem.setMbStockOutId(mbStockOut.getId());
             mbStockOutItemService.add(mbStockOutItem);
             Integer id = mbStockOut.getWarehouseId();
-            Integer itemid = mbStockOutItem.getItemId();
+            Integer itemId = mbStockOutItem.getItemId();
+            MbItem mbItem = mbItemService.getFromCache(itemId);
+            if(mbItem == null) throw new ServiceException(String.format("商品不存在:%s",itemId));
             //添加出库项改变仓库库存
-            MbItemStock mbItemStockShop = mbItemStockService.getByWareHouseIdAndItemId(id, itemid);
+            MbItemStock mbItemStockShop = mbItemStockService.getByWareHouseIdAndItemId(id, itemId);
             MbItemStock changeShop = new MbItemStock();
             changeShop.setId(mbItemStockShop.getId());
             changeShop.setAdjustment(mbStockOutItem.getQuantity()*(-1));

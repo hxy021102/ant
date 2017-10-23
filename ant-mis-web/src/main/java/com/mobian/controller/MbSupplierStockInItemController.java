@@ -81,9 +81,12 @@ public class MbSupplierStockInItemController extends BaseController {
 	}
 	@RequestMapping("/dataGridStockInItem")
 	@ResponseBody
-	public DataGrid  dataGridStockInItem(MbSupplierStockInItem mbSupplierStockInItem, PageHelper ph) {
-		DataGrid dg = mbSupplierStockInItemService.dataGridStockInItem(mbSupplierStockInItem,ph);
-		return dg;
+	public DataGrid dataGridStockInItem(MbSupplierStockInItem mbSupplierStockInItem, PageHelper ph) {
+		if (mbSupplierStockInItem.getUpdatetimeBegin() != null && mbSupplierStockInItem.getUpdatetimeEnd() != null) {
+			DataGrid dg = mbSupplierStockInItemService.dataGridStockInItem(mbSupplierStockInItem, ph);
+			return dg;
+		}
+		return new DataGrid();
 	}
 	/**
 	 * 获取MbSupplierStockInItem数据表格excel
@@ -156,6 +159,7 @@ public class MbSupplierStockInItemController extends BaseController {
 		};
 		List<MbSupplierStockInItemExport> mbSupplierStockInItemExports = new ArrayList<MbSupplierStockInItemExport>();
 		Integer total = 0;
+		double totalMoney= 0;
 		try {
 			for (MbSupplierStockInItem itemExport : mbSupplierStockInItems) {
 				MbSupplierStockIn mbSupplierStockIn = mbStockInCache.getValue(itemExport.getSupplierStockInId());
@@ -204,7 +208,13 @@ public class MbSupplierStockInItemController extends BaseController {
 				if(itemExport.getQuantity() !=null) {
 					total += itemExport.getQuantity();
 				}
-
+				if (!F.empty(itemExport.getQuantity()) && !F.empty(itemExport.getPrice())) {
+					mbOrderItemExport.setTotalPrice(itemExport.getQuantity() * itemExport.getPrice() / 100.0);
+					totalMoney += mbOrderItemExport.getTotalPrice();
+				}else{
+					mbOrderItemExport.setTotalPrice(0.0);
+				}
+               mbOrderItemExport.setPriceElement(itemExport.getPrice()/100.0);
 
 			}
 		} finally {
@@ -215,6 +225,7 @@ public class MbSupplierStockInItemController extends BaseController {
 			MbSupplierStockInItemExport mbSupplierStockInItemExport = new MbSupplierStockInItemExport();
 			mbSupplierStockInItemExport.setSupplierName("合计");
 			mbSupplierStockInItemExport.setQuantity(total);
+			mbSupplierStockInItemExport.setTotalPrice(totalMoney);
 			mbSupplierStockInItemExports.add(mbSupplierStockInItemExport);
 		}
 		dg.setRows(mbSupplierStockInItemExports);
@@ -244,12 +255,16 @@ public class MbSupplierStockInItemController extends BaseController {
 		colum.setTitle("商品名称");
 		colums.add(colum);
 		colum = new Colum();
-		colum.setField("price");
+		colum.setField("priceElement");
 		colum.setTitle("价格");
 		colums.add(colum);
 		colum = new Colum();
 		colum.setField("quantity");
 		colum.setTitle("入库数量");
+		colums.add(colum);
+		colum = new Colum();
+		colum.setField("totalPrice");
+		colum.setTitle("总金额");
 		colums.add(colum);
 		colum = new Colum();
 		colum.setField("driverLoginId");

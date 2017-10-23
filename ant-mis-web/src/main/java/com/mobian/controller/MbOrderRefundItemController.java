@@ -2,6 +2,8 @@ package com.mobian.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,15 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.mobian.absx.F;
-import com.mobian.pageModel.*;
-import com.mobian.service.MbItemServiceI;
-import com.mobian.service.MbOrderItemServiceI;
-import com.mobian.service.MbOrderRefundItemServiceI;
 
-import com.mobian.service.UserServiceI;
+import com.mobian.pageModel.*;
+import com.mobian.service.*;
+
 import com.mobian.util.ConfigUtil;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,9 +25,9 @@ import com.alibaba.fastjson.JSON;
 
 /**
  * MbOrderRefundItem管理控制器
- * 
+ *
  * @author John
- * 
+ *
  */
 @Controller
 @RequestMapping("/mbOrderRefundItemController")
@@ -46,9 +44,10 @@ public class MbOrderRefundItemController extends BaseController {
 	private MbOrderItemServiceI mbOrderItemService;
 
 
+
 	/**
 	 * 跳转到MbOrderRefundItem管理页面
-	 * 
+	 *
 	 * @return
 	 */
 	@RequestMapping("/manager")
@@ -58,7 +57,7 @@ public class MbOrderRefundItemController extends BaseController {
 
 	/**
 	 * 获取MbOrderRefundItem数据表格
-	 * 
+	 *
 	 * @param
 	 * @return
 	 */
@@ -87,19 +86,19 @@ public class MbOrderRefundItemController extends BaseController {
 	}
 	/**
 	 * 获取MbOrderRefundItem数据表格excel
-	 * 
+	 *
 	 * @param
 	 * @return
-	 * @throws NoSuchMethodException 
-	 * @throws SecurityException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalAccessException 
-	 * @throws IllegalArgumentException 
-	 * @throws IOException 
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws IOException
 	 */
 	@RequestMapping("/download")
 	public void download(MbOrderRefundItem mbOrderRefundItem, PageHelper ph,String downloadFields,HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException{
-		DataGrid dg = dataGrid(mbOrderRefundItem,ph);		
+		DataGrid dg = dataGrid(mbOrderRefundItem,ph);
 		downloadFields = downloadFields.replace("&quot;", "\"");
 		downloadFields = downloadFields.substring(1,downloadFields.length()-1);
 		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
@@ -107,7 +106,7 @@ public class MbOrderRefundItemController extends BaseController {
 	}
 	/**
 	 * 跳转到添加MbOrderRefundItem页面
-	 * 
+	 *
 	 * @param request
 	 * @return
 	 */
@@ -116,10 +115,18 @@ public class MbOrderRefundItemController extends BaseController {
 		request.setAttribute("orderId",id);
 		return "/mborderrefunditem/mbOrderRefundItemAddPage";
 	}
+	/**
+	 * 跳转到添加退回商品页面
+	 */
+	@RequestMapping("/addRefundPage")
+	public String addRefundPage(HttpServletRequest request,Integer id) {
+		request.setAttribute("orderId",id);
+		return "/mborderrefunditem/mbOrderRefundItemAddRefundPage";
+	}
 
 	/**
 	 * 添加MbOrderRefundItem
-	 * 
+	 *
 	 * @return
 	 */
 	@RequestMapping("/add")
@@ -127,7 +134,17 @@ public class MbOrderRefundItemController extends BaseController {
 	public Json add(MbOrderRefundItem mbOrderRefundItem, HttpSession session) {
 		Json j = new Json();
 
+		if(validateRefund(j,mbOrderRefundItem)) {
+			SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+			mbOrderRefundItem.setLoginId(sessionInfo.getId());
+			mbOrderRefundItemService.add(mbOrderRefundItem);
+			j.setSuccess(true);
+			j.setMsg("添加成功！");
+		}
+		return j;
+	}
 
+	private boolean validateRefund(Json j,MbOrderRefundItem mbOrderRefundItem){
 		MbOrderItem mbOrderItem = new MbOrderItem();
 		mbOrderItem.setOrderId(mbOrderRefundItem.getOrderId());
 		mbOrderItem.setItemId(mbOrderRefundItem.getItemId());
@@ -155,24 +172,36 @@ public class MbOrderRefundItemController extends BaseController {
 			}
 		}
 		//判断退货商品数量是否超过发货数量
-		if(mbOrderItemQuantity == null   || mbOrderItemQuantity < mbOrderRefundItemQuantity){
+		if (mbOrderItemQuantity == null || mbOrderItemQuantity < mbOrderRefundItemQuantity) {
 			j.setSuccess(false);
 			j.setMsg("添加的退货商品数量不能超过该商品的发货量");
-			return j;
+			return false;
 		}
+		if (mbOrderRefundItemQuantity<0) {
+			j.setSuccess(false);
+			j.setMsg("退回商品合计不能为负数");
+			return false;
+		}
+		return true;
+	}
 
-		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
-		mbOrderRefundItem.setLoginId(sessionInfo.getId());
-		mbOrderRefundItemService.add(mbOrderRefundItem);
-		j.setSuccess(true);
-		j.setMsg("添加成功！");
-
+	@RequestMapping("/addRefund")
+	@ResponseBody
+	public Json addRefund(MbOrderRefundItem mbOrderRefundItem, HttpSession session) {
+		Json j = new Json();
+		if(validateRefund(j,mbOrderRefundItem)) {
+			SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+			mbOrderRefundItem.setLoginId(sessionInfo.getId());
+			mbOrderRefundItemService.addRefund(mbOrderRefundItem);
+			j.setSuccess(true);
+			j.setMsg("添加成功！");
+		}
 		return j;
 	}
 
 	/**
 	 * 跳转到MbOrderRefundItem查看页面
-	 * 
+	 *
 	 * @return
 	 */
 	@RequestMapping("/view")
@@ -184,7 +213,7 @@ public class MbOrderRefundItemController extends BaseController {
 
 	/**
 	 * 跳转到MbOrderRefundItem修改页面
-	 * 
+	 *
 	 * @return
 	 */
 	@RequestMapping("/editPage")
@@ -196,23 +225,23 @@ public class MbOrderRefundItemController extends BaseController {
 
 	/**
 	 * 修改MbOrderRefundItem
-	 * 
+	 *
 	 * @param mbOrderRefundItem
 	 * @return
 	 */
 	@RequestMapping("/edit")
 	@ResponseBody
 	public Json edit(MbOrderRefundItem mbOrderRefundItem) {
-		Json j = new Json();		
+		Json j = new Json();
 		mbOrderRefundItemService.edit(mbOrderRefundItem);
 		j.setSuccess(true);
-		j.setMsg("编辑成功！");		
+		j.setMsg("编辑成功！");
 		return j;
 	}
 
 	/**
 	 * 删除MbOrderRefundItem
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
