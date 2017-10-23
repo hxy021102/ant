@@ -7,6 +7,7 @@ import com.bx.ant.pageModel.DeliverOrderShopItem;
 import com.bx.ant.pageModel.ShopItemQuery;
 import com.bx.ant.service.ShopItemServiceI;
 import com.mobian.absx.F;
+import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbItem;
 import com.mobian.pageModel.PageHelper;
@@ -54,20 +55,20 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 		dg.setRows(ol);
 		return dg;
 	}
-	
+
 
 	protected String whereHql(ShopItem shopItem, Map<String, Object> params) {
-		String whereHql = "";	
+		String whereHql = "";
 		if (shopItem != null) {
 			whereHql += " where t.isdeleted = 0 ";
 			if (!F.empty(shopItem.getTenantId())) {
 				whereHql += " and t.tenantId = :tenantId";
 				params.put("tenantId", shopItem.getTenantId());
-			}		
+			}
 			if (!F.empty(shopItem.getIsdeleted())) {
 				whereHql += " and t.isdeleted = :isdeleted";
 				params.put("isdeleted", shopItem.getIsdeleted());
-			}		
+			}
 			if (!F.empty(shopItem.getShopId())) {
 				whereHql += " and t.shopId = :shopId";
 				params.put("shopId", shopItem.getShopId());
@@ -79,28 +80,28 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 			if (!F.empty(shopItem.getItemId())) {
 				whereHql += " and t.itemId = :itemId";
 				params.put("itemId", shopItem.getItemId());
-			}		
+			}
 			if (!F.empty(shopItem.getPrice())) {
 				whereHql += " and t.price = :price";
 				params.put("price", shopItem.getPrice());
-			}		
+			}
 			if (!F.empty(shopItem.getInPrice())) {
 				whereHql += " and t.inPrice = :inPrice";
 				params.put("inPrice", shopItem.getInPrice());
-			}		
+			}
 			if (!F.empty(shopItem.getFreight())) {
 				whereHql += " and t.freight = :freight";
 				params.put("freight", shopItem.getFreight());
-			}		
+			}
 			if (!F.empty(shopItem.getQuantity())) {
 				whereHql += " and t.quantity = :quantity";
 				params.put("quantity", shopItem.getQuantity());
-			}		
+			}
 			if (!F.empty(shopItem.getOnline())) {
 				whereHql += " and t.online = :online";
 				params.put("online", shopItem.getOnline());
-			}		
-		}	
+			}
+		}
 		return whereHql;
 	}
 
@@ -127,7 +128,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 	public void edit(ShopItem shopItem) {
 		TshopItem t = shopItemDao.get(TshopItem.class, shopItem.getId());
 		if (t != null) {
-			MyBeanUtils.copyProperties(shopItem, t, new String[] { "id" , "addtime", "isdeleted","updatetime" },true);
+			MyBeanUtils.copyProperties(shopItem, t, new String[]{"id", "addtime", "isdeleted", "updatetime"}, true);
 		}
 	}
 
@@ -135,7 +136,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 	public void delete(Integer id) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
-		shopItemDao.executeHql("update TshopItem t set t.isdeleted = 1 where t.id = :id",params);
+		shopItemDao.executeHql("update TshopItem t set t.isdeleted = 1 where t.id = :id", params);
 		//shopItemDao.delete(shopItemDao.get(TshopItem.class, id));
 	}
 
@@ -148,12 +149,12 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 		shopItem.setOnline(isOnline);
 		shopItem.setIsdeleted(false);
 		String where = whereHql(shopItem, params);
-		TshopItem t = shopItemDao.get("from TshopItem t " + where , params);
+		TshopItem t = shopItemDao.get("from TshopItem t " + where, params);
 		ShopItem o = new ShopItem();
 		if (t != null) {
 			BeanUtils.copyProperties(t, o);
-		}else{
-			o=null;
+		} else {
+			o = null;
 		}
 		return o;
 	}
@@ -162,7 +163,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 	public ShopItem getByShopIdAndItemId(Integer shopId, Integer itemId) {
 		ShopItem shopItem = new ShopItem();
 		shopItem = getByShopIdAndItemId(shopId, itemId, true);
-		if (shopItem != null) return shopItem ;
+		if (shopItem != null) return shopItem;
 		shopItem = getByShopIdAndItemId(shopId, itemId, false);
 		return shopItem;
 	}
@@ -190,8 +191,8 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 			String[] itemIdArray = itemIds.split(",");
 			Integer[] itemIdValues = new Integer[itemIdArray.length];
 			int j;
-			for( j = 0;j<itemIdValues.length;j++){
-				itemIdValues[j]=Integer.parseInt(itemIdArray[j]);
+			for (j = 0; j < itemIdValues.length; j++) {
+				itemIdValues[j] = Integer.parseInt(itemIdArray[j]);
 			}
 			ShopItem shopItem = new ShopItem();
 			shopItem.setIsdeleted(false);
@@ -225,7 +226,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 					}
 				}
 			} else {
-				for(Integer itemId :itemIdValues ) {
+				for (Integer itemId : itemIdValues) {
 					ShopItem shop = new ShopItem();
 					shop.setItemId(itemId);
 					shop.setShopId(shopId);
@@ -288,8 +289,8 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 	}
 
 	@Override
-	public void updateShopItemQuantity( Integer itemId,Integer shopId, Integer quantity) {
-		ShopItem shopItem=getByShopIdAndItemId(shopId,itemId);
+	public void updateShopItemQuantity(Integer itemId, Integer shopId, Integer quantity) {
+		ShopItem shopItem = getByShopIdAndItemId(shopId, itemId);
 		shopItem.setQuantity(quantity);
 		edit(shopItem);
 	}
@@ -304,7 +305,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 				ShopItemQuery shopItemQuery = new ShopItemQuery();
 				BeanUtils.copyProperties(shop, shopItemQuery);
 				MbItem item = mbItemService.getFromCache(shopItemQuery.getItemId());
-				if(F.empty(shop.getQuantity())){
+				if (F.empty(shop.getQuantity())) {
 					shopItemQuery.setQuantity(0);
 				}
 				shopItemQuery.setName(item.getName());
@@ -328,7 +329,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 		if (CollectionUtils.isNotEmpty(mbItems)) {
 			Integer[] itemIds = new Integer[mbItems.size()];
 			int index = 0;
-			for(MbItem item : mbItems) {
+			for (MbItem item : mbItems) {
 				itemIds[index++] = item.getId();
 			}
 			ShopItem shopItem = new ShopItem();
@@ -339,8 +340,8 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 			List<ShopItem> shopItems = query(shopItem);
 			Map<Integer, ShopItem> quantityMap = new HashMap<Integer, ShopItem>();
 			if (CollectionUtils.isNotEmpty(shopItems)) {
-				for(ShopItem item : shopItems) {
-					if(!quantityMap.containsKey(item.getItemId())) {
+				for (ShopItem item : shopItems) {
+					if (!quantityMap.containsKey(item.getItemId())) {
 						quantityMap.put(item.getItemId(), item);
 					}
 				}
@@ -348,9 +349,9 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 
 			for (MbItem item : mbItems) {
 				shopItem = quantityMap.get(item.getId());
-				if(shopItem != null) {
+				if (shopItem != null) {
 					item.setOnline(shopItem.getOnline());
-					if(shopItem.getOnline()) {
+					if (shopItem.getOnline()) {
 						item.setQuantity(shopItem.getQuantity());
 					}
 				} else {
@@ -366,8 +367,9 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 		ShopItem shopItem = getByShopIdAndItemId(shopId, itemId);
 		delete(shopItem.getId());
 	}
+
 	@Override
-	public void refundByDeliverOrder(DeliverOrder deliverOrder){
+	public void refundByDeliverOrder(DeliverOrder deliverOrder) {
 		if (!F.empty(deliverOrder.getId()) || !F.empty(deliverOrder.getShopId())) {
 			//通过deliverOrder获取deliverOrderShopItem
 			DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
@@ -382,14 +384,24 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 				List<ShopItem> shopItems = shopItemService.query(shopItem);
 				//通过shopItem修改对应的数量
 				if (CollectionUtils.isNotEmpty(shopItems)) {
-					ShopItem shopItem1 = shopItems.get(0);
+					ShopItem sItem = shopItems.get(0);
 					ShopItem si = new ShopItem();
-					si.setId(shopItem1.getId());
-					si.setQuantity(si.getQuantity() == null ? 0 : si.getQuantity());
-					shopItemService.edit(si);
+					si.setId(sItem.getId());
+					si.setQuantity(orderShopItem.getQuantity());
 				}
 			}
 		}
 	}
 
+	@Override
+	public void updateQunatity(ShopItem shopItem) {
+		if (!F.empty(shopItem.getId()) && !F.empty(shopItem.getQuantity())) {
+			int i = shopItemDao.executeHql("update ShopItem t set t.quantity=quantity+" + shopItem.getQuantity() + " where t.id=" + shopItem.getId());
+			if (i != 1) {
+				throw new ServiceException("门店库存更新失败");
+			}
+		} else {
+			throw new ServiceException("门店ID或数量不能为空");
+		}
+	}
 }

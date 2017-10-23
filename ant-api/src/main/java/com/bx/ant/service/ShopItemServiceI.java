@@ -153,4 +153,5 @@ public interface ShopItemServiceI {
 	 */
 	void refundByDeliverOrder(DeliverOrder deliverOrder);
 
+    void updateQunatity(ShopItem shopItem);
 }
