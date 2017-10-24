@@ -52,6 +52,11 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
 
     @Override
     public void handle(DeliverOrder deliverOrder) {
+        DeliverOrder oldDeliverOrder = DeliverOrderState.deliverOrder.get();
+
+        if (DeliverOrderServiceI.STATUS_SHOP_ALLOCATION.equals(oldDeliverOrder.getStatus())) {
+            return;
+        }
 
         //添加门店订单
         DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
