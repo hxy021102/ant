@@ -3,6 +3,7 @@ package com.mobian.util;
 import com.alibaba.fastjson.JSONObject;
 
 import java.math.BigDecimal;
+import java.util.Random;
 
 /**
  * Created by john on 17/10/11.
@@ -51,7 +52,12 @@ public class GeoUtil {
     }*/
     public static BigDecimal[] getPosition(String address) {
         address = address.replaceAll(" ", "");
-        String requestUrl = "http://api.map.baidu.com/geocoder/v2/?output=json&address=" + address + "&ak="+ConvertNameUtil.getString("AK002");
+        String ak = ConvertNameUtil.getString("AK001");
+        String[] aks = ak.split(";");
+        Random r = new Random();
+        int index = r.nextInt(aks.length-1);
+        String akey = aks[index];
+        String requestUrl = "http://api.map.baidu.com/geocoder/v2/?output=json&address=" + address + "&ak="+akey;
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.httpRequest(requestUrl, "GET", null));
         if (jsonObject != null) {
             if (jsonObject.getInteger("status") == 0) {
@@ -59,8 +65,6 @@ public class GeoUtil {
                 JSONObject location = (JSONObject) result.get("location");
                 Object ln = location.get("lng");
                 Object la = location.get("lat");
-
-
                 BigDecimal[] point = new BigDecimal[2];
                 point[0] = new BigDecimal(ln.toString());
                 point[1] = new BigDecimal(la.toString());
