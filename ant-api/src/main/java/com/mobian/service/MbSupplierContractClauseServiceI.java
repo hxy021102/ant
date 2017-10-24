@@ -51,4 +51,12 @@ public interface MbSupplierContractClauseServiceI {
 	 */
 	public void delete(Integer id);
 
+	/**
+	 * 获取合同条款信息
+	 * @param mbSupplierContractClause
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridWithName(MbSupplierContractClause mbSupplierContractClause,PageHelper ph);
+
 }

@@ -8,12 +8,9 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mobian.pageModel.Colum;
-import com.mobian.pageModel.MbSupplierContractClause;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.Json;
-import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.*;
 import com.mobian.service.MbSupplierContractClauseServiceI;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -55,7 +52,7 @@ public class MbSupplierContractClauseController extends BaseController {
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(MbSupplierContractClause mbSupplierContractClause, PageHelper ph) {
-		return mbSupplierContractClauseService.dataGrid(mbSupplierContractClause, ph);
+		return mbSupplierContractClauseService.dataGridWithName(mbSupplierContractClause, ph);
 	}
 	/**
 	 * 获取MbSupplierContractClause数据表格excel
@@ -84,8 +81,8 @@ public class MbSupplierContractClauseController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/addPage")
-	public String addPage(HttpServletRequest request) {
-		MbSupplierContractClause mbSupplierContractClause = new MbSupplierContractClause();
+	public String addPage(HttpServletRequest request,Integer supplierContractId) {
+		 request.setAttribute("supplierContractId",supplierContractId);
 		return "/mbsuppliercontractclause/mbSupplierContractClauseAdd";
 	}
 
@@ -112,7 +109,12 @@ public class MbSupplierContractClauseController extends BaseController {
 	@RequestMapping("/view")
 	public String view(HttpServletRequest request, Integer id) {
 		MbSupplierContractClause mbSupplierContractClause = mbSupplierContractClauseService.get(id);
-		request.setAttribute("mbSupplierContractClause", mbSupplierContractClause);
+		if(mbSupplierContractClause!=null) {
+			MbSupplierContractClauseQuery contractClauseQuery = new MbSupplierContractClauseQuery();
+			org.springframework.beans.BeanUtils.copyProperties(mbSupplierContractClause, contractClauseQuery);
+			contractClauseQuery.setClauseName(mbSupplierContractClause.getClauseCode());
+			request.setAttribute("mbSupplierContractClause", contractClauseQuery);
+		}
 		return "/mbsuppliercontractclause/mbSupplierContractClauseView";
 	}
 

@@ -26,8 +26,8 @@
 	$(function() {
 		parent.$.messager.progress('close');		
 	});
+    var contractClauseDataGrid;
     $(function() {
-	var contractClauseDataGrid;
         contractClauseDataGrid = $('#contractClauseDataGrid').datagrid({
             url : '${pageContext.request.contextPath}/mbSupplierContractClauseController/dataGrid',
             fit : true,
@@ -55,33 +55,29 @@
                 title : '<%=TmbSupplierContractClause.ALIAS_SUPPLIER_CONTRACT_ID%>',
                 width : 50
             }, {
-                field : 'clauseCode',
+                field : 'clauseName',
                 title : '<%=TmbSupplierContractClause.ALIAS_CLAUSE_CODE%>',
                 width : 50
             }, {
                 field : 'value',
                 title : '<%=TmbSupplierContractClause.ALIAS_VALUE%>',
                 width : 50
-            }, {
-                field : 'remark',
-                title : '<%=TmbSupplierContractClause.ALIAS_REMARK%>',
-                width : 50
-            }, {
+            },  {
                 field : 'action',
                 title : '操作',
                 width : 100,
                 formatter : function(value, row, index) {
                     var str = '';
                     if ($.canEdit) {
-                        str += $.formatString('<img onclick="editFun(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_edit.png');
+                        str += $.formatString('<img onclick="editFun(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/pencil.png');
                     }
                     str += '&nbsp;';
                     if ($.canDelete) {
-                        str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_delete.png');
+                        str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/cancel.png');
                     }
                     str += '&nbsp;';
                     if ($.canView) {
-                        str += $.formatString('<img onclick="viewFun(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_link.png');
+                        str += $.formatString('<img onclick="viewFun(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/map/magnifier.png');
                     }
                     return str;
                 }
@@ -98,7 +94,7 @@
 
     function deleteFun(id) {
         if (id == undefined) {
-            var rows = dataGrid.datagrid('getSelections');
+            var rows = contractClauseDataGrid.datagrid('getSelections');
             id = rows[0].id;
         }
         parent.$.messager.confirm('询问', '您是否要删除当前数据？', function(b) {
@@ -112,7 +108,7 @@
                 }, function(result) {
                     if (result.success) {
                         parent.$.messager.alert('提示', result.msg, 'info');
-                        dataGrid.datagrid('reload');
+                        contractClauseDataGrid.datagrid('reload');
                     }
                     parent.$.messager.progress('close');
                 }, 'JSON');
@@ -122,18 +118,18 @@
 
     function editFun(id) {
         if (id == undefined) {
-            var rows = dataGrid.datagrid('getSelections');
+            var rows = contractClauseDataGrid.datagrid('getSelections');
             id = rows[0].id;
         }
         parent.$.modalDialog({
             title : '编辑数据',
             width : 780,
-            height : 500,
+            height : 400,
             href : '${pageContext.request.contextPath}/mbSupplierContractClauseController/editPage?id=' + id,
             buttons : [ {
                 text : '编辑',
                 handler : function() {
-                    parent.$.modalDialog.openner_dataGrid = dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                    parent.$.modalDialog.openner_dataGrid = contractClauseDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
                     var f = parent.$.modalDialog.handler.find('#form');
                     f.submit();
                 }
@@ -143,13 +139,13 @@
 
     function viewFun(id) {
         if (id == undefined) {
-            var rows = dataGrid.datagrid('getSelections');
+            var rows = contractClauseDataGrid.datagrid('getSelections');
             id = rows[0].id;
         }
         parent.$.modalDialog({
             title : '查看数据',
             width : 780,
-            height : 500,
+            height : 400,
             href : '${pageContext.request.contextPath}/mbSupplierContractClauseController/view?id=' + id
         });
     }
@@ -159,11 +155,11 @@
             title : '添加数据',
             width : 780,
             height : 400,
-            href : '${pageContext.request.contextPath}/mbSupplierContractClauseController/addPage',
+            href : '${pageContext.request.contextPath}/mbSupplierContractClauseController/addPage?supplierContractId='+	${mbSupplierContract.id},
             buttons : [ {
                 text : '添加',
                 handler : function() {
-                    parent.$.modalDialog.openner_dataGrid = dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                    parent.$.modalDialog.openner_dataGrid = contractClauseDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
                     var f = parent.$.modalDialog.handler.find('#form');
                     f.submit();
                 }
@@ -171,7 +167,7 @@
         });
     }
     function downloadTable(){
-        var options = dataGrid.datagrid("options");
+        var options = contractClauseDataGrid.datagrid("options");
         var $colums = [];
         $.merge($colums, options.columns);
         $.merge($colums, options.frozenColumns);
@@ -202,17 +198,17 @@
 					<td>
 						${mbSupplierContract.name}
 					</td>
-				</tr>		
+				</tr>
 				<tr>
 					<th><%=TmbSupplierContract.ALIAS_SUPPLIER_ID%></th>
 					<td>
 						${mbSupplierContract.supplierId}
 					</td>
-					<th><%=TmbSupplierContract.ALIAS_EXPIRY_DATE_START%></th>	
+					<th><%=TmbSupplierContract.ALIAS_EXPIRY_DATE_START%></th>
 					<td>
-						${mbSupplierContract.expiryDateStart}							
+						${mbSupplierContract.expiryDateStart}
 					</td>
-				</tr>		
+				</tr>
 				<tr>
 					<th><%=TmbSupplierContract.ALIAS_EXPIRY_DATE_END%></th>
 					<td>
@@ -220,19 +216,15 @@
 					</td>
 					<th><%=TmbSupplierContract.ALIAS_VALID%></th>	
 					<td>
-						${mbSupplierContract.valid}							
+						${mbSupplierContract.valid ==true? "是":"否"}
 					</td>
-				</tr>		
+				</tr>
 				<tr>
 					<th><%=TmbSupplierContract.ALIAS_ATTACHMENT%></th>
-					<td>
+					<td colspan="4">
 						${mbSupplierContract.attachment}
 					</td>
-					<th><%=TmbSupplierContract.ALIAS_CONTRACT_TYPE%></th>	
-					<td>
-						${mbSupplierContract.contractType}							
-					</td>							
-				</tr>		
+				</tr>
 		</table>
 	</div>
 	  <div data-options="region:'center',border:false">

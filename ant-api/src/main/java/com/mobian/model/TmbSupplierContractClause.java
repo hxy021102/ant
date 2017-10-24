@@ -27,8 +27,8 @@ public class TmbSupplierContractClause implements java.io.Serializable,IEntity{
 	public static final String ALIAS_ADDTIME = "添加时间";
 	public static final String ALIAS_UPDATETIME = "修改时间";
 	public static final String ALIAS_ISDELETED = "是否删除,1删除，0未删除";
-	public static final String ALIAS_SUPPLIER_CONTRACT_ID = "供应商合同ID";
-	public static final String ALIAS_CLAUSE_CODE = "条款编码";
+	public static final String ALIAS_SUPPLIER_CONTRACT_ID = "合同ID";
+	public static final String ALIAS_CLAUSE_CODE = "合同条款";
 	public static final String ALIAS_VALUE = "计算值";
 	public static final String ALIAS_REMARK = "备注";
 	

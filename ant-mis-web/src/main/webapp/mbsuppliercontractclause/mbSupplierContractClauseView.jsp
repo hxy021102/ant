@@ -10,42 +10,24 @@
 	<div data-options="region:'center',border:false">
 		<table class="table table-hover table-condensed">
 				<tr>	
-					<th><%=TmbSupplierContractClause.ALIAS_TENANT_ID%></th>	
-					<td>
-						${mbSupplierContractClause.tenantId}							
-					</td>							
-					<th><%=TmbSupplierContractClause.ALIAS_ADDTIME%></th>	
-					<td>
-						${mbSupplierContractClause.addtime}							
-					</td>							
-				</tr>		
-				<tr>	
-					<th><%=TmbSupplierContractClause.ALIAS_UPDATETIME%></th>	
-					<td>
-						${mbSupplierContractClause.updatetime}							
-					</td>							
-					<th><%=TmbSupplierContractClause.ALIAS_ISDELETED%></th>	
-					<td>
-						${mbSupplierContractClause.isdeleted}							
-					</td>							
-				</tr>		
-				<tr>	
 					<th><%=TmbSupplierContractClause.ALIAS_SUPPLIER_CONTRACT_ID%></th>	
 					<td>
 						${mbSupplierContractClause.supplierContractId}							
 					</td>							
 					<th><%=TmbSupplierContractClause.ALIAS_CLAUSE_CODE%></th>	
 					<td>
-						${mbSupplierContractClause.clauseCode}							
+						${mbSupplierContractClause.clauseName}
 					</td>							
 				</tr>		
 				<tr>	
 					<th><%=TmbSupplierContractClause.ALIAS_VALUE%></th>	
-					<td>
+					<td colspan="4">
 						${mbSupplierContractClause.value}							
-					</td>							
+					</td>
+				</tr>
+			    <tr>
 					<th><%=TmbSupplierContractClause.ALIAS_REMARK%></th>	
-					<td>
+					<td colspan="4">
 						${mbSupplierContractClause.remark}							
 					</td>							
 				</tr>		

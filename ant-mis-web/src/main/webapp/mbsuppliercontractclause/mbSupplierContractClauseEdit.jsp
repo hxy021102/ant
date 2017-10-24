@@ -37,46 +37,33 @@
 		<form id="form" method="post">
 				<input type="hidden" name="id" value = "${mbSupplierContractClause.id}"/>
 			<table class="table table-hover table-condensed">
-				<tr>	
-					<th><%=TmbSupplierContractClause.ALIAS_TENANT_ID%></th>	
+				<tr>
+					<th><%=TmbSupplierContractClause.ALIAS_SUPPLIER_CONTRACT_ID%>
+					</th>
 					<td>
-											<input class="span2" name="tenantId" type="text" value="${mbSupplierContractClause.tenantId}"/>
-					</td>							
-					<th><%=TmbSupplierContractClause.ALIAS_ADDTIME%></th>	
+						<input class="span2" name="supplierContractId" type="text" readonly
+							   value="${mbSupplierContractClause.supplierContractId}"/>
+					</td>
+					<th><%=TmbSupplierContractClause.ALIAS_CLAUSE_CODE%>
+					</th>
 					<td>
-					<input class="span2" name="addtime" type="text" onclick="WdatePicker({dateFmt:'<%=TmbSupplierContractClause.FORMAT_ADDTIME%>'})"   maxlength="0" value="${mbSupplierContractClause.addtime}"/>
-					</td>							
-			</tr>	
-				<tr>	
-					<th><%=TmbSupplierContractClause.ALIAS_UPDATETIME%></th>	
-					<td>
-					<input class="span2" name="updatetime" type="text" onclick="WdatePicker({dateFmt:'<%=TmbSupplierContractClause.FORMAT_UPDATETIME%>'})"   maxlength="0" value="${mbSupplierContractClause.updatetime}"/>
-					</td>							
-					<th><%=TmbSupplierContractClause.ALIAS_ISDELETED%></th>	
-					<td>
-											<input class="span2" name="isdeleted" type="text" class="easyui-validatebox span2" data-options="required:true" value="${mbSupplierContractClause.isdeleted}"/>
-					</td>							
-			</tr>	
-				<tr>	
-					<th><%=TmbSupplierContractClause.ALIAS_SUPPLIER_CONTRACT_ID%></th>	
-					<td>
-											<input class="span2" name="supplierContractId" type="text" value="${mbSupplierContractClause.supplierContractId}"/>
-					</td>							
-					<th><%=TmbSupplierContractClause.ALIAS_CLAUSE_CODE%></th>	
-					<td>
-											<input class="span2" name="clauseCode" type="text" value="${mbSupplierContractClause.clauseCode}"/>
-					</td>							
-			</tr>	
-				<tr>	
-					<th><%=TmbSupplierContractClause.ALIAS_VALUE%></th>	
-					<td>
-											<input class="span2" name="value" type="text" value="${mbSupplierContractClause.value}"/>
-					</td>							
-					<th><%=TmbSupplierContractClause.ALIAS_REMARK%></th>	
-					<td>
-											<input class="span2" name="remark" type="text" value="${mbSupplierContractClause.remark}"/>
-					</td>							
-			</tr>	
+						<jb:select dataType="CC" name="clauseCode" value="${mbSupplierContractClause.clauseCode}"></jb:select>
+					</td>
+				</tr>
+				<tr>
+					<th><%=TmbSupplierContractClause.ALIAS_VALUE%>
+					</th>
+					<td colspan="4">
+						<input class="span2" name="value" type="text" value="${mbSupplierContractClause.value}"/>
+					</td>
+				</tr>
+				<tr>
+					<th><%=TmbSupplierContractClause.ALIAS_REMARK%>
+					</th>
+					<td colspan="4">
+						<textarea name="remark" style="width: 97%" rows="5s" class="easyui-validatebox">  ${mbSupplierContractClause.remark}</textarea>
+					</td>
+				</tr>
 			</table>				
 		</form>
 	</div>

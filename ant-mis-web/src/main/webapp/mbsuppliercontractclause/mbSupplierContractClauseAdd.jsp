@@ -41,12 +41,12 @@
 					<th><%=TmbSupplierContractClause.ALIAS_SUPPLIER_CONTRACT_ID%>
 					</th>
 					<td>
-						<input class="span2" name="supplierContractId" type="text"/>
+						<input class="span2" name="supplierContractId" type="text" readonly value="${param.supplierContractId}"/>
 					</td>
 					<th><%=TmbSupplierContractClause.ALIAS_CLAUSE_CODE%>
 					</th>
 					<td>
-						<input class="span2" name="clauseCode" type="text"/>
+						<jb:select dataType="CC" name="clauseCode"></jb:select>
 					</td>
 				</tr>
 				<tr>

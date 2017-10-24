@@ -12,9 +12,11 @@ import com.mobian.dao.MbSupplierContractClauseDaoI;
 import com.mobian.model.TmbSupplierContractClause;
 import com.mobian.pageModel.MbSupplierContractClause;
 import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.MbSupplierContractClauseQuery;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.MbSupplierContractClauseServiceI;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -110,6 +112,26 @@ public class MbSupplierContractClauseServiceImpl extends BaseServiceImpl<MbSuppl
 		params.put("id", id);
 		mbSupplierContractClauseDao.executeHql("update TmbSupplierContractClause t set t.isdeleted = 1 where t.id = :id",params);
 		//mbSupplierContractClauseDao.delete(mbSupplierContractClauseDao.get(TmbSupplierContractClause.class, id));
+	}
+
+	@Override
+	public DataGrid dataGridWithName(MbSupplierContractClause mbSupplierContractClause, PageHelper ph) {
+		DataGrid dataGrid = dataGrid(mbSupplierContractClause, ph);
+		List<MbSupplierContractClause> mbSupplierContractClauses = dataGrid.getRows();
+		if (CollectionUtils.isNotEmpty(mbSupplierContractClauses)) {
+			List<MbSupplierContractClauseQuery> contractClauseQueries = new ArrayList<MbSupplierContractClauseQuery>();
+			for (MbSupplierContractClause contractClause : mbSupplierContractClauses) {
+				MbSupplierContractClauseQuery contractClauseQuery = new MbSupplierContractClauseQuery();
+				BeanUtils.copyProperties(contractClause, contractClauseQuery);
+				contractClauseQuery.setClauseName(contractClause.getClauseCode());
+				contractClauseQueries.add(contractClauseQuery);
+			}
+			DataGrid dg = new DataGrid();
+			dg.setRows(contractClauseQueries);
+			dg.setTotal(dataGrid.getTotal());
+			return dg;
+		}
+		return dataGrid;
 	}
 
 }
