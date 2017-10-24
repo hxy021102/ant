@@ -614,32 +614,32 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	public Integer updateAllocationOrderRedis(Integer shopId, Integer quantity){
 		int count = 0;
 		String key = Key.build(Namespace.DELVIER_ORDER_NEW_ASSIGNMENT_COUNT, shopId + "");
-			String value = (String) redisUtil.get(key);
-			if (!F.empty(value)) {
-				count =  Integer.parseInt(value);
-				switch (quantity) {
-					case 0:
+		String value = (String) redisUtil.get(key);
+		if (!F.empty(value)) {
+			count =  Integer.parseInt(value);
+			switch (quantity) {
+				case 0:
+					redisUtil.delete(key);
+					return count;
+				case -1:
+					if ((count += quantity) <= 0) {
 						redisUtil.delete(key);
 						return 0;
-					case -1:
-						if ((count += quantity) <= 0) {
-							redisUtil.delete(key);
-							return 0;
-						}
-						break;
-					case 1:
-						count += quantity;
-						break;
-					default:
-						break;
-				}
-			} else {
-				count += quantity;
+					}
+					break;
+				case 1:
+					count += quantity;
+					break;
+				default:
+					break;
 			}
+		} else {
+			count += quantity;
+		}
 		if (count  > 0){
 			redisUtil.set(key, JSONObject.toJSONString(count));
 		}
-			return count;
+		return count;
 	}
 
 	@Override
