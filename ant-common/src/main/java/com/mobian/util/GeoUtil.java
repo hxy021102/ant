@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import java.math.BigDecimal;
 import java.util.Random;
 
+
 /**
  * Created by john on 17/10/11.
  */
@@ -52,7 +53,7 @@ public class GeoUtil {
     }*/
     public static BigDecimal[] getPosition(String address) {
         address = address.replaceAll(" ", "");
-        String ak = ConvertNameUtil.getString("AK001");
+        String ak =  ConvertNameUtil.getDesc("AK001");
         String[] aks = ak.split(";");
         Random r = new Random();
         int index = r.nextInt(aks.length-1);

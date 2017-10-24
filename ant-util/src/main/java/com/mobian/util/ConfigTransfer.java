@@ -7,6 +7,6 @@ public abstract class ConfigTransfer {
 
     public abstract String getString(String key);
 
-    public abstract Object get(String key);
+    public abstract String getDesc(String key);
 
 }
