@@ -64,6 +64,9 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
         List<DeliverOrderItem> deliverOrderItemList = deliverOrderItemService.getDeliverOrderItemList(deliverOrder.getId());
         deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItemList, deliverOrderShop);
 
+        //对门店新订单进行计数
+        deliverOrderService.addAllocationOrderRedis(deliverOrder.getShopId());
+
         //编辑订单并添加修改记录
         deliverOrder.setStatus(prefix + getStateName());
 

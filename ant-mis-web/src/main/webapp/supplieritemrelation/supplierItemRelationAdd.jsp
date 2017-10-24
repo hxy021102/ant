@@ -56,7 +56,13 @@
 					<td colspan="3">
 						  <jb:selectGrid name="itemId" dataType="itemId"></jb:selectGrid>
 					</td>
-				</tr>	
+				</tr>
+				<tr>
+					<th>外部商品编码</th>
+					<td colspan="4">
+						<input name="supplierItemCode" ="itemId"></input>
+					</td>
+				</tr>
 				<tr>	
 					<th>价格</th>
 					<td>

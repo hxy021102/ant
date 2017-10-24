@@ -11,6 +11,8 @@ import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
 
 import com.mobian.service.MbShopServiceI;
+import com.mobian.thirdpart.redis.Key;
+import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.thirdpart.redis.RedisUtil;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -25,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.*;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.*;
 
 @Service
@@ -605,5 +608,52 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			}
 		}
 		return ol;
+	}
+
+	@Override
+	public Integer updateAllocationOrderRedis(Integer shopId, Integer quantity){
+		int count = 0;
+		String key = Key.build(Namespace.DELVIER_ORDER_NEW_ASSIGNMENT_COUNT, shopId + "");
+			String value = (String) redisUtil.get(key);
+			if (!F.empty(value)) {
+				count =  Integer.parseInt(value);
+				switch (quantity) {
+					case 0:
+						redisUtil.delete(key);
+						return 0;
+					case -1:
+						if ((count += quantity) <= 0) {
+							redisUtil.delete(key);
+							return 0;
+						}
+						break;
+					case 1:
+						count += quantity;
+						break;
+					default:
+						break;
+				}
+			} else {
+				count += quantity;
+			}
+		if (count  > 0){
+			redisUtil.set(key, JSONObject.toJSONString(count));
+		}
+			return count;
+	}
+
+	@Override
+	public Integer addAllocationOrderRedis(Integer shopId) {
+		return updateAllocationOrderRedis(shopId, 1);
+	}
+
+	@Override
+	public Integer reduseAllocationOrderRedis(Integer shopId) {
+		return updateAllocationOrderRedis(shopId, -1);
+	}
+
+	@Override
+	public Integer clearAllocationOrderRedis(Integer shopId) {
+		return updateAllocationOrderRedis(shopId, 0);
 	}
 }

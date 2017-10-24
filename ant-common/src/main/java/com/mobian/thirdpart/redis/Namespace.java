@@ -21,4 +21,5 @@ public interface Namespace {
     String SHOP_BALANCE_ROLL_VALIDATE_CODE = "shop_balance_roll_validate_code";
     String ORDERLOG_MESSAGE="order_log_message";
     String MB_SHOP_CACHE = "mb_shop_cache";
+    String DELVIER_ORDER_NEW_ASSIGNMENT_COUNT = "new_delvier_order_assignment_count";
 }
