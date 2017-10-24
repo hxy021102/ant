@@ -308,6 +308,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 				if (F.empty(shop.getQuantity())) {
 					shopItemQuery.setQuantity(0);
 				}
+				shopItemQuery.setStatusName(shop.getStatus());
 				shopItemQuery.setName(item.getName());
 				shopItemQuery.setQuantityUnitName(item.getQuantityUnitName());
 				shopItemQuery.setUrl(item.getUrl());

@@ -212,6 +212,7 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 		if (shopOrderBill != null) {
 			ShopOrderBillQuery shopOrderBillQuery = new ShopOrderBillQuery();
 			BeanUtils.copyProperties(shopOrderBill, shopOrderBillQuery);
+			shopOrderBillQuery.setPayWayName(shopOrderBill.getPayWay());
 			User user = userService.get(shopOrderBill.getReviewerId());
 			if (user != null) {
 				shopOrderBillQuery.setReviewerName(user.getName());

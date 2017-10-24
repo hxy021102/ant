@@ -161,6 +161,7 @@ public class DeliverOrderShopPayServiceImpl extends BaseServiceImpl<DeliverOrder
 				if (mbShop != null) {
 					shopPayQuery.setShopName(mbShop.getName());
 				}
+				shopPayQuery.setPayWayName(shopPay.getPayWay());
 				shopPayQuery.setStatusName(shopPay.getStatus());
 				deliverOrderShopPayQueries.add(shopPayQuery);
 			}

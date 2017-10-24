@@ -54,7 +54,7 @@
                      return $.formatMoney(value);
                  }
              },{
-                 field : 'payWay',
+                 field : 'payWayName',
                  title : '结算方式',
                  align:"right",
                  width : 50
@@ -143,11 +143,11 @@
 			<tr>
 				<th>总金额</th>
 				<td >
-					${shopOrderBill.amount}
+					${shopOrderBill.amount/100.0}
 				</td>
 				<th>支付方式</th>
 				<td >
-					${shopOrderBill.payWay}
+					${shopOrderBill.payWayName}
 				</td>
 				<th>审核人</th>
 				<td colspan="3">

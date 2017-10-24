@@ -67,7 +67,9 @@ public class TshopItem implements java.io.Serializable,IEntity{
 	//@NotNull 
 	private Boolean online;
 	//columns END
-
+	private String status;
+	private String reviewerId;
+	private String remark;
 
 		public TshopItem(){
 		}
@@ -187,8 +189,34 @@ public class TshopItem implements java.io.Serializable,IEntity{
 	public void setOnline(Boolean online) {
 		this.online = online;
 	}
-	
-	
+
+	@Column(name = "status", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public String getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	@Column(name = "reviewer_id", unique = false, nullable = true, insertable = true, updatable = true, length = 36)
+	public String getReviewerId() {
+		return this.reviewerId;
+	}
+
+	public void setReviewerId(String reviewerId) {
+		this.reviewerId = reviewerId;
+	}
+
+
+	@Column(name = "remark", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
+	public String getRemark() {
+		return this.remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

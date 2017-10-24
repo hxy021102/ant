@@ -1,16 +1,16 @@
 package com.bx.ant.pageModel;
 
-import com.bx.ant.pageModel.ShopItem;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import java.util.Date;
+import com.mobian.util.ConvertNameUtil;
+
+
 
 @SuppressWarnings("serial")
 public class ShopItemQuery extends ShopItem {
 	private String name;
 	private String quantityUnitName;
 	private String url;
-
+    private String statusName;
 	public String getName() {
 		return name;
 	}
@@ -35,4 +35,11 @@ public class ShopItemQuery extends ShopItem {
 		this.url = url;
 	}
 
+	public String getStatusName() {
+		return ConvertNameUtil.getString(this.statusName);
+	}
+
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
+	}
 }
