@@ -212,4 +212,33 @@ public interface DeliverOrderServiceI {
 	 * @param supplierId
 	 */
 	void addOrderBill(List<DeliverOrder> list, Integer supplierId, Date startTime, Date endTime);
+
+	/**
+	 * 更新r门店新订单计数
+	 * @param shopId
+	 * @param quantity
+	 * @return
+	 */
+    Integer updateAllocationOrderRedis(Integer shopId, Integer quantity);
+
+	/**
+	 * 累加新订单计数
+	 * @param shopId
+	 * @return
+	 */
+	Integer addAllocationOrderRedis(Integer shopId);
+
+	/**
+	 * 减少r超时订单计数
+	 * @param shopId
+	 * @return
+	 */
+    Integer reduseAllocationOrderRedis(Integer shopId);
+
+	/**
+	 * 清除新订单计数
+	 * @param shopId
+	 * @return
+	 */
+	Integer clearAllocationOrderRedis(Integer shopId);
 }

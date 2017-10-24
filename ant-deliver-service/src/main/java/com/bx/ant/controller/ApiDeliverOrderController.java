@@ -352,4 +352,19 @@ public class ApiDeliverOrderController extends BaseController {
         json.setSuccess(true);
         return json;
     }
+
+    @RequestMapping("/countNewAllocationOrder")
+    @ResponseBody
+    public  Json countNewAllocationOrder(HttpServletRequest request){
+        Json json = new Json();
+
+        //获取shopId
+        TokenWrap token = getTokenWrap(request);
+        Integer shopId = token.getShopId();
+
+        json.setSuccess(true);
+        json.setMsg("u know");
+        json.setObj(deliverOrderService.clearAllocationOrderRedis(shopId));
+        return json;
+    }
 }
