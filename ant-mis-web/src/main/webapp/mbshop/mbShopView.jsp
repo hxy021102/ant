@@ -56,6 +56,16 @@
             $.editShopStock = true;
         </script>
     </c:if>
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/shopItemController/examinePage')}">
+        <script type="text/javascript">
+            $.examineShopItem = true;
+        </script>
+    </c:if>
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/shopItemController/editPricePage')}">
+        <script type="text/javascript">
+            $.editShopItemPrice = true;
+        </script>
+    </c:if>
     <script type="text/javascript">
         var gridMap = {};
         $(function () {
@@ -90,6 +100,11 @@
                 4: {
                     invoke: function () {
                         gridMap.handle(this, loadEmptyBucketDataGrid);
+                    }, grid: null
+                },
+                5: {
+                    invoke: function () {
+                        gridMap.handle(this, loadDeliverShopItemDataGrid);
                     }, grid: null
                 }
 
@@ -520,10 +535,165 @@
             });
         }
 
+        var deliverShopItemDataGrid;
+        function loadDeliverShopItemDataGrid() {
+            return  deliverShopItemDataGrid=$('#deliverShopItemDataGrid').datagrid({
+                url : '${pageContext.request.contextPath}/shopItemController/dataGrid?shopId='+${mbShopExt.id},
+                fit : true,
+                fitColumns : true,
+                border : false,
+                pagination : true,
+                idField : 'id',
+                pageSize : 10,
+                pageList : [ 10, 20, 30, 40, 50 ],
+                sortName : 'id',
+                sortOrder : 'desc',
+                checkOnSelect : false,
+                selectOnCheck : false,
+                nowrap : false,
+                striped : true,
+                rownumbers : true,
+                singleSelect : true,
+                columns : [ [{
+                    field : 'id',
+                    title : '编号',
+                    width : 150,
+                    hidden : true
+                }, {
+                    field : 'itemId',
+                    title : '商品ID',
+                    width : 20
+                },{
+                    field : 'name',
+                    title : '商品名称',
+                    width : 60
+                }, {
+                    field : 'shopId',
+                    title : '门店ID',
+                    width : 20
+                }, {
+                    field : 'price',
+                    title : '价格',
+                    width : 20,
+                    align:"right",
+                    formatter:function(value){
+                        if (value != null)
+                            return $.formatMoney(value);
+                        return "";
+                    }
+                }, {
+                    field : 'inPrice',
+                    title : '采购价',
+                    width : 20,
+                    align:"right",
+                    formatter: function (value) {
+                        if (value != null)
+                            return $.formatMoney(value);
+                        return "";
+                    }
+                },{
+                    field : 'freight',
+                    title : '运费',
+                    width : 20,
+                    align:"right",
+                    formatter:function(value){
+                        if (value != null)
+                            return $.formatMoney(value);
+                        return "";
+                    }
+                },{
+                    field : 'quantity',
+                    title : '数量',
+                    width : 10
+                },{
+                    field : 'online',
+                    title : '是否上架',
+                    width : 5,
+                    formatter:function(value){
+                        if (value == "true")
+                            return "是";
+                        return "否";
+                    }
+                },{
+                    field : 'statusName',
+                    title : '状态',
+                    width : 20
+                }, {
+                    field : 'action',
+                    title : '操作',
+                    width : 30,
+                    formatter : function(value, row, index) {
+                        var str = '';
+                        if ($.editShopItemPrice&&row.status !="SIS02") {
+                            str += $.formatString('<img onclick="editShopItemPrice(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/pencil.png');
+                        }
+                        str += '&nbsp;';
+                        if ($.examineShopItem && row.status =="SIS01") {
+                            str += $.formatString('<img onclick="examineFun(\'{0}\');" src="{1}" title="审核"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/joystick.png');
+                        }
+                        return str;
+                    }
+                } ] ],
+            });
+        }
+
         $(function () {
             parent.$.messager.progress('close');
 
         });
+
+        function examineFun(id) {
+            if (id == undefined) {
+                var rows = dataGrid.datagrid('getSelections');
+                id = rows[0].id;
+            }
+            parent.$.modalDialog({
+                title : '审核派单',
+                width : 780,
+                height : 300,
+                href : '${pageContext.request.contextPath}/shopItemController/examinePage?id=' + id,
+                buttons: [{
+                    text: '通过',
+                    handler: function () {
+                        parent.$.modalDialog.openner_dataGrid =  deliverShopItemDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                        var f = parent.$.modalDialog.handler.find('#form');
+                        f.find("input[name=status]").val("BAS02");
+                        f.submit();
+                    }
+                },
+                    {
+                        text: '拒绝',
+                        handler: function () {
+                            parent.$.modalDialog.openner_dataGrid =  deliverShopItemDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                            var f = parent.$.modalDialog.handler.find('#form');
+                            f.find("input[name=status]").val("BAS03");
+                            f.submit();
+                        }
+                    }
+                ]
+            });
+        }
+
+        function editShopItemPrice(id) {
+            if (id == undefined) {
+                var rows = dataGrid.datagrid('getSelections');
+                id = rows[0].id;
+            }
+            parent.$.modalDialog({
+                title: '商品价格修改',
+                width: 780,
+                height: 500,
+                href: '${pageContext.request.contextPath}/shopItemController/editPricePage?id=' + id,
+                buttons: [{
+                    text: '编辑',
+                    handler: function () {
+                        parent.$.modalDialog.openner_dataGrid = deliverShopItemDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                        var f = parent.$.modalDialog.handler.find('#form');
+                        f.submit();
+                    }
+                }]
+            });
+        }
         function editStock(id) {
             if (id == undefined) {
                 var rows = dataGrid.datagrid('getSelections');
@@ -969,6 +1139,9 @@
             </div>
             <div title="空桶列表">
                 <table id="emptyBucketDataGrid"></table>
+            </div>
+            <div title="门店商品">
+                <table id="deliverShopItemDataGrid"></table>
             </div>
         </div>
 

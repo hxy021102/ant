@@ -7,6 +7,7 @@ public class DeliverOrderShopPayQuery extends DeliverOrderShopPay{
 	private String shopName;
 	private String statusName;
     private Long[] deliverOrderIds;
+    private String payWayName;
 	public String getShopName() {
 		return shopName;
 	}
@@ -29,5 +30,13 @@ public class DeliverOrderShopPayQuery extends DeliverOrderShopPay{
 
 	public void setDeliverOrderIds(Long[] deliverOrderIds) {
 		this.deliverOrderIds = deliverOrderIds;
+	}
+
+	public String getPayWayName() {
+		return ConvertNameUtil.getString(this.payWayName);
+	}
+
+	public void setPayWayName(String payWayName) {
+		this.payWayName = payWayName;
 	}
 }

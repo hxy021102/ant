@@ -11,6 +11,7 @@ public class ShopOrderBillQuery extends ShopOrderBill {
 	private String reviewerName;
 	private List<DeliverOrder> deliverOrderList;
 	private Long[] deliverOrderIds;
+	private String payWayName;
 	public String getShopName() {
 		return shopName;
 	}
@@ -49,5 +50,13 @@ public class ShopOrderBillQuery extends ShopOrderBill {
 
 	public void setDeliverOrderIds(Long[] deliverOrderIds) {
 		this.deliverOrderIds = deliverOrderIds;
+	}
+
+	public String getPayWayName() {
+		return ConvertNameUtil.getString(this.payWayName);
+	}
+
+	public void setPayWayName(String payWayName) {
+		this.payWayName = payWayName;
 	}
 }

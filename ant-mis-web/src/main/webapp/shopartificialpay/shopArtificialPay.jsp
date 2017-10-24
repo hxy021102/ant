@@ -72,7 +72,9 @@
 	});
 
     function addShopOrderBill() {
+        var isValid = $('#searchForm').form('validate');
         var rows = $('#dataGrid').datagrid('getChecked');
+        if (isValid && rows.length > 0) {
         var shopOrderBillQuery = $.serializeObject($('#searchForm'));
         var totalAmount = 0;
         var deliverOrderIds = new Array(rows.length);
@@ -112,6 +114,9 @@
                 parent.$.messager.progress('close');
             }
         });
+		}else{
+            alert("请选择要结算的运单！")
+        }
 
     }
 

@@ -19,7 +19,9 @@ public class ShopItem implements java.io.Serializable {
 	private Integer freight;
 	private Integer quantity;
 	private Boolean online;
-
+	private String status;
+	private String reviewerId;
+	private String remark;
 	private Integer[] itemIds;
 
 	public void setId(Integer value) {
@@ -116,5 +118,29 @@ public class ShopItem implements java.io.Serializable {
 
 	public void setItemIds(Integer[] itemIds) {
 		this.itemIds = itemIds;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getReviewerId() {
+		return reviewerId;
+	}
+
+	public void setReviewerId(String reviewerId) {
+		this.reviewerId = reviewerId;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 }

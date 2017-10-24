@@ -1,12 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%> 
+<%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%>
 <script type="text/javascript">
 	$(function() {
 		parent.$.messager.progress('close');
 		$('#form').form({
-			url : '${pageContext.request.contextPath}/shopOrderBillController/payShopBill',
+			url : '${pageContext.request.contextPath}/shopItemController/editAuditState',
 			onSubmit : function() {
 				parent.$.messager.progress({
 					title : '提示',
@@ -31,32 +31,19 @@
 		});
 	});
 </script>
+
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;">
 		<form id="form" method="post">
-				<input type="hidden" name="id" value = "${shopOrderBill.id}"/>
+			<input type="hidden" name="id" value = "${param.id}"/>
 			<table class="table table-hover table-condensed">
 				<tr>
-					<th>门店ID</th>
-					<td>
-						<input class="span2" name="shopId" readonly type="text" value="${shopOrderBill.shopId}"/>
-					</td>
-					<th>门店名称</th>
-					<td>
-						<input class="span2" name="shopName" readonly type="text" value="${shopOrderBill.shopName}"/>
+					<th>审核备注</th>
+					<td colspan="2">
+						<textarea name="remark" style="width: 97%" rows="4"    class="easyui-validatebox"    > </textarea>
 					</td>
 				</tr>
-				<tr>
-					<th>支付总金额</th>
-					<td>
-						<input class="span2" name="amount" readonly type="text" value="${shopOrderBill.amount}"/>
-					</td>
-					<th>结算方式</th>
-					<td>
-						<jb:select dataType="DPW" name="payWay" value="${shopOrderBill.payWay}"></jb:select>
-					</td>
-				</tr>
-			</table>				
+			</table>
 		</form>
 	</div>
 </div>
