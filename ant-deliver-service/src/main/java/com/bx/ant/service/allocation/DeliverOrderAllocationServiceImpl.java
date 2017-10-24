@@ -139,6 +139,7 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
             if(tokenService.getTokenByShopId(minMbShop.getId()) == null) throw new ServiceException("门店不在线，token已失效");
             deliverOrder.setShopId(minMbShop.getId());
             deliverOrder.setShopDistance(minDistance);
+            deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_ALLOCATION);
             deliverOrderService.transform(deliverOrder);
 
             // 发送短信通知

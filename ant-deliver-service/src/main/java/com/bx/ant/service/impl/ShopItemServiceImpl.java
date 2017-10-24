@@ -396,7 +396,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 	@Override
 	public void updateQunatity(ShopItem shopItem) {
 		if (!F.empty(shopItem.getId()) && !F.empty(shopItem.getQuantity())) {
-			int i = shopItemDao.executeHql("update ShopItem t set t.quantity=quantity+" + shopItem.getQuantity() + " where t.id=" + shopItem.getId());
+			int i = shopItemDao.executeHql("update TshopItem t set t.quantity=quantity+" + shopItem.getQuantity() + " where t.id=" + shopItem.getId());
 			if (i != 1) {
 				throw new ServiceException("门店库存更新失败");
 			}
