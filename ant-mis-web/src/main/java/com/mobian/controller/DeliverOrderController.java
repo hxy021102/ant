@@ -10,22 +10,27 @@ import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.SupplierServiceI;
 import com.mobian.pageModel.*;
 import com.mobian.util.ConfigUtil;
+import com.mobian.util.ImportExcelUtil;
 import net.sf.json.JSONArray;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -283,5 +288,36 @@ public class DeliverOrderController extends BaseController {
 	   	j.setMsg("生成账单成功");
 	   	j.setSuccess(true);
 	   	return  j;
+	}
+
+	@RequestMapping("uploadPage")
+	public String uploadPage(){
+		return "/deliverorder/deliverOrdeUpload";
+	}
+
+	@RequestMapping("upload")
+	@ResponseBody
+	public Json upload(@RequestParam MultipartFile file) throws Exception {
+		Json json = new Json();
+		try {
+			if (file.isEmpty()) {
+				json.setMsg("未选中文件");
+				json.setSuccess(false);
+				return json;
+			}
+			InputStream in = file.getInputStream();
+			List<List<Object>> listOb = new ImportExcelUtil().getBankListByExcel(in, file.getOriginalFilename());
+			in.close();
+			List<DeliverOrder> deliverOrderList = new ArrayList<>();
+			Iterator<List<Object>> listIterator = listOb.iterator();
+			while (listIterator.hasNext()) {
+				List<Object> lo = listIterator.next();
+				DeliverOrder order = new DeliverOrder();
+
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

@@ -18,8 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by  wanxp 2017/9/22.
@@ -130,6 +129,12 @@ public class ApiDeliverOrderController extends BaseController {
         orderShop.setStatus(DeliverOrderShopServiceI.STATUS_REFUSED);
         orderShop.setShopId(shopId);
         List<DeliverOrderShop> orderShops = deliverOrderShopService.query(orderShop);
+        Collections.sort(orderShops, new Comparator<DeliverOrderShop>() {
+            @Override
+            public int compare(DeliverOrderShop d1, DeliverOrderShop d2) {
+                return  (int)(d2.getUpdatetime().getTime() - d1.getUpdatetime().getTime());
+            }
+        });
         if (CollectionUtils.isNotEmpty(orderShops)) {
             //通过deliverOrderShop获取deliverOrder
             for (DeliverOrderShop deliverOrderShop : orderShops) {
