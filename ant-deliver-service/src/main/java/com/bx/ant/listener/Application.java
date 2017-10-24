@@ -48,6 +48,11 @@ public class Application implements ServletContextListener {
 				}
 				return val;
 			}
+
+			@Override
+			public Object get(String key) {
+				return context.getAttribute(PREFIX+key);
+			}
 		});
 	}
 

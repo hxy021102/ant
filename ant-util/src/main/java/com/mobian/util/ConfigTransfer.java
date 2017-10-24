@@ -7,4 +7,6 @@ public abstract class ConfigTransfer {
 
     public abstract String getString(String key);
 
+    public abstract Object get(String key);
+
 }

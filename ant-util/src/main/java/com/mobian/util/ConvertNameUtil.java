@@ -26,4 +26,9 @@ public class ConvertNameUtil {
         return val;
     }
 
+    public static Object get(String key){
+
+        return configTransfer.get(key);
+    }
+
 }

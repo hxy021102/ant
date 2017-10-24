@@ -54,6 +54,11 @@ public class Application implements ServletContextListener {
 				}
 				return val;
 			}
+
+			@Override
+			public Object get(String key) {
+				return context.getAttribute(PREFIX+key);
+			}
 		});
 		TokenManage.DEFAULT_TOKEN = ConvertNameUtil.getString("SV010", "89");
 	}
