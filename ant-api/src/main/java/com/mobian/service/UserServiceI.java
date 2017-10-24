@@ -23,7 +23,7 @@ public interface UserServiceI {
 	 *            里面包含登录名和密码
 	 * @return 用户对象
 	 */
-	public User login(User user);
+	User login(User user);
 
 	/**
 	 * 用户注册
@@ -32,7 +32,7 @@ public interface UserServiceI {
 	 *            里面包含登录名和密码
 	 * @throws Exception
 	 */
-	public void reg(User user) throws Exception;
+	void reg(User user) throws Exception;
 
 	/**
 	 * 获取用户数据表格
@@ -40,7 +40,7 @@ public interface UserServiceI {
 	 * @param user
 	 * @return
 	 */
-	public DataGrid dataGrid(User user, PageHelper ph);
+	DataGrid dataGrid(User user, PageHelper ph);
 	
 	/**
 	 * 感兴趣的
@@ -48,7 +48,7 @@ public interface UserServiceI {
 	 * @param ph
 	 * @return
 	 */
-	public DataGrid dataGridHobby(User user, PageHelper ph);
+	DataGrid dataGridHobby(User user, PageHelper ph);
 	
 	/**
 	 * api查询用的
@@ -56,7 +56,7 @@ public interface UserServiceI {
 	 * @param ph
 	 * @return
 	 */
-	public DataGrid dataGridForApi(User user, PageHelper ph);
+	DataGrid dataGridForApi(User user, PageHelper ph);
 	
 	/**
 	 * 新好友
@@ -64,14 +64,14 @@ public interface UserServiceI {
 	 * @param ph
 	 * @return
 	 */
-	public DataGrid dataGridNewFriend(User user, PageHelper ph);
+	DataGrid dataGridNewFriend(User user, PageHelper ph);
 
 	/**
 	 * 添加用户
 	 * 
 	 * @param user
 	 */
-	public void add(User user) throws Exception;
+	void add(User user) throws Exception;
 
 	/**
 	 * 获得用户对象
@@ -88,14 +88,14 @@ public interface UserServiceI {
 	 * 
 	 * @param user
 	 */
-	public void edit(User user) throws Exception;
+	void edit(User user) throws Exception;
 
 	/**
 	 * 删除用户
 	 * 
 	 * @param id
 	 */
-	public void delete(String id);
+	void delete(String id);
 
 	/**
 	 * 用户授权
@@ -104,7 +104,7 @@ public interface UserServiceI {
 	 * @param user
 	 *            需要user.roleIds的属性值
 	 */
-	public void grant(String ids, User user);
+	void grant(String ids, User user);
 
 	/**
 	 * 获得用户能访问的资源地址
@@ -113,14 +113,14 @@ public interface UserServiceI {
 	 *            用户ID
 	 * @return
 	 */
-	public List<String> resourceList(String id);
+	List<String> resourceList(String id);
 
 	/**
 	 * 编辑用户密码
 	 * 
 	 * @param user
 	 */
-	public void editPwd(User user);
+	void editPwd(User user);
 
 	/**
 	 * 修改用户自己的密码
@@ -130,7 +130,7 @@ public interface UserServiceI {
 	 * @param pwd
 	 * @return
 	 */
-	public boolean editCurrentUserPwd(SessionInfo sessionInfo, String oldPwd, String pwd);
+	boolean editCurrentUserPwd(SessionInfo sessionInfo, String oldPwd, String pwd);
 
 	/**
 	 * 用户登录时的autocomplete
@@ -139,7 +139,7 @@ public interface UserServiceI {
 	 *            参数
 	 * @return
 	 */
-	public List<User> loginCombobox(String q);
+	List<User> loginCombobox(String q);
 
 	/**
 	 * 用户登录时的combogrid
@@ -148,14 +148,14 @@ public interface UserServiceI {
 	 * @param ph
 	 * @return
 	 */
-	public DataGrid loginCombogrid(String q, PageHelper ph);
+	DataGrid loginCombogrid(String q, PageHelper ph);
 
 	/**
 	 * 用户创建时间图表
 	 * 
 	 * @return
 	 */
-	public List<Long> userCreateDatetimeChart();
+	List<Long> userCreateDatetimeChart();
 		
 	
 	/**
@@ -163,8 +163,15 @@ public interface UserServiceI {
 	 * @param userId
 	 * @return
 	 */
-	public Map<String,Object> userIndex(String userId);
+	Map<String,Object> userIndex(String userId);
 
 	User getFromCache(String id);
+
+	/**
+	 * 根据资源获取权限
+	 * @param resourceId
+	 * @return
+	 */
+	List<User> getUserListByResourceId(String resourceId);
 
 }

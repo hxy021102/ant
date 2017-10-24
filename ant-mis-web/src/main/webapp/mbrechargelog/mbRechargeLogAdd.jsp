@@ -65,7 +65,7 @@
 				</tr>
 				<tr>
 					<th>充值类型</th>
-					<td>
+					<td colspan="3">
 						<jb:selectSql dataType="SQ011" name="refType" required="true"></jb:selectSql>
 					</td>
 				</tr>
