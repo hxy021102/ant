@@ -370,7 +370,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 
 	@Override
 	public void refundByDeliverOrder(DeliverOrder deliverOrder) {
-		if (!F.empty(deliverOrder.getId()) || !F.empty(deliverOrder.getShopId())) {
+		if (!F.empty(deliverOrder.getId()) && !F.empty(deliverOrder.getShopId())) {
 			//通过deliverOrder获取deliverOrderShopItem
 			DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
 			deliverOrderShopItem.setDeliverOrderId(deliverOrder.getId());
@@ -388,6 +388,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 					ShopItem si = new ShopItem();
 					si.setId(sItem.getId());
 					si.setQuantity(orderShopItem.getQuantity());
+					updateQunatity(si);
 				}
 			}
 		}

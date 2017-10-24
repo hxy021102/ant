@@ -47,7 +47,7 @@ public class DeliverOrder15StateImpl implements DeliverOrderState {
     public void handle(DeliverOrder deliverOrder) {
 
         //修改运单状态
-        DeliverOrder orderNew = new DeliverOrder();
+        DeliverOrder orderNew = new  DeliverOrder();
         orderNew.setId(deliverOrder.getId());
         orderNew.setStatus(prefix + getStateName());
         deliverOrderService.editAndAddLog(orderNew, DeliverOrderLogServiceI.TYPE_REFUSE_DELIVER_ORDER,"[运单被拒绝]:" + deliverOrder.getRemark());

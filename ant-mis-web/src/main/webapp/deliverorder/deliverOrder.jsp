@@ -179,6 +179,26 @@
        	 }
         }); 
 	}
+	function uploadTable(id) {
+//        if (id == undefined) {
+//            var rows = dataGrid.datagrid('getSelections');
+//            id = rows[0].id;
+//        }
+		parent.$.modalDialog({
+			title:'批量导入',
+			width:780,
+			height:200,
+			href:'${pageContext.request.contentLength}/deliverOrderController/uploadPage',
+			buttons:[{
+			    text:'保存',
+				handler:function () {
+					parent.$.modalDialog.openner_dataGrid = dataGrid;
+					var f = parent.$.modalDialog.handler.find("#form");
+					f.submit();
+                }
+			}]
+		});
+    }
 	function searchFun() {
         var options = {};
         options.url = '${pageContext.request.contextPath}/deliverOrderController/dataGrid';
