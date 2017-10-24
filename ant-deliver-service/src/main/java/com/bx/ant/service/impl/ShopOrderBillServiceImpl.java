@@ -271,6 +271,7 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 				MbBalanceLog mbBalanceLog = new MbBalanceLog();
 				mbBalanceLog.setBalanceId(mbBalance.getId());
 				mbBalanceLog.setRefType("BT061");
+				mbBalanceLog.setRefId(shopOrderBill.getId()+"");
 				mbBalanceLog.setRemark("门店手动账单结算");
 				mbBalanceLog.setAmount(shopOrderBill.getAmount());
 				mbBalanceLogService.addAndUpdateBalance(mbBalanceLog);
