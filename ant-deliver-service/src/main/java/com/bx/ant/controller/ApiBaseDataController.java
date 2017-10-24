@@ -3,7 +3,6 @@ package com.bx.ant.controller;
 import com.mobian.pageModel.BaseData;
 import com.mobian.pageModel.Json;
 import com.mobian.service.BasedataServiceI;
-import com.mobian.util.ConvertNameUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,7 +54,7 @@ public class ApiBaseDataController extends BaseController {
 	public Json get(String key) {
 		Json j = new Json();
 		try {
-			j.setObj(ConvertNameUtil.getString(key));
+			j.setObj(basedataService.get(key));
 			j.success();
 		}catch(Exception e){
 			j.fail();
