@@ -190,6 +190,9 @@ public class ShopItemController extends BaseController {
 	public Json editState(ShopItem shopItem, HttpSession session) {
 		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
 		Json j = new Json();
+		if("SIS02".equals(shopItem.getStatus())){
+			shopItem.setOnline(true);
+		}
 		shopItem.setReviewerId(sessionInfo.getId());
 		shopItemService.edit(shopItem);
 		j.setSuccess(true);

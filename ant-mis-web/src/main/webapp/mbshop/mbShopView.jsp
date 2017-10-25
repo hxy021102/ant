@@ -628,7 +628,7 @@
                             str += $.formatString('<img onclick="editShopItemPrice(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/pencil.png');
                         }
                         str += '&nbsp;';
-                        if ($.examineShopItem && row.status == "SIS01" && row.online == true) {
+                        if ($.examineShopItem && row.status == "SIS01" && row.online == false) {
                             str += $.formatString('<img onclick="examineFun(\'{0}\');" src="{1}" title="审核"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/joystick.png');
                         }
                         return str;

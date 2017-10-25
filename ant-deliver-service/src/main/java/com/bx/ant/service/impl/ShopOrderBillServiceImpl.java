@@ -249,6 +249,7 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 		deliverOrderShopPay.setShopOrderBillId(shopOrderBill.getId());
 		List<DeliverOrderShopPay> deliverOrderShopPays =deliverOrderShopPayService.query(deliverOrderShopPay);
 		if(CollectionUtils.isNotEmpty(deliverOrderShopPays)){
+			MbBalance mbBalance = mbBalanceService.addOrGetMbBalanceDelivery(shopOrderBill.getShopId());
 			for(DeliverOrderShopPay orderShopPay :deliverOrderShopPays){
 				//修改门店支付状态
  				orderShopPay.setStatus("SPS04");
@@ -265,16 +266,16 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 				deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_ACCEPTED);
 				deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
 				deliverOrderShopService.editStatus(deliverOrderShop,DeliverOrderShopServiceI.STATUS_COMPLETE);
-			}
-            MbBalance mbBalance = mbBalanceService.addOrGetMbBalanceDelivery(shopOrderBill.getShopId());
-			if(mbBalance!=null){
-				MbBalanceLog mbBalanceLog = new MbBalanceLog();
-				mbBalanceLog.setBalanceId(mbBalance.getId());
-				mbBalanceLog.setRefType("BT061");
-				mbBalanceLog.setRefId(shopOrderBill.getId()+"");
-				mbBalanceLog.setRemark("门店手动账单结算");
-				mbBalanceLog.setAmount(shopOrderBill.getAmount());
-				mbBalanceLogService.addAndUpdateBalance(mbBalanceLog);
+				//修改门店账单余额、
+				if(mbBalance!=null){
+					MbBalanceLog mbBalanceLog = new MbBalanceLog();
+					mbBalanceLog.setBalanceId(mbBalance.getId());
+					mbBalanceLog.setRefType("BT061");
+					mbBalanceLog.setRefId(orderShopPay.getId()+"");
+					mbBalanceLog.setRemark("门店手动账单结算");
+					mbBalanceLog.setAmount(shopOrderBill.getAmount());
+					mbBalanceLogService.addAndUpdateBalance(mbBalanceLog);
+				}
 			}
 		}
 	}

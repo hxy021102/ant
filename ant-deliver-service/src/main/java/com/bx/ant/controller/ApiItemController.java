@@ -99,7 +99,7 @@ public class ApiItemController extends BaseController {
         TokenWrap token = getTokenWrap(request);
         if(!F.empty(token.getShopId())) {
             shopItem.setShopId(token.getShopId());
-            shopItem.setOnline(true);
+            shopItem.setOnline(false);
             shopItem.setStatus("SIS01");
             DataGrid dataGridShopItem = shopItemService.dataGridWithItemName(shopItem, ph);
             j.setObj(dataGridShopItem);
@@ -127,6 +127,7 @@ public class ApiItemController extends BaseController {
         if(!F.empty(token.getShopId())) {
             shopItem.setShopId(token.getShopId());
             shopItem.setOnline(false);
+            shopItem.setStatus("SIS02");
             DataGrid dataGridShopItem = shopItemService.dataGridWithItemName(shopItem, ph);
             j.setObj(dataGridShopItem);
             j.setSuccess(true);
