@@ -417,7 +417,7 @@
 				width : 50,
 				sortable:true,
                 styler: function (value) {
-                    if (DateDiff(value) > 2) {
+                    if (DateDiff(value) > 1) {
                         return 'color: red';
                     }
                 }

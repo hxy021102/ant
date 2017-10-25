@@ -39,7 +39,10 @@
 			columns : [ [ {
 				field : 'name',
 				title : '资源名称',
-				width : 200
+				width : 200,
+				formatter : function (value, row, index) {
+					return '<a onclick="viewResourceFun(\'' + row.id + '\')">' + value + '</a>';
+				}
 			}, {
 				field : 'url',
 				title : '资源路径',
@@ -170,6 +173,16 @@
 			} ]
 		});
 	}
+
+	function viewResourceFun(id) {
+		parent.$.modalDialog({
+			title : '关联用户',
+			width : 700,
+			height : 500,
+			href : '${pageContext.request.contextPath}/resourceController/viewResourceUser?resourceId='+id
+		});
+	}
+
 
 	function redo() {
 		var node = treeGrid.treegrid('getSelected');

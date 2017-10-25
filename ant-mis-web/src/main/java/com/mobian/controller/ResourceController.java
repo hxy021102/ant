@@ -6,12 +6,10 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.mobian.pageModel.Resource;
+import com.mobian.pageModel.*;
 import com.mobian.service.ResourceServiceI;
-import com.mobian.pageModel.Json;
-import com.mobian.pageModel.SessionInfo;
-import com.mobian.pageModel.Tree;
 import com.mobian.service.ResourceTypeServiceI;
+import com.mobian.service.UserServiceI;
 import com.mobian.util.ConfigUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +33,9 @@ public class ResourceController extends BaseController {
 	@Autowired
 	private ResourceTypeServiceI resourceTypeService;
 
+	@Autowired
+	private UserServiceI userService;
+
 	/**
 	 * 获得资源树(资源类型为菜单类型)
 	 * 
@@ -49,6 +50,8 @@ public class ResourceController extends BaseController {
 		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
 		return resourceService.tree(sessionInfo);
 	}
+
+
 
 	/**
 	 * 获得资源树(包括所有资源类型)
@@ -73,6 +76,20 @@ public class ResourceController extends BaseController {
 	@RequestMapping("/manager")
 	public String manager() {
 		return "/admin/resource";
+	}
+
+	@RequestMapping("/getResourceUserList")
+	@ResponseBody
+	public DataGrid getResourceUserList(String resourceId){
+		DataGrid dataGrid = new DataGrid();
+		dataGrid.setRows(userService.getUserListByResourceId(resourceId));
+		return dataGrid;
+	}
+
+	@RequestMapping("/viewResourceUser")
+	public String viewResourceUser(HttpServletRequest request,String resourceId){
+		request.setAttribute("resourceId", resourceId);
+		return "/admin/resourceUser";
 	}
 
 	/**
