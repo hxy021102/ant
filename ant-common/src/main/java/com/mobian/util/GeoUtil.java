@@ -31,9 +31,9 @@ public class GeoUtil {
     }
     /**
      * 计算TP值
-     * @param curPoint      当前点
-     * @param relatedPoint  偏移点
-     * @param isGeography   是否是地理坐标 false为2d坐标
+//     * @param curPoint      当前点
+//     * @param relatedPoint  偏移点
+//     * @param isGeography   是否是地理坐标 false为2d坐标
      * @return              tp值
      *//*
     public static double getDirAngle(Point curPoint,Point relatedPoint,boolean isGeography){
@@ -53,28 +53,32 @@ public class GeoUtil {
     }*/
     public static BigDecimal[] getPosition(String address) {
         address = address.replaceAll(" ", "");
-        String ak =  ConvertNameUtil.getDesc("AK001");
+        String ak = ConvertNameUtil.getDesc("AK001");
+        String akey = null;
         String[] aks = ak.split(";");
-        Random r = new Random();
-        int index = r.nextInt(aks.length-1);
-        String akey = aks[index];
-        String requestUrl = "http://api.map.baidu.com/geocoder/v2/?output=json&address=" + address + "&ak="+akey;
+        if(aks.length == 1) {
+            akey = aks[0];
+        }else {
+            Random r = new Random();
+            int index = r.nextInt(aks.length - 1);
+            akey = aks[index];
+        }
+        String requestUrl = "http://api.map.baidu.com/geocoder/v2/?output=json&address=" + address + "&ak=" + akey;
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.httpRequest(requestUrl, "GET", null));
         if (jsonObject != null) {
-            if (jsonObject.getInteger("status") == 0) {
-                JSONObject result = (JSONObject) jsonObject.get("result");
-                JSONObject location = (JSONObject) result.get("location");
-                Object ln = location.get("lng");
-                Object la = location.get("lat");
-                BigDecimal[] point = new BigDecimal[2];
-                point[0] = new BigDecimal(ln.toString());
-                point[1] = new BigDecimal(la.toString());
-                return point;
+                if (jsonObject.getInteger("status") == 0) {
+                    JSONObject result = (JSONObject) jsonObject.get("result");
+                    JSONObject location = (JSONObject) result.get("location");
+                    Object ln = location.get("lng");
+                    Object la = location.get("lat");
+                    BigDecimal[] point = new BigDecimal[2];
+                    point[0] = new BigDecimal(ln.toString());
+                    point[1] = new BigDecimal(la.toString());
+                    return point;
+                }
             }
-        }
-        return null;
+            return null;
     }
-
     public static void main(String[] args) {
         System.out.println(getDistance(121.446014,31.215937,121.446028464238,31.2158502442799  ));
     }

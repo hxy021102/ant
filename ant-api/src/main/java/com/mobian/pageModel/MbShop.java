@@ -30,6 +30,7 @@ public class MbShop implements java.io.Serializable {
     private BigDecimal longitude;
     private BigDecimal latitude;
     private String shopType;
+    private Integer salesLoginId;//销售id;
 
     private Integer parentId;
     private String parentName;
@@ -247,5 +248,13 @@ public class MbShop implements java.io.Serializable {
 
     public void setOnlyMain(boolean onlyMain) {
         this.onlyMain = onlyMain;
+    }
+
+    public Integer getSalesLoginId() {
+        return salesLoginId;
+    }
+
+    public void setSalesLoginId(Integer salesLoginId) {
+        this.salesLoginId = salesLoginId;
     }
 }

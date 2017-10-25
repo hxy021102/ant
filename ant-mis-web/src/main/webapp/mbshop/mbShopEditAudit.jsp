@@ -126,6 +126,10 @@
 					<td colspan="3">
 						<jb:select dataType="ST" name="shopType" mustSelect="true" required="true"></jb:select>
 					</td>
+					<th></th>
+					<td>
+						<jb:selectSql name="salesLoginId" dataType="SQ018"></jb:selectSql>
+					</td>
 
 				</tr>
 				<tr>
