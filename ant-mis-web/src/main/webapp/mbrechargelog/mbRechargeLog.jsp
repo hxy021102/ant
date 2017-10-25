@@ -251,7 +251,22 @@
 			} ]
 		});
 	}
-
+    function rechargeLogUpload(){
+        parent.$.modalDialog({
+            title : '批量导入',
+            width : 780,
+            height : 200,
+            href : '${pageContext.request.contextPath}/mbItemStockController/uploadPage',
+            buttons : [ {
+                text : '保存',
+                handler : function() {
+                    parent.$.modalDialog.openner_dataGrid = dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                    var f = parent.$.modalDialog.handler.find('#form');
+                    f.submit();
+                }
+            } ]
+        });
+    }
 	function downloadTable(){
 		var options = dataGrid.datagrid("options");
 		var $colums = [];		
@@ -314,6 +329,9 @@
 			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">
 			</form>
 			<iframe id="downloadIframe" name="downloadIframe" style="display: none;"></iframe>
+		</c:if>
+		<c:if test="${fn:contains(sessionInfo.resourceList, '/mbRechargeLogController/uploadPage')}">
+			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_add',plain:true" onclick="rechargeLogUpload();">导入</a>
 		</c:if>
 	</div>	
 </body>

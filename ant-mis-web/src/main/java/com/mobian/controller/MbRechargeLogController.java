@@ -8,16 +8,21 @@ import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.MbRechargeLogServiceI;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.util.ConfigUtil;
+import com.mobian.util.ImportExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -296,5 +301,62 @@ public class MbRechargeLogController extends BaseController {
 		j.setSuccess(true);
 		j.setMsg("添加成功！");
 		return j;
+	}
+
+	/**
+	 * 跳转到添加MbRechargeLog导入页面
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/uploadPage")
+	public String uploadPage(HttpServletRequest request) {
+		return "/mbrechargelog/mbrechargeogUpload";
+	}
+
+	/**
+	 * 批量导入银行收款信息
+	 * @param mbItemStock
+	 * @param file
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/upload")
+	@ResponseBody
+	public Json upload(MbItemStock mbItemStock, @RequestParam MultipartFile file, HttpSession session) throws Exception {
+		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+		Json json = new Json();
+		try {
+			if (file.isEmpty()) {
+				throw new ServiceException("请上传文件！！");
+			}
+			InputStream in = file.getInputStream();
+			List<List<Object>> listOb = new ImportExcelUtil().getBankListByExcel(in, file.getOriginalFilename());
+			in.close();
+			List<MbRechargeLog> mbRechargeLogList = new ArrayList<MbRechargeLog>();
+			for (int i = 0; i < listOb.size(); i++) {
+				List<Object> lo = listOb.get(i);
+				MbRechargeLog stock = new MbRechargeLog();
+
+				MbItem request = new MbItem();
+				String code = lo.get(0).toString();
+				request.setCode(code);
+				/*List<MbItem> list = mbItemService.query(request);
+				if (CollectionUtils.isEmpty(list)) {
+					throw new ServiceException(String.format("%s商品不存在", code));
+				} else {
+					MbItem mbItem = list.get(0);
+					stock.setItemId(mbItem.getId());
+				}*/
+			/*	stock.setWarehouseId(mbItemStock.getWarehouseId());
+				stock.setQuantity(Integer.parseInt(lo.get(1).toString()));
+				mbItemStockList.add(stock);*/
+			}
+		 //	mbItemStockService.addBatchAndUpdateItemStock(mbItemStockList,sessionInfo.getId());
+			json.setSuccess(true);
+		} catch (ServiceException e) {
+			json.setMsg(e.getMsg());
+		}
+		return json;
 	}
 }
