@@ -41,7 +41,7 @@
 				<tr>
 					<th>供应商</th>
 					<td>
-						<jb:selectGrid dataType="supplierId" name="supplierId" required="true"></jb:selectGrid>
+						<jb:selectGrid dataType="deliverSupplierId" name="supplierId" required="true"></jb:selectGrid>
 					</td>
 				</tr>
 				<tr>

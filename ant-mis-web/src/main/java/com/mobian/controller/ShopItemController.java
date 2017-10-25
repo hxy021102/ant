@@ -192,9 +192,11 @@ public class ShopItemController extends BaseController {
 		Json j = new Json();
 		if("SIS02".equals(shopItem.getStatus())){
 			shopItem.setOnline(true);
+			shopItem.setReviewerId(sessionInfo.getId());
+			shopItemService.edit(shopItem);
+		}else if("SIS03".equals(shopItem.getStatus())){
+			shopItemService.delete(shopItem.getId());
 		}
-		shopItem.setReviewerId(sessionInfo.getId());
-		shopItemService.edit(shopItem);
 		j.setSuccess(true);
 		j.setMsg("编辑成功！");
 		return j;

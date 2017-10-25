@@ -43,6 +43,10 @@
                 }
                 target.val(val);
             });
+
+            $('.money_input').each(function(){
+                $(this).val($.formatMoney($(this).val().trim()));
+            });
     });
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
@@ -93,7 +97,7 @@
 					<th>运费
 					</th>
 					<td colspan="3">
-						<input class="span2 easyui-validatebox money_input" name="priceStr" type="text" data-options="required:true"/>
+						<input class="span2 easyui-validatebox money_input" name="priceStr" type="text" value="${shopItem.freight}" data-options="required:true"/>
 						<input class="span2 " name="freight"  type="hidden" value="${shopItem.freight}"/>
 					</td>
 				</tr>

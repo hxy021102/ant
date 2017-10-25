@@ -101,6 +101,10 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 				whereHql += " and t.online = :online";
 				params.put("online", shopItem.getOnline());
 			}
+			if (!F.empty(shopItem.getStatus())) {
+				whereHql += " and t.status = :status";
+				params.put("status", shopItem.getStatus());
+			}
 		}
 		return whereHql;
 	}
@@ -143,11 +147,17 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 
 	@Override
 	public ShopItem getByShopIdAndItemId(Integer shopId, Integer itemId, boolean isOnline) {
+		return getByShopIdAndItemId(shopId, itemId, isOnline, null);
+	}
+
+	@Override
+	public ShopItem getByShopIdAndItemId(Integer shopId, Integer itemId, boolean isOnline, String status) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		ShopItem shopItem = new ShopItem();
 		shopItem.setShopId(shopId);
 		shopItem.setItemId(itemId);
 		shopItem.setOnline(isOnline);
+		shopItem.setStatus(status);
 		shopItem.setIsdeleted(false);
 		String where = whereHql(shopItem, params);
 		TshopItem t = shopItemDao.get("from TshopItem t " + where, params);
@@ -197,6 +207,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 			}
 			ShopItem shopItem = new ShopItem();
 			shopItem.setIsdeleted(false);
+			shopItem.setStatus("SIS02");
 			shopItem.setShopId(shopId);
 			shopItem.setItemIds(itemIdValues);
 			List<ShopItem> shopItemList = query(shopItem);
@@ -240,7 +251,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 	@Override
 	public void updateItemOnline(Integer itemId, Integer shopId) {
 		ShopItem shopItem = getByShopIdAndItemId(shopId, itemId);
-		if (shopItem != null) {
+		if (shopItem != null&&shopItem.getStatus().equals("SIS02")) {
 			if (!shopItem.getOnline()) {
 				shopItem.setOnline(true);
 				edit(shopItem);
@@ -260,8 +271,10 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 			String[] itemIdArray = itemIds.split(",");
 			for (int i = 0; i < itemIdArray.length; i++) {
 				ShopItem shopItem = getByShopIdAndItemId(shopId, Integer.parseInt(itemIdArray[i]));
-				shopItem.setOnline(false);
-				edit(shopItem);
+                if(shopItem.getStatus().equals("SIS02")) {
+                    shopItem.setOnline(false);
+                    edit(shopItem);
+                }
 			}
 		}
 	}
@@ -269,7 +282,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 	@Override
 	public void updateShopItemOffline(Integer itemId, Integer shopId) {
 		ShopItem shopItem = getByShopIdAndItemId(shopId, itemId, true);
-		if (shopItem != null) {
+		if (shopItem != null&&shopItem.getStatus().equals("SIS02")) {
 			shopItem.setOnline(false);
 			edit(shopItem);
 		}
@@ -332,8 +345,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 				itemIds[index++] = item.getId();
 			}
 			ShopItem shopItem = new ShopItem();
-			shopItem.setIsdeleted(false);
-//			shopItem.setOnline(true);
+//			shopItem.setStatus("SIS02");
 			shopItem.setShopId(shopId);
 			shopItem.setItemIds(itemIds);
 			List<ShopItem> shopItems = query(shopItem);
@@ -351,8 +363,10 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 				if (shopItem != null) {
 					item.setOnline(shopItem.getOnline());
 					item.setStatus(shopItem.getStatus());
-					if (shopItem.getOnline()) {
+					if (shopItem.getOnline() && "SIS02".equals(shopItem.getStatus())) {
 						item.setQuantity(shopItem.getQuantity());
+					} else {
+						item.setQuantity(0);
 					}
 				} else {
 					item.setQuantity(0);
