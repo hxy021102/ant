@@ -256,7 +256,7 @@
             title : '批量导入',
             width : 780,
             height : 200,
-            href : '${pageContext.request.contextPath}/mbItemStockController/uploadPage',
+            href : '${pageContext.request.contextPath}/mbRechargeLogController/uploadPage',
             buttons : [ {
                 text : '保存',
                 handler : function() {

@@ -85,7 +85,7 @@ public class TmbRechargeLog implements java.io.Serializable,IEntity{
 	private String bankCode;
 	//@Length(max=32)
 	private String payCode;
-
+    private String payerBankCode;
 	//columns END
 
 
@@ -261,6 +261,15 @@ public class TmbRechargeLog implements java.io.Serializable,IEntity{
 
 	public void setBankCode(String bankCode) {
 		this.bankCode = bankCode;
+	}
+
+	@Column(name = "payer_bank_code", unique = false, nullable = true, insertable = true, updatable = true, length = 64)
+	public String getPayerBankCode() {
+		return payerBankCode;
+	}
+
+	public void setPayerBankCode(String payerBankCode) {
+		this.payerBankCode = payerBankCode;
 	}
 
 	@Override

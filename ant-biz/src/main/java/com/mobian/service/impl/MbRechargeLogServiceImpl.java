@@ -3,6 +3,7 @@ package com.mobian.service.impl;
 import com.mobian.absx.F;
 import com.mobian.dao.MbRechargeLogDaoI;
 import com.mobian.exception.ServiceException;
+import com.mobian.model.TmbItem;
 import com.mobian.model.TmbRechargeLog;
 import com.mobian.pageModel.*;
 import com.mobian.service.*;
@@ -246,5 +247,38 @@ public class MbRechargeLogServiceImpl extends BaseServiceImpl<MbRechargeLog> imp
 			ol.add(o);
 		}
 		return ol;
+	}
+
+	@Override
+	public void addBatchMbRechargeLog(List<MbRechargeLog> mbRechargeLogList,String loginId) {
+		if (CollectionUtils.isNotEmpty(mbRechargeLogList)){
+			for(MbRechargeLog mbRechargeLog :mbRechargeLogList){
+				mbRechargeLog.setApplyLoginId(loginId);
+				add(mbRechargeLog);
+			}
+		}
+	}
+
+	@Override
+	public List<MbRechargeLog> query(MbRechargeLog mbRechargeLog) {
+		/*List<MbRechargeLog> ol = new ArrayList<MbRechargeLog>();
+		String hql = " from TmbItem t ";
+		Map<String, Object> params = new HashMap<String, Object>();
+		String where = whereHql(mbItem, params);
+		List<TmbItem> l = mbItemDao.find(hql  + where, params);
+		if (CollectionUtils.isNotEmpty(l)) {
+			for (TmbItem t : l) {
+				MbItem o = new MbItem();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}*/
+		return null;
+	}
+
+	@Override
+	public MbRechargeLog checkRechargeLogPayCode(MbRechargeLog mbRechargeLog) {
+//		List<MbRechargeLog>  mbRechargeLogList=query(mbRechargeLog);
+		return null;
 	}
 }

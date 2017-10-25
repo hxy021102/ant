@@ -7,7 +7,7 @@
 	$(function() {
 	 parent.$.messager.progress('close');
 		$('#form').form({
-			url : '${pageContext.request.contextPath}/mbItemStockController/upload',
+			url : '${pageContext.request.contextPath}/mbRechargeLogController/upload',
 			onSubmit : function() {
 				parent.$.messager.progress({
 					title : '提示',
