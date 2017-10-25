@@ -67,12 +67,6 @@ public class TmbSupplier implements java.io.Serializable,IEntity{
 	private String certificateList;
 	//
 	private Integer warehouseId;
-	//
-	private String supplierCode;
-	//
-	private String financialContact;
-	//
-	private String financialContactPhone;
 	//columns END
 
 
@@ -194,30 +188,7 @@ public class TmbSupplier implements java.io.Serializable,IEntity{
 	public void setWarehouseId(Integer warehouseId) {
 		this.warehouseId = warehouseId;
 	}
-	@Column(name = "supplier_code", unique = true, nullable = true, insertable = true, updatable = true, length = 32)
-	public String getSupplierCode() {
-		return supplierCode;
-	}
 
-	public void setSupplierCode(String supplierCode) {
-		this.supplierCode = supplierCode;
-	}
-	@Column(name = "financial_contact", unique = false, nullable = true, insertable = true, updatable = true, length = 32)
-	public String getFinancialContact() {
-		return financialContact;
-	}
-
-	public void setFinancialContact(String financialContact) {
-		this.financialContact = financialContact;
-	}
-	@Column(name = "financial_contact_phone", unique = false, nullable = true, insertable = true, updatable = true, length = 32)
-	public String getFinancialContactPhone() {
-		return financialContactPhone;
-	}
-
-	public void setFinancialContactPhone(String financialContactPhone) {
-		this.financialContactPhone = financialContactPhone;
-	}
 
 	/*
 	public String toString() {

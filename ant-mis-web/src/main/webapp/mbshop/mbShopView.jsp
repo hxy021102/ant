@@ -1121,12 +1121,6 @@
                     </td>
                 </c:if>
             </tr>
-            <tr>
-                <th>销售人员</th>
-                <td colspan="4">
-                    ${mbShopExt.salesLoginId}
-                </td>
-            </tr>
         </table>
     </div>
     <div data-options="region:'center',border:false">

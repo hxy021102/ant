@@ -35,7 +35,6 @@ public class TmbShop implements java.io.Serializable, IEntity {
     public static final String ALIAS_CONTACT_PEOPLE = "联系人";
     public static final String ALIAS_SHOP_TYPE = "类型";
     public static final String ALIAS_INVOICE_DEFAULT = "默认开票模板";
-    public static final String ALIAS_SALES_LOGIN_ID = "销售人员";
 
     //date formats
     public static final String FORMAT_ADDTIME = com.mobian.util.Constants.DATE_FORMAT_FOR_ENTITY;
@@ -77,7 +76,6 @@ public class TmbShop implements java.io.Serializable, IEntity {
 
     private BigDecimal longitude;
     private BigDecimal latitude;
-    private String salesLoginId;
     //columns END
 
 
@@ -271,14 +269,6 @@ public class TmbShop implements java.io.Serializable, IEntity {
 
     public void setParentId(Integer parentId) {
         this.parentId = parentId;
-    }
-    @Column(name = "sales_login_id", unique = false, nullable = true, insertable = true, updatable = true, length = 36)
-    public String getSalesLoginId() {
-        return salesLoginId;
-    }
-
-    public void setSalesLoginId(String salesLoginId) {
-        this.salesLoginId = salesLoginId;
     }
 }
 
