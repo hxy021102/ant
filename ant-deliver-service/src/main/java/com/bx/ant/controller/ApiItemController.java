@@ -73,6 +73,34 @@ public class ApiItemController extends BaseController {
         if(!F.empty(token.getShopId())) {
             shopItem.setShopId(token.getShopId());
             shopItem.setOnline(true);
+            shopItem.setStatus("SIS02");
+            DataGrid dataGridShopItem = shopItemService.dataGridWithItemName(shopItem, ph);
+            j.setObj(dataGridShopItem);
+            j.setSuccess(true);
+            j.setMsg("获取成功！");
+        } else {
+            j.setSuccess(false);
+            j.setMsg("获取门店信息失败！");
+        }
+        return j;
+    }
+
+    /**
+     * 获取门店待审核的商品
+     * @param request
+     * @param shopItem
+     * @param ph
+     * @return
+     */
+    @RequestMapping("/getShopItemWaitAudit")
+    @ResponseBody
+    public Json getShopItemWaitAudit(HttpServletRequest request, ShopItem shopItem, PageHelper ph) {
+        Json j = new Json();
+        TokenWrap token = getTokenWrap(request);
+        if(!F.empty(token.getShopId())) {
+            shopItem.setShopId(token.getShopId());
+            shopItem.setOnline(true);
+            shopItem.setStatus("SIS01");
             DataGrid dataGridShopItem = shopItemService.dataGridWithItemName(shopItem, ph);
             j.setObj(dataGridShopItem);
             j.setSuccess(true);
