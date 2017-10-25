@@ -65,6 +65,15 @@ public interface ShopItemServiceI {
     ShopItem getByShopIdAndItemId(Integer shopId, Integer itemId, boolean isOnline);
 
 	/**
+	 * 通过门店Id和商品Id和上架状态和审核状态获取门店商品
+	 * @param shopId
+	 * @param itemId
+	 * @param status
+	 * @return
+	 */
+	ShopItem getByShopIdAndItemId(Integer shopId, Integer itemId, boolean isOnline, String status);
+
+	/**
 	 * 通过门店Id和商品Id获取上架的门店商品
 	 * @param shopId
 	 * @param itemId

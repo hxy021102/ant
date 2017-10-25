@@ -11,6 +11,7 @@ import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.PageHelper;
 import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.mobian.service.MbShopServiceI;
+import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -216,7 +217,7 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 			while (orderShopIterator.hasNext()) {
 				DeliverOrderShop orderShop = orderShopIterator.next();
 				Date now = new Date();
-				if (now.getTime() - orderShop.getUpdatetime().getTime() >TIME_OUT_TO_ACCEPT) {
+				if (now.getTime() - orderShop.getUpdatetime().getTime() > Integer.valueOf(ConvertNameUtil.getString("DSV100", "10"))*60*1000) {
 					DeliverOrder deliverOrder = new DeliverOrder();
 					deliverOrder.setShopId(orderShop.getShopId());
 					deliverOrder.setId(orderShop.getDeliverOrderId());
