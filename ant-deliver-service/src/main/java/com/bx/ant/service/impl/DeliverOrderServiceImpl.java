@@ -14,6 +14,7 @@ import com.mobian.service.MbShopServiceI;
 import com.mobian.thirdpart.redis.Key;
 import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.thirdpart.redis.RedisUtil;
+import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -266,7 +267,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 				deliverOrderExt.setAmount(deliverOrderShop.getAmount());
 				if (STATUS_SHOP_ALLOCATION.equals(deliverOrderExt.getStatus())) {
 					Date now = new Date();
-					deliverOrderExt.setMillisecond(DeliverOrderShopServiceI.TIME_OUT_TO_ACCEPT - now.getTime() + deliverOrderShop.getUpdatetime().getTime());
+					deliverOrderExt.setMillisecond(Integer.valueOf(ConvertNameUtil.getString("DSV100", "10"))*60*1000 - now.getTime() + deliverOrderShop.getUpdatetime().getTime());
 				}
 			}
 		}
