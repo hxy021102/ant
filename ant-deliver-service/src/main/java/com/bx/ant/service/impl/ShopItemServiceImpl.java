@@ -349,6 +349,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 				shopItem = quantityMap.get(item.getId());
 				if (shopItem != null) {
 					item.setOnline(shopItem.getOnline());
+					item.setStatus(shopItem.getStatus());
 					if (shopItem.getOnline()) {
 						item.setQuantity(shopItem.getQuantity());
 					}
