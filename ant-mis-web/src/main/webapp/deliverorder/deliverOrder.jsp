@@ -26,7 +26,9 @@
 			pageSize : 10,
 			pageList : [ 10, 20, 30, 40, 50 ],
 			sortOrder : 'desc',
-			checkOnSelect : false,
+            sortName:'updatetime',
+            sortable:true,
+            checkOnSelect : false,
 			selectOnCheck : false,
 			nowrap : false,
 			striped : true,
@@ -41,6 +43,10 @@
                 }
 				},  {
                 field : 'addtime',
+                title : '创建时间',
+                width : 50
+                },{
+                field : 'updatetime',
                 title : '创建时间',
                 width : 50
                 }, {
