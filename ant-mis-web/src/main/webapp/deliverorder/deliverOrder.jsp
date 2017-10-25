@@ -47,7 +47,7 @@
                 width : 50
                 },{
                 field : 'updatetime',
-                title : '创建时间',
+                title : '修改时间',
                 width : 50
                 }, {
 				field : 'supplierId',
