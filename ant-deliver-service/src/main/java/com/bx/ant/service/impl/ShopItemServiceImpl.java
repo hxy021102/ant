@@ -147,11 +147,17 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 
 	@Override
 	public ShopItem getByShopIdAndItemId(Integer shopId, Integer itemId, boolean isOnline) {
+		return getByShopIdAndItemId(shopId, itemId, isOnline, null);
+	}
+
+	@Override
+	public ShopItem getByShopIdAndItemId(Integer shopId, Integer itemId, boolean isOnline, String status) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		ShopItem shopItem = new ShopItem();
 		shopItem.setShopId(shopId);
 		shopItem.setItemId(itemId);
 		shopItem.setOnline(isOnline);
+		shopItem.setStatus(status);
 		shopItem.setIsdeleted(false);
 		String where = whereHql(shopItem, params);
 		TshopItem t = shopItemDao.get("from TshopItem t " + where, params);

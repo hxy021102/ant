@@ -15,7 +15,7 @@
     <dubbo:reference id="shopDeliverAccountService" interface="com.bx.ant.service.ShopDeliverAccountServiceI"/>
     <dubbo:reference id="shopDeliverApplyService" interface="com.bx.ant.service.ShopDeliverApplyServiceI"/>
     <dubbo:reference id="deliverOrderService" interface="com.bx.ant.service.DeliverOrderServiceI"/>
-    <dubbo:reference id="deliverOrderAllocationService" interface="com.bx.ant.service.DeliverOrderAllocationServiceI" retries="0"/>
+    <dubbo:reference id="deliverOrderAllocationService" interface="com.bx.ant.service.DeliverOrderAllocationServiceI" retries="0" timeout="60000"/>
     <dubbo:reference id="supplierService" interface="com.bx.ant.service.SupplierServiceI"/>
     <dubbo:reference id="supplierItemRelationService" interface="com.bx.ant.service.SupplierItemRelationServiceI"/>
 
