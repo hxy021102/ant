@@ -123,7 +123,7 @@
 					    <c:if test="${fn:contains(sessionInfo.resourceList, '/shopOrderBillController/examinePage') and shopOrderBill.status=='BAS01' }">
 							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="examineFun();">审核</a>
 						</c:if>
-						<c:if test="${fn:contains(sessionInfo.resourceList, '/shopOrderBillController/examinePage') and shopOrderBill.status=='BAS02' }">
+						<c:if test="${fn:contains(sessionInfo.resourceList, '/shopOrderBillController/examinePage') and shopOrderBill.status=='BAS02' and shopOrderBill.status !='SPS04' }">
 							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="payShopBill();">支付</a>
 						</c:if>
 				</td>
