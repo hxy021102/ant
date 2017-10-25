@@ -339,7 +339,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 				itemIds[index++] = item.getId();
 			}
 			ShopItem shopItem = new ShopItem();
-			shopItem.setStatus("SIS02");
+//			shopItem.setStatus("SIS02");
 			shopItem.setShopId(shopId);
 			shopItem.setItemIds(itemIds);
 			List<ShopItem> shopItems = query(shopItem);
@@ -357,8 +357,10 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 				if (shopItem != null) {
 					item.setOnline(shopItem.getOnline());
 					item.setStatus(shopItem.getStatus());
-					if (shopItem.getOnline()) {
+					if (shopItem.getOnline() && "SIS02".equals(shopItem.getStatus())) {
 						item.setQuantity(shopItem.getQuantity());
+					} else {
+						item.setQuantity(0);
 					}
 				} else {
 					item.setQuantity(0);
