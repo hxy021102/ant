@@ -79,8 +79,6 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
         //2.3 编辑deliverOrderShop中金额amount字段
         deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItemList, deliverOrderShop);
 
-
-
         //3. 对门店新订单进行计数
         deliverOrderService.addAllocationOrderRedis(deliverOrder.getShopId());
 
