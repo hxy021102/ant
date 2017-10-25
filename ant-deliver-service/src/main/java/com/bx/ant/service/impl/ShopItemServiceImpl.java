@@ -111,6 +111,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 		BeanUtils.copyProperties(shopItem, t);
 		//t.setId(jb.absx.UUID.uuid());
 		t.setIsdeleted(false);
+		if(shopItem.getOnline() == null) t.setOnline(false);
 		shopItemDao.save(t);
 	}
 
