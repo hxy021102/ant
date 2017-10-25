@@ -293,7 +293,7 @@ public class DeliverOrderController extends BaseController {
 
 	@RequestMapping("/uploadPage")
 	public String uploadPage(){
-		return "/deliverorder/deliverOrdeUpload";
+		return "/deliverorder/deliverOrderUpload";
 	}
 
 	@RequestMapping("/upload")
@@ -314,13 +314,22 @@ public class DeliverOrderController extends BaseController {
 			listIterator.next();
 			while (listIterator.hasNext()) {
 				List<Object> lo = listIterator.next();
+
+				//填充订单信息
 				DeliverOrder order = new DeliverOrder();
 				order.setSupplierOrderId((String) lo.get(0));
 				order.setContactPeople((String)lo.get(4));
 				order.setDeliveryAddress((String)lo.get(5));
+
+				//剔除非上海订单
+
+
 				order.setContactPhone((String)lo.get(6));
 				order.setRemark(((String)lo.get(7)));
+				order.setSupplierId(supplierId);
 
+
+				//填充订单明细
 				List<SupplierItemRelationView> supplierItemRelations = new  ArrayList<SupplierItemRelationView>();
 				SupplierItemRelationView itemRelation = new SupplierItemRelationView();
 				itemRelation.setSupplierId(supplierId);
@@ -328,9 +337,11 @@ public class DeliverOrderController extends BaseController {
 
 				List<SupplierItemRelation> itemRelations = supplierItemRelationService.dataGrid(itemRelation, new PageHelper()).getRows();
 				if (CollectionUtils.isNotEmpty(itemRelations)) {
-					itemRelation = (SupplierItemRelationView) itemRelations.get(0);
+					itemRelation.setItemId(itemRelations.get(0).getItemId());
 					itemRelation.setQuantity(Integer.parseInt((String)lo.get(2)));
 					supplierItemRelations.add(itemRelation);
+
+					//添加订单和订单明细
 					deliverOrderService.addAndItems(order, supplierItemRelations);
 				}
 //				order.set

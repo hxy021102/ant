@@ -60,9 +60,13 @@
                     width : 150,
                     hidden : true
                 }, {
-                    field : 'code',
-                    title : '商品编码',
-                    width : 50
+                    field: 'code',
+                    title: '商品编码',
+                    width: 50
+                },{
+                    field : 'supplierItemCode',
+                    title : '商品外部编码',
+                    width : 60
                 }, {
                     field : 'itemName',
                     title : '商品名称',

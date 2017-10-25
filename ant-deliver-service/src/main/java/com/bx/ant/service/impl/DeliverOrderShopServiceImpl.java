@@ -218,6 +218,7 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 				Date now = new Date();
 				if (now.getTime() - orderShop.getUpdatetime().getTime() >TIME_OUT_TO_ACCEPT) {
 					DeliverOrder deliverOrder = new DeliverOrder();
+					deliverOrder.setShopId(orderShop.getShopId());
 					deliverOrder.setId(orderShop.getDeliverOrderId());
 					deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_REFUSE);
 					deliverOrder.setRemark("超时未接单");
