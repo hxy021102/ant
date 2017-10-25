@@ -894,6 +894,12 @@
                     ${mbShopExt.address}
                 </td>
             </tr>
+            <tr>
+                <th>销售人员</th>
+                <td>
+                    ${mbShopExt.salesLoginName}
+                </td>
+            </tr>
         </table>
     </div>
     <div data-options="region:'center',border:false">

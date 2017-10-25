@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.sf.json.JSONArray;
 
 /**
  * MbShop管理控制器
@@ -41,6 +42,8 @@ public class MbShopController extends BaseController {
     private MbOrderServiceI mbOrderService;
     @Autowired
     private DiveRegionServiceI diveRegionService;
+    @Autowired
+    private UserServiceI userService;
 
 
     /**
@@ -55,7 +58,15 @@ public class MbShopController extends BaseController {
             request.setAttribute("id", id);
         return "/mbshop/mbShop";
     }
-
+    /**
+     * 跳转到MbShop分配销售管理页面
+     *
+     * @return
+     */
+    @RequestMapping("/distributionSalesManager")
+    public String distributionSalesManager(HttpServletRequest request) {
+        return "mbshop/mbShopDistributionSales";
+    }
     /**
      * 获取MbShop数据表格
      *
@@ -169,6 +180,10 @@ public class MbShopController extends BaseController {
                 mbShopExt.setCashBalanceId(mbBalance.getId());
                 mbShopExt.setCashBalanceAmount(mbBalance.getAmount());
             }
+        }
+        if(mbShopExt.getSalesLoginId() !=null) {
+            User user = userService.get(mbShopExt.getSalesLoginId());
+            mbShopExt.setSalesLoginName(user.getNickname());
         }
         Integer debt = mbOrderService.getOrderDebtMoney(id);
         debt = debt == null ? 0 : debt;
@@ -436,6 +451,29 @@ public class MbShopController extends BaseController {
         j.setSuccess(true);
         j.setObj(mbShopMaps);
         return j;
+    }
+    /**
+     * 分配门店销售人员
+     */
+    @RequestMapping("/addShopSalesPage")
+    public String addShopSalesPage() {
+        MbShop mbShop = new MbShop();
+        return "/mbshop/mbShopAddSales";
+    }
+
+    @RequestMapping("/addShopSales")
+    @ResponseBody
+    public Json addShopSales(String salesLoginId, String mbShopList) {
+        Json j = new Json();
+        JSONArray jsonArray = JSONArray.fromObject(mbShopList);
+        List<MbShop> list =(List<MbShop>)jsonArray.toCollection(jsonArray,MbShop.class);
+        for(MbShop m : list) {
+            m.setSalesLoginId(salesLoginId);
+            mbShopService.edit(m);
+        }
+        j.setSuccess(true);
+        j.setMsg("分配完成！");
+        return  j;
     }
 
 }
