@@ -7,6 +7,7 @@ import com.mobian.pageModel.*;
 import com.bx.ant.pageModel.ShopDeliverApply;
 import com.mobian.service.*;
 import com.mobian.util.ConfigUtil;
+import net.sf.json.JSONArray;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -61,13 +61,25 @@ public class MbShopController extends BaseController {
             request.setAttribute("id", id);
         return "/mbshop/mbShop";
     }
+    /**
+     * 跳转到MbShop分配销售管理页面
+     *
+     * @return
+     */
+    @RequestMapping("/distributionSalesManager")
+    public String distributionSalesManager(HttpServletRequest request, String auditStatus,Integer id) {
+        request.setAttribute("auditStatus", auditStatus);
+        if (id != null)
+            request.setAttribute("id", id);
+        return "mbshop/mbShopDistributionSales";
+    }
 
     /**
      * 获取MbShop数据表格
      *
      * @return
      */
-    @RequestMapping("/dataGrid")
+    @RequestMapping("/distributionSalesDataGrid")
     @ResponseBody
     public DataGrid dataGrid(MbShop mbShop, PageHelper ph) {
         DataGrid dataGrid = mbShopService.dataGrid(mbShop, ph);
@@ -456,6 +468,29 @@ public class MbShopController extends BaseController {
         j.setSuccess(true);
         j.setObj(mbShopMaps);
         return j;
+    }
+    /**
+     * 分配门店销售人员
+     */
+    @RequestMapping("/addShopSalesPage")
+    public String addShopSalesPage() {
+        MbShop mbShop = new MbShop();
+        return "/mbshop/mbShopAddSales";
+    }
+
+    @RequestMapping("/addShopSales")
+    @ResponseBody
+    public Json addShopSales(String salesLoginId, String mbShopList) {
+        Json j = new Json();
+        JSONArray jsonArray = JSONArray.fromObject(mbShopList);
+        List<MbShop> list =(List<MbShop>)jsonArray.toCollection(jsonArray,MbShop.class);
+        for(MbShop m : list) {
+            m.setSalesLoginId(salesLoginId);
+            mbShopService.edit(m);
+        }
+        j.setSuccess(true);
+        j.setMsg("分配完成！");
+        return  j;
     }
 
 }
