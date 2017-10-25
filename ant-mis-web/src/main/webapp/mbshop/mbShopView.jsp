@@ -628,7 +628,7 @@
                             str += $.formatString('<img onclick="editShopItemPrice(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/pencil.png');
                         }
                         str += '&nbsp;';
-                        if ($.examineShopItem && row.status =="SIS01") {
+                        if ($.examineShopItem && row.status == "SIS01" && row.online == true) {
                             str += $.formatString('<img onclick="examineFun(\'{0}\');" src="{1}" title="审核"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/joystick.png');
                         }
                         return str;
@@ -657,7 +657,7 @@
                     handler: function () {
                         parent.$.modalDialog.openner_dataGrid =  deliverShopItemDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
                         var f = parent.$.modalDialog.handler.find('#form');
-                        f.find("input[name=status]").val("BAS02");
+                        f.find("input[name=status]").val("SIS02");
                         f.submit();
                     }
                 },
@@ -666,7 +666,7 @@
                         handler: function () {
                             parent.$.modalDialog.openner_dataGrid =  deliverShopItemDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
                             var f = parent.$.modalDialog.handler.find('#form');
-                            f.find("input[name=status]").val("BAS03");
+                            f.find("input[name=status]").val("SIS03");
                             f.submit();
                         }
                     }

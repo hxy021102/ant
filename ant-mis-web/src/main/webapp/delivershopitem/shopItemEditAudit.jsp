@@ -36,6 +36,7 @@
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;">
 		<form id="form" method="post">
 			<input type="hidden" name="id" value = "${param.id}"/>
+			<input type="hidden" name="status" value = ""/>
 			<table class="table table-hover table-condensed">
 				<tr>
 					<th>审核备注</th>
