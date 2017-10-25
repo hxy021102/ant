@@ -610,7 +610,7 @@
                     title : '是否上架',
                     width : 5,
                     formatter:function(value){
-                        if (value == "true")
+                        if (value == true)
                             return "是";
                         return "否";
                     }
@@ -624,7 +624,7 @@
                     width : 30,
                     formatter : function(value, row, index) {
                         var str = '';
-                        if ($.editShopItemPrice&&row.status !="SIS02") {
+                        if ($.editShopItemPrice) {
                             str += $.formatString('<img onclick="editShopItemPrice(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/pencil.png');
                         }
                         str += '&nbsp;';
