@@ -38,12 +38,12 @@
 		<form id="form" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="id"/>
 			<table class="table table-hover table-condensed">
-				<%--<tr>--%>
-					<%--<th><%=TmbItemStock.ALIAS_WAREHOUSE_NAME%></th>--%>
-					<%--<td>--%>
-						<%--<jb:selectGrid dataType="warehouseId" name="warehouseId" required="true"></jb:selectGrid>--%>
-					<%--</td>--%>
-				<%--</tr>--%>
+				<tr>
+					<th>供应商</th>
+					<td>
+						<jb:selectGrid dataType="supplierId" name="supplierId" required="true"></jb:selectGrid>
+					</td>
+				</tr>
 				<tr>
 					<th>文件</th>
 					<td colspan="3">

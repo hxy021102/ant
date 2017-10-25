@@ -9,11 +9,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.bx.ant.pageModel.ShopItemQuery;
 import com.mobian.pageModel.*;
 import com.bx.ant.pageModel.ShopItem;
 import com.bx.ant.service.ShopItemServiceI;
 
+import com.mobian.service.MbItemServiceI;
 import com.mobian.util.ConfigUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,7 +35,8 @@ public class ShopItemController extends BaseController {
 
 	@Resource
 	private ShopItemServiceI shopItemService;
-
+    @Resource
+	private MbItemServiceI mbItemService;
 
 	/**
 	 * 跳转到ShopItem管理页面
@@ -111,7 +115,7 @@ public class ShopItemController extends BaseController {
 	public String view(HttpServletRequest request, Integer id) {
 		ShopItem shopItem = shopItemService.get(id);
 		request.setAttribute("shopItem", shopItem);
-		return "/shopitem/shopItemView";
+		return "/delivershopitem/mbItemEdit";
 	}
 
 	/**
@@ -122,8 +126,13 @@ public class ShopItemController extends BaseController {
 	@RequestMapping("/editPricePage")
 	public String editPage(HttpServletRequest request, Integer id) {
 		ShopItem shopItem = shopItemService.get(id);
-		request.setAttribute("shopItem", shopItem);
-		return "shopitem/shopItemEdit";
+		ShopItemQuery shopItemQuery= new ShopItemQuery();
+		BeanUtils.copyProperties(shopItem,shopItemQuery);
+		MbItem mbItem= mbItemService.getFromCache(shopItem.getItemId());
+		shopItemQuery.setStatusName(shopItem.getStatus());
+		shopItemQuery.setName(mbItem.getName());
+		request.setAttribute("shopItem", shopItemQuery);
+		return "delivershopitem/shopItemEdit";
 	}
 
 	/**
@@ -167,7 +176,7 @@ public class ShopItemController extends BaseController {
 	@RequestMapping("/examinePage")
 	public String examinePage(HttpServletRequest request, Long id) {
 		request.setAttribute("id", id);
-		return "shopitem/shopItemEditAudit";
+		return "delivershopitem/shopItemEditAudit";
 	}
 
 	/**
@@ -181,6 +190,9 @@ public class ShopItemController extends BaseController {
 	public Json editState(ShopItem shopItem, HttpSession session) {
 		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
 		Json j = new Json();
+		if("SIS02".equals(shopItem.getStatus())){
+			shopItem.setOnline(true);
+		}
 		shopItem.setReviewerId(sessionInfo.getId());
 		shopItemService.edit(shopItem);
 		j.setSuccess(true);

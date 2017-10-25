@@ -1,9 +1,7 @@
 package com.bx.ant.service.impl.state;
 
-import com.bx.ant.pageModel.DeliverOrderItem;
+import com.bx.ant.pageModel.*;
 import com.bx.ant.service.*;
-import com.bx.ant.pageModel.DeliverOrder;
-import com.bx.ant.pageModel.DeliverOrderShop;
 import com.bx.ant.service.impl.DeliverOrderShopItemServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +43,9 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderShopItemServiceI deliverOrderShopItemService;
 
+    @Autowired
+    private DeliverOrderShopPayServiceI deliverOrderShopPayService;
+
     @Override
     public String getStateName() {
         return "10";
@@ -58,21 +59,33 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
             return;
         }
 
-        //添加门店订单
+
+
+        //1. 添加门店订单
         DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+
+        //1.1设置默认金额为订单金额
         deliverOrderShop.setAmount(deliverOrder.getAmount());
         deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
         deliverOrderShop.setShopId(deliverOrder.getShopId());
         deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_AUDITING);
         deliverOrderShop.setDistance(new BigDecimal(deliverOrder.getShopDistance()));
-        deliverOrderShopService.add(deliverOrderShop);
+        deliverOrderShopService.addAndGet(deliverOrderShop);
         List<DeliverOrderItem> deliverOrderItemList = deliverOrderItemService.getDeliverOrderItemList(deliverOrder.getId());
+
+        //2. 添加门店订单相关
+        //2.1 添加门店订单明细List<deliverOrderShopItem>
+        //2.2 添加门店订单表记录deliverOrderShopPay(未支付状态)
+        //2.3 编辑deliverOrderShop中金额amount字段
         deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItemList, deliverOrderShop);
 
-        //对门店新订单进行计数
+
+
+        //3. 对门店新订单进行计数
         deliverOrderService.addAllocationOrderRedis(deliverOrder.getShopId());
 
-        //编辑订单并添加修改记录
+
+        //4. 编辑订单并添加修改记录
         deliverOrder.setStatus(prefix + getStateName());
 
         deliverOrderService.editAndAddLog(deliverOrder, DeliverOrderLogServiceI.TYPE_ASSIGN_DELIVER_ORDER, "系统自动分配订单");

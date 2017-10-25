@@ -1,12 +1,10 @@
 package com.mobian.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.bx.ant.pageModel.DeliverOrder;
-import com.bx.ant.pageModel.DeliverOrderExt;
-import com.bx.ant.pageModel.DeliverOrderQuery;
-import com.bx.ant.pageModel.Supplier;
+import com.bx.ant.pageModel.*;
 import com.bx.ant.service.DeliverOrderItemServiceI;
 import com.bx.ant.service.DeliverOrderServiceI;
+import com.bx.ant.service.SupplierItemRelationServiceI;
 import com.bx.ant.service.SupplierServiceI;
 import com.mobian.pageModel.*;
 import com.mobian.util.ConfigUtil;
@@ -49,6 +47,9 @@ public class DeliverOrderController extends BaseController {
 	private SupplierServiceI supplierService;
 	@Resource
 	private DeliverOrderItemServiceI deliverOrderItemService;
+
+	@Resource
+	private SupplierItemRelationServiceI supplierItemRelationService;
 
 
 	/**
@@ -290,14 +291,14 @@ public class DeliverOrderController extends BaseController {
 	   	return  j;
 	}
 
-	@RequestMapping("uploadPage")
+	@RequestMapping("/uploadPage")
 	public String uploadPage(){
 		return "/deliverorder/deliverOrdeUpload";
 	}
 
-	@RequestMapping("upload")
+	@RequestMapping("/upload")
 	@ResponseBody
-	public Json upload(@RequestParam MultipartFile file) throws Exception {
+	public Json upload(@RequestParam MultipartFile file, Integer supplierId) throws Exception {
 		Json json = new Json();
 		try {
 			if (file.isEmpty()) {
@@ -310,10 +311,29 @@ public class DeliverOrderController extends BaseController {
 			in.close();
 			List<DeliverOrder> deliverOrderList = new ArrayList<>();
 			Iterator<List<Object>> listIterator = listOb.iterator();
+			listIterator.next();
 			while (listIterator.hasNext()) {
 				List<Object> lo = listIterator.next();
 				DeliverOrder order = new DeliverOrder();
+				order.setSupplierOrderId((String) lo.get(0));
+				order.setContactPeople((String)lo.get(4));
+				order.setDeliveryAddress((String)lo.get(5));
+				order.setContactPhone((String)lo.get(6));
+				order.setRemark(((String)lo.get(7)));
 
+				List<SupplierItemRelationView> supplierItemRelations = new  ArrayList<SupplierItemRelationView>();
+				SupplierItemRelationView itemRelation = new SupplierItemRelationView();
+				itemRelation.setSupplierId(supplierId);
+				itemRelation.setSupplierItemCode((String)lo.get(1));
+
+				List<SupplierItemRelation> itemRelations = supplierItemRelationService.dataGrid(itemRelation, new PageHelper()).getRows();
+				if (CollectionUtils.isNotEmpty(itemRelations)) {
+					itemRelation = (SupplierItemRelationView) itemRelations.get(0);
+					itemRelation.setQuantity(Integer.parseInt((String)lo.get(2)));
+					supplierItemRelations.add(itemRelation);
+					deliverOrderService.addAndItems(order, supplierItemRelations);
+				}
+//				order.set
 			}
 		}catch (Exception e) {
 			e.printStackTrace();

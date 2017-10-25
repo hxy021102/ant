@@ -320,6 +320,10 @@
 				</td>
 			</tr>
 			<tr>
+				<th>供应商订单ID</th>
+				<td>${deliverOrder.supplierOrderId}</td>
+			</tr>
+			<tr>
 				<th>备注</th>
 				<td colspan="7">
 					${deliverOrder.remark}

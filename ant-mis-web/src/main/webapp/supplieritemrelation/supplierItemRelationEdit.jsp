@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%> 
+<%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <script type="text/javascript">
 	$(function() {
 		parent.$.messager.progress('close');
@@ -56,10 +57,13 @@
 				<tr>	
 
 					<th>商品</th>
-					<td colspan="3">
+					<td >
 						<jb:selectGrid name="itemId" dataType="itemId" value="${supplierItemRelation.itemId}"></jb:selectGrid>
-					</td>							
-			</tr>	
+					</td>
+					<th>供应商商品编码</th>
+					<td><input name="supplierItemCode" type="text" class="easyui-validatebox span2" data-options="required:true" value="${supplierItemRelation.supplierItemCode}"/></td>
+			</tr>
+
 				<tr>	
 					<th>价格</th>
 					<td>

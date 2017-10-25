@@ -132,7 +132,7 @@ public class ApiDeliverOrderController extends BaseController {
         Collections.sort(orderShops, new Comparator<DeliverOrderShop>() {
             @Override
             public int compare(DeliverOrderShop d1, DeliverOrderShop d2) {
-                return  (int)(d2.getUpdatetime().getTime() - d1.getUpdatetime().getTime());
+                return  (int)(d1.getUpdatetime().getTime() - d2.getUpdatetime().getTime());
             }
         });
         if (CollectionUtils.isNotEmpty(orderShops)) {

@@ -29,6 +29,20 @@
                 }
             }
         });
+            $('.money_input').blur(function () {
+                var source = $(this);
+                var target = source.next();
+                if (!/^([1-9]\d*|0)(\.\d{2})?$/.test(source.val())) {
+                    source.val("").focus();
+                }
+                var val = source.val().trim();
+                if (val.indexOf('.') > -1) {
+                    val = val.replace('.', "");
+                } else if (val != '') {
+                    val += "00";
+                }
+                target.val(val);
+            });
     });
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
@@ -37,50 +51,52 @@
 			<input type="hidden" name="id" value="${shopItem.id}"/>
 			<table class="table table-hover table-condensed">
 				<tr>
+					<th> 门店ID
+					</th>
+					<td>
+						<input class="span2" name="tenantId" readonly type="text" value="${shopItem.shopId}"/>
+					</td>
+					<th>状态
+					</th>
+					<td>
+						<input class="span2 " name="statusName" readonly value="${shopItem.statusName}"type="text" />
+						<input class="span2 " name="status"  type="hidden" value="${shopItem.status}"/>
+					</td>
+				</tr>
+				<tr>
 					<th>商品ID
 					</th>
 					<td>
-						<input name="itemId" type="text" class="easyui-validatebox span2" data-options="required:true" value="${shopItem.itemId}"/>
+						<input name="itemId" type="text" class=" span2"  readonly  value="${shopItem.itemId}"/>
 					</td>
 					<th>商品名称
 					</th>
 					<td>
-						<input name="name" type="text" class="easyui-validatebox span2" data-options="required:true" value="${shopItem.name}"/>
+						<input name="name" type="text" class=" span2"  readonly value="${shopItem.name}"/>
 					</td>
-				</tr>
-				<tr>
-					<th> 门店ID
-					</th>
-					<td colspan="3">
-						<input name="shopId" type="text" class="easyui-validatebox span2" data-options="required:true" value="${shopItem.shopId}"/>
-					</td>
-
 				</tr>
 				<tr>
 					<th>采购价格
 					</th>
 					<td>
-						<input class="span2 easyui-validatebox" name="inPrice" data-options="required:true" type="text" value="${shopItem.inPrice}"/>
+						<input class="span2 easyui-validatebox money_input" name="priceStr"  value="${shopItem.inPrice}"type="text" data-options="required:true"/>
+						<input class="span2 "  name="inPrice"  type="hidden"  value="${shopItem.inPrice}"/>
 					</td>
 					<th>价格
 					</th>
 					<td>
-						<input class="span2 easyui-validatebox" name="price" data-options="required:true" type="text" value="${shopItem.price}"/>
+						<input class="span2 easyui-validatebox money_input" name="priceStr"  type="text"  value="${shopItem.price}" data-options="required:true"/>
+						<input class="span2 " name="price"   type="hidden" value="${shopItem.price}"/>
 					</td>
 				</tr>
 				<tr>
 					<th>运费
 					</th>
-					<td>
-						<input class="span2 easyui-validatebox" name="freight" data-options="required:true" type="text" value="${shopItem.freight}"/>
-					</td>
-					<th>状态
-					</th>
-					<td>
-						<input class="span2 easyui-validatebox" name="status" data-options="required:true" type="text" value="${shopItem.status}"/>
+					<td colspan="3">
+						<input class="span2 easyui-validatebox money_input" name="priceStr" type="text" data-options="required:true"/>
+						<input class="span2 " name="freight"  type="hidden" value="${shopItem.freight}"/>
 					</td>
 				</tr>
-
 			</table>
 		</form>
 	</div>

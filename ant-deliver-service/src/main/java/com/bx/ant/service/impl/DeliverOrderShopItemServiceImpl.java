@@ -1,14 +1,12 @@
 package com.bx.ant.service.impl;
 
 import com.bx.ant.pageModel.*;
-import com.bx.ant.service.DeliverOrderShopServiceI;
-import com.bx.ant.service.ShopItemServiceI;
+import com.bx.ant.service.*;
 import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderShopItemDaoI;
 import com.bx.ant.model.TdeliverOrderShopItem;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
-import com.bx.ant.service.DeliverOrderShopItemServiceI;
 import com.mobian.service.MbItemServiceI;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -38,6 +36,9 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 
 	@Autowired
 	private DeliverOrderShopItemServiceImpl deliverOrderShopItemService;
+
+	@Autowired
+	private DeliverOrderShopPayServiceI deliverOrderShopPayService;
 
 	@Override
 	public DataGrid dataGrid(DeliverOrderShopItem deliverOrderShopItem, PageHelper ph) {
@@ -143,10 +144,15 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 			throw new ServiceException("数据传递不完整");
 
 		if (CollectionUtils.isNotEmpty(deliverOrderItems)) {
+			int amount = 0;
+			Long deliverOrderId = null;
 			for (DeliverOrderItem d : deliverOrderItems) {
 				ShopItem shopItem = shopItemService.getByShopIdAndItemId(deliverOrderShop.getShopId(), d.getItemId());
 				if (shopItem == null) throw new ServiceException("无法找到门店对应商品");
 				if (F.empty(shopItem.getQuantity()) || d.getQuantity() > shopItem.getQuantity()) throw new ServiceException("门店对应商品库存不足");
+
+				//记录deliverOrderId
+				deliverOrderId = d.getDeliverOrderId();
 
 				//扣除库存
                 ShopItem shopItemN = new ShopItem();
@@ -159,14 +165,31 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 				deliverOrderShopItem.setDeliverOrderId(d.getDeliverOrderId());
 				deliverOrderShopItem.setDeliverOrderShopId(deliverOrderShop.getId());
 				deliverOrderShopItem.setFreight(shopItem.getFreight());
-				deliverOrderShopItem.setPrice(shopItem.getPrice());
-				deliverOrderShopItem.setInPrice(shopItem.getInPrice());
+				deliverOrderShopItem.setPrice(shopItem.getPrice() == null ? 0 : shopItem.getPrice());
+				deliverOrderShopItem.setInPrice(shopItem.getInPrice() == null ? 0 : shopItem.getInPrice());
 				deliverOrderShopItem.setShopId(deliverOrderShop.getShopId());
 				deliverOrderShopItem.setItemId(d.getItemId());
-				deliverOrderShopItem.setQuantity(d.getQuantity());
+				deliverOrderShopItem.setQuantity(d.getQuantity() == null ? 0 : d.getQuantity());
 				add(deliverOrderShopItem);
 
+				//计算总金额
+				amount += deliverOrderShopItem.getPrice() * deliverOrderShopItem.getQuantity();
+
 			}
+
+			//编辑门店订单金额
+			deliverOrderShop.setAmount(amount);
+			deliverOrderShopService.edit(deliverOrderShop);
+
+			//添加deliverOrderShopPay
+			DeliverOrderShopPay deliverOrderShopPay = new DeliverOrderShopPay();
+			deliverOrderShopPay.setDeliverOrderId(deliverOrderId);
+			deliverOrderShopPay.setDeliverOrderShopId(deliverOrderShop.getId());
+			deliverOrderShopPay.setShopId(deliverOrderShop.getShopId());
+			deliverOrderShopPay.setStatus(DeliverOrderServiceI.SHOP_PAY_STATUS_NOT_PAY);
+			deliverOrderShopPay.setAmount(amount);
+			deliverOrderShopPayService.add(deliverOrderShopPay);
+
 		}
 	}
 
@@ -231,6 +254,5 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 		}
 		return dg;
 	}
-
 
 }

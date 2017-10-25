@@ -221,7 +221,6 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 						ShopItem shop = new ShopItem();
 						shop.setItemId(Integer.parseInt(itemIdArray[i]));
 						shop.setShopId(shopId);
-						shop.setOnline(true);
 						add(shop);
 					}
 				}
@@ -230,7 +229,6 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 					ShopItem shop = new ShopItem();
 					shop.setItemId(itemId);
 					shop.setShopId(shopId);
-					shop.setOnline(true);
 					add(shop);
 				}
 			}
@@ -248,7 +246,6 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 			}
 		} else {
 			ShopItem item = new ShopItem();
-			item.setOnline(true);
 			item.setItemId(itemId);
 			item.setShopId(shopId);
 			add(item);
@@ -352,6 +349,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 				shopItem = quantityMap.get(item.getId());
 				if (shopItem != null) {
 					item.setOnline(shopItem.getOnline());
+					item.setStatus(shopItem.getStatus());
 					if (shopItem.getOnline()) {
 						item.setQuantity(shopItem.getQuantity());
 					}

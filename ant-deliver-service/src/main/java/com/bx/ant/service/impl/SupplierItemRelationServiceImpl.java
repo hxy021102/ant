@@ -73,8 +73,11 @@ public class SupplierItemRelationServiceImpl extends BaseServiceImpl<SupplierIte
 			if (!F.empty(supplierItemRelation.getFreight())) {
 				whereHql += " and t.freight = :freight";
 				params.put("freight", supplierItemRelation.getFreight());
-			}		
-
+			}
+			if (!F.empty(supplierItemRelation.getSupplierItemCode())) {
+				whereHql += " and t.supplierItemCode = :supplierItemCode";
+				params.put("supplierItemCode", supplierItemRelation.getSupplierItemCode());
+			}
 		}	
 		return whereHql;
 	}

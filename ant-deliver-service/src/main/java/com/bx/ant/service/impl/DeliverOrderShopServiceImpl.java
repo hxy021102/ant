@@ -107,6 +107,11 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		deliverOrderShopDao.save(t);
 		deliverOrderShop.setId(t.getId());
 	}
+	@Override
+	public DeliverOrderShop addAndGet(DeliverOrderShop deliverOrderShop){
+		add(deliverOrderShop);
+		return deliverOrderShop;
+	}
 
 	@Override
 	public DeliverOrderShop get(Integer id) {

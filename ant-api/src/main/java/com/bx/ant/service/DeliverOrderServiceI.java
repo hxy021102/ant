@@ -4,6 +4,7 @@ import com.bx.ant.pageModel.DeliverOrderExt;
 import com.bx.ant.pageModel.DeliverOrder;
 
 import com.bx.ant.pageModel.DeliverOrderQuery;
+import com.bx.ant.pageModel.SupplierItemRelationView;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
@@ -191,7 +192,9 @@ public interface DeliverOrderServiceI {
 
     void addAndItems(DeliverOrder deliverOrder, String itemListStr);
 
-	/**
+    void addAndItems(DeliverOrder deliverOrder, List<SupplierItemRelationView> items);
+
+    /**
 	 *获取需要支付给门店的订单
 	 * @param deliverOrder
 	 * @param ph

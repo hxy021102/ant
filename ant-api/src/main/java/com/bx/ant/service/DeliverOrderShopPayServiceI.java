@@ -12,7 +12,6 @@ import java.util.List;
  * 
  */
 public interface DeliverOrderShopPayServiceI {
-
 	/**
 	 * 获取DeliverOrderShopPay数据表格
 	 * 
@@ -71,4 +70,7 @@ public interface DeliverOrderShopPayServiceI {
 	 * @return
 	 */
 	List<DeliverOrderShopPay> query(DeliverOrderShopPay deliverOrderShopPay);
+
+
+
 }
