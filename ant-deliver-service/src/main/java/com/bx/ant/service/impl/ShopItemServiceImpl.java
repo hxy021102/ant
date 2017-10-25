@@ -339,8 +339,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 				itemIds[index++] = item.getId();
 			}
 			ShopItem shopItem = new ShopItem();
-			shopItem.setIsdeleted(false);
-//			shopItem.setOnline(true);
+			shopItem.setStatus("SIS02");
 			shopItem.setShopId(shopId);
 			shopItem.setItemIds(itemIds);
 			List<ShopItem> shopItems = query(shopItem);
