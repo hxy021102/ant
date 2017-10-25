@@ -1,10 +1,5 @@
 package com.bx.ant.pageModel;
 
-import com.bx.ant.pageModel.DeliverOrder;
-import com.bx.ant.pageModel.DeliverOrderItem;
-import com.bx.ant.pageModel.DeliverOrderShop;
-import com.bx.ant.pageModel.DeliverOrderShopItem;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -16,6 +11,7 @@ public class DeliverOrderExt extends DeliverOrder {
     private Long millisecond;
     private String[] statusList;
     private BigDecimal distance;
+    private Integer shopPayAmount;
 
     private List<DeliverOrderItem> deliverOrderItemList;
     private List<DeliverOrderShopItem> deliverOrderShopItemList;
@@ -58,5 +54,13 @@ public class DeliverOrderExt extends DeliverOrder {
 
     public void setMillisecond(Long millisecond) {
         this.millisecond = millisecond;
+    }
+
+    public Integer getShopPayAmount() {
+        return shopPayAmount;
+    }
+
+    public void setShopPayAmount(Integer shopPayAmount) {
+        this.shopPayAmount = shopPayAmount;
     }
 }

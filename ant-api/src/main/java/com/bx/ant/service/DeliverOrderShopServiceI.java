@@ -40,6 +40,13 @@ public interface DeliverOrderShopServiceI {
 	public void add(DeliverOrderShop deliverOrderShop);
 
 	/**
+	 * 添加并返回包含ID的DeliverOrderShop
+	 * @param deliverOrderShop
+	 * @return
+	 */
+    DeliverOrderShop addAndGet(DeliverOrderShop deliverOrderShop);
+
+    /**
 	 * 获得DeliverOrderShop对象
 	 * 
 	 * @param id

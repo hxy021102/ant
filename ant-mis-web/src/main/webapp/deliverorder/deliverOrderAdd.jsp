@@ -231,6 +231,12 @@
                     <td>
                         <input name="contactPhone" type="text" class="easyui-validatebox span2" data-options="required:true"/>
                     </td>
+                </tr>
+                <tr>
+                    <th>供应商订单ID</th>
+                    <td>
+                        <input name="supplierOrderId" type="text" class="easyui-validatebox span2" data-options="required:true"/>
+                    </td>
                     <th>要求配送时间</th>
                     <td colspan="6">
                         <%--<input type="text" class="span2 easyui-validatebox" data-options="required:false" onclick="WdatePicker({dateFmt:'<%=TmbItem.FORMAT_ADDTIME%>',minDate:'#F{$dp.$D(\'endDate\',{M:-1});}',maxDate:'#F{$dp.$D(\'endDate\',{d:-1});}'})" id="deliveryRequireTime" name="deliveryRequireTime"/>--%>

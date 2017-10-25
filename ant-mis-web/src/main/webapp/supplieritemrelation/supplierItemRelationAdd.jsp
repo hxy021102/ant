@@ -53,14 +53,12 @@
 			<table class="table table-hover table-condensed">
 				<tr>
 					<th>商品</th>
-					<td colspan="3">
+					<td >
 						  <jb:selectGrid name="itemId" dataType="itemId"></jb:selectGrid>
 					</td>
-				</tr>
-				<tr>
 					<th>外部商品编码</th>
-					<td colspan="4">
-						<input name="supplierItemCode" ="itemId"></input>
+					<td >
+						<input name="supplierItemCode" type="text" class="easyui-validatebox span2" data-options="required:true"/>
 					</td>
 				</tr>
 				<tr>	

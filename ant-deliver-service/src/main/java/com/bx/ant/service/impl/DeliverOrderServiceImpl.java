@@ -230,6 +230,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 
 	protected void fillInfo(DeliverOrderExt deliverOrderExt) {
 		fillDeliverOrderShopItemInfo(deliverOrderExt);
+		fillDeliverOrderShopInfo(deliverOrderExt);
 	}
 
 	protected void fillDeliverOrderItemInfo(DeliverOrderExt deliverOrderExt) {
@@ -258,6 +259,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			if (CollectionUtils.isNotEmpty(deliverOrderShops) && deliverOrderShops.size() == 1) {
 				deliverOrderShop = deliverOrderShops.get(0);
 				deliverOrderExt.setDistance(deliverOrderShop.getDistance());
+				deliverOrderExt.setShopPayAmount(deliverOrderShop.getAmount());
 				if (STATUS_SHOP_ALLOCATION.equals(deliverOrderExt.getStatus())) {
 					Date now = new Date();
 					deliverOrderExt.setMillisecond(DeliverOrderShopServiceI.TIME_OUT_TO_ACCEPT - now.getTime() + deliverOrderShop.getUpdatetime().getTime());
@@ -539,35 +541,40 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	@Override
 	public void addAndItems(DeliverOrder deliverOrder, String itemListStr) {
 		List<SupplierItemRelationView> items = JSONObject.parseArray(itemListStr, SupplierItemRelationView.class);
-		int amount = 0 ;
-		if (CollectionUtils.isNotEmpty(items)) {
-			transform(deliverOrder);
-			for (SupplierItemRelationView item : items) {
-				DeliverOrderItem orderItem = new DeliverOrderItem();
-				orderItem.setItemId(item.getItemId());
-				orderItem.setQuantity(item.getQuantity());
-				orderItem.setDeliverOrderId(deliverOrder.getId());
 
-				SupplierItemRelation supplierItemRelation = new SupplierItemRelation();
-				supplierItemRelation.setSupplierId(deliverOrder.getSupplierId());
-				supplierItemRelation.setItemId(item.getItemId());
-				supplierItemRelation.setOnline(true);
-				List<SupplierItemRelation> supplierItemRelations = supplierItemRelationService.dataGrid(supplierItemRelation, new PageHelper()).getRows();
-				if (CollectionUtils.isNotEmpty(supplierItemRelations)) {
-					supplierItemRelation = supplierItemRelations.get(0);
-					amount += supplierItemRelation.getPrice() * item.getQuantity();
-				}
-				deliverOrderItemService.addAndFill(orderItem,deliverOrder);
-			}
-			DeliverOrder order = new DeliverOrder();
-			order.setId(deliverOrder.getId());
-			order.setAmount(amount);
-			edit(order);
+		if (CollectionUtils.isNotEmpty(items)) {
+			addAndItems(deliverOrder ,items);
 		} else {
 			throw new ServiceException("items不能为空");
 		}
 	}
 
+	@Override
+	public void addAndItems(DeliverOrder deliverOrder, List<SupplierItemRelationView> items){
+		int amount = 0 ;
+		transform(deliverOrder);
+		for (SupplierItemRelationView item : items) {
+			DeliverOrderItem orderItem = new DeliverOrderItem();
+			orderItem.setItemId(item.getItemId());
+			orderItem.setQuantity(item.getQuantity());
+			orderItem.setDeliverOrderId(deliverOrder.getId());
+
+			SupplierItemRelation supplierItemRelation = new SupplierItemRelation();
+			supplierItemRelation.setSupplierId(deliverOrder.getSupplierId());
+			supplierItemRelation.setItemId(item.getItemId());
+			supplierItemRelation.setOnline(true);
+			List<SupplierItemRelation> supplierItemRelations = supplierItemRelationService.dataGrid(supplierItemRelation, new PageHelper()).getRows();
+			if (CollectionUtils.isNotEmpty(supplierItemRelations)) {
+				supplierItemRelation = supplierItemRelations.get(0);
+				amount += supplierItemRelation.getPrice() * item.getQuantity();
+			}
+			deliverOrderItemService.addAndFill(orderItem,deliverOrder);
+		}
+		DeliverOrder order = new DeliverOrder();
+		order.setId(deliverOrder.getId());
+		order.setAmount(amount);
+		edit(order);
+	}
 
 	@Override
 	public DataGrid dataGridShopArtificialPay(DeliverOrder deliverOrder, PageHelper ph) {

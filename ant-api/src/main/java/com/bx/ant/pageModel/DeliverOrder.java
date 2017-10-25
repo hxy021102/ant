@@ -30,6 +30,7 @@ public class DeliverOrder implements java.io.Serializable {
 	private String remark;
 	private Integer shopId;
 	private Double shopDistance;
+	private String supplierOrderId;
 
 
 
@@ -194,5 +195,13 @@ public class DeliverOrder implements java.io.Serializable {
 
 	public void setShopDistance(Double shopDistance) {
 		this.shopDistance = shopDistance;
+	}
+
+	public String getSupplierOrderId() {
+		return supplierOrderId;
+	}
+
+	public void setSupplierOrderId(String supplierOrderId) {
+		this.supplierOrderId = supplierOrderId;
 	}
 }

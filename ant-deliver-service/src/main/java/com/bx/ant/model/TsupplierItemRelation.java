@@ -63,6 +63,8 @@ public class TsupplierItemRelation implements java.io.Serializable,IEntity{
 	private Integer freight;
 	//@NotNull 
 	private Boolean online;
+
+	private String supplierItemCode;
 	//columns END
 
 
@@ -174,6 +176,15 @@ public class TsupplierItemRelation implements java.io.Serializable,IEntity{
 	
 	public void setOnline(Boolean online) {
 		this.online = online;
+	}
+
+	@Column(name="supplier_item_code", unique = false, nullable = true, insertable = true, updatable = true, length = 64)
+	public String getSupplierItemCode() {
+		return supplierItemCode;
+	}
+
+	public void setSupplierItemCode(String supplierItemCode) {
+		this.supplierItemCode = supplierItemCode;
 	}
 	
 	

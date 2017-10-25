@@ -50,6 +50,10 @@
                 title : '修改时间',
                 width : 50
                 }, {
+                field : 'supplierOrderId',
+                title : '供应商订单ID',
+                width : 50
+				},{
 				field : 'supplierId',
 				title : '供应商ID',
 				width : 30
@@ -194,7 +198,7 @@
 			title:'批量导入',
 			width:780,
 			height:200,
-			href:'${pageContext.request.contentLength}/deliverOrderController/uploadPage',
+			href:'${pageContext.request.contextPath}/deliverOrderController/uploadPage',
 			buttons:[{
 			    text:'保存',
 				handler:function () {

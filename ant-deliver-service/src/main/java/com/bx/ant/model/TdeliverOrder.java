@@ -90,6 +90,8 @@ public class TdeliverOrder implements java.io.Serializable,IEntity{
 	private String remark;
 	//columns END
 
+	private String supplierOrderId;
+
 	private BigDecimal longitude;
 
 	private BigDecimal latitude;
@@ -293,6 +295,15 @@ public class TdeliverOrder implements java.io.Serializable,IEntity{
 
 	public void setLatitude(BigDecimal latitude) {
 		this.latitude = latitude;
+	}
+
+	@Column(name = "supplier_order_id", unique = false, nullable = true, insertable = true, updatable = true, scale = 32)
+	public String getSupplierOrderId() {
+		return supplierOrderId;
+	}
+
+	public void setSupplierOrderId(String supplierOrderId) {
+		this.supplierOrderId = supplierOrderId;
 	}
 	
 	/*
