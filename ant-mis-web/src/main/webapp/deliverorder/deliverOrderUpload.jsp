@@ -34,7 +34,7 @@
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;">	
-		<a href="${pageContext.request.contextPath}/mbitemstock/mbItemStockTemplate.xlsx" target="_blank">下载模板</a>
+		<a href="${pageContext.request.contextPath}/deliverorder/importDeliverOrderTemplate.xlsx" target="_blank">下载模板</a>
 		<form id="form" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="id"/>
 			<table class="table table-hover table-condensed">

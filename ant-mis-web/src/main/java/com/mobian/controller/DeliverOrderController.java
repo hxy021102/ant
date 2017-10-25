@@ -318,14 +318,15 @@ public class DeliverOrderController extends BaseController {
 				//填充订单信息
 				DeliverOrder order = new DeliverOrder();
 				order.setSupplierOrderId((String) lo.get(0));
-				order.setContactPeople((String)lo.get(4));
-				order.setDeliveryAddress((String)lo.get(5));
+				order.setContactPeople((String)lo.get(3));
+				order.setDeliveryAddress((String)lo.get(4));
 
 				//剔除非上海订单
 
 
-				order.setContactPhone((String)lo.get(6));
-				order.setRemark(((String)lo.get(7)));
+
+				order.setContactPhone((String)lo.get(5));
+				order.setRemark(((String)lo.get(6)));
 				order.setSupplierId(supplierId);
 
 
