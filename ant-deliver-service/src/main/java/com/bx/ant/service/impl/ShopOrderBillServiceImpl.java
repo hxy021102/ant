@@ -188,10 +188,16 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 			if (CollectionUtils.isNotEmpty(deliverOrders)) {
 				for (DeliverOrder deliverOrder : deliverOrders) {
 					DeliverOrderShopPay orderShopPay = new DeliverOrderShopPay();
+					DeliverOrderShop orderShop =new DeliverOrderShop();
+					orderShop.setDeliverOrderId(deliverOrder.getId());
+					orderShop.setShopId(shopOrderBill.getShopId());
+					DeliverOrderShop deliverOrderShop = deliverOrderShopService.query(orderShop).get(0);
+					if (deliverOrderShop != null) {
+						orderShopPay.setAmount(deliverOrderShop.getAmount());
+					}
 					orderShopPay.setShopId(shopOrderBill.getShopId());
 					orderShopPay.setDeliverOrderId(deliverOrder.getId());
 					orderShopPay.setStatus("SPS02");
-					orderShopPay.setAmount(deliverOrder.getAmount());
 					orderShopPay.setShopOrderBillId(shopOrderBillId);
 					deliverOrderShopPayService.add(orderShopPay);
 				}

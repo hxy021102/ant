@@ -594,6 +594,13 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 				MbShop shop = mbShopService.get(order.getShopId());
 				if (shop != null) {
 					deliverOrderQuery.setShopName(shop.getName());
+                    DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+                    deliverOrderShop.setShopId(shop.getId());
+                    deliverOrderShop.setDeliverOrderId(order.getId());
+                    DeliverOrderShop orderShop = deliverOrderShopService.query(deliverOrderShop).get(0);
+                    if (orderShop != null) {
+                        deliverOrderQuery.setAmount(orderShop.getAmount());
+                    }
 				}
 				deliverOrderQueries.add(deliverOrderQuery);
 			}
