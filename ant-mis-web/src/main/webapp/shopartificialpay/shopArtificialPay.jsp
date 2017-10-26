@@ -82,13 +82,11 @@
             totalAmount += rows[i].amount;
             deliverOrderIds[i] = rows[i].id;
         }
-        var statu = confirm("总金额："+totalAmount/100.0+"\n起始时间："+shopOrderBillQuery.startDate+"\n结束时间:"+shopOrderBillQuery.endDate+"\n是否确认创建账单?");
-        if(!statu){
-            return false;
-        }
         shopOrderBillQuery.deliverOrderIds=deliverOrderIds;
         shopOrderBillQuery.amount=totalAmount;
         shopOrderBillQuery.deliverOrderList=rows;
+         parent.$.messager.confirm("询问","总金额："+totalAmount/100.0+"\n起始时间："+shopOrderBillQuery.startDate+"\n结束时间:"+shopOrderBillQuery.endDate+"\n是否确认创建账单?",function (result) {
+           if(result)  {
         $.ajax({
             url:  '${pageContext.request.contextPath}/deliverShopArtificialPayController/addShopOrderBill',
             data: JSON.stringify(shopOrderBillQuery),
@@ -114,8 +112,10 @@
                 parent.$.messager.progress('close');
             }
         });
-		}else{
-            alert("请选择要结算的运单！")
+		}
+      });
+	  }else{
+            parent.$.messager.alert("提示","请选择要结算的运单！")
         }
 
     }
