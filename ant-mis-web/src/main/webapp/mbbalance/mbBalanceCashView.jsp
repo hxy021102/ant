@@ -49,42 +49,47 @@
                     width: 150,
                     hidden: true
                 }, {
+                    field : 'updatetime',
+                    title : '<%=TmbBalanceLog.ALIAS_TIME%>',
+                    width : 100
+                }, {
+                    field: 'refTypeName',
+                    title: '<%=TmbBalanceLog.ALIAS_REF_TYPE%>',
+                    width: 100
+                }, {
                     field: 'amountIn',
-                    title: '+金额',
+                    title: '收入（+）',
                     width: 50,
                     align: 'right',
                     formatter: function (value) {
                         if (value >= 0) {
-                        return $.formatMoney(value);
+                            return $.formatMoney(value);
+                        }else{
+                            return "";
                         }
-                    }
-                }, {
-                    field: 'refTypeName',
-                    title: '<%=TmbBalanceLog.ALIAS_REF_TYPE%>',
-                    width: 130,
-                    formatter : function (value,row) {
-                        if(row.refTypeName !=null)
-                        return row.updatetime +'&nbsp;-&nbsp;'+ row.refTypeName;
-                        if(!row.updatetime) {
-                            return row.refType;
-                        }
-                        else
-                            return row.updatetime;
-                    },
-                    styler: function (value,row) {
-                        if (row.refType == '合计') {
-                            return 'font-weight: bold';
-                        }
+
                     }
                 }, {
                     field: 'amountOut',
-                    title: '-金额',
+                    title: '支出（-）',
                     width: 50,
                     align: 'right',
                     formatter: function (value) {
                         if(value < 0) {
                             return $.formatMoney(value);
                         }
+                    }
+                }, {
+                    field : 'amount1',
+                    title : '账户余额',
+                    width : 50,
+                    align:'right',
+                    formatter:function(value,row){
+                        var nums = getNum(row.remark,true);
+                        if (nums&&nums.length>0)
+                            return $.formatMoney(nums[nums.length-1]);
+                        else
+                            return "";
                     }
                 },{
                     field: 'refId',
@@ -114,8 +119,8 @@
                     hidden: $.canEdit ? false : true,
                     formatter: function (value, row, index) {
                         var str = '';
-                        if ($.canEdit && row.refType != "合计") {
-                            str = '<a onclick="editShow(' + row.id + ',' + row.isShow + ');" href="javascript:void(0);" class="switch" is-show="'+row.isShow+'">'+(row.isShow ? '点击影藏' : '点击显示')+'</a>';
+                        if (row.id && $.canEdit && row.refType != "合计") {
+                            str = '<a onclick="editShow(' + row.id + ',' + row.isShow + ');" href="javascript:void(0);" class="switch" is-show="' + row.isShow + '">' + (row.isShow ? '点击影藏' : '点击显示') + '</a>';
                         }
 
                         return str;
@@ -134,6 +139,32 @@
                 }
             });
         });
+
+        var getNum = function (Str, isFilter) {
+            //用来判断是否把连续的0去掉
+            isFilter = isFilter || false;
+            if (typeof Str === "string") {
+                // var arr = Str.match(/(0\d{2,})|([1-9]\d+)/g);
+                //"/[1-9]\d{1,}/g",表示匹配1到9,一位数以上的数字(不包括一位数).
+                //"/\d{2,}/g",  表示匹配至少二个数字至多无穷位数字
+                var arr = Str.match(isFilter ? /[1-9]\d{1,}/g : /\d{2,}/g);
+                if (arr) {
+                    return arr.map(function (item) {
+                        //转换为整数，
+                        //但是提取出来的数字，如果是连续的多个0会被改为一个0，如000---->0，
+                        //或者0开头的连续非零数字，比如015，会被改为15，这是一个坑
+                        // return parseInt(item);
+                        //字符串，连续的多个0也会存在，不会被去掉
+                        return item;
+                    });
+                } else {
+                    return [];
+                }
+            } else {
+                return [];
+            }
+        }
+
         function addShopMoney() {
             parent.$.modalDialog({
                 title: '添加数据',
