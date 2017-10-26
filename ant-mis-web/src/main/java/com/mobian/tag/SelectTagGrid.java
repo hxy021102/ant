@@ -68,7 +68,7 @@ public class SelectTagGrid extends TagSupport {
             StringBuffer sb = new StringBuffer();
             String gClass = "grid_" + new Date().getTime();
             sb.append("<select name=\"" + name + "\" id=\"" + name + "\" class=\"easyui-combogrid easyui-validatebox " + gClass + "\"  data-options=\"");
-            sb.append("width:140,height:29,panelWidth: 400,");
+            sb.append("width:140,height:29,panelWidth: 440,");
             if (required) {
                 sb.append("		required: " + required + ",");
             }
@@ -251,8 +251,8 @@ public class SelectTagGrid extends TagSupport {
         if ("itemId".equals(dataType)) {
             sb.append("		columns: [[");
             sb.append("{field:'id',title:'ID',width:30},");
-            sb.append("{field:'code',title:'编码',width:100},");
-            sb.append("{field:'text',title:'名称',width:150},");
+            sb.append("{field:'code',title:'编码',width:130},");
+            sb.append("{field:'text',title:'名称',width:210},");
             sb.append("{field:'parentName',title:'分类',width:50}");
             sb.append("]]");
         } else if ("shopId".equals(dataType)) {
