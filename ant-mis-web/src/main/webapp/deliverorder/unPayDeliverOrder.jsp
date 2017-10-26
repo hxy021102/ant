@@ -178,12 +178,15 @@
 	}
     function addOrderBill() {
         var rows = $('#dataGrid').datagrid('getChecked');
-        var footer = $('#dataGrid').datagrid('getFooterRows');
+        var total = 0;
+        for(var i = 0; i<rows.length; i++) {
+            total += rows[i].amount;
+			}
         if(rows.length == 0) {
             alert("您还没有选择订单！")
 		}
         if(rows.length != 0) {
-                parent.$.messager.confirm('询问', '账单总金额为：'+$.formatMoney(footer[0].amount) +'</br> 开始时间为：'+ $('#startDate').val() +'</br>结束时间为：'+$('#endDate').val()+' </br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;您确认创建账单？', function(b) {
+                parent.$.messager.confirm('询问', '账单总金额为：'+ $.formatMoney(total) +'</br> 开始时间为：'+ $('#startDate').val() +'</br>结束时间为：'+$('#endDate').val()+' </br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;您确认创建账单？', function(b) {
                     if (b) {
                         parent.$.messager.progress({
                             title : '提示',
