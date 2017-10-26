@@ -5,11 +5,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mobian.pageModel.Colum;
-import com.mobian.pageModel.DeliverOrderItem;
+import com.bx.ant.pageModel.DeliverOrderItem;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
@@ -31,7 +32,7 @@ import com.alibaba.fastjson.JSON;
 @Controller
 @RequestMapping("/deliverOrderItemController")
 public class DeliverOrderItemController extends BaseController {
-
+    @Resource
 	private DeliverOrderItemServiceI deliverOrderItemService;
 
 
@@ -48,18 +49,18 @@ public class DeliverOrderItemController extends BaseController {
 	/**
 	 * 获取DeliverOrderItem数据表格
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 */
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(DeliverOrderItem deliverOrderItem, PageHelper ph) {
-		return deliverOrderItemService.dataGrid(deliverOrderItem, ph);
+		return deliverOrderItemService.dataGridWithName(deliverOrderItem, ph);
 	}
 	/**
 	 * 获取DeliverOrderItem数据表格excel
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 * @throws NoSuchMethodException 
 	 * @throws SecurityException 

@@ -3,9 +3,13 @@ package com.mobian.tag;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.bx.ant.service.ShopDeliverAccountServiceI;
+import com.bx.ant.service.SupplierServiceI;
 import com.mobian.absx.F;
 import com.mobian.listener.Application;
 import com.mobian.pageModel.*;
+import com.bx.ant.pageModel.ShopDeliverAccount;
+import com.bx.ant.pageModel.Supplier;
 import com.mobian.service.*;
 import com.mobian.util.BeanUtil;
 
@@ -64,7 +68,7 @@ public class SelectTagGrid extends TagSupport {
             StringBuffer sb = new StringBuffer();
             String gClass = "grid_" + new Date().getTime();
             sb.append("<select name=\"" + name + "\" id=\"" + name + "\" class=\"easyui-combogrid easyui-validatebox " + gClass + "\"  data-options=\"");
-            sb.append("width:140,height:29,panelWidth: 400,");
+            sb.append("width:140,height:29,panelWidth: 440,");
             if (required) {
                 sb.append("		required: " + required + ",");
             }
@@ -179,6 +183,13 @@ public class SelectTagGrid extends TagSupport {
                 data.put("text", mbUser.getUserName());
                 data.put("parentName", mbUser.getNickName());
             }
+        } else if ("accountId".equals(dataType)) {
+            ShopDeliverAccountServiceI shopDeliverAccountService = BeanUtil.getBean(ShopDeliverAccountServiceI.class);
+            ShopDeliverAccount shopDeliverAccount= shopDeliverAccountService.getFromCache(Integer.parseInt(value));
+            if (shopDeliverAccount != null) {
+                data.put("text", shopDeliverAccount.getUserName());
+                data.put("parentName", shopDeliverAccount.getNickName());
+            }
         } else if ("couponsId".equals(dataType)) {
             MbCouponsServiceI mbCouponsService =BeanUtil.getBean(MbCouponsServiceI.class);
             MbCoupons mbCoupons = mbCouponsService.getFromCache(Integer.parseInt(value));
@@ -187,8 +198,14 @@ public class SelectTagGrid extends TagSupport {
                 data.put("parentName", mbCoupons.getCode());
                 data.put("pid", mbCoupons.getPrice());
             }
-        }
-        else {
+        }else if ("deliverSupplierId".equals(dataType)) {
+            SupplierServiceI supplierService =BeanUtil.getBean(SupplierServiceI.class);
+            Supplier supplier = supplierService.get(Integer.parseInt(value));
+            if (supplier != null) {
+                data.put("text", supplier.getName());
+                data.put("parentName", supplier.getContacter());
+            }
+        } else {
 
             //行政区划
             DiveRegionServiceI diveRegionService = BeanUtil.getBean(DiveRegionServiceI.class);
@@ -219,6 +236,10 @@ public class SelectTagGrid extends TagSupport {
             url = path + "/mbUserController/selectQuery";
         } else if ("couponsId".equals(dataType)) {
             url = path + "/mbCouponsController/selectQuery";
+        } else if ("accountId".equals(dataType)) {
+            url = path + "/shopDeliverAccountController/selectQuery";
+        }else if ("deliverSupplierId".equals(dataType)) {
+            url = path + "/supplierController/selectQuery";
         } else {
             url = path + "/diveRegionController/selectQuery";
         }
@@ -230,8 +251,8 @@ public class SelectTagGrid extends TagSupport {
         if ("itemId".equals(dataType)) {
             sb.append("		columns: [[");
             sb.append("{field:'id',title:'ID',width:30},");
-            sb.append("{field:'code',title:'编码',width:100},");
-            sb.append("{field:'text',title:'名称',width:150},");
+            sb.append("{field:'code',title:'编码',width:130},");
+            sb.append("{field:'text',title:'名称',width:210},");
             sb.append("{field:'parentName',title:'分类',width:50}");
             sb.append("]]");
         } else if ("shopId".equals(dataType)) {
@@ -266,8 +287,19 @@ public class SelectTagGrid extends TagSupport {
             sb.append("{field:'parentName',title:'券编码',width:150},");
             sb.append("{field:'pid',title:'价格',width:80,align:'right',formatter:function(value){ return $.formatMoney(value);}}");
             sb.append("]]");
-        }
-        else {
+        }else if ("accountId".equals(dataType)) {
+            sb.append("		columns: [[");
+            sb.append("{field:'id',title:'ID',width:100},");
+            sb.append("{field:'text',title:'用户名',width:180},");
+            sb.append("{field:'parentName',title:'昵称',width:180}");
+            sb.append("]]");
+        }else if ("deliverSupplierId".equals(dataType)) {
+            sb.append("		columns: [[");
+            sb.append("{field:'id',title:'ID',width:100},");
+            sb.append("{field:'text',title:'供应商名称',width:180},");
+            sb.append("{field:'parentName',title:'联系人',width:180}");
+            sb.append("]]");
+        } else {
             sb.append("		columns: [[");
             sb.append("{field:'id',title:'ID',width:100},");
             sb.append("{field:'text',title:'名称',width:180},");

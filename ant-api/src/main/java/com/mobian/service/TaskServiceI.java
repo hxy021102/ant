@@ -31,4 +31,5 @@ public interface TaskServiceI {
      */
     void updateBatchShopLocation();
 
+
 }

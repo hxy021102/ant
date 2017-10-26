@@ -47,31 +47,24 @@
 		<value>4096</value> </property> </bean> -->
 
 	<!-- 拦截器 -->
-	<!--<mvc:interceptors>
+	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/api/**" />
-			<bean class="com.mobian.interceptors.TokenInterceptor">
+			<bean class="com.bx.ant.interceptors.TokenInterceptor">
 				<property name="excludeUrls">
 					<list>
-						<value>/api/apiBaseDataController/basedata</value>&lt;!&ndash; 基础数据 &ndash;&gt;
-						<value>/api/apiBaseDataController/uploadSign</value>&lt;!&ndash; 上传签名 &ndash;&gt;
-						<value>/api/apiUserController/login</value>&lt;!&ndash; 用户登录 &ndash;&gt;
-						<value>/api/apiUserController/loginByWx</value>&lt;!&ndash; 微信授权登录 &ndash;&gt;
-						<value>/api/apiUserController/register</value>&lt;!&ndash; 注册 &ndash;&gt;
-						<value>/api/apiUserController/getValidateCode</value>&lt;!&ndash; 获取短信验证码 &ndash;&gt;
-						<value>/api/apiUserController/getPublicKey</value>&lt;!&ndash; 获取RSA公钥 &ndash;&gt;
-						<value>/api/apiItemController/dataGrid</value>&lt;!&ndash; 获取商品列表接口 &ndash;&gt;
-						<value>/api/apiItemController/get</value>&lt;!&ndash; 获取商品详情接口 &ndash;&gt;
-						<value>/api/apiItemCategoryController/dataGrid</value>&lt;!&ndash; 获取商品分类接口 &ndash;&gt;
-						<value>/api/apiCommon/error</value>&lt;!&ndash; token过期错误返回 &ndash;&gt;
+						<value>/api/deliver/account/login</value><!-- 用户登录 -->
+						<value>/api/deliver/account/register</value><!-- 注册 -->
+						<value>/api/deliver/account/getVCode</value><!-- 获取短信验证码 -->
+						<value>/api/apiCommon/error</value><!-- token过期错误返回 -->
 
-						<value>/api/pay/paySuccess</value>&lt;!&ndash; 微信支付成功回调 &ndash;&gt;
+						<value>/api/pay/paySuccess</value><!-- 微信支付成功回调 -->
 					</list>
 				</property>
-				<property name="tokenManage" ref="tokenManage" />
+				<property name="tokenService" ref="tokenServiceImpl" />
 			</bean>
 		</mvc:interceptor>
-	</mvc:interceptors>-->
+	</mvc:interceptors>
 
 	<!-- SpringMVC上传文件时，需要配置MultipartResolver处理器 -->
 	<bean id="multipartResolver"

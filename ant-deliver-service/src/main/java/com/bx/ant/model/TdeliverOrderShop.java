@@ -7,6 +7,7 @@ package com.bx.ant.model;
 
 import javax.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import org.hibernate.annotations.DynamicInsert;
@@ -57,6 +58,8 @@ public class TdeliverOrderShop implements java.io.Serializable,IEntity{
 	private String status;
 	//
 	private Integer amount;
+
+	private BigDecimal distance;
 	//columns END
 
 
@@ -151,8 +154,16 @@ public class TdeliverOrderShop implements java.io.Serializable,IEntity{
 	public void setAmount(Integer amount) {
 		this.amount = amount;
 	}
-	
-	
+
+	@Column(name = "distance", unique = false, nullable = true, insertable = true, updatable = true, scale = 6)
+	public BigDecimal getDistance() {
+		return distance;
+	}
+
+	public void setDistance(BigDecimal distance) {
+		this.distance = distance;
+	}
+
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

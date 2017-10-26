@@ -188,8 +188,8 @@ public class TmbSupplier implements java.io.Serializable,IEntity{
 	public void setWarehouseId(Integer warehouseId) {
 		this.warehouseId = warehouseId;
 	}
-	
-	
+
+
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

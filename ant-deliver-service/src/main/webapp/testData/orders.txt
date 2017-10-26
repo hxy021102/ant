@@ -1,0 +1,51 @@
+{
+  "success":true,
+  "msg":"",
+  "obj":{
+    "rows" :[{
+      "id":"100000",
+      "amount": "20000",
+      "status": "DOS01",
+      "deliveryStatus":"DDS01",
+      "contactPhone":"13671775421",
+      "contactPeople":"李先生",
+      "deliveryAddress":"上海市浦东新区王桥路299号",
+      "addtime":"09-29 09:30",
+      "distance":"3.5km",
+      "freight":"2000",
+      "deliverOrderShopItemList":[{
+        "id":1,
+        "itemName":"测试商品001",
+        "pictureUrl":"http://img.qrun360.com/mbItem/2017/6/23/1498210909435.jpg",
+        "quantityUnitName":"5L*4瓶",
+        "quantity":"1"
+      },{
+        "id":2,
+        "itemName":"测试商品002",
+        "pictureUrl":"http://img.qrun360.com/mbItem/2017/6/27/1498547220188.png",
+        "quantityUnitName":"10L*4瓶",
+        "quantity":"5"
+      }]
+
+    },
+    {
+      "id":"100001",
+      "amount": "50000",
+      "status": "DOS02",
+      "deliveryStatus":"DDS01",
+      "contactPhone":"18701959799",
+      "contactPeople":"徐先生",
+      "deliveryAddress":"上海市浦东新区御青路1051号",
+      "addtime":"09-29 10:30",
+      "distance":"5.5km",
+      "freight":"5000",
+      "deliverOrderShopItemList":[{
+        "id":1,
+        "itemName":"测试商品001",
+        "pictureUrl":"http://img.qrun360.com/mbItem/2017/6/23/1498210909435.jpg",
+        "quantityUnitName":"5L*4瓶",
+        "quantity":"10"
+      }]
+    }]
+  }
+}

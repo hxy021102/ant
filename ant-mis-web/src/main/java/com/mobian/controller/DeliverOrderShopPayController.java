@@ -3,19 +3,19 @@ package com.mobian.controller;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.UUID;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mobian.pageModel.Colum;
-import com.mobian.pageModel.DeliverOrderShopPay;
+import com.bx.ant.pageModel.DeliverOrderShopPay;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
 import com.bx.ant.service.DeliverOrderShopPayServiceI;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,6 +32,7 @@ import com.alibaba.fastjson.JSON;
 @RequestMapping("/deliverOrderShopPayController")
 public class DeliverOrderShopPayController extends BaseController {
 
+	@Resource
 	private DeliverOrderShopPayServiceI deliverOrderShopPayService;
 
 
@@ -48,18 +49,18 @@ public class DeliverOrderShopPayController extends BaseController {
 	/**
 	 * 获取DeliverOrderShopPay数据表格
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 */
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(DeliverOrderShopPay deliverOrderShopPay, PageHelper ph) {
-		return deliverOrderShopPayService.dataGrid(deliverOrderShopPay, ph);
+		return deliverOrderShopPayService.dataWithNameGrid(deliverOrderShopPay, ph);
 	}
 	/**
 	 * 获取DeliverOrderShopPay数据表格excel
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 * @throws NoSuchMethodException 
 	 * @throws SecurityException 
@@ -109,7 +110,7 @@ public class DeliverOrderShopPayController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/view")
-	public String view(HttpServletRequest request, Integer id) {
+	public String view(HttpServletRequest request, Long id) {
 		DeliverOrderShopPay deliverOrderShopPay = deliverOrderShopPayService.get(id);
 		request.setAttribute("deliverOrderShopPay", deliverOrderShopPay);
 		return "/deliverordershoppay/deliverOrderShopPayView";
@@ -121,7 +122,7 @@ public class DeliverOrderShopPayController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/editPage")
-	public String editPage(HttpServletRequest request, Integer id) {
+	public String editPage(HttpServletRequest request, Long id) {
 		DeliverOrderShopPay deliverOrderShopPay = deliverOrderShopPayService.get(id);
 		request.setAttribute("deliverOrderShopPay", deliverOrderShopPay);
 		return "/deliverordershoppay/deliverOrderShopPayEdit";
@@ -151,7 +152,7 @@ public class DeliverOrderShopPayController extends BaseController {
 	 */
 	@RequestMapping("/delete")
 	@ResponseBody
-	public Json delete(Integer id) {
+	public Json delete(Long id) {
 		Json j = new Json();
 		deliverOrderShopPayService.delete(id);
 		j.setMsg("删除成功！");

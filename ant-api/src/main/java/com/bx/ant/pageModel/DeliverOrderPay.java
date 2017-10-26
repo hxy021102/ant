@@ -1,4 +1,6 @@
-package com.mobian.pageModel;
+package com.bx.ant.pageModel;
+
+import com.mobian.util.ConvertNameUtil;
 
 import java.util.Date;
 
@@ -17,6 +19,9 @@ public class DeliverOrderPay implements java.io.Serializable {
 	private String status;
 	private Integer amount;
 	private String payWay;
+	private String payWayName;
+	private Integer supplierOrderBillId;
+
 
 	
 
@@ -78,6 +83,7 @@ public class DeliverOrderPay implements java.io.Serializable {
 	public String getStatus() {
 		return this.status;
 	}
+	public String getStatusName() {return ConvertNameUtil.getString(this.status);}
 	public void setAmount(Integer amount) {
 		this.amount = amount;
 	}
@@ -93,4 +99,19 @@ public class DeliverOrderPay implements java.io.Serializable {
 		return this.payWay;
 	}
 
+	public Integer getSupplierOrderBillId() {
+		return supplierOrderBillId;
+	}
+
+	public void setSupplierOrderBillId(Integer supplierOrderBillId) {
+		this.supplierOrderBillId = supplierOrderBillId;
+	}
+
+	public String getPayWayName() {
+		return ConvertNameUtil.getString(this.payWay);
+	}
+
+	public void setPayWayName(String payWayName) {
+		this.payWayName = payWayName;
+	}
 }

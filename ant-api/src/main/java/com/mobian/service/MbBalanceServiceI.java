@@ -82,6 +82,13 @@ public interface MbBalanceServiceI {
 	MbBalance addOrGetMbBalanceCash(Integer shopId);
 
 	/**
+	 * 门店运单账户
+	 * @param shopId
+	 * @return
+	 */
+	MbBalance addOrGetMbBalanceDelivery(Integer shopId);
+
+	/**
 	 * 桶押金账户
 	 * @param shopId
 	 * @return
@@ -104,4 +111,32 @@ public interface MbBalanceServiceI {
 	 */
 	List<MbBalance> queryBalanceListByShopId(Integer shopId);
 
+	/**
+	 * 通用创建与获取账户方法
+	 * @param refId
+	 * @param refType
+	 * @param initAmount
+	 * @return
+	 */
+	MbBalance addOrGetMbBalance(Integer refId, Integer refType, Integer initAmount);
+
+	/**
+	 * 转移金额
+     * 将通过shopId找到源余额账户和目标账户,若目标账户不存在则将建立目标账户
+	 * @param shopId
+	 * @param amount
+	 * @param balanceSourceType
+	 * @param balanceTargetType
+	 * @param initTargetMoney
+	 */
+	void transform(Integer shopId, Integer amount, Integer balanceSourceType, Integer balanceTargetType, Integer initTargetMoney);
+
+	/**
+	 * 转移金额
+	 * 将
+	 * @param amount
+	 * @param balanceSource
+	 * @param balanceTarget
+	 */
+	void transform(Integer amount, MbBalance balanceSource, MbBalance balanceTarget);
 }

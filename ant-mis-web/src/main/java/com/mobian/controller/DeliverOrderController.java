@@ -1,26 +1,35 @@
 package com.mobian.controller;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.mobian.pageModel.Colum;
-import com.mobian.pageModel.DeliverOrder;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.Json;
-import com.mobian.pageModel.PageHelper;
+import com.alibaba.fastjson.JSON;
+import com.bx.ant.pageModel.*;
+import com.bx.ant.service.DeliverOrderItemServiceI;
 import com.bx.ant.service.DeliverOrderServiceI;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.bx.ant.service.SupplierItemRelationServiceI;
+import com.bx.ant.service.SupplierServiceI;
+import com.mobian.pageModel.*;
+import com.mobian.util.ConfigUtil;
+import com.mobian.util.ImportExcelUtil;
+import net.sf.json.JSONArray;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.alibaba.fastjson.JSON;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * DeliverOrder管理控制器
@@ -32,8 +41,15 @@ import com.alibaba.fastjson.JSON;
 @RequestMapping("/deliverOrderController")
 public class DeliverOrderController extends BaseController {
 
-
+	@Resource
 	private DeliverOrderServiceI deliverOrderService;
+	@Resource
+	private SupplierServiceI supplierService;
+	@Resource
+	private DeliverOrderItemServiceI deliverOrderItemService;
+
+	@Resource
+	private SupplierItemRelationServiceI supplierItemRelationService;
 
 
 	/**
@@ -46,21 +62,72 @@ public class DeliverOrderController extends BaseController {
 		return "/deliverorder/deliverOrder";
 	}
 
+
+	/**
+	 * 跳转到DeliverOrder管理页面
+	 *
+	 * @return
+	 */
+	@RequestMapping("/unPayOrderManager")
+	public String unPayOrdermanager(HttpServletRequest request) {
+		return "/deliverorder/unPayDeliverOrder";
+	}
+
 	/**
 	 * 获取DeliverOrder数据表格
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 */
 	@RequestMapping("/dataGrid")
 	@ResponseBody
-	public DataGrid dataGrid(DeliverOrder deliverOrder, PageHelper ph) {
-		return deliverOrderService.dataGrid(deliverOrder, ph);
+	public DataGrid dataGrid(DeliverOrderQuery deliverOrderQuery, PageHelper ph) {
+		return deliverOrderService.dataGridWithName(deliverOrderQuery, ph);
+	}
+	@RequestMapping("/unPayOrderDataGrid")
+	@ResponseBody
+	public DataGrid unPayOrderDataGrid(DeliverOrder deliverOrder, PageHelper ph) {
+		DataGrid g = deliverOrderService.unPayOrderDataGrid(deliverOrder, ph);
+		List<DeliverOrder> list = g.getRows();
+		List<DeliverOrderQuery>  deliverOrderQueries = new ArrayList<DeliverOrderQuery>();
+		Integer amount = 0;
+		for(DeliverOrder d : list) {
+			if(d.getAmount() != null) {
+				amount += d.getAmount();
+			}
+			DeliverOrderQuery deliverOrderQuery  = new DeliverOrderQuery();
+			BeanUtils.copyProperties(d,deliverOrderQuery);
+			if(d.getSupplierId() != null) {
+				Supplier s = supplierService.get(d.getSupplierId());
+				deliverOrderQuery.setSupplierName(s.getName());
+			}
+			if(d.getStatus() != null) {
+				deliverOrderQuery.setStatusName(d.getStatus());
+			}
+			if(d.getDeliveryStatus() != null) {
+				deliverOrderQuery.setDeliveryStatusName(d.getDeliveryStatus());
+			}
+			if(d.getPayStatus() != null) {
+				deliverOrderQuery.setPayStatusName(d.getPayStatus());
+			}
+			deliverOrderQueries.add(deliverOrderQuery);
+		}
+		DataGrid dg = new DataGrid();
+		dg.setTotal(g.getTotal());
+		dg.setRows(deliverOrderQueries);
+		List<DeliverOrderQuery> footer = new ArrayList<DeliverOrderQuery>();
+		DeliverOrderQuery totalRow = new DeliverOrderQuery();
+		totalRow.setId(null);
+		totalRow.setSupplierName("总计");
+		totalRow.setAmount(amount);
+		footer.add(totalRow);
+		dg.setFooter(footer);
+		return  dg;
 	}
 	/**
 	 * 获取DeliverOrder数据表格excel
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 * @throws NoSuchMethodException 
 	 * @throws SecurityException 
@@ -70,11 +137,37 @@ public class DeliverOrderController extends BaseController {
 	 * @throws IOException 
 	 */
 	@RequestMapping("/download")
-	public void download(DeliverOrder deliverOrder, PageHelper ph,String downloadFields,HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException{
-		DataGrid dg = dataGrid(deliverOrder,ph);		
+	public void download(DeliverOrderQuery deliverOrderQuery, PageHelper ph, String downloadFields, HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
+		DataGrid dg = dataGrid(deliverOrderQuery, ph);
+		List<DeliverOrderQuery> deliverOrderQueries = dg.getRows();
+		if (CollectionUtils.isNotEmpty(deliverOrderQueries)) {
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			for (DeliverOrderQuery orderQuery : deliverOrderQueries) {
+				String addDateStr= formatter.format(orderQuery.getAddtime());
+				String requiredDateStr = formatter.format(orderQuery.getDeliveryRequireTime());
+				orderQuery.setCreateDate(addDateStr);
+				orderQuery.setRequiredDate(requiredDateStr);
+				orderQuery.setAmountElement(orderQuery.getAmount() / 100.0);
+			}
+		}
 		downloadFields = downloadFields.replace("&quot;", "\"");
-		downloadFields = downloadFields.substring(1,downloadFields.length()-1);
+		downloadFields = downloadFields.substring(1, downloadFields.length() - 1);
 		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
+		if (CollectionUtils.isNotEmpty(colums)) {
+			for (Colum colum : colums) {
+				switch (colum.getField()) {
+					case "amount":
+						colum.setField("amountElement");
+						break;
+					case "addtime":
+						colum.setField("createDate");
+						break;
+					case "deliveryRequireTime":
+						colum.setField("requiredDate");
+						break;
+				}
+			}
+		}
 		downloadTable(colums, dg, response);
 	}
 	/**
@@ -84,8 +177,8 @@ public class DeliverOrderController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/addPage")
-	public String addPage(HttpServletRequest request) {
-		DeliverOrder deliverOrder = new DeliverOrder();
+	public String addPage(HttpServletRequest request, Integer supplierId) {
+		request.setAttribute("supplierId", supplierId);
 		return "/deliverorder/deliverOrderAdd";
 	}
 
@@ -96,11 +189,18 @@ public class DeliverOrderController extends BaseController {
 	 */
 	@RequestMapping("/add")
 	@ResponseBody
-	public Json add(DeliverOrder deliverOrder) {
-		Json j = new Json();		
-		deliverOrderService.add(deliverOrder);
-		j.setSuccess(true);
-		j.setMsg("添加成功！");		
+	public Json add(DeliverOrder deliverOrder, String itemListStr, HttpSession  session) {
+		Json j = new Json();
+		if (!"[{\"status\":\"P\"}]".equals(itemListStr)) {
+			SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName()) ;
+			String loginId = sessionInfo.getId();
+			deliverOrderService.addAndItems(deliverOrder, itemListStr);
+			j.setSuccess(true);
+			j.setMsg("添加成功！");
+		} else {
+			j.setSuccess(false);
+			j.setMsg("请确认已经选中商品列表中的商品");
+		}
 		return j;
 	}
 
@@ -110,10 +210,10 @@ public class DeliverOrderController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/view")
-	public String view(HttpServletRequest request, Integer id) {
-		DeliverOrder deliverOrder = deliverOrderService.get(id);
-		request.setAttribute("deliverOrder", deliverOrder);
-		return "/deliverorder/deliverOrderView";
+	public String view(HttpServletRequest request, Long id) {
+		DeliverOrderQuery deliverOrderQuery = deliverOrderService.getDeliverOrderView(id);
+		request.setAttribute("deliverOrder", deliverOrderQuery);
+		return "deliverorder/deliverOrderView";
 	}
 
 	/**
@@ -122,7 +222,7 @@ public class DeliverOrderController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/editPage")
-	public String editPage(HttpServletRequest request, Integer id) {
+	public String editPage(HttpServletRequest request, Long id) {
 		DeliverOrder deliverOrder = deliverOrderService.get(id);
 		request.setAttribute("deliverOrder", deliverOrder);
 		return "/deliverorder/deliverOrderEdit";
@@ -152,12 +252,104 @@ public class DeliverOrderController extends BaseController {
 	 */
 	@RequestMapping("/delete")
 	@ResponseBody
-	public Json delete(Integer id) {
+	public Json delete(Long id) {
 		Json j = new Json();
 		deliverOrderService.delete(id);
 		j.setMsg("删除成功！");
 		j.setSuccess(true);
 		return j;
 	}
+	/**
+	 * 删除DeliverOrder
+	 *
+	 * @param deliverOrder
+	 * @return
+	 */
+	@RequestMapping("/editStatus")
+	@ResponseBody
+	public Json editStatus(DeliverOrder deliverOrder) {
+		Json j = new Json();
+		deliverOrderService.transform(deliverOrder);
+		j.setMsg("编辑成功");
+		j.setSuccess(true);
+		return j;
+	}
 
+	@RequestMapping("/addOrderBill")
+	@ResponseBody
+	public Json addOrderBill(Integer supplierId, String unpayDeliverOrders, Date startTime, Date endTime) {
+		Json j = new Json();
+		JSONArray jsonArray = JSONArray.fromObject(unpayDeliverOrders);
+	   	List<DeliverOrder> list = (List<DeliverOrder>) jsonArray.toCollection(jsonArray,DeliverOrder.class);
+	   	deliverOrderService.addOrderBill(list,supplierId,startTime,endTime);
+	   	for(DeliverOrder d : list) {
+	   		d.setPayStatus("DPS03");//结算中
+			deliverOrderService.edit(d);
+		}
+	   	j.setMsg("生成账单成功");
+	   	j.setSuccess(true);
+	   	return  j;
+	}
+
+	@RequestMapping("/uploadPage")
+	public String uploadPage(){
+		return "/deliverorder/deliverOrderUpload";
+	}
+
+	@RequestMapping("/upload")
+	@ResponseBody
+	public Json upload(@RequestParam MultipartFile file, Integer supplierId) throws Exception {
+		Json json = new Json();
+		try {
+			if (file.isEmpty()) {
+				json.setMsg("未选中文件");
+				json.setSuccess(false);
+				return json;
+			}
+			InputStream in = file.getInputStream();
+			List<List<Object>> listOb = new ImportExcelUtil().getBankListByExcel(in, file.getOriginalFilename());
+			in.close();
+			List<DeliverOrder> deliverOrderList = new ArrayList<>();
+			Iterator<List<Object>> listIterator = listOb.iterator();
+			listIterator.next();
+			while (listIterator.hasNext()) {
+				List<Object> lo = listIterator.next();
+
+				//填充订单信息
+				DeliverOrder order = new DeliverOrder();
+				order.setSupplierOrderId((String) lo.get(0));
+				order.setContactPeople((String)lo.get(3));
+				order.setDeliveryAddress((String)lo.get(4));
+
+				//剔除非上海订单
+
+
+
+				order.setContactPhone((String)lo.get(5));
+				order.setRemark(((String)lo.get(6)));
+				order.setSupplierId(supplierId);
+
+
+				//填充订单明细
+				List<SupplierItemRelationView> supplierItemRelations = new  ArrayList<SupplierItemRelationView>();
+				SupplierItemRelationView itemRelation = new SupplierItemRelationView();
+				itemRelation.setSupplierId(supplierId);
+				itemRelation.setSupplierItemCode((String)lo.get(1));
+
+				List<SupplierItemRelation> itemRelations = supplierItemRelationService.dataGrid(itemRelation, new PageHelper()).getRows();
+				if (CollectionUtils.isNotEmpty(itemRelations)) {
+					itemRelation.setItemId(itemRelations.get(0).getItemId());
+					itemRelation.setQuantity(Integer.parseInt((String)lo.get(2)));
+					supplierItemRelations.add(itemRelation);
+
+					//添加订单和订单明细
+					deliverOrderService.addAndItems(order, supplierItemRelations);
+				}
+//				order.set
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }
