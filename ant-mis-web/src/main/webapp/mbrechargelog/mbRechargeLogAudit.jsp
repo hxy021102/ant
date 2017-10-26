@@ -48,6 +48,16 @@
 							<input type="text" name="payCode" readonly = "true" value="${mbRechargeLog.payCode}"/>
 						</td>
 					</c:when>
+					<c:when test="${mbRechargeLog.balanceId == -1}">
+						<th>汇款单号</th>
+						<td>
+							<input type="text" name="payCode" readonly = "true" value="${mbRechargeLog.payCode}"/>
+						</td>
+						<th>门店名称</th>
+						<td>
+							<jb:selectGrid dataType="shopId" name="shopId"></jb:selectGrid>
+						</td>
+					</c:when>
 					<c:otherwise>
 						<th><%=TmbRechargeLog.ALIAS_PAYCODE%></th>
 						<td>

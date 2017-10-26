@@ -263,23 +263,31 @@ public class MbRechargeLogController extends BaseController {
     public Json editAudit(MbRechargeLog mbRechargeLog, HttpSession session) {
         Json j = new Json();
         SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
-        if (F.empty(mbRechargeLog.getHandleRemark())) {
+        if (F.empty(mbRechargeLog.getHandleRemark())&&F.empty(mbRechargeLog.getShopId())) {
             j.setSuccess(false);
-            j.setMsg("请输入原因");
+            j.setMsg("请选择门店和填写备注！");
 
         } else if (F.empty(mbRechargeLog.getPayCode()) && "HS02".equals(mbRechargeLog.getHandleStatus())) {
             j.setSuccess(false);
             j.setMsg("请输入银行汇款单号");
         } else {
-            mbRechargeLog.setHandleLoginId(sessionInfo.getId());
-            mbRechargeLog.setHandleTime(new Date());
-            try {
-                mbRechargeLogService.editAudit(mbRechargeLog);
-                j.setSuccess(true);
-                j.setMsg("编辑成功!");
-            } catch (ServiceException e) {
+            MbRechargeLog rechargeLog = new MbRechargeLog();
+            rechargeLog.setPayCode(mbRechargeLog.getPayCode());
+            rechargeLog.setHandleStatus("HS02");
+            if(mbRechargeLogService.checkRechargeLogPayCode(rechargeLog)==null) {
+                mbRechargeLog.setHandleLoginId(sessionInfo.getId());
+                mbRechargeLog.setHandleTime(new Date());
+                try {
+                    mbRechargeLogService.editAudit(mbRechargeLog);
+                    j.setSuccess(true);
+                    j.setMsg("编辑成功!");
+                } catch (ServiceException e) {
+                    j.setSuccess(false);
+                    j.setMsg(e.getMsg());
+                }
+            }else{
                 j.setSuccess(false);
-                j.setMsg(e.getMsg());
+                j.setMsg("银行汇款单号已存在,请重新确认");
             }
         }
         return j;
@@ -328,7 +336,6 @@ public class MbRechargeLogController extends BaseController {
     /**
      * 批量导入银行收款信息
      *
-     * @param mbItemStock
      * @param file
      * @param session
      * @return
@@ -336,7 +343,7 @@ public class MbRechargeLogController extends BaseController {
      */
     @RequestMapping("/upload")
     @ResponseBody
-    public Json upload(MbItemStock mbItemStock, @RequestParam MultipartFile file, HttpSession session) throws Exception {
+    public Json upload(@RequestParam MultipartFile file, HttpSession session) throws Exception {
         SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
         Json json = new Json();
         try {
@@ -351,36 +358,32 @@ public class MbRechargeLogController extends BaseController {
             for (int i = 0; i < listOb.size(); i++) {
                 List<Object> lo = listOb.get(i);
                 MbRechargeLog mbRechargeLog = new MbRechargeLog();
-
                 BaseData baseData = new BaseData();
                 List<BaseData> baseDataList = basedataService.getBaseDatas(baseData);
                 if (CollectionUtils.isNotEmpty(baseDataList)) {
-                    for(BaseData data : baseDataList){
+                    for (BaseData data : baseDataList) {
                         JSONObject jsonObject = JSONObject.fromObject(data.getDescription());
                         String bankCard = (String) jsonObject.get("bank_card");
-                        if(bankCard.equals(lo.get(6).toString())){
+                        if (bankCard.trim().equals(lo.get(6).toString().trim())) {
                             mbRechargeLog.setBankCode(data.getId());
+                            mbRechargeLog.setRefType((String) jsonObject.get("ref_type"));
+                            //默认设置余额id值为：-1
+                            mbRechargeLog.setBalanceId(-1);
                         }
                     }
-                   /* BaseData data = list.get(0);
-                    JSONObject jsonObject = JSONObject.fromObject(data.getDescription());
-                    String bankCard = (String) jsonObject.get("bank_card");
-                    if (bankCard.equals(lo.get(6).toString())) {
-                        mbRechargeLog.setBankCode(baseData.getId());
-                    } else {
-                        throw new ServiceException(String.format("%s银行卡号不存在", bankCard));
-                    }*/
+                    if (F.empty(mbRechargeLog.getBankCode())) {
+                        throw new ServiceException(String.format("%s银行卡号不存在", lo.get(6).toString()));
+                    }
+                } else {
+                    throw new ServiceException("获取基础数据失败！");
                 }
                 String dateStr = lo.get(0).toString();
                 Date date = sdf.parse(dateStr);
                 mbRechargeLog.setRemitterTime(date);
-                mbRechargeLog.setAmount(Integer.parseInt(lo.get(1).toString()));
+                mbRechargeLog.setAmount(Integer.parseInt(lo.get(1).toString())*100);
                 mbRechargeLog.setContent(lo.get(2).toString());
                 mbRechargeLog.setPayerBankCode(lo.get(3).toString());
                 mbRechargeLog.setRemitter(lo.get(4).toString());
-                //将余额id和业务类型改为可以为空
-               /* mbRechargeLog.setBalanceId(468);
-                mbRechargeLog.setRefType("BT003");*/
                 if (F.empty(lo.get(5).toString())) {
                     mbRechargeLog.setPayCode(mbRechargeLog.getRemitter() + mbRechargeLog.getPayerBankCode()
                             + mbRechargeLog.getRemitterTime() + mbRechargeLog.getAmount());
@@ -389,7 +392,7 @@ public class MbRechargeLogController extends BaseController {
                 }
                 mbRechargeLogList.add(mbRechargeLog);
             }
-            mbRechargeLogService.addBatchMbRechargeLog(mbRechargeLogList,sessionInfo.getId());
+            mbRechargeLogService.addBatchMbRechargeLog(mbRechargeLogList, sessionInfo.getId());
             json.setSuccess(true);
         } catch (ServiceException e) {
             json.setMsg(e.getMsg());
