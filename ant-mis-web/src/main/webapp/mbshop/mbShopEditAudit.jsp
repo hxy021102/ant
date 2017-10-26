@@ -126,10 +126,10 @@
 					<td>
 						<jb:select dataType="ST" name="shopType" mustSelect="true" required="true"></jb:select>
 					</td>
-					<th><%=TmbShop.ALIAS_SALES_LOGIN_ID%></th>
+					<%--<th><%=TmbShop.ALIAS_SALES_LOGIN_ID%></th>
 					<td>
 						<jb:selectSql name="salesLoginId" dataType="SQ018"></jb:selectSql>
-					</td>
+					</td>--%>
 				</tr>
 				<tr>
 					<th><%=TmbShop.ALIAS_ADDRESS%>
