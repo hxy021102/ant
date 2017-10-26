@@ -272,4 +272,34 @@ public class MbBalanceLogServiceImpl extends BaseServiceImpl<MbBalanceLog> imple
 		return dataGrid;
 	}
 
+	@Override
+	public DataGrid dataGridBalanceLogDownload(MbBalanceLog mbBalanceLog, PageHelper ph) {
+		if (mbBalanceLog.getUpdatetimeBegin() == null || mbBalanceLog.getUpdatetimeEnd() == null) {
+			return new DataGrid();
+		} else {
+			DataGrid dataGrid = dataGridWithShopName(mbBalanceLog, ph);
+			List<MbBalanceLog> mbBalanceLogs = dataGrid.getRows();
+			if (CollectionUtils.isNotEmpty(mbBalanceLogs)) {
+				List<MbBalanceLogExport> balanceLogExports = new ArrayList<MbBalanceLogExport>();
+				for (MbBalanceLog balanceLog : mbBalanceLogs) {
+					MbBalanceLogExport mbBalanceLogExport = new MbBalanceLogExport();
+					BeanUtils.copyProperties(balanceLog, mbBalanceLogExport);
+					mbBalanceLogExport.setAmountElement(balanceLog.getAmount() / 100.0);
+					balanceLogExports.add(mbBalanceLogExport);
+				}
+				List<MbBalanceLogExport> footer = new ArrayList<MbBalanceLogExport>();
+				List<MbBalanceLog> balanceLogs = dataGrid.getFooter();
+				MbBalanceLogExport totalRow = new MbBalanceLogExport();
+				totalRow.setShopName("合计");
+				totalRow.setAmountElement(balanceLogs.get(0).getAmount() / 100.0);
+				DataGrid dg = new DataGrid();
+				footer.add(totalRow);
+				dg.setFooter(footer);
+				dg.setRows(balanceLogExports);
+				return dg;
+			}
+		}
+		return new DataGrid();
+	}
+
 }
