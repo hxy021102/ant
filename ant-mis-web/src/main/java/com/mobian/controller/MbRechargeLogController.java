@@ -352,21 +352,24 @@ public class MbRechargeLogController extends BaseController {
                 List<Object> lo = listOb.get(i);
                 MbRechargeLog mbRechargeLog = new MbRechargeLog();
 
-                BaseData request = new BaseData();
-                String bankName = lo.get(5).toString();
-                request.setName(bankName);
-                List<BaseData> list = basedataService.getBaseDatas(request);
-                if (CollectionUtils.isEmpty(list)) {
-                    throw new ServiceException(String.format("%s公司没有此银行卡", bankName));
-                } else {
-                    BaseData baseData = list.get(0);
-                    JSONObject jsonObject = JSONObject.fromObject(baseData.getDescription());
+                BaseData baseData = new BaseData();
+                List<BaseData> baseDataList = basedataService.getBaseDatas(baseData);
+                if (CollectionUtils.isEmpty(baseDataList)) {
+                    for(BaseData data : baseDataList){
+                        JSONObject jsonObject = JSONObject.fromObject(data.getDescription());
+                        String bankCard = (String) jsonObject.get("bank_card");
+                        if(bankCard.equals(lo.get(6).toString())){
+                            mbRechargeLog.setBankCode(data.getId());
+                        }
+                    }
+                   /* BaseData data = list.get(0);
+                    JSONObject jsonObject = JSONObject.fromObject(data.getDescription());
                     String bankCard = (String) jsonObject.get("bank_card");
                     if (bankCard.equals(lo.get(6).toString())) {
                         mbRechargeLog.setBankCode(baseData.getId());
                     } else {
                         throw new ServiceException(String.format("%s银行卡号不存在", bankCard));
-                    }
+                    }*/
                 }
                 String dateStr = lo.get(0).toString();
                 Date date = sdf.parse(dateStr);
