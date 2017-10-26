@@ -36,8 +36,10 @@
 <script type="text/javascript">
 	var dataGrid;
 	$(function() {
+		$('#searchForm table').show();
+		parent.$.messager.progress('close');
 		dataGrid = $('#dataGrid').datagrid({
-			url : '${pageContext.request.contextPath}/userController/dataGrid',
+			url : '',
 			fit : true,
 			fitColumns : true,
 			border : false,
@@ -335,7 +337,10 @@
 	}
 
 	function searchFun() {
-		dataGrid.datagrid('load', $.serializeObject($('#searchForm')));
+		var options = {};
+		options.url = '${pageContext.request.contextPath}/userController/dataGrid';
+		options.queryParams = $.serializeObject($('#searchForm'));
+		dataGrid.datagrid(options);
 	}
 	function cleanFun() {
 		$('#searchForm input').val('');
@@ -354,18 +359,22 @@
 						<th>登录名</th>
 						<td><input name="name" placeholder="可以模糊查询登录名" class="span2" /></td>
 						<th>姓名</th>
-						<td style="width: 30%;">
+						<td>
 							<input name="nickname" placeholder="可以模糊查询姓名" class="span2">
 						</td>
 						<th>部门</th>
 						<td>
 							<jb:select dataType="EO" name="orgName"></jb:select>
 						</td>
+						<th>状态</th>
+						<td>
+							<jb:select dataType="ES" name="utype" required="true"></jb:select>
+						</td>
 
 					</tr>
 					<tr>
 						<th>创建时间</th>
-						<td>
+						<td colspan="3">
 							<input class="span2" name="createdatetimeStart"
 								   placeholder="点击选择时间"
 								   onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})"

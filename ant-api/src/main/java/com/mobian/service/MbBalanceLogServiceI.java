@@ -76,4 +76,12 @@ public interface MbBalanceLogServiceI {
     List<MbBalanceLog> list(MbBalanceLog mbBalanceLog);
 
     DataGrid updateDeliveryBalanceLogDataGrid(MbBalanceLog mbBalanceLog, PageHelper pageHelper);
+	/**
+	 * 导出余额流水
+	 * @param mbBalanceLog
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridBalanceLogDownload(MbBalanceLog mbBalanceLog, PageHelper ph);
+
 }

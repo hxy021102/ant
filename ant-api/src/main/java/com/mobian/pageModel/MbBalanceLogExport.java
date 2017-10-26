@@ -5,6 +5,7 @@ public class MbBalanceLogExport extends MbBalanceLog {
 	private Integer shopId;
 	private String shopName;
 	private String refTypeName;
+	private double amountElement;
 
 	public Integer getShopId() {
 		return shopId;
@@ -29,5 +30,13 @@ public class MbBalanceLogExport extends MbBalanceLog {
 
 	public void setRefTypeName(String refTypeName) {
 		this.refTypeName = refTypeName;
+	}
+
+	public double getAmountElement() {
+		return amountElement;
+	}
+
+	public void setAmountElement(double amountElement) {
+		this.amountElement = amountElement;
 	}
 }

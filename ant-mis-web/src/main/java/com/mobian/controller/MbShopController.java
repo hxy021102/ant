@@ -450,9 +450,9 @@ public class MbShopController extends BaseController {
 
     @RequestMapping("/getShopMap")
     @ResponseBody
-    public Json getShopMap(HttpServletRequest request,MbShop mbShop) {
+    public Json getShopMap(MbShop mbShop) {
         Json j = new Json();
-        List<MbShopMap> mbShopMaps=mbShopService.getShopMapData(mbShop);
+        List<MbShopMap> mbShopMaps = mbShopService.getShopMapData(mbShop);
         j.setSuccess(true);
         j.setObj(mbShopMaps);
         return j;

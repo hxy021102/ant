@@ -9,6 +9,7 @@ import com.mobian.service.MbItemStockServiceI;
 import com.mobian.util.ConfigUtil;
 import com.mobian.util.ImportExcelUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,8 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -321,9 +324,31 @@ public class MbItemStockController extends BaseController {
         downloadFields = downloadFields.replace("&quot;", "\"");
         downloadFields = downloadFields.substring(1, downloadFields.length() - 1);
         List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
+        for (Colum colum : colums) {
+            if("averagePrice".equals(colum.getField())){
+                colum.setField(colum.getField()+"Format");
+            }else if("totalPrice".equals(colum.getField())){
+                colum.setField(colum.getField()+"Format");
+            }
+        }
         ph.setPage(0);
         ph.setRows(0);
         DataGrid dg = mbItemStockService.dataGridReport(mbItemStock, ph);
+        List<MbItemStock> mbItemStocks = dg.getRows();
+        List<MbItemStockExport> mbItemStockList = new ArrayList<MbItemStockExport>();
+        NumberFormat nf = new DecimalFormat("#,###.##");
+        mbItemStocks.addAll((List<MbItemStock>) dg.getFooter());
+        dg.setFooter(null);
+        for (MbItemStock itemStock : mbItemStocks) {
+            MbItemStockExport export = new MbItemStockExport();
+            BeanUtils.copyProperties(itemStock, export);
+            if (itemStock.getAveragePrice() != null)
+                export.setAveragePriceFormat(nf.format(itemStock.getAveragePrice() / 100f));
+            if (itemStock.getTotalPrice() != null)
+                export.setTotalPriceFormat(nf.format(itemStock.getTotalPrice() / 100f));
+            mbItemStockList.add(export);
+        }
+        dg.setRows(mbItemStockList);
         downloadTable(colums, dg, response);
     }
     /**

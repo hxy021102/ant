@@ -64,17 +64,16 @@ public class MbSupplierStockInServiceImpl extends BaseServiceImpl<MbSupplierStoc
                     }
                 }
                 if (o.getWarehouseId() != null) {
-                    MbWarehouse mbWarehouse = mbWarehouseService.get(o.getWarehouseId());
+                    MbWarehouse mbWarehouse = mbWarehouseService.getFromCache(o.getWarehouseId());
                     o.setWarehouseName(mbWarehouse.getName());
                 }
                 if (o.getSupplierOrderId() != null) {
                     MbSupplierOrder mbSupplierOrder = mbSupplierOrderService.get(o.getSupplierOrderId());
-                    MbSupplier mbSupplier = mbSupplierService.get(mbSupplierOrder.getSupplierId());
+                    MbSupplier mbSupplier = mbSupplierService.getFromCache(mbSupplierOrder.getSupplierId());
                     o.setSupplierName(mbSupplier.getName());
+                    MbSupplierContract mbSupplierContract = mbSupplierContractService.get(mbSupplierOrder.getSupplierContractId());
+                    o.setPaymentDays(mbSupplierContract.getPaymentDays());
                 }
-                MbSupplierOrder mbSupplierOrder = mbSupplierOrderService.get(o.getSupplierOrderId());
-                MbSupplierContract mbSupplierContract = mbSupplierContractService.get(mbSupplierOrder.getSupplierContractId());
-                o.setPaymentDays(mbSupplierContract.getPaymentDays());
                 ol.add(o);
             }
         }
@@ -179,6 +178,12 @@ public class MbSupplierStockInServiceImpl extends BaseServiceImpl<MbSupplierStoc
                 whereHql += " and t.supplierOrderId = :supplierOrderId";
                 params.put("supplierOrderId", mbSupplierStockIn.getSupplierOrderId());
             }
+
+            if (mbSupplierStockIn.getSupplierOrderIdList() != null && mbSupplierStockIn.getSupplierOrderIdList().length > 0) {
+                whereHql += " and t.supplierOrderId in (:alist)";
+                params.put("alist", mbSupplierStockIn.getSupplierOrderIdList());
+            }
+
             if (!F.empty(mbSupplierStockIn.getStatus())) {
                 whereHql += " and t.status = :status";
                 params.put("status", mbSupplierStockIn.getStatus());

@@ -133,6 +133,9 @@ public class User implements java.io.Serializable {
 	public String getUtype() {
 		return utype;
 	}
+	public String getUtypeName() {
+		return ConvertNameUtil.getString(utype);
+	}
 
 	public void setUtype(String utype) {
 		this.utype = utype;

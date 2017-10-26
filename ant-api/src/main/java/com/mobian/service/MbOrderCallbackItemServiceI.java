@@ -59,4 +59,8 @@ public interface MbOrderCallbackItemServiceI {
 	 * @return
 	 */
     List<MbOrderCallbackItem> query(MbOrderCallbackItem mbOrderCallbackItem);
+	/**
+	 * addCallback
+	 */
+	void addCallbackItem(MbOrderCallbackItem mbOrderCallbackItem);
 }

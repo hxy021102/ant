@@ -17,6 +17,7 @@ public class MbShopMap implements java.io.Serializable {
     private Integer userId;
     private BigDecimal longitude;
     private BigDecimal latitude;
+    private String shopType;
 
     public String getName() {
         return name;
@@ -72,5 +73,13 @@ public class MbShopMap implements java.io.Serializable {
 
     public void setLatitude(BigDecimal latitude) {
         this.latitude = latitude;
+    }
+
+    public String getShopType() {
+        return shopType;
+    }
+
+    public void setShopType(String shopType) {
+        this.shopType = shopType;
     }
 }

@@ -4,19 +4,17 @@ import com.mobian.absx.F;
 import com.mobian.dao.MbOrderCallbackItemDaoI;
 import com.mobian.model.TmbOrderCallbackItem;
 import com.mobian.pageModel.*;
-import com.mobian.service.MbItemServiceI;
-import com.mobian.service.MbOrderCallbackItemServiceI;
-import com.mobian.service.UserServiceI;
+import com.mobian.service.*;
+import com.mobian.service.impl.order.Order40StateImpl;
+import com.mobian.service.impl.order.OrderState;
 import com.mobian.util.MyBeanUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.*;
+import java.util.*;
 
 @Service
 public class MbOrderCallbackItemServiceImpl extends BaseServiceImpl<MbOrderCallbackItem> implements MbOrderCallbackItemServiceI {
@@ -29,6 +27,19 @@ public class MbOrderCallbackItemServiceImpl extends BaseServiceImpl<MbOrderCallb
 
 	@Autowired
 	private MbItemServiceI mbItemService;
+	@Autowired
+	private MbShopServiceI mbShopService;
+	@Autowired
+	private MbOrderServiceI mbOrderService;
+	@Autowired
+	private MbItemStockServiceI mbItemStockService;
+	@Autowired
+	private MbBalanceServiceI mbBalanceService;
+	@Autowired
+	private MbBalanceLogServiceI mbBalanceLogService;
+
+	@javax.annotation.Resource(name = "order40StateImpl")
+	private Order40StateImpl orderState40;
 
 	private static Logger log = Logger.getLogger(MbOrderCallbackItemServiceImpl.class);
 
@@ -70,25 +81,25 @@ public class MbOrderCallbackItemServiceImpl extends BaseServiceImpl<MbOrderCallb
 	}
 
 	protected String whereHql(MbOrderCallbackItem mbOrderCallbackItem, Map<String, Object> params) {
-		String whereHql = "";	
+		String whereHql = "";
 		if (mbOrderCallbackItem != null) {
 			whereHql += " where t.isdeleted = 0 ";
 			if (!F.empty(mbOrderCallbackItem.getTenantId())) {
 				whereHql += " and t.tenantId = :tenantId";
 				params.put("tenantId", mbOrderCallbackItem.getTenantId());
-			}		
+			}
 			if (!F.empty(mbOrderCallbackItem.getIsdeleted())) {
 				whereHql += " and t.isdeleted = :isdeleted";
 				params.put("isdeleted", mbOrderCallbackItem.getIsdeleted());
-			}		
+			}
 			if (!F.empty(mbOrderCallbackItem.getOrderId())) {
 				whereHql += " and t.orderId = :orderId";
 				params.put("orderId", mbOrderCallbackItem.getOrderId());
-			}		
+			}
 			if (!F.empty(mbOrderCallbackItem.getItemId())) {
 				whereHql += " and t.itemId = :itemId";
 				params.put("itemId", mbOrderCallbackItem.getItemId());
-			}		
+			}
 			if (!F.empty(mbOrderCallbackItem.getQuantity())) {
 				whereHql += " and t.quantity = :quantity";
 				params.put("quantity", mbOrderCallbackItem.getQuantity());
@@ -101,7 +112,7 @@ public class MbOrderCallbackItemServiceImpl extends BaseServiceImpl<MbOrderCallb
 				whereHql += " and t.loginId = :loginId";
 				params.put("loginId", mbOrderCallbackItem.getLoginId());
 			}
-		}	
+		}
 		return whereHql;
 	}
 
@@ -155,4 +166,14 @@ public class MbOrderCallbackItemServiceImpl extends BaseServiceImpl<MbOrderCallb
 		}
 		return ol;
 	}
+
+	@Override
+	public void addCallbackItem(MbOrderCallbackItem mbOrderCallbackItem) {
+		add(mbOrderCallbackItem);
+		//空桶入总仓 : 总仓+ ,分仓-
+		MbOrder mbOrderOld = mbOrderService.get(mbOrderCallbackItem.getOrderId());
+		MbShop mbShop = mbShopService.getFromCache(mbOrderOld.getShopId());
+		orderState40.updateCallback(Arrays.asList(mbOrderCallbackItem), mbOrderOld, mbShop, mbOrderCallbackItem.getLoginId());
+	}
+
 }

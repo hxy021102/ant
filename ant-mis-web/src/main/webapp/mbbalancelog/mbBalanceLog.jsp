@@ -67,7 +67,12 @@
 			    },{
 				field : 'amount',
 				title : '<%=TmbBalanceLog.ALIAS_AMOUNT%>',
-				width : 20
+				width : 20,
+                formatter: function (value) {
+                    if (value != null)
+                        return $.formatMoney(value);
+                    return "";
+                }
 				},{
 				field : 'refTypeName',
 				title : '<%=TmbBalanceLog.ALIAS_REF_TYPE%>',
@@ -225,7 +230,7 @@
 							<strong>门店名称&nbsp;&nbsp;</strong><jb:selectGrid dataType="shopId" name="shopId" params="{onlyMain:true}"></jb:selectGrid>
 						</td>
 						<td>
-							<strong>业务类型&nbsp;&nbsp;</strong><jb:selectSql dataType="SQ016" name="refType" ></jb:selectSql>
+							<strong>业务类型&nbsp;&nbsp;</strong><jb:selectSql dataType="SQ016" name="refTypes"  multiple="true" ></jb:selectSql>
 						</td>
 					</tr>
 				</table>

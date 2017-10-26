@@ -26,6 +26,7 @@ public class SelectTagBySql extends TagSupport{
 	private String dataType;
 	private String value;
 	private String onselect;
+	private boolean multiple;
 	//查询数据的条件,字符串,格式是JavaScript 的 JSON格式字符串作为参数,但是要求是只是键值对的形式,该JSON对象内不能再封装对象只能是键和值(基础类型)
 	private String parameters;
 	private boolean required;
@@ -47,9 +48,13 @@ public class SelectTagBySql extends TagSupport{
 		JspWriter out = pageContext.getOut();  		  
         try{
 			if(required) {
-				out.print("<select name=\"" + name + "\" class=\"easyui-combobox easyui-validatebox\" data-options=\"width:140,height:29,editable:false,panelHeight:'auto',required:true,");
+				out.print("<select name=\"" + name + "\" class=\"easyui-combobox easyui-validatebox\" data-options=\"width:140,height:29,editable:false,required:true,");
 			}else{
-				out.print("<select name=\"" + name + "\" class=\"easyui-combobox\" data-options=\"width:140,height:29,editable:false,panelHeight:'auto',");
+				if(multiple) {
+					out.print("<select name=\"" + name + "\" class=\"easyui-combobox\" data-options=\"width:140,height:29,editable:false,multiple:true,");
+				}else {
+					out.print("<select name=\"" + name + "\" class=\"easyui-combobox\" data-options=\"width:140,height:29,editable:false,");
+				}
 			}
 			BasedataServiceI service = Application.getBasedataService();
         	String sql = Application.get(dataType).getDescription();
@@ -117,6 +122,15 @@ public class SelectTagBySql extends TagSupport{
 	public void setParameters(String parameters) {
 		this.parameters = parameters;
 	}
+
+	public boolean isMultiple() {
+		return multiple;
+	}
+
+	public void setMultiple(boolean multiple) {
+		this.multiple = multiple;
+	}
+
 
 	/**
 	 * JSON格式字符串转Map<String ,Object>

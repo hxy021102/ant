@@ -634,6 +634,7 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
                 mbShopMap.setAddress("门店名称：" + shop.getName() + "<br/>联系人：" + shop.getContactPeople() + "<br/>联系电话：" + shop.getContactPhone() + "<br/>地址：" + shop.getAddress());
                 mbShopMap.setLongitude(shop.getLongitude());
                 mbShopMap.setLatitude(shop.getLatitude());
+                mbShopMap.setShopType(shop.getShopType());
                 mbShopMaps.add(mbShopMap);
             }
             return mbShopMaps;

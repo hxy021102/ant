@@ -160,8 +160,10 @@ public class MbOrderItemController extends BaseController {
                 if (mbOrder == null || mbOrder.getId() == null || "OD01_OD31_OD32".indexOf(mbOrder.getStatus())>-1) continue;
                 MbOrderItemExport mbOrderItemExport = new MbOrderItemExport();
                 BeanUtils.copyProperties(itemExport, mbOrderItemExport);
-                mbOrderItemExport.setMarketPriceFormat(nf.format(mbOrderItemExport.getMarketPrice() / 100f));
-                mbOrderItemExport.setBuyPriceFormat(nf.format(mbOrderItemExport.getBuyPrice()/100f));
+                if (mbOrderItemExport.getMarketPrice() != null)
+                    mbOrderItemExport.setMarketPriceFormat(nf.format(mbOrderItemExport.getMarketPrice() / 100f));
+                if (mbOrderItemExport.getBuyPrice() != null)
+                    mbOrderItemExport.setBuyPriceFormat(nf.format(mbOrderItemExport.getBuyPrice() / 100f));
                 mbOrderItemExports.add(mbOrderItemExport);
                 mbOrderItemExport.setShopId(mbOrder.getShopId());
                 mbOrderItemExport.setShopName(mbOrder.getShopName());
@@ -203,8 +205,12 @@ public class MbOrderItemController extends BaseController {
                 mbOrderItemExport.setDeliveryAddress(mbOrder.getDeliveryAddress());
                 List<MbOrderRefundItem> mbOrderRefundItemList = mbOrderRefundItemService.query(mbOrderRefundItem);
                 if (CollectionUtils.isNotEmpty(mbOrderRefundItemList)) {
+                    Integer refundTotal = 0;
+                    for (MbOrderRefundItem orderRefundItem : mbOrderRefundItemList) {
+                        refundTotal += orderRefundItem.getQuantity();
+                    }
                     MbOrderRefundItem refundItem = mbOrderRefundItemList.get(0);
-                    mbOrderItemExport.setRefundQuantity(refundItem.getQuantity());
+                    mbOrderItemExport.setRefundQuantity(refundTotal);
                     mbOrderItemExport.setRefundType(ConvertNameUtil.getString(refundItem.getType()));
                 }
                 mbOrderItemExport.setChannel(mbOrder.getAddLoginId() == null ? "公众号" : "客服");
@@ -223,7 +229,13 @@ public class MbOrderItemController extends BaseController {
                 if (CollectionUtils.isNotEmpty(mbOrderCallbackItemList)) {
                     mbOrderItemExport.setExtend(new HashMap<String, Integer>());
                     for (MbOrderCallbackItem mbOrderCallbackItem : mbOrderCallbackItemList) {
-                        mbOrderItemExport.getExtend().put(mbOrderCallbackItem.getItemId()+"",mbOrderCallbackItem.getQuantity());
+                        String key = mbOrderCallbackItem.getItemId() + "";
+                        if (mbOrderItemExport.getExtend().get(key) == null) {
+                            mbOrderItemExport.getExtend().put(key, mbOrderCallbackItem.getQuantity());
+                        } else {
+                            mbOrderItemExport.getExtend().put(key, mbOrderItemExport.getExtend().get(key) + mbOrderCallbackItem.getQuantity());
+                        }
+
                     }
                     mbOrderCallbackItemList.clear();
                 }

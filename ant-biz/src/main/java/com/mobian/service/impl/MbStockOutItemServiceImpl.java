@@ -39,8 +39,8 @@ public class MbStockOutItemServiceImpl extends BaseServiceImpl<MbStockOutItem> i
 			for (TmbStockOutItem t : l) {
 				MbStockOutItem o = new MbStockOutItem();
 				BeanUtils.copyProperties(t, o);
-				if (o.getItemId() != null) {
-					MbItem mbItem = mbItemService.get(o.getItemId());
+				if (!F.empty(o.getItemId())) {
+					MbItem mbItem = mbItemService.getFromCache(o.getItemId());
 					o.setItemName(mbItem.getName());
 				}
 				ol.add(o);
