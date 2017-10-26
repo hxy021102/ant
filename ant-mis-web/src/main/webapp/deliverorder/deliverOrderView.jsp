@@ -87,7 +87,12 @@
                  }, {
                      field : 'price',
                      title : '单价',
-                     width : 30
+                     width : 30,
+                     formatter: function (value) {
+                         if (value == null)
+                             return "";
+                         return $.formatMoney(value);
+                     }
                  }, {
                      field : 'inPrice',
                      title : '成本价',
@@ -148,7 +153,12 @@
                  }, {
                      field : 'price',
                      title : '单价',
-                     width : 30
+                     width : 30,
+                     formatter: function (value) {
+                         if (value == null)
+                             return "";
+                         return $.formatMoney(value);
+                     }
                  }, {
                      field : 'inPrice',
                      title : '成本价',
