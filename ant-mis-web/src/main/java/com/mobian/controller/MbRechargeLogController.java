@@ -354,7 +354,7 @@ public class MbRechargeLogController extends BaseController {
 
                 BaseData baseData = new BaseData();
                 List<BaseData> baseDataList = basedataService.getBaseDatas(baseData);
-                if (CollectionUtils.isEmpty(baseDataList)) {
+                if (CollectionUtils.isNotEmpty(baseDataList)) {
                     for(BaseData data : baseDataList){
                         JSONObject jsonObject = JSONObject.fromObject(data.getDescription());
                         String bankCard = (String) jsonObject.get("bank_card");
