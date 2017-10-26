@@ -75,10 +75,15 @@ public interface MbRechargeLogServiceI {
 	 */
 	void addBatchMbRechargeLog(List<MbRechargeLog> mbRechargeLogList, String  loginId);
 
+	/**
+	 * 查询充值记录集合
+	 * @param mbRechargeLog
+	 * @return
+	 */
 	List<MbRechargeLog> query(MbRechargeLog mbRechargeLog);
 
 	/**
-	 * 审核市校验银行转账信息是否唯一
+	 * 审核时校验银行转账信息是否唯一
 	 * @param mbRechargeLog
 	 * @return
 	 */

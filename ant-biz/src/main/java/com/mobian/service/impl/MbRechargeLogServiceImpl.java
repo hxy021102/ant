@@ -261,24 +261,27 @@ public class MbRechargeLogServiceImpl extends BaseServiceImpl<MbRechargeLog> imp
 
 	@Override
 	public List<MbRechargeLog> query(MbRechargeLog mbRechargeLog) {
-		/*List<MbRechargeLog> ol = new ArrayList<MbRechargeLog>();
-		String hql = " from TmbItem t ";
+		List<MbRechargeLog> ol = new ArrayList<MbRechargeLog>();
+		String hql = " from TmbRechargeLog t ";
 		Map<String, Object> params = new HashMap<String, Object>();
-		String where = whereHql(mbItem, params);
-		List<TmbItem> l = mbItemDao.find(hql  + where, params);
+		String where = whereHql(mbRechargeLog, params);
+		List<TmbRechargeLog> l = mbRechargeLogDao.find(hql + where, params);
 		if (CollectionUtils.isNotEmpty(l)) {
-			for (TmbItem t : l) {
-				MbItem o = new MbItem();
+			for (TmbRechargeLog t : l) {
+				MbRechargeLog o = new MbRechargeLog();
 				BeanUtils.copyProperties(t, o);
 				ol.add(o);
 			}
-		}*/
-		return null;
+		}
+		return ol;
 	}
 
 	@Override
 	public MbRechargeLog checkRechargeLogPayCode(MbRechargeLog mbRechargeLog) {
-//		List<MbRechargeLog>  mbRechargeLogList=query(mbRechargeLog);
+		List<MbRechargeLog> mbRechargeLogList = query(mbRechargeLog);
+		if (CollectionUtils.isNotEmpty(mbRechargeLogList)) {
+			return mbRechargeLogList.get(0);
+		}
 		return null;
 	}
 }

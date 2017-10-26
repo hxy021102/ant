@@ -10,6 +10,7 @@ import com.mobian.service.MbRechargeLogServiceI;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.util.ConfigUtil;
 import com.mobian.util.ImportExcelUtil;
+import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -356,10 +357,16 @@ public class MbRechargeLogController extends BaseController {
                 request.setName(bankName);
                 List<BaseData> list = basedataService.getBaseDatas(request);
                 if (CollectionUtils.isEmpty(list)) {
-                    throw new ServiceException(String.format("%s银行卡号不存在", bankName));
+                    throw new ServiceException(String.format("%s公司没有此银行卡", bankName));
                 } else {
                     BaseData baseData = list.get(0);
-                    mbRechargeLog.setBankCode(baseData.getId());
+                    JSONObject jsonObject = JSONObject.fromObject(baseData.getDescription());
+                    String bankCard = (String) jsonObject.get("bank_card");
+                    if (bankCard.equals(lo.get(6).toString())) {
+                        mbRechargeLog.setBankCode(baseData.getId());
+                    } else {
+                        throw new ServiceException(String.format("%s银行卡号不存在", bankCard));
+                    }
                 }
                 String dateStr = lo.get(0).toString();
                 Date date = sdf.parse(dateStr);
@@ -368,9 +375,9 @@ public class MbRechargeLogController extends BaseController {
                 mbRechargeLog.setContent(lo.get(2).toString());
                 mbRechargeLog.setPayerBankCode(lo.get(3).toString());
                 mbRechargeLog.setRemitter(lo.get(4).toString());
-                //测试  应该需要来之那个门店，然后获取门店的balance以及对应的id
-                mbRechargeLog.setBalanceId(468);
-                mbRechargeLog.setRefType("BT003");
+                //将余额id和业务类型改为可以为空
+               /* mbRechargeLog.setBalanceId(468);
+                mbRechargeLog.setRefType("BT003");*/
                 if (F.empty(lo.get(5).toString())) {
                     mbRechargeLog.setPayCode(mbRechargeLog.getRemitter() + mbRechargeLog.getPayerBankCode()
                             + mbRechargeLog.getRemitterTime() + mbRechargeLog.getAmount());
