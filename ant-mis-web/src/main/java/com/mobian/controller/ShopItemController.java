@@ -144,7 +144,8 @@ public class ShopItemController extends BaseController {
 	@RequestMapping("/editPrice")
 	@ResponseBody
 	public Json edit(ShopItem shopItem,String totalPrice) {
-		shopItem.setPrice(Integer.parseInt(totalPrice)*100);
+		Double price = Double.parseDouble(totalPrice)*100;
+		shopItem.setPrice(price.intValue());
 		Json j = new Json();
 		shopItemService.edit(shopItem);
 		j.setSuccess(true);
@@ -190,7 +191,8 @@ public class ShopItemController extends BaseController {
 	@RequestMapping("/editAuditState")
 	@ResponseBody
 	public Json editState(ShopItem shopItem, HttpSession session,String totalPrice) {
-		shopItem.setPrice(Integer.parseInt(totalPrice)*100);
+		Double price = Double.parseDouble(totalPrice)*100;
+		shopItem.setPrice(price.intValue());
 		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
 		Json j = new Json();
 		if("SIS02".equals(shopItem.getStatus())){
