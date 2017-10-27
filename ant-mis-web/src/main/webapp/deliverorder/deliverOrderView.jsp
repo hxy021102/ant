@@ -279,6 +279,9 @@
 				<th>运单ID</th>
 				<td>
 					${deliverOrder.id}
+					<c:if test="${fn:contains(sessionInfo.resourceList, '/shopOrderBillController/examinePage') and shopOrderBill.status=='BAS01' }">
+						<a href="javascript:void(0);" class="easyui-linkbutton" onclick="examineFun();">审核</a>
+					</c:if>
 				</td>
 				<th>供应商名称</th>
 				<td>

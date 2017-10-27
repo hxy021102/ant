@@ -352,4 +352,18 @@ public class DeliverOrderController extends BaseController {
 		}
 		return null;
 	}
+
+	/**
+	 * 跳转到指派运单给门店页
+	 * @param request
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/editPage")
+	public String assignOrderShopPage(HttpServletRequest request, Long id) {
+		DeliverOrder deliverOrder = deliverOrderService.get(id);
+		request.setAttribute("deliverOrder", deliverOrder);
+		return "/deliverorder/assignOrderShop";
+	}
+
 }
