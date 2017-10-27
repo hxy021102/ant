@@ -48,6 +48,13 @@
                 $(this).val($.formatMoney($(this).val().trim()));
             });
     });
+        function computerPrice() {
+            var inPrice = parseInt($("#inPrice").val());
+            var freight = parseInt($("#freight").val());
+            if (!isNaN(inPrice) && !isNaN(freight)) {
+                $("#price").val(inPrice + freight);
+            }
+        }
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;">
@@ -83,22 +90,22 @@
 					<th>采购价格
 					</th>
 					<td>
-						<input class="span2 easyui-validatebox money_input" name="priceStr"  value="${shopItem.inPrice}"type="text" data-options="required:true"/>
-						<input class="span2 "  name="inPrice"  type="hidden"  value="${shopItem.inPrice}"/>
+						<input class="span2 easyui-validatebox money_input" name="priceStr" id="inPrice" value="${shopItem.inPrice}"type="text" onblur="computerPrice()" data-options="required:true"/>
+						<input class="span2 "   name="inPrice"  type="hidden"  value="${shopItem.inPrice}"/>
 					</td>
-					<th>价格
+					<th>运费
 					</th>
 					<td>
-						<input class="span2 easyui-validatebox money_input" name="priceStr"  type="text"  value="${shopItem.price}" data-options="required:true"/>
-						<input class="span2 " name="price"   type="hidden" value="${shopItem.price}"/>
+						<input class="span2 easyui-validatebox money_input" name="priceStr" id="freight" type="text" value="${shopItem.freight}" onblur="computerPrice()" data-options="required:true"/>
+						<input class="span2 " name="freight" type="hidden" value="${shopItem.freight}"/>
 					</td>
 				</tr>
 				<tr>
-					<th>运费
+					<th>价格
 					</th>
 					<td colspan="3">
-						<input class="span2 easyui-validatebox money_input" name="priceStr" type="text" value="${shopItem.freight}" data-options="required:true"/>
-						<input class="span2 " name="freight"  type="hidden" value="${shopItem.freight}"/>
+						<input class="span2 money_input"  id="price"  name="totalPrice" readonly type="text"  value="${shopItem.price}" />
+						<input class="span2 " name="price" type="hidden"  value="${shopItem.price}"/>
 					</td>
 				</tr>
 			</table>
