@@ -1,8 +1,11 @@
 package com.bx.ant.service;
 
-import com.mobian.pageModel.DeliverOrderItem;
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderItem;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
+
+import java.util.List;
 
 /**
  * 
@@ -51,4 +54,26 @@ public interface DeliverOrderItemServiceI {
 	 */
 	void delete(Integer id);
 
+    List<DeliverOrderItem> list(DeliverOrderItem DeliverOrderItem);
+
+	/**
+	 * 根据运单ID 查询运单明细
+	 * @param deliverOrderId
+	 * @return
+	 */
+	List<DeliverOrderItem> getDeliverOrderItemList(Long deliverOrderId);
+
+	/**
+	 * 获取DeliverOrderItem对象集合及对应的名称
+	 * @param deliverOrderItem
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridWithName(DeliverOrderItem deliverOrderItem, PageHelper ph);
+
+	/**
+	 * 填充基本数据并保存
+	 * @param orderItem
+	 */
+    void addAndFill(DeliverOrderItem orderItem, DeliverOrder deliverOrder);
 }

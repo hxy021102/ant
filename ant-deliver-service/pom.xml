@@ -345,7 +345,7 @@
                 <directory>src/main/resources/${profiles.active}</directory>
             </resource>
         </resources>
-        <finalName>ant-merchant-service</finalName>
+        <finalName>ant-deliver-service</finalName>
         <defaultGoal>compile</defaultGoal>
         <plugins>
 

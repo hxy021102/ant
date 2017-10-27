@@ -1,4 +1,4 @@
-package com.mobian.pageModel;
+package com.bx.ant.pageModel;
 
 import java.util.Date;
 
@@ -14,11 +14,14 @@ public class ShopDeliverAccount implements java.io.Serializable {
 	private Boolean isdeleted;
 	private String userName;
 	private String password;
-	private Integer nickName;	
+	private String nickName;
 	private String icon;
 	private String sex;
 	private String refId;
 	private String refType;
+
+	private String keyword;
+	private Integer shopId;
 
 	
 
@@ -73,13 +76,15 @@ public class ShopDeliverAccount implements java.io.Serializable {
 	public String getPassword() {
 		return this.password;
 	}
-	public void setNickName(Integer nickName) {
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
 		this.nickName = nickName;
 	}
-	
-	public Integer getNickName() {
-		return this.nickName;
-	}
+
 	public void setIcon(String icon) {
 		this.icon = icon;
 	}
@@ -109,4 +114,19 @@ public class ShopDeliverAccount implements java.io.Serializable {
 		return this.refType;
 	}
 
+	public String getKeyword() {
+		return keyword;
+	}
+
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
+
+	public Integer getShopId() {
+		return shopId;
+	}
+
+	public void setShopId(Integer shopId) {
+		this.shopId = shopId;
+	}
 }

@@ -1,6 +1,10 @@
 package com.bx.ant.controller;
 
+import com.bx.ant.pageModel.session.TokenWrap;
+import com.bx.ant.service.session.TokenServiceI;
 import com.mobian.absx.Objectx;
+import com.mobian.pageModel.SessionInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -8,6 +12,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -26,6 +31,9 @@ public class BaseController extends Objectx {
 	protected static final String EX_0001 = "EX0001";
 	protected static final String SUCCESS_MESSAGE = "操作成功";
 	private String _publishSettingVal = "2"; //生产环境
+
+	@Autowired
+	private TokenServiceI tokenService;
 	
 	@InitBinder
 	public void initBinder(ServletRequestDataBinder binder) {
@@ -55,7 +63,17 @@ public class BaseController extends Objectx {
 	public String redirectJsp(@PathVariable String folder, @PathVariable String jspName) {
 		return "/" + folder + "/" + jspName;
 	}
-	
 
+	protected TokenWrap getTokenWrap(HttpServletRequest request){
+		String tokenId = request.getParameter(TokenServiceI.TOKEN_FIELD);
+		TokenWrap tokenWrap = tokenService.getToken(tokenId);
+		// TODO 上线去除
+//		if(tokenWrap == null) {
+//			tokenWrap = new TokenWrap();
+//			tokenWrap.setShopId(1332);
+//		}
+
+		return tokenWrap;
+	}
 }
  

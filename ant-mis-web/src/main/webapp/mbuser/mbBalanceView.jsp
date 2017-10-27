@@ -42,6 +42,7 @@
             striped : true,
             rownumbers : true,
             singleSelect : true,
+            showFooter : true,
             columns : [ [ {
                 field : 'id',
                 title : '编号',
@@ -52,17 +53,43 @@
                 title : '<%=TmbBalanceLog.ALIAS_TIME%>',
                 width : 100
             }, {
-                field : 'amount',
-                title : '<%=TmbBalanceLog.ALIAS_AMOUNT%>',
-                width : 50,
-                align:'right',
-                formatter:function(value){
-                    return $.formatMoney(value);
-                }
-            }, {
                 field : 'refTypeName',
                 title : '<%=TmbBalanceLog.ALIAS_REF_TYPE%>',
                 width : 100
+            }, {
+                field : 'amountIn',
+                title : '收入（+）',
+                width : 50,
+                align:'right',
+                formatter: function (value) {
+                    if (value >= 0)
+                        return $.formatMoney(value);
+                    else
+                        return "";
+                }
+            }, {
+                field : 'amountOut',
+                title : '支出（-）',
+                width : 50,
+                align:'right',
+                formatter:function(value){
+                    if (value)
+                        return $.formatMoney(value);
+                    else
+                        return "";
+                }
+            }, {
+                field : 'amount1',
+                title : '账户余额',
+                width : 50,
+                align:'right',
+                formatter:function(value,row){
+                    var nums = getNum(row.remark);
+                    if (nums&&nums.length>0)
+                        return $.formatMoney(nums[nums.length-1]);
+                    else
+                        return "";
+                }
             }, {
                 field : 'refId',
                 title : '<%=TmbBalanceLog.ALIAS_REF_ID%>',
@@ -91,7 +118,7 @@
                 hidden: $.canEdit ? false : true,
                 formatter: function (value, row, index) {
                     var str = '';
-                    if ($.canEdit&& ${readOnly!=true}) {
+                    if (row.id&&$.canEdit&& ${readOnly!=true}) {
                         str = '<a onclick="editShow(' + row.id + ',' + row.isShow + ');" href="javascript:void(0);" class="switch" is-show="'+row.isShow+'">'+(row.isShow ? '点击影藏' : '点击显示')+'</a>';
                     }
 
@@ -111,7 +138,29 @@
             }
         });
     });
-    function  addShopMoney() {
+
+    var getNum = function (Str) {
+        //用来判断是否把连续的0去掉
+        if (typeof Str === "string") {
+            // var arr = Str.match(/(0\d{2,})|([1-9]\d+)/g);
+            //"/[1-9]\d{1,}/g",表示匹配1到9,一位数以上的数字(不包括一位数).
+            //"/\d{2,}/g",  表示匹配至少二个数字至多无穷位数字
+            var arr = Str.match(/期末余额:[0-9\-]{1,}分/);
+
+            if (arr&&arr.length>0) {
+                var num = arr[arr.length-1];
+                num = num.replace("期末余额:","").replace("分","");
+                arr[arr.length-1] = num;
+                return arr;
+            } else {
+                return [];
+            }
+        } else {
+            return [];
+        }
+    }
+
+    function addShopMoney() {
         parent.$.modalDialog({
             title : '添加数据',
             width : 780,

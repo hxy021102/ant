@@ -1,17 +1,22 @@
 package com.bx.ant.service.impl;
 
-import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderLogDaoI;
 import com.bx.ant.model.TdeliverOrderLog;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.DeliverOrderLog;
-import com.mobian.pageModel.PageHelper;
+import com.bx.ant.pageModel.DeliverOrderLog;
+import com.bx.ant.pageModel.DeliverOrderLogQuery;
 import com.bx.ant.service.DeliverOrderLogServiceI;
+import com.mobian.absx.F;
+import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.User;
+import com.mobian.service.UserServiceI;
 import com.mobian.util.MyBeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +27,9 @@ public class DeliverOrderLogServiceImpl extends BaseServiceImpl<DeliverOrderLog>
 
 	@Autowired
 	private DeliverOrderLogDaoI deliverOrderLogDao;
+
+	@Resource
+	private UserServiceI userService;
 
 	@Override
 	public DataGrid dataGrid(DeliverOrderLog deliverOrderLog, PageHelper ph) {
@@ -107,6 +115,32 @@ public class DeliverOrderLogServiceImpl extends BaseServiceImpl<DeliverOrderLog>
 		params.put("id", id);
 		deliverOrderLogDao.executeHql("update TdeliverOrderLog t set t.isdeleted = 1 where t.id = :id",params);
 		//deliverOrderLogDao.delete(deliverOrderLogDao.get(TdeliverOrderLog.class, id));
+	}
+
+	@Override
+	public DataGrid dataGridWithName(DeliverOrderLog deliverOrderLog, PageHelper ph) {
+		DataGrid dataGrid = dataGrid(deliverOrderLog, ph);
+		List<DeliverOrderLog> deliverOrderLogs = dataGrid.getRows();
+		if (CollectionUtils.isNotEmpty(deliverOrderLogs)) {
+			List<DeliverOrderLogQuery> deliverOrderLogQueries = new ArrayList<DeliverOrderLogQuery>();
+			for (DeliverOrderLog orderLog : deliverOrderLogs) {
+				DeliverOrderLogQuery orderLogQuery = new DeliverOrderLogQuery();
+				BeanUtils.copyProperties(orderLog, orderLogQuery);
+				orderLogQuery.setLogTypeName(orderLog.getLogType());
+				if (!F.empty(orderLog.getLoginId())) {
+					User user = userService.getFromCache(orderLog.getLoginId());
+					if (user != null) {
+						orderLogQuery.setLoginName(user.getName());
+					}
+				}
+				deliverOrderLogQueries.add(orderLogQuery);
+			}
+			DataGrid dg = new DataGrid();
+			dg.setRows(deliverOrderLogQueries);
+			dg.setTotal(dataGrid.getTotal());
+			return dg;
+		}
+		return dataGrid;
 	}
 
 }

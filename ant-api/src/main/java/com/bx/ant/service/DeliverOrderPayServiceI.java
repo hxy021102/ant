@@ -1,8 +1,10 @@
 package com.bx.ant.service;
 
-import com.mobian.pageModel.DeliverOrderPay;
+import com.bx.ant.pageModel.DeliverOrderPay;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
+
+import java.util.List;
 
 /**
  * 
@@ -51,4 +53,5 @@ public interface DeliverOrderPayServiceI {
 	 */
 	public void delete(Integer id);
 
+	List<DeliverOrderPay> getBySupplierOrderBillId(Integer id);
 }

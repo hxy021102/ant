@@ -244,7 +244,7 @@
 							</td>
 							<th><%=TmbShopCoupons.ALIAS_UPDATETIME%></th>	
 							<td>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TmbShopCoupons.FORMAT_UPDATETIME%>'})" id="updatetimeBegin" name="updatetimeBegin"/>
+								NFC压榨橙汁
 								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TmbShopCoupons.FORMAT_UPDATETIME%>'})" id="updatetimeEnd" name="updatetimeEnd"/>
 							</td>
 							<th><%=TmbShopCoupons.ALIAS_ISDELETED%></th>	

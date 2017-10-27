@@ -2,7 +2,10 @@ package com.bx.ant.service.impl;
 
 import com.bx.ant.dao.BaseDaoI;
 import com.mobian.pageModel.DataGrid;
+import com.bx.ant.pageModel.DeliverOrderItem;
+import com.bx.ant.pageModel.DeliverOrderShopItem;
 import com.mobian.pageModel.PageHelper;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,4 +44,16 @@ public abstract class BaseServiceImpl<T> {
 		List<T> l = dao.find(hql  + where, params);
 		return l;
 	}
+
+    public void addByDeliverOrderItemList(List<DeliverOrderItem> deliverOrderItems, Long deliverOrderShopId) {
+        if (CollectionUtils.isNotEmpty(deliverOrderItems)) {
+            for (DeliverOrderItem d : deliverOrderItems) {
+                DeliverOrderShopItem s = new DeliverOrderShopItem();
+                s.setDeliverOrderId(d.getDeliverOrderId());
+                s.setDeliverOrderShopId(deliverOrderShopId);
+                s.setFreight(d.getFreight());
+//				s.set
+            }
+        }
+    }
 }

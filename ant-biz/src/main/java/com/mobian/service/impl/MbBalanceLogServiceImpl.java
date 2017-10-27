@@ -244,6 +244,34 @@ public class MbBalanceLogServiceImpl extends BaseServiceImpl<MbBalanceLog> imple
         return new DataGrid();
     }
 
+    @Override
+	public List<MbBalanceLog> list(MbBalanceLog mbBalanceLog) {
+		List<MbBalanceLog> ol = new ArrayList<MbBalanceLog>();
+		Map<String, Object> params = new HashMap<String, Object>();
+		String hql = " from TmbBalanceLog t ";
+		String where = whereHql(mbBalanceLog, params);
+		List<TmbBalanceLog> l = mbBalanceLogDao.find(hql + where, params);
+		if (CollectionUtils.isNotEmpty(l)) {
+			for (TmbBalanceLog t : l) {
+				MbBalanceLog o = new MbBalanceLog();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		return ol;
+	}
+
+	@Override
+	public DataGrid updateDeliveryBalanceLogDataGrid(MbBalanceLog mbBalanceLog, PageHelper pageHelper) {
+		DataGrid dataGrid = new DataGrid();
+		if (!F.empty(mbBalanceLog.getShopId())) {
+			MbBalance mbBalance = mbBalanceService.addOrGetMbBalanceDelivery(mbBalanceLog.getShopId());
+			mbBalanceLog.setBalanceId(mbBalance.getId());
+			dataGrid = dataGrid(mbBalanceLog, pageHelper);
+		}
+		return dataGrid;
+	}
+
 	@Override
 	public DataGrid dataGridBalanceLogDownload(MbBalanceLog mbBalanceLog, PageHelper ph) {
 		if (mbBalanceLog.getUpdatetimeBegin() == null || mbBalanceLog.getUpdatetimeEnd() == null) {

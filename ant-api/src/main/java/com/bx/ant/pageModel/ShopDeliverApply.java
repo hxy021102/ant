@@ -1,4 +1,7 @@
-package com.mobian.pageModel;
+package com.bx.ant.pageModel;
+
+import com.mobian.pageModel.MbShop;
+import com.mobian.util.ConvertNameUtil;
 
 import java.util.Date;
 
@@ -18,8 +21,9 @@ public class ShopDeliverApply implements java.io.Serializable {
 	private String result;
 	private String status;
 	private Integer accountId;
+	private String statusName;
 
-	
+	private MbShop mbShop;
 
 	public void setId(Integer value) {
 		this.id = value;
@@ -101,4 +105,19 @@ public class ShopDeliverApply implements java.io.Serializable {
 		return this.accountId;
 	}
 
+	public MbShop getMbShop() {
+		return mbShop;
+	}
+
+	public void setMbShop(MbShop mbShop) {
+		this.mbShop = mbShop;
+	}
+
+	public String getStatusName() {
+		return ConvertNameUtil.getString(this.status);
+	}
+
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
+	}
 }

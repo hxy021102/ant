@@ -1,8 +1,12 @@
 package com.bx.ant.service;
 
-import com.mobian.pageModel.DeliverOrderShopItem;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.PageHelper;
+import com.bx.ant.pageModel.DeliverOrder;
+import com.mobian.pageModel.*;
+import com.bx.ant.pageModel.DeliverOrderItem;
+import com.bx.ant.pageModel.DeliverOrderShop;
+import com.bx.ant.pageModel.DeliverOrderShopItem;
+
+import java.util.List;
 
 /**
  * 
@@ -50,5 +54,28 @@ public interface DeliverOrderShopItemServiceI {
 	 * @param id
 	 */
 	public void delete(Integer id);
+
+	/**
+	 * 通过delierOrderItemList添加至deliverOrderShopItemList
+	 * @param deliverOrderItems
+	 * @param deliverOrderShop
+	 */
+    void addByDeliverOrderItemList(List<DeliverOrderItem> deliverOrderItems, DeliverOrderShop deliverOrderShop);
+
+	/**
+	 * 获取list
+	 * @param deliverOrderShopItem
+	 * @return
+	 */
+	List<DeliverOrderShopItem> list(DeliverOrderShopItem deliverOrderShopItem);
+
+	/**
+	 * 获取DeliverOrderShopItem集合列表及对应的名称
+	 * @param deliverOrderShopItem
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridWithName(DeliverOrderShopItem deliverOrderShopItem, PageHelper ph);
+
 
 }

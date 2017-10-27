@@ -138,7 +138,7 @@ public class Tsupplier implements java.io.Serializable,IEntity{
 		this.isdeleted = isdeleted;
 	}
 	
-	@Column(name = "app_key", unique = false, nullable = true, insertable = true, updatable = true, length = 32)
+	@Column(name = "app_key", unique = false, nullable = true, insertable = true, updatable = true, length = 128)
 	public String getAppKey() {
 		return this.appKey;
 	}
@@ -147,7 +147,7 @@ public class Tsupplier implements java.io.Serializable,IEntity{
 		this.appKey = appKey;
 	}
 	
-	@Column(name = "app_secret", unique = false, nullable = true, insertable = true, updatable = true, length = 32)
+	@Column(name = "app_secret", unique = false, nullable = true, insertable = true, updatable = true, length = 128)
 	public String getAppSecret() {
 		return this.appSecret;
 	}
