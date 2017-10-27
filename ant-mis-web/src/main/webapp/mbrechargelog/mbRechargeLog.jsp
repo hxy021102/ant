@@ -116,7 +116,7 @@
 				width : 30,
 				formatter : function(value, row, index) {
 					var str = '';
-                    if ($.canEditAudit && (row.refType == 'BT003' ||(row.refType == 'BT013'&&row.payCode)) && row.handleStatus == 'HS01') {
+                    if ($.canEditAudit && row.handleStatus == 'HS01' && row.refType != "BT012") {
 						str += $.formatString('<img onclick="editAuditFun(\'{0}\');" src="{1}" title="审核"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/joystick.png');
 					}
 					return str;

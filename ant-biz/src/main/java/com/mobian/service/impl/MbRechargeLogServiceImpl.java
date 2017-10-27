@@ -202,7 +202,7 @@ public class MbRechargeLogServiceImpl extends BaseServiceImpl<MbRechargeLog> imp
 		rechargeLog.setHandleStatus("HS02");
 		//TODO
 		synchronized (this) {
-			if ("HS02".equals(mbRechargeLog.getHandleStatus()) && !"BT013".equals(t.getRefType())) {
+			if ("HS02".equals(mbRechargeLog.getHandleStatus()) && !"BT013".equals(t.getRefType())&&!F.empty(t.getPayCode())) {
                 List<MbPaymentItem> paymentItems = mbPaymentItemService.listMbPaymentItem(paymentItem);
 					List<MbRechargeLog> rechargeLogs = listMbRechargeLog(rechargeLog);
 				if (CollectionUtils.isEmpty(paymentItems) && CollectionUtils.isEmpty(rechargeLogs)) {
@@ -223,10 +223,11 @@ public class MbRechargeLogServiceImpl extends BaseServiceImpl<MbRechargeLog> imp
 			tmbBalanceLog.setBalanceId(mbRechargeLog.getBalanceId());
 			tmbBalanceLog.setAmount(mbRechargeLog.getAmount());
 			tmbBalanceLog.setRefId(String.valueOf(mbRechargeLog.getId()));
-			if (!"BT013".equals(t.getRefType())) {
-				tmbBalanceLog.setRefType("BT003"); // 转账汇款
+			//如果类型不是转账汇款，将充值记录表类型设置为充值日志类型
+			if (!"BT003".equals(t.getRefType())) {
+				tmbBalanceLog.setRefType(t.getRefType());
 			}else{
-                tmbBalanceLog.setRefType("BT013");  //后台-冲单
+				tmbBalanceLog.setRefType("BT003"); // 转账汇款
             }
 			tmbBalanceLog.setRemark(mbRechargeLog.getHandleRemark());
 			mbBalanceLogService.addAndUpdateBalance(tmbBalanceLog);

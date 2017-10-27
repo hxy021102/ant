@@ -58,6 +58,11 @@
 							<jb:selectGrid dataType="shopId" name="shopId"></jb:selectGrid>
 						</td>
 					</c:when>
+					<c:when test="${mbRechargeLog.refType == 'BT004'}">
+						<input type="hidden" name="refType" style="width: 90%"  value="${mbRechargeLog.refType}"  />
+						<input type="hidden" name="shopId" style="width: 90%"  value="${mbRechargeLog.shopId}"  />
+						<input type="hidden" name="amount" style="width: 90%"  value="${mbRechargeLog.amount}"  />
+					</c:when>
 					<c:otherwise>
 						<th><%=TmbRechargeLog.ALIAS_PAYCODE%></th>
 						<td>
@@ -65,12 +70,24 @@
 						</td>
 					</c:otherwise>
 				</c:choose>
-				<tr>
-					<th>原因</th>
-					<td>
+				<c:choose>
+					<c:when test="${mbRechargeLog.balanceId == -1}">
+						<tr>
+							<th>原因</th>
+							<td colspan="3">
+								<textarea name="handleRemark"  class="easyui-validatebox" data-options="required:true"  style="width: 90%"></textarea>
+							</td>
+						</tr>
+					</c:when>
+					<c:otherwise>
+					<tr>
+					  <th>原因</th>
+					  <td>
 						<textarea name="handleRemark"  class="easyui-validatebox" data-options="required:true"  style="width: 90%"></textarea>
 					</td>
-				</tr>
+				    </tr>
+					</c:otherwise>
+				</c:choose>
 			</table>
 		</form>
 	</div>

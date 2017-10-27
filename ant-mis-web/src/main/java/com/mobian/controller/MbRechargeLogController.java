@@ -78,6 +78,8 @@ public class MbRechargeLogController extends BaseController {
         DataGrid dataGrid = mbRechargeLogService.dataGrid(mbRechargeLog, ph);
         List<MbRechargeLog> mbRechargeLogList = dataGrid.getRows();
         for (MbRechargeLog rechargeLog : mbRechargeLogList) {
+            if (rechargeLog.getBalanceId() == -1)
+                continue;
             MbBalance mbBalance = mbBalanceService.get(rechargeLog.getBalanceId());
             if (mbBalance != null) {
                 rechargeLog.setShopId(mbBalance.getRefId());
@@ -156,7 +158,8 @@ public class MbRechargeLogController extends BaseController {
         MbBalance mbBalance = mbBalanceService.addOrGetMbBalance(mbRechargeLog.getShopId());
         mbRechargeLog.setBalanceId(mbBalance.getId());
         mbRechargeLog.setApplyLoginId(sessionInfo.getId());
-        mbRechargeLogService.addAndUpdateBalance(mbRechargeLog);
+       // mbRechargeLogService.addAndUpdateBalance(mbRechargeLog);
+        mbRechargeLogService.add(mbRechargeLog);
         j.setSuccess(true);
         j.setMsg("添加成功！");
         return j;
@@ -247,6 +250,12 @@ public class MbRechargeLogController extends BaseController {
     @RequestMapping("/editAuditPage")
     public String editAuditPage(HttpServletRequest request, Integer id) {
         MbRechargeLog mbRechargeLog = mbRechargeLogService.get(id);
+        if (mbRechargeLog.getBalanceId() != -1) {
+            MbBalance mbBalance = mbBalanceService.get(mbRechargeLog.getBalanceId());
+            if (mbBalance != null) {
+                mbRechargeLog.setShopId(mbBalance.getRefId());
+            }
+        }
         request.setAttribute("id", id);
         request.setAttribute("mbRechargeLog", mbRechargeLog);
         return "/mbrechargelog/mbRechargeLogAudit";
@@ -267,27 +276,25 @@ public class MbRechargeLogController extends BaseController {
             j.setSuccess(false);
             j.setMsg("请选择门店和填写备注！");
 
-        } else if (F.empty(mbRechargeLog.getPayCode()) && "HS02".equals(mbRechargeLog.getHandleStatus())) {
+        } else if (F.empty(mbRechargeLog.getPayCode()) && "HS02".equals(mbRechargeLog.getHandleStatus())&&(!"BT004".equals(mbRechargeLog.getRefType()))) {
             j.setSuccess(false);
             j.setMsg("请输入银行汇款单号");
         } else {
-            MbRechargeLog rechargeLog = new MbRechargeLog();
-            rechargeLog.setPayCode(mbRechargeLog.getPayCode());
-            rechargeLog.setHandleStatus("HS02");
-            if(mbRechargeLogService.checkRechargeLogPayCode(rechargeLog)==null) {
-                mbRechargeLog.setHandleLoginId(sessionInfo.getId());
-                mbRechargeLog.setHandleTime(new Date());
-                try {
-                    mbRechargeLogService.editAudit(mbRechargeLog);
-                    j.setSuccess(true);
-                    j.setMsg("编辑成功!");
-                } catch (ServiceException e) {
-                    j.setSuccess(false);
-                    j.setMsg(e.getMsg());
-                }
-            }else{
+            MbBalance mbBalance = mbBalanceService.queryByShopId(mbRechargeLog.getShopId());
+            if(mbBalance!=null){
+                mbRechargeLog.setBalanceId(mbBalance.getId());
+            }else {
+                throw new ServiceException("门店余额账户不存在！");
+            }
+            mbRechargeLog.setHandleLoginId(sessionInfo.getId());
+            mbRechargeLog.setHandleTime(new Date());
+            try {
+                mbRechargeLogService.editAudit(mbRechargeLog);
+                j.setSuccess(true);
+                j.setMsg("编辑成功!");
+            } catch (ServiceException e) {
                 j.setSuccess(false);
-                j.setMsg("银行汇款单号已存在,请重新确认");
+                j.setMsg(e.getMsg());
             }
         }
         return j;
@@ -359,6 +366,7 @@ public class MbRechargeLogController extends BaseController {
                 List<Object> lo = listOb.get(i);
                 MbRechargeLog mbRechargeLog = new MbRechargeLog();
                 BaseData baseData = new BaseData();
+                baseData.setBasetypeCode("TB");
                 List<BaseData> baseDataList = basedataService.getBaseDatas(baseData);
                 if (CollectionUtils.isNotEmpty(baseDataList)) {
                     for (BaseData data : baseDataList) {
