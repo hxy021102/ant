@@ -64,17 +64,14 @@ public class ShopDeliverAccountController extends BaseController {
 	@ResponseBody
 	public DataGrid dataGrid(ShopDeliverAccount shopDeliverAccount, PageHelper ph) {
 		DataGrid g = shopDeliverAccountService.dataGrid(shopDeliverAccount, ph);
-		List<ShopDeliverAccount> l = new ArrayList<ShopDeliverAccount>();
 		List<ShopDeliverAccount> list =	g.getRows();
 		for(ShopDeliverAccount s : list) {
-		ShopDeliverApply shopDeliverApply =	shopDeliverApplyService.getByAccountId(s.getId());
-		s.setShopId(shopDeliverApply.getShopId());
-		l.add(s);
+			ShopDeliverApply shopDeliverApply =	shopDeliverApplyService.getByAccountId(s.getId());
+			if(shopDeliverApply !=null && "DAS02".equals(shopDeliverApply.getStatus())) {
+				s.setShopId(shopDeliverApply.getShopId());
+			}
 		}
-		DataGrid dg = new DataGrid();
-		dg.setRows(l);
-		dg.setTotal(g.getTotal());
-		return dg;
+		return g;
 	}
 	/**
 	 * 获取ShopDeliverAccount数据表格excel
