@@ -38,6 +38,12 @@
 				<input type="hidden" name="id" value = "${shopDeliverApply.id}"/>
 			    <input type="hidden" name="status" value = ""/>
 			<table class="table table-hover table-condensed">
+				<tr>
+					<th>最大配送距离</th>
+					<td>
+						<input name="maxDeliveryDistance" type="text" class="span2">
+					</td>
+				</tr>
 				 <tr>
 					<th>审核结果</th>
 					<td colspan="2">
