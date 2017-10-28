@@ -43,6 +43,7 @@
                 striped : true,
                 rownumbers : true,
                 singleSelect : true,
+                showFooter:true,
                 columns : [ [ {
                     field : 'itemCode',
                     title : '商品代码',
@@ -70,6 +71,17 @@
                 }, {
                     field : 'totalPrice',
                     title : '销售总额',
+                    width : 50,
+                    align:"right",
+                    formatter:function(value,row){
+                        if(row.backMoney){
+                            value = value - row.backMoney;
+                        }
+                        return $.formatMoney(value);
+                    }
+                }, {
+                    field : 'totalCost',
+                    title : '进货成本',
                     width : 50,
                     align:"right",
                     formatter:function(value){

@@ -1,14 +1,12 @@
 package com.mobian.service.impl;
 
 import com.mobian.absx.F;
-import com.mobian.dao.MbOrderDaoI;
+import com.mobian.concurrent.ThreadCache;
 import com.mobian.model.TmbContract;
 import com.mobian.model.TmbContractItem;
 import com.mobian.model.TmbOrder;
 import com.mobian.model.TmbOrderItem;
-import com.mobian.pageModel.MbOrder;
-import com.mobian.pageModel.MbShop;
-import com.mobian.pageModel.User;
+import com.mobian.pageModel.*;
 import com.mobian.service.*;
 import com.mobian.thirdpart.mns.MNSTemplate;
 import com.mobian.thirdpart.mns.MNSUtil;
@@ -43,7 +41,11 @@ public class TaskServiceImpl implements TaskServiceI {
     @Autowired
     private MbOrderItemServiceI mbOrderItemService;
     @Autowired
-    private MbOrderDaoI mbOrderDao;
+    private MbStockOutServiceI mbStockOutService;
+    @Autowired
+    private MbStockOutItemServiceI mbStockOutItemService;
+    @Autowired
+    private MbItemStockServiceI mbItemStockService;
     @Autowired
     private UserServiceI userService;
     @Autowired
@@ -118,6 +120,54 @@ public class TaskServiceImpl implements TaskServiceI {
         for (MbShop mbShop : mbShopList) {
             mbShopService.setShopLocation(mbShop);
             mbShopService.edit(mbShop);
+        }
+    }
+
+    @Override
+    public void updateCostPrice() {
+        try {
+            ThreadCache mbOrderCache = new ThreadCache(MbOrder.class) {
+                @Override
+                protected Object handle(Object key) {
+                    return mbOrderService.get((Integer) key);
+                }
+            };
+            ThreadCache mbStockOrderCache = new ThreadCache(MbStockOut.class) {
+                @Override
+                protected Object handle(Object key) {
+                    return mbStockOutService.get((Integer) key);
+                }
+            };
+
+            ThreadCache mbItemStock = new ThreadCache(MbItemStock.class) {
+                @Override
+                protected Object handle(Object key) {
+                    String[] keys = key.toString().split("[|]");
+                    return mbItemStockService.getByWareHouseIdAndItemId(Integer.parseInt(keys[0]), Integer.parseInt(keys[1]));
+                }
+            };
+            List<MbStockOutItem> mbStockOutItemList = mbStockOutItemService.queryStockOutItemWithoutCostPrice();
+            for (MbStockOutItem mbStockOutItem : mbStockOutItemList) {
+                MbStockOut mbStockOut = mbStockOrderCache.getValue(mbStockOutItem.getMbStockOutId());
+                if (mbStockOut != null && !F.empty(mbStockOut.getWarehouseId()) && !F.empty(mbStockOutItem.getItemId())) {
+                    MbItemStock itemStock = mbItemStock.getValue(mbStockOut.getWarehouseId() + "|" + mbStockOutItem.getItemId());
+                    mbStockOutItem.setCostPrice(itemStock.getAveragePrice());
+                    mbStockOutItemService.edit(mbStockOutItem);
+                }
+            }
+            List<MbOrderItem> mbOrderItemList = mbOrderItemService.queryListByWithoutCostPrice();
+            for (MbOrderItem mbOrderItem : mbOrderItemList) {
+                MbOrder mbOrder = mbOrderCache.getValue(mbOrderItem.getOrderId());
+                if (mbOrder != null && !F.empty(mbOrder.getDeliveryWarehouseId()) && !F.empty(mbOrderItem.getItemId())) {
+                    MbItemStock itemStock = mbItemStock.getValue(mbOrder.getDeliveryWarehouseId() + "|" + mbOrderItem.getItemId());
+                    mbOrderItem.setCostPrice(itemStock.getAveragePrice());
+                    mbOrderItemService.edit(mbOrderItem);
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            ThreadCache.clear();
         }
     }
 

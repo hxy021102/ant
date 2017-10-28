@@ -97,6 +97,21 @@ public class MbStockOutItemServiceImpl extends BaseServiceImpl<MbStockOutItem> i
 	}
 
 	@Override
+	public List<MbStockOutItem> queryStockOutItemWithoutCostPrice() {
+		List<MbStockOutItem> ol = new ArrayList<MbStockOutItem>();
+		String hql = " from TmbStockOutItem t where t.isdeleted = 0 and t.costPrice is null";
+		List<TmbStockOutItem> l = mbStockOutItemDao.find(hql, 1, 200);
+		if (CollectionUtils.isNotEmpty(l)) {
+			for (TmbStockOutItem t : l) {
+				MbStockOutItem o = new MbStockOutItem();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		return ol;
+	}
+
+	@Override
 	public void add(MbStockOutItem mbStockOutItem) {
 		TmbStockOutItem t = new TmbStockOutItem();
 		BeanUtils.copyProperties(mbStockOutItem, t);
