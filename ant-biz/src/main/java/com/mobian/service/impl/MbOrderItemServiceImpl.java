@@ -420,14 +420,16 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 	@Override
 	public List<MbOrderItem> queryListByOrderIds(Integer[] orderIds) {
 		List<MbOrderItem> ol = new ArrayList<MbOrderItem>();
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("alist", orderIds);
-		List<TmbOrderItem> l = mbOrderItemDao.find("from TmbOrderItem t where t.orderId in (:alist) and t.isdeleted=0", params);
-		if (CollectionUtils.isNotEmpty(l)) {
-			for (TmbOrderItem t : l) {
-				MbOrderItem o = new MbOrderItem();
-				BeanUtils.copyProperties(t, o);
-				ol.add(o);
+		if (orderIds != null && orderIds.length > 0) {
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("alist", orderIds);
+			List<TmbOrderItem> l = mbOrderItemDao.find("from TmbOrderItem t where t.orderId in (:alist) and t.isdeleted=0", params);
+			if (CollectionUtils.isNotEmpty(l)) {
+				for (TmbOrderItem t : l) {
+					MbOrderItem o = new MbOrderItem();
+					BeanUtils.copyProperties(t, o);
+					ol.add(o);
+				}
 			}
 		}
 		return ol;
