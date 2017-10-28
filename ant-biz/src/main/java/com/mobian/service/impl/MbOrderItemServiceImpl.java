@@ -7,6 +7,7 @@ import com.mobian.model.TmbOrderItem;
 import com.mobian.model.TmbWarehouse;
 import com.mobian.pageModel.*;
 import com.mobian.service.*;
+import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -34,6 +35,8 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 	private RedisUserServiceImpl redisUserService;
 	@Autowired
 	private MbOrderRefundItemServiceI mbOrderRefundItemService;
+	@Autowired
+	private MbShopServiceI mbShopService;
 
 
 	@Override
@@ -287,11 +290,23 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
         List<MbOrder> mbOrders = mbOrderService.query(mbOrder);
         if(!CollectionUtils.isEmpty(mbOrders)) {
 			Integer[] orderIds = new Integer[mbOrders.size()];
-			for (int i = 0; i < mbOrders.size(); i++) {
-				orderIds[i] = mbOrders.get(i).getId();
+			List<Integer> orderIdList = new ArrayList<Integer>();
+			String excludeShop = ConvertNameUtil.getDesc("SV101");
+			for (MbOrder order : mbOrders) {
+				if (excludeShop.indexOf("|" + order.getShopId() + "|") > -1) {
+					continue;
+				}
+				if (F.empty(mbSalesReport.getShopType())) {
+					orderIdList.add(order.getId());
+				} else if (!F.empty(mbSalesReport.getShopType())) {
+					MbShop mbShop = mbShopService.getFromCache(order.getShopId());
+					if (mbShop != null && mbShop.getShopType().equals(mbSalesReport.getShopType())) {
+						orderIdList.add(order.getId());
+					}
+				}
 			}
 			//找到所有订单项
-			List<MbOrderItem> orderItems = queryListByOrderIds(orderIds);
+			List<MbOrderItem> orderItems = queryListByOrderIds(orderIdList.toArray(new Integer[orderIdList.size()]));
 			List<MbOrderRefundItem> OrderRefundItems = mbOrderRefundItemService.queryListByOrderIds(orderIds);
 			//将同种商品在不同订单里的不同价格都保存
 			for (MbOrder m : mbOrders) {
@@ -360,6 +375,7 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
             salesReport.setItemName(mbItem.getName());
             salesReport.setQuantity(map.get(key).getQuantity());
             salesReport.setBackQuantity(map.get(key).getBackQuantity());
+			salesReport.setTotalCost(map.get(key).getTotalCost());
             if (!F.empty(map.get(key).getBackQuantity())) {
                 salesReport.setSalesQuantity(salesReport.getQuantity() - map.get(key).getBackQuantity());
                 backTotal += salesReport.getBackQuantity();
@@ -368,7 +384,6 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
             }
             if (!F.empty(map.get(key).getBackMoney())) {
                 salesReport.setTotalPrice(map.get(key).getTotalPrice() - map.get(key).getBackMoney());
-
             } else {
                 salesReport.setTotalPrice(map.get(key).getTotalPrice());
             }
@@ -393,6 +408,7 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
             mbsalesReport.setSalesQuantity(salesTotal);
             mbsalesReport.setQuantity(total);
             mbsalesReport.setBackQuantity(backTotal);
+			mbsalesReport.setTotalCost(totalCost);
             //ol.add(mbsalesReport);
 			dataGrid.setFooter(Arrays.asList(mbsalesReport));
         }

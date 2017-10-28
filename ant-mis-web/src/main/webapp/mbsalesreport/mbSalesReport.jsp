@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.mobian.model.TmbSupplierOrderItem" %>
+<%@ page import="com.mobian.model.TmbShop" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%>
@@ -52,10 +53,6 @@
                     field : 'itemName',
                     title : '商品名称',
                     width : 80
-                },{
-                    field : 'warehouseName',
-                    title : '发货仓库',
-                    width : 80
                 },  {
                     field : 'quantity',
                     title : '销售数量',
@@ -80,12 +77,36 @@
                         return $.formatMoney(value);
                     }
                 }, {
+                    field : 'totalPrice1',
+                    title : '销售单价',
+                    width : 50,
+                    align:"right",
+                    formatter:function(value,row){
+                        return $.formatMoney(parseInt(row.totalPrice/row.salesQuantity));
+                    }
+                }, {
                     field : 'totalCost',
                     title : '进货成本',
                     width : 50,
                     align:"right",
                     formatter:function(value){
                         return $.formatMoney(value);
+                    }
+                }, {
+                    field : 'totalCost2',
+                    title : '成本单价',
+                    width : 50,
+                    align:"right",
+                    formatter:function(value,row){
+                        return $.formatMoney(parseInt(row.totalCost/row.salesQuantity));
+                    }
+                }, {
+                    field : 'totalCost1',
+                    title : '毛利',
+                    width : 50,
+                    align:"right",
+                    formatter:function(value,row){
+                        return $.formatMoney(parseInt(row.totalPrice-row.totalCost));
                     }
                 } ] ],
                 toolbar : '#toolbar',
@@ -163,6 +184,11 @@
                     <th>发货仓库</th>
                     <td>
                         <jb:selectSql dataType="SQ004" name="warehouseId"></jb:selectSql>
+                    </td>
+                    <th style="width: 50px;"><%=TmbShop.ALIAS_SHOP_TYPE%>
+                    </th>
+                    <td>
+                        <jb:select dataType="ST" name="shopType" mustSelect="true"></jb:select>
                     </td>
                 </tr>
 

@@ -34,6 +34,8 @@ public class MbSalesReport implements java.io.Serializable{
     private Integer warehouseId;
     private String  warehouseName;
 
+    private String shopType;
+
     public String getWarehouseName() {
         return warehouseName;
     }
@@ -144,5 +146,13 @@ public class MbSalesReport implements java.io.Serializable{
 
     public void setTotalCost(Integer totalCost) {
         this.totalCost = totalCost;
+    }
+
+    public String getShopType() {
+        return shopType;
+    }
+
+    public void setShopType(String shopType) {
+        this.shopType = shopType;
     }
 }
