@@ -160,11 +160,11 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 			}
 
 			if(mbOrderItem.getUpdatetimeBegin()!=null){
-				whereHql += " and t.updatetime >= :updatetimeBegin";
+				whereHql += " and t.addtime >= :updatetimeBegin";
 				params.put("updatetimeBegin", mbOrderItem.getUpdatetimeBegin());
 			}
 			if(mbOrderItem.getUpdatetimeEnd()!=null){
-				whereHql += " and t.updatetime <= :updatetimeEnd";
+				whereHql += " and t.addtime <= :updatetimeEnd";
 				params.put("updatetimeEnd", mbOrderItem.getUpdatetimeEnd());
 			}
 			if(mbOrderItem.getOrderIds() !=null) {
