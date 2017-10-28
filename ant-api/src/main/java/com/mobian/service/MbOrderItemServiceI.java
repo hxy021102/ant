@@ -71,6 +71,11 @@ public interface MbOrderItemServiceI {
 	 */
 	List<MbOrderItem> getMbOrderItemList(Integer orderId);
 
+	/**
+	 * 查询订单商品明细
+	 * @param mbOrderItem
+	 * @return
+	 */
 	List<MbOrderItem> query(MbOrderItem mbOrderItem);
 
 	/**
@@ -92,7 +97,25 @@ public interface MbOrderItemServiceI {
 	 * 获取出货的订单商品数目详情
 	 */
 	DataGrid dataGridSalesReport(MbSalesReport mbSalesReport);
+
+	/**
+	 * 根据订单ID查询商品明细列表
+	 * @param orderIds
+	 * @return
+	 */
 	List<MbOrderItem> queryListByOrderIds(Integer[] orderIds);
 
+	/**
+	 * 添加赠品商品
+	 * @param mbOrder
+	 * @param itemId
+	 * @param quantity
+	 */
     void addOffSet(MbOrder mbOrder, Integer itemId, Integer quantity);
+
+	/**
+	 * 查询没有成本价商品明细
+	 * @return
+	 */
+	List<MbOrderItem> queryListByWithoutCostPrice();
 }

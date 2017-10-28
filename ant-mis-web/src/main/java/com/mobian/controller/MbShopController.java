@@ -21,10 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * MbShop管理控制器
@@ -420,7 +417,20 @@ public class MbShopController extends BaseController {
     @RequestMapping("/dataGridShopArrears")
     @ResponseBody
     public DataGrid dataGridShopArrears(MbShop mbShop,PageHelper ph) {
-        return mbShopService.dataGridShopArrears(mbShop,ph);
+        DataGrid dataGrid = mbShopService.dataGridShopArrears(mbShop, ph);
+
+        List<MbShopExt> rows = dataGrid.getRows();
+        MbShopExt footer = new MbShopExt();
+        footer.setBalanceAmount(0);
+        footer.setDebt(0);
+        footer.setTotalDebt(0);
+        for (MbShopExt row : rows) {
+            footer.setBalanceAmount(footer.getBalanceAmount() + row.getBalanceAmount());
+            footer.setDebt(footer.getDebt() + row.getDebt());
+            footer.setTotalDebt(footer.getTotalDebt()+row.getTotalDebt());
+        }
+        dataGrid.setFooter(Arrays.asList(footer));
+        return dataGrid;
     }
     /**
      *  获取门店余额欠款列表
@@ -431,7 +441,18 @@ public class MbShopController extends BaseController {
     @RequestMapping("/dataGridShopBarrel")
     @ResponseBody
     public DataGrid dataGridShopBarrel(MbShop mbShop,PageHelper ph) {
-        return mbShopService.dataGridShopBarrel(mbShop,ph);
+        DataGrid dataGrid = mbShopService.dataGridShopBarrel(mbShop,ph);
+        List<MbShopExt> rows = dataGrid.getRows();
+        MbShopExt footer = new MbShopExt();
+        footer.setBalanceAmount(0);
+        footer.setCashBalanceAmount(0);
+        for (MbShopExt row : rows) {
+            footer.setBalanceAmount(footer.getBalanceAmount() + row.getBalanceAmount());
+            //footer.setDebt(footer.getDebt() + row.getDebt());
+            footer.setCashBalanceAmount(footer.getCashBalanceAmount()+row.getCashBalanceAmount());
+        }
+        dataGrid.setFooter(Arrays.asList(footer));
+        return dataGrid;
     }
 
     @RequestMapping("/getAllShopLocation")
