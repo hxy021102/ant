@@ -25,7 +25,11 @@ public class Application implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent event) {
 		context = event.getServletContext();
 		BeanUtil.setContext(context);
-		initAppVariable();
+		try{
+			initAppVariable();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 
