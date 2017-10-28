@@ -9,9 +9,9 @@
 
 	<task:scheduled-tasks scheduler="scheduler">
 
-		<!--<task:scheduled ref="taskServiceImpl" method="setContractPrice" initial-delay="0" fixed-delay="3600000" />-->
+		<!--<task:scheduled ref="taskServiceImpl" method="setContractPrice" initial-delay="0" fixed-delay="60000" />-->
 
-		<task:scheduled ref="taskServiceImpl" method="setOrderQuantity" cron="0 0 0/1 * * ?" />
+		<!--<task:scheduled ref="taskServiceImpl" method="setOrderQuantity" cron="0 0/5 * * * ?" />-->
 
 		<task:scheduled ref="taskServiceImpl" method="updateCostPrice" cron="0 0/1 * * * ?" />
 
@@ -23,9 +23,9 @@
 
 		<!--<task:scheduled ref="deliverOrderTaskService" method="orderAllocation" cron="0 0/1 * * * ?"/>-->
 
-		<task:scheduled ref="deliverOrderTaskService" method="settleShopPay" cron="0 0/5  * * * ?" />
+		<!--<task:scheduled ref="deliverOrderTaskService" method="settleShopPay" cron="0 0/5  * * * ?" />-->
 
-		<task:scheduled ref="deliverOrderTaskService" method="checkTimeOutOrder" cron="0 0/1 * * * ? "></task:scheduled>
+		<!--<task:scheduled ref="deliverOrderTaskService" method="checkTimeOutOrder" cron="0 0/1 * * * ? "></task:scheduled>-->
 
 	</task:scheduled-tasks>
 
