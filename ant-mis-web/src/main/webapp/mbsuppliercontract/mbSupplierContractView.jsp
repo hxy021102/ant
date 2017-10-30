@@ -29,7 +29,7 @@
     var contractClauseDataGrid;
     $(function() {
         contractClauseDataGrid = $('#contractClauseDataGrid').datagrid({
-            url : '${pageContext.request.contextPath}/mbSupplierContractClauseController/dataGrid',
+            url : '${pageContext.request.contextPath}/mbSupplierContractClauseController/dataGrid?supplierContractId='+${mbSupplierContract.id},
             fit : true,
             fitColumns : true,
             border : false,
@@ -50,18 +50,14 @@
                 title : '编号',
                 width : 150,
                 hidden : true
-            },  {
-                field : 'supplierContractId',
-                title : '<%=TmbSupplierContractClause.ALIAS_SUPPLIER_CONTRACT_ID%>',
-                width : 50
-            }, {
+            },   {
                 field : 'clauseName',
                 title : '<%=TmbSupplierContractClause.ALIAS_CLAUSE_CODE%>',
-                width : 50
+                width : 80
             }, {
                 field : 'value',
                 title : '<%=TmbSupplierContractClause.ALIAS_VALUE%>',
-                width : 50
+                width : 60
             },  {
                 field : 'action',
                 title : '操作',
@@ -184,8 +180,7 @@
         });
     }
 </script>
-
-
+</head>
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'north',title:'基本信息',border:false" style="height: 160px; overflow: hidden;">
 		<table class="table table-hover table-condensed">
@@ -200,9 +195,9 @@
 					</td>
 				</tr>
 				<tr>
-					<th><%=TmbSupplierContract.ALIAS_SUPPLIER_ID%></th>
+					<th><%=TmbSupplierContract.ALIAS_SUPPLIER_NAME%></th>
 					<td>
-						${mbSupplierContract.supplierId}
+						${mbSupplierContract.supplierName}
 					</td>
 					<th><%=TmbSupplierContract.ALIAS_EXPIRY_DATE_START%></th>
 					<td>
