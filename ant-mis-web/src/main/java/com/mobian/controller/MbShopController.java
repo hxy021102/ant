@@ -533,7 +533,7 @@ public class MbShopController extends BaseController {
         List<Tree> lt = new ArrayList<Tree>();
         if (!F.empty(paramsJson)) {
            DeliverOrder deliverOrder = JSON.parseObject(paramsJson, DeliverOrder.class);
-            List<MbAssignShop> mbAssignShopList = shopDeliverApplyService.queryAssignShopList(deliverOrder);
+            List<MbAssignShop> mbAssignShopList =  shopDeliverApplyService.queryAssignShopList(deliverOrder);
             if (CollectionUtils.isNotEmpty(mbAssignShopList)) {
                 for (MbAssignShop assignShop : mbAssignShopList) {
                     Tree tree = new Tree();
