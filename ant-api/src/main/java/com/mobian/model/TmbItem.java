@@ -86,6 +86,9 @@ public class TmbItem implements java.io.Serializable,IEntity{
 
 	private Boolean ispack;
 	private Integer packId;
+	private String  standard;   //规格
+	private String barCode;     //条形码
+	private String carton;      //箱规
 
 		public TmbItem(){
 		}
@@ -276,6 +279,33 @@ public class TmbItem implements java.io.Serializable,IEntity{
 	@Column(name = "purchase_price", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getPurchasePrice() { return purchasePrice; }
 	public void setPurchasePrice(Integer purchasePrice) { this.purchasePrice = purchasePrice;}
+
+	@Column(name = "standard", unique = false, nullable = false, insertable = true, updatable = true, length = 128)
+	public String getStandard() {
+		return standard;
+	}
+
+	public void setStandard(String standard) {
+		this.standard = standard;
+	}
+
+	@Column(name = "bar_code", unique = false, nullable = false, insertable = true, updatable = true, length = 128)
+	public String getBarCode() {
+		return barCode;
+	}
+
+	public void setBarCode(String barCode) {
+		this.barCode = barCode;
+	}
+
+	@Column(name = "carton", unique = false, nullable = false, insertable = true, updatable = true, length = 128)
+	public String getCarton() {
+		return carton;
+	}
+
+	public void setCarton(String carton) {
+		this.carton = carton;
+	}
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
