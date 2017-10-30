@@ -165,7 +165,23 @@
 					</td>
 				</tr>
 				<tr>
-					<td colspan="4" height="50">
+					<th>条形码</th>
+					<td>
+						<input class="span2 easyui-validatebox" name="barCode" type="text" data-options="required:true"/>
+					</td>
+					<th>箱规</th>
+					<td>
+						<input class="span2 easyui-validatebox" name="carton" type="text" data-options="required:true"/>
+					</td>
+				</tr>
+				<tr>
+					<th>规格</th>
+					<td colspan="4">
+						<input class="span2 easyui-validatebox" name="standard" type="text" data-options="required:true"/>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="4" height="5">
 						<img class="img-preview" src=""/>
 					</td>
 				</tr>
