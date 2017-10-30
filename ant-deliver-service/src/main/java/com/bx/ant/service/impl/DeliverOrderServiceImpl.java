@@ -178,6 +178,10 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 					params.put("endDate", orderQuery.getEndDate());
 
 				}
+				if (!F.empty(orderQuery.getTime())){
+					whereHql += " DATEDIFF(minute,NOW() - t.addTime) >= :time ";
+					params.put("time", orderQuery.getTime());
+				}
 			}
 		}
 //			if (deliverOrder.getAddtimeBegin() != null) {

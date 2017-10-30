@@ -6,7 +6,7 @@
 	$(function() {
 		parent.$.messager.progress('close');
 		$('#form').form({
-			url : '${pageContext.request.contextPath}/deliverOrderController/edit',
+			url : '${pageContext.request.contextPath}/deliverOrderController/assignOrderShop',
 			onSubmit : function() {
 				parent.$.messager.progress({
 					title : '提示',
@@ -34,54 +34,17 @@
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;">
 		<form id="form" method="post">
-				<input type="hidden" name="id" value = "${mbOrderItem.id}"/>
 			<table class="table table-hover table-condensed">
-				<%--<tr>
-					<th></th>
+				<tr>
+					<th>运单ID</th>
 					<td>
-											<input class="span2" name="tenantId" type="text" value="${mbOrderItem.tenantId}"/>
+						<input class="span2" name="tenantId" type="text" readonly value="${id}"/>
 					</td>							
-					<th><%=TmbOrderItem.ALIAS_ADDTIME%></th>	
+					<th>门店</th>
 					<td>
-					<input class="span2" name="addtime" type="text" onclick="WdatePicker({dateFmt:'<%=TmbOrderItem.FORMAT_ADDTIME%>'})"   maxlength="0" value="${mbOrderItem.addtime}"/>
-					</td>							
-			</tr>	
-				<tr>	
-					<th><%=TmbOrderItem.ALIAS_UPDATETIME%></th>	
-					<td>
-					<input class="span2" name="updatetime" type="text" onclick="WdatePicker({dateFmt:'<%=TmbOrderItem.FORMAT_UPDATETIME%>'})"   maxlength="0" value="${mbOrderItem.updatetime}"/>
-					</td>							
-					<th><%=TmbOrderItem.ALIAS_ISDELETED%></th>	
-					<td>
-											<input class="span2" name="isdeleted" type="text" class="easyui-validatebox span2" data-options="required:true" value="${mbOrderItem.isdeleted}"/>
-					</td>							
-			</tr>	
-				<tr>	
-					<th><%=TmbOrderItem.ALIAS_ITEM_ID%></th>	
-					<td>
-											<input class="span2" name="itemId" type="text" value="${mbOrderItem.itemId}"/>
-					</td>							
-					<th><%=TmbOrderItem.ALIAS_QUANTITY%></th>	
-					<td>
-											<input class="span2" name="quantity" type="text" value="${mbOrderItem.quantity}"/>
-					</td>							
-			</tr>	
-				<tr>	
-					<th><%=TmbOrderItem.ALIAS_MARKET_PRICE%></th>	
-					<td>
-											<input class="span2" name="marketPrice" type="text" value="${mbOrderItem.marketPrice}"/>
-					</td>							
-					<th><%=TmbOrderItem.ALIAS_BUY_PRICE%></th>	
-					<td>
-											<input class="span2" name="buyPrice" type="text" value="${mbOrderItem.buyPrice}"/>
-					</td>							
-			</tr>	
-				<tr>	
-					<th><%=TmbOrderItem.ALIAS_ORDER_ID%></th>	
-					<td>
-											<input class="span2" name="orderId" type="text" value="${mbOrderItem.orderId}"/>
-					</td>							
-			</tr>	--%>
+						 <jb:selectGrid dataType="assignShopId" name="shopId" params="${deliverOrder}"></jb:selectGrid>
+					</td>
+			    </tr>
 			</table>				
 		</form>
 	</div>

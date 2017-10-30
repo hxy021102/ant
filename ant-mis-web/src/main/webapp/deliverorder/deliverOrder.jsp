@@ -39,7 +39,7 @@
                 gridMap[index].invoke();
             }
         });
-        gridMap[1].invoke();
+        gridMap[0].invoke();
         setInterval(function(){ searchFun();}, 60000);//每分钟自查询一次
     });
     var dataGrid;
@@ -326,7 +326,7 @@
         var tab = $('#deliverOrder_list_tabs').tabs('getSelected');
         var index = $('#deliverOrder_list_tabs').tabs('getTabIndex',tab);
         if(index == 1) {
-            options.url += '?status=DOS01';
+            options.url += '?status=DOS01'+'&time='+30;
         }
         options.queryParams = $.serializeObject($('#searchForm'));
         selectDatagrid.datagrid(options);

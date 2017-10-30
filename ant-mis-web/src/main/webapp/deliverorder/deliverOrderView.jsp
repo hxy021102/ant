@@ -10,9 +10,9 @@
 	<title>DeliverOrder管理</title>
 	<jsp:include page="../inc.jsp"></jsp:include>
 	 <script type="text/javascript">
-
+		 var deliverDataGrid;
          function loadDeliverDataGrid() {
-         return $('#deliverDataGrid').datagrid({
+         return deliverDataGrid=$('#deliverDataGrid').datagrid({
              url : '${pageContext.request.contextPath}/deliverOrderShopController/dataGrid?deliverOrderId='+${deliverOrder.id},
              fit : true,
              fitColumns : true,
@@ -268,7 +268,23 @@
              gridMap[0].invoke();
          });
 
-
+         //指派运单给门店
+         function assignOrderShop() {
+             parent.$.modalDialog({
+                 title : '编辑数据',
+                 width : 780,
+                 height : 230,
+                 href : '${pageContext.request.contextPath}/deliverOrderController/assignOrderShopPage?id=' + ${deliverOrder.id},
+                 buttons : [ {
+                     text : '编辑',
+                     handler : function() {
+                         parent.$.modalDialog.openner_dataGrid = deliverDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                         var f = parent.$.modalDialog.handler.find('#form');
+                         f.submit();
+                     }
+                 } ]
+             });
+         }
 	 </script>
 </head>
 <body>
@@ -279,8 +295,8 @@
 				<th>运单ID</th>
 				<td>
 					${deliverOrder.id}
-					<c:if test="${fn:contains(sessionInfo.resourceList, '/shopOrderBillController/examinePage') and shopOrderBill.status=='BAS01' }">
-						<a href="javascript:void(0);" class="easyui-linkbutton" onclick="examineFun();">审核</a>
+					<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/assignOrderShopPage') and deliverOrder.status=='DOS01' }">
+						<a href="javascript:void(0);" class="easyui-linkbutton" onclick="assignOrderShop();">指派</a>
 					</c:if>
 				</td>
 				<th>供应商名称</th>

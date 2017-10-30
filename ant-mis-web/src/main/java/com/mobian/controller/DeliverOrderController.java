@@ -6,12 +6,16 @@ import com.bx.ant.service.DeliverOrderItemServiceI;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.SupplierItemRelationServiceI;
 import com.bx.ant.service.SupplierServiceI;
+import com.mobian.absx.F;
 import com.mobian.pageModel.*;
+import com.mobian.service.BasedataServiceI;
 import com.mobian.util.ConfigUtil;
 import com.mobian.util.ImportExcelUtil;
 import net.sf.json.JSONArray;
 import org.apache.commons.collections.CollectionUtils;
+import org.hibernate.metamodel.relational.Database;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,7 +54,8 @@ public class DeliverOrderController extends BaseController {
 
 	@Resource
 	private SupplierItemRelationServiceI supplierItemRelationService;
-
+    @Autowired
+	private BasedataServiceI basedataService;
 
 	/**
 	 * 跳转到DeliverOrder管理页面
@@ -82,6 +87,14 @@ public class DeliverOrderController extends BaseController {
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(DeliverOrderQuery deliverOrderQuery, PageHelper ph) {
+        if(!F.empty(deliverOrderQuery.getTime())){
+			BaseData base = new BaseData();
+			base.setBasetypeCode("CH");
+			BaseData database =basedataService.getBaseDatas(base).get(0);
+			if(database!=null){
+				deliverOrderQuery.setTime(Integer.parseInt(database.getDescription()));
+			}
+		}
 		return deliverOrderService.dataGridWithName(deliverOrderQuery, ph);
 	}
 	@RequestMapping("/unPayOrderDataGrid")
@@ -359,11 +372,26 @@ public class DeliverOrderController extends BaseController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping("/editPage")
+	@RequestMapping("/assignOrderShopPage")
 	public String assignOrderShopPage(HttpServletRequest request, Long id) {
 		DeliverOrder deliverOrder = deliverOrderService.get(id);
-		request.setAttribute("deliverOrder", deliverOrder);
+	 	request.setAttribute("deliverOrder", JSON.toJSONString(deliverOrder));
+		request.setAttribute("id", id);
 		return "/deliverorder/assignOrderShop";
 	}
 
+	/**
+	 * 指派运单给门店
+	 * @param deliverOrder
+	 * @return
+	 */
+	@RequestMapping("/assignOrderShop")
+	@ResponseBody
+	public Json assignOrderShop(DeliverOrder deliverOrder) {
+		Json j = new Json();
+		deliverOrderService.edit(deliverOrder);
+		j.setSuccess(true);
+		j.setMsg("编辑成功！");
+		return j;
+	}
 }

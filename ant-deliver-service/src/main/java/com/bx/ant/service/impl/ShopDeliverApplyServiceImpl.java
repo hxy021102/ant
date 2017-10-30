@@ -2,14 +2,18 @@ package com.bx.ant.service.impl;
 
 import com.bx.ant.dao.ShopDeliverApplyDaoI;
 import com.bx.ant.model.TshopDeliverApply;
+import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.ShopDeliverApplyQuery;
 import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.MbAssignShop;
 import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.PageHelper;
 import com.bx.ant.pageModel.ShopDeliverApply;
 import com.mobian.service.MbShopServiceI;
+import com.mobian.util.ConvertNameUtil;
+import com.mobian.util.GeoUtil;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -17,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -211,5 +217,41 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 			}
 		}
 		return ol;
+	}
+
+	@Override
+	public List<MbAssignShop> queryAssignShopList(DeliverOrder deliverOrder) throws UnsupportedEncodingException {
+		//1、查询开通了派单功能，且状态开启配送的门店List
+		List<ShopDeliverApply> shopDeliverApplyList = getAvailableAndWorkShop();
+		//2、计算待分配订单的数字地址
+		if ((deliverOrder.getLongitude() == null || deliverOrder.getLatitude() == null)
+				&& !F.empty(deliverOrder.getDeliveryAddress())) {
+			//用tomcat的格式（iso-8859-1）方式去读
+			byte[] b= deliverOrder.getDeliveryAddress().getBytes("ISO-8859-1");
+			String deliveryAddress=new String(b,"utf-8");
+
+			BigDecimal[] point = GeoUtil.getPosition(deliveryAddress);
+			if (point != null) {
+				deliverOrder.setLongitude(point[0]);
+				deliverOrder.setLatitude(point[1]);
+			}
+		}
+		//3、获取最大配送距离并计算符合配送距离的门店
+		double minDistance = 0, maxDistance;
+		maxDistance = Double.valueOf(ConvertNameUtil.getString("DSV200", "5000"));
+		List<MbAssignShop> mbAssignShopArrayList = new ArrayList<MbAssignShop>();
+		for (ShopDeliverApply shopDeliverApply : shopDeliverApplyList) {
+			MbShop mbShop = shopDeliverApply.getMbShop();
+			double distance = GeoUtil.getDistance(deliverOrder.getLongitude().doubleValue(), deliverOrder.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
+			if(distance > maxDistance) continue;
+			if (distance < minDistance || minDistance == 0) {
+				MbAssignShop mbAssignShop = new MbAssignShop();
+				BeanUtils.copyProperties(mbShop,mbAssignShop);
+				mbAssignShop.setDistance(distance);
+				mbAssignShopArrayList.add(mbAssignShop);
+				if(distance == 0) break; // 解决同一个地址不分配的问题
+			}
+		}
+		return mbAssignShopArrayList;
 	}
 }
