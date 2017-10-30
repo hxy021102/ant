@@ -116,7 +116,7 @@
 				width : 30,
 				formatter : function(value, row, index) {
 					var str = '';
-                    if ($.canEditAudit && (row.refType == 'BT003' ||(row.refType == 'BT013'&&row.payCode)) && row.handleStatus == 'HS01') {
+                    if ($.canEditAudit && row.handleStatus == 'HS01' && row.refType != "BT012") {
 						str += $.formatString('<img onclick="editAuditFun(\'{0}\');" src="{1}" title="审核"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/joystick.png');
 					}
 					return str;
@@ -251,7 +251,22 @@
 			} ]
 		});
 	}
-
+    function rechargeLogUpload(){
+        parent.$.modalDialog({
+            title : '批量导入',
+            width : 780,
+            height : 200,
+            href : '${pageContext.request.contextPath}/mbRechargeLogController/uploadPage',
+            buttons : [ {
+                text : '保存',
+                handler : function() {
+                    parent.$.modalDialog.openner_dataGrid = dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                    var f = parent.$.modalDialog.handler.find('#form');
+                    f.submit();
+                }
+            } ]
+        });
+    }
 	function downloadTable(){
 		var options = dataGrid.datagrid("options");
 		var $colums = [];		
@@ -314,6 +329,9 @@
 			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">
 			</form>
 			<iframe id="downloadIframe" name="downloadIframe" style="display: none;"></iframe>
+		</c:if>
+		<c:if test="${fn:contains(sessionInfo.resourceList, '/mbRechargeLogController/uploadPage')}">
+			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_add',plain:true" onclick="rechargeLogUpload();">导入</a>
 		</c:if>
 	</div>	
 </body>
