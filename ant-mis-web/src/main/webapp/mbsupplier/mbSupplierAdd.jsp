@@ -26,7 +26,7 @@
 					parent.$.modalDialog.openner_dataGrid.datagrid('reload');//之所以能在这里调用到parent.$.modalDialog.openner_dataGrid这个对象，是因为user.jsp页面预定义好了
 					parent.$.modalDialog.handler.dialog('close');
 				} else {
-					parent.$.messager.alert('错误', result.msg, 'error');
+					parent.$.messager.alert('提醒', result.msg, 'info');
 				}
 			}
 		});
@@ -42,18 +42,16 @@
 					<th><%=TmbSupplier.ALIAS_NAME%></th>	
 					<td>
 						<input  name="name" type="text" class="easyui-validatebox span2" data-options="required:true"/>
-					</td>							
-					<th><%=TmbSupplier.ALIAS_REGION_ID%></th>	
+					</td>
+					<th STYLE="width: 100PX"><%=TmbSupplier.ALIAS_SUPPLIER_CODE%></th>
 					<td>
-
-						<jb:selectGrid dataType="region" name="regionId" required="true"></jb:selectGrid>
-
-					</td>							
+						<input  name="supplierCode" type="text" class="easyui-validatebox span2" data-options="required:true"/>
+					</td>
 				</tr>	
 				<tr>	
 					<th><%=TmbSupplier.ALIAS_ADDRESS%></th>	
 					<td colspan='4'>
-						<input class="span2" name="address" type="text" style="width:518px"/>
+						<input class="span2" name="address" type="text" style="width:515PX"/>
 					</td>
 
 
@@ -68,8 +66,26 @@
 						<input class="span2" name="contactPhone" type="text"/>
 					</td>
 
-				</tr>	
-				<tr>	
+				</tr>
+				<tr>
+					<th><%=TmbSupplier.ALIAS_FINANCIAL_CONTACT_ID%></th>
+					<td>
+						<jb:selectSql name="financialContactId" dataType="SQ019"></jb:selectSql>
+					</td>
+					<th><%=TmbSupplier.ALIAS_FINANCIAL_CONTACT_PHONE%></th>
+					<td>
+						<input class="span2" name="financialContactPhone" type="text"/>
+					</td>
+
+				</tr>
+
+				<tr>
+					<th><%=TmbSupplier.ALIAS_REGION_ID%></th>
+					<td>
+
+						<jb:selectGrid dataType="region" name="regionId" required="true"></jb:selectGrid>
+
+					</td>
 					<th><%=TmbSupplier.ALIAS_WAREHOUSE_ID%></th>
 					<td colspan="3">
 						<jb:selectSql dataType="SQ004" name="warehouseId" required="true" ></jb:selectSql>
