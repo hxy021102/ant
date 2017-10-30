@@ -5,7 +5,7 @@ import com.bx.ant.dao.SupplierItemRelationDaoI;
 import com.bx.ant.model.TsupplierItemRelation;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
-import com.mobian.pageModel.SupplierItemRelation;
+import com.bx.ant.pageModel.SupplierItemRelation;
 import com.bx.ant.service.SupplierItemRelationServiceI;
 import com.mobian.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
@@ -73,8 +73,11 @@ public class SupplierItemRelationServiceImpl extends BaseServiceImpl<SupplierIte
 			if (!F.empty(supplierItemRelation.getFreight())) {
 				whereHql += " and t.freight = :freight";
 				params.put("freight", supplierItemRelation.getFreight());
-			}		
-
+			}
+			if (!F.empty(supplierItemRelation.getSupplierItemCode())) {
+				whereHql += " and t.supplierItemCode = :supplierItemCode";
+				params.put("supplierItemCode", supplierItemRelation.getSupplierItemCode());
+			}
 		}	
 		return whereHql;
 	}

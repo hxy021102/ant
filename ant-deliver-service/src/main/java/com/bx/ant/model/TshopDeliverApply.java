@@ -7,6 +7,7 @@ package com.bx.ant.model;
 
 import javax.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import org.hibernate.annotations.DynamicInsert;
@@ -33,6 +34,7 @@ public class TshopDeliverApply implements java.io.Serializable,IEntity{
 	public static final String ALIAS_RESULT = "结果";
 	public static final String ALIAS_STATUS = "状态";
 	public static final String ALIAS_ACCOUNT_ID = "账号ID";
+	public static final String ALIAS_MAXDELIVERYDISTANCE = "最大配送距离";
 	
 	//date formats
 	public static final String FORMAT_ADDTIME = com.mobian.util.Constants.DATE_FORMAT_FOR_ENTITY;
@@ -63,6 +65,8 @@ public class TshopDeliverApply implements java.io.Serializable,IEntity{
 	private String status;
 	//
 	private Integer accountId;
+	//
+	private BigDecimal maxDeliveryDistance;
 	//columns END
 
 
@@ -175,8 +179,15 @@ public class TshopDeliverApply implements java.io.Serializable,IEntity{
 	public void setAccountId(Integer accountId) {
 		this.accountId = accountId;
 	}
-	
-	
+	@Column(name = "max_delivery_distance", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public BigDecimal getMaxDeliveryDistance() {
+		return maxDeliveryDistance;
+	}
+
+	public void setMaxDeliveryDistance(BigDecimal maxDeliveryDistance) {
+		this.maxDeliveryDistance = maxDeliveryDistance;
+	}
+
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

@@ -1,0 +1,19 @@
+{
+  "success":true,
+  "msg":"",
+  "obj":[{
+    "id":1,
+    "name":"测试商品001",
+    "url":"http://img.qrun360.com/mbItem/2017/6/23/1498210909435.jpg",
+    "quantityUnitName":"5L*4瓶",
+    "quantity":"100",
+    "online":1
+  },{
+    "id":2,
+    "name":"测试商品002",
+    "url":"http://img.qrun360.com/mbItem/2017/6/27/1498547220188.png",
+    "quantityUnitName":"10L*4瓶",
+    "quantity":"50",
+    "online":0
+  }]
+}

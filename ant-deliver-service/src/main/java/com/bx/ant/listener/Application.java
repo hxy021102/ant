@@ -25,13 +25,17 @@ public class Application implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent event) {
 		context = event.getServletContext();
 		BeanUtil.setContext(context);
-		initAppVariable();
+		try{
+			initAppVariable();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 
 	private static void initAppVariable(){
 		ApplicationContext app = WebApplicationContextUtils.getWebApplicationContext(context); 
-		BasedataServiceI service = app.getBean(BasedataServiceI.class);
+		BasedataServiceI service = app.getBean(BasedataServiceI.class,"basedataService");
 		Map<String,BaseData> map = service.getAppVariable();
 		for(String key : map.keySet()){
 			context.setAttribute(PREFIX+key, map.get(key));
@@ -48,7 +52,24 @@ public class Application implements ServletContextListener {
 				}
 				return val;
 			}
+
+			@Override
+			public String getDesc(String key) {
+				BaseData bd = (BaseData)context.getAttribute(PREFIX+key);
+				String val = null;
+				if(bd != null){
+					val = bd.getDescription();
+				}
+				return val;
+			}
 		});
+	}
+
+	/**
+	 * 刷新全局变量值
+	 */
+	public static void refresh(){
+		initAppVariable();
 	}
 	
 

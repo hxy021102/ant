@@ -1,5 +1,6 @@
-package com.mobian.pageModel;
+package com.bx.ant.pageModel;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @SuppressWarnings("serial")
@@ -16,8 +17,12 @@ public class DeliverOrderShop implements java.io.Serializable {
 	private Integer shopId;
 	private String status;
 	private Integer amount;
+	private BigDecimal distance;
+	private Date updatetimeBegin;
+	private Date updatetimeEnd;
 
-	
+
+
 
 	public void setId(Long value) {
 		this.id = value;
@@ -85,4 +90,27 @@ public class DeliverOrderShop implements java.io.Serializable {
 		return this.amount;
 	}
 
+	public Date getUpdatetimeBegin() {
+		return updatetimeBegin;
+	}
+
+	public void setUpdatetimeBegin(Date updatetimeBegin) {
+		this.updatetimeBegin = updatetimeBegin;
+	}
+
+	public Date getUpdatetimeEnd() {
+		return updatetimeEnd;
+	}
+
+	public void setUpdatetimeEnd(Date updatetimeEnd) {
+		this.updatetimeEnd = updatetimeEnd;
+	}
+
+	public BigDecimal getDistance() {
+		return distance;
+	}
+
+	public void setDistance(BigDecimal distance) {
+		this.distance = distance;
+	}
 }

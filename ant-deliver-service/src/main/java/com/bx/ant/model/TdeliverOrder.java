@@ -7,6 +7,7 @@ package com.bx.ant.model;
 
 import javax.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import org.hibernate.annotations.DynamicInsert;
@@ -76,6 +77,8 @@ public class TdeliverOrder implements java.io.Serializable,IEntity{
 	//@Length(max=10)
 	private String payStatus;
 	//@Length(max=10)
+	private Integer shopId;
+	//@Length(max=10)
 	private String shopPayStatus;
 	//@Length(max=10)
 	private String payWay;
@@ -86,6 +89,12 @@ public class TdeliverOrder implements java.io.Serializable,IEntity{
 	//@Length(max=512)
 	private String remark;
 	//columns END
+
+	private String supplierOrderId;
+
+	private BigDecimal longitude;
+
+	private BigDecimal latitude;
 
 
 		public TdeliverOrder(){
@@ -261,7 +270,41 @@ public class TdeliverOrder implements java.io.Serializable,IEntity{
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
-	
+	@Column(name = "shop_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public Integer getShopId() {
+		return shopId;
+	}
+
+	public void setShopId(Integer shopId) {
+		this.shopId = shopId;
+	}
+
+	@Column(name = "longitude", unique = false, nullable = true, insertable = true, updatable = true, scale = 6)
+	public BigDecimal getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(BigDecimal longitude) {
+		this.longitude = longitude;
+	}
+
+	@Column(name = "latitude", unique = false, nullable = true, insertable = true, updatable = true, scale = 6)
+	public BigDecimal getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(BigDecimal latitude) {
+		this.latitude = latitude;
+	}
+
+	@Column(name = "supplier_order_id", unique = false, nullable = true, insertable = true, updatable = true, scale = 32)
+	public String getSupplierOrderId() {
+		return supplierOrderId;
+	}
+
+	public void setSupplierOrderId(String supplierOrderId) {
+		this.supplierOrderId = supplierOrderId;
+	}
 	
 	/*
 	public String toString() {

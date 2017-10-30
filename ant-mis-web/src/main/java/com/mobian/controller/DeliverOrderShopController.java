@@ -3,19 +3,18 @@ package com.mobian.controller;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.UUID;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mobian.pageModel.Colum;
-import com.mobian.pageModel.DeliverOrderShop;
+import com.bx.ant.pageModel.DeliverOrderShop;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
 import com.bx.ant.service.DeliverOrderShopServiceI;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,6 +31,7 @@ import com.alibaba.fastjson.JSON;
 @RequestMapping("/deliverOrderShopController")
 public class DeliverOrderShopController extends BaseController {
 
+	@Resource
 	private DeliverOrderShopServiceI deliverOrderShopService;
 
 
@@ -48,18 +48,18 @@ public class DeliverOrderShopController extends BaseController {
 	/**
 	 * 获取DeliverOrderShop数据表格
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 */
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(DeliverOrderShop deliverOrderShop, PageHelper ph) {
-		return deliverOrderShopService.dataGrid(deliverOrderShop, ph);
+		return deliverOrderShopService.dataGridWithName(deliverOrderShop, ph);
 	}
 	/**
 	 * 获取DeliverOrderShop数据表格excel
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 * @throws NoSuchMethodException 
 	 * @throws SecurityException 

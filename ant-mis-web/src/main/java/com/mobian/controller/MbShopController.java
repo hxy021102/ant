@@ -1,8 +1,10 @@
 package com.mobian.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.*;
+import com.bx.ant.pageModel.ShopDeliverApply;
 import com.mobian.service.*;
 import com.mobian.util.ConfigUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.*;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -22,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.sf.json.JSONArray;
+import java.util.*;
 
 /**
  * MbShop管理控制器
@@ -42,6 +47,8 @@ public class MbShopController extends BaseController {
     private MbOrderServiceI mbOrderService;
     @Autowired
     private DiveRegionServiceI diveRegionService;
+    @Resource
+    private ShopDeliverApplyServiceI shopDeliverApplyService;
     @Autowired
     private UserServiceI userService;
 
@@ -166,7 +173,7 @@ public class MbShopController extends BaseController {
      */
     @RequestMapping("/view")
     public String view(HttpServletRequest request, Integer id) {
-        MbShop mbShop = mbShopService.get(id);
+        MbShop mbShop = mbShopService.getFromCache(id);
         MbShopExt mbShopExt = new MbShopExt();
         BeanUtils.copyProperties(mbShop, mbShopExt);
         MbBalance mbBalance = mbBalanceService.queryByShopId(mbShop.getId());
@@ -187,8 +194,22 @@ public class MbShopController extends BaseController {
         }
         Integer debt = mbOrderService.getOrderDebtMoney(id);
         debt = debt == null ? 0 : debt;
+        ShopDeliverApply shopDeliverApply = new ShopDeliverApply();
+        shopDeliverApply.setShopId(id);
+        shopDeliverApply.setStatus("DAS02");
+        List<ShopDeliverApply> list = shopDeliverApplyService.query(shopDeliverApply);
+        Integer accountId = null;
+        if(!CollectionUtils.isEmpty(list)) {
+            mbShopExt.setDeliver(1);
+            accountId = list.get(0).getAccountId();
+        }else {
+            mbShopExt.setDeliver(0);
+        }
+        MbBalance balance = mbBalanceService.addOrGetMbBalanceDelivery(id);
         request.setAttribute("mbShopExt", mbShopExt);
         request.setAttribute("debt", debt);
+        request.setAttribute("accountId",accountId);
+        request.setAttribute("money",balance.getAmount());
         return "/mbshop/mbShopView";
     }
 
@@ -415,7 +436,20 @@ public class MbShopController extends BaseController {
     @RequestMapping("/dataGridShopArrears")
     @ResponseBody
     public DataGrid dataGridShopArrears(MbShop mbShop,PageHelper ph) {
-        return mbShopService.dataGridShopArrears(mbShop,ph);
+        DataGrid dataGrid = mbShopService.dataGridShopArrears(mbShop, ph);
+
+        List<MbShopExt> rows = dataGrid.getRows();
+        MbShopExt footer = new MbShopExt();
+        footer.setBalanceAmount(0);
+        footer.setDebt(0);
+        footer.setTotalDebt(0);
+        for (MbShopExt row : rows) {
+            footer.setBalanceAmount(footer.getBalanceAmount() + row.getBalanceAmount());
+            footer.setDebt(footer.getDebt() + row.getDebt());
+            footer.setTotalDebt(footer.getTotalDebt()+row.getTotalDebt());
+        }
+        dataGrid.setFooter(Arrays.asList(footer));
+        return dataGrid;
     }
     /**
      *  获取门店余额欠款列表
@@ -426,7 +460,18 @@ public class MbShopController extends BaseController {
     @RequestMapping("/dataGridShopBarrel")
     @ResponseBody
     public DataGrid dataGridShopBarrel(MbShop mbShop,PageHelper ph) {
-        return mbShopService.dataGridShopBarrel(mbShop,ph);
+        DataGrid dataGrid = mbShopService.dataGridShopBarrel(mbShop,ph);
+        List<MbShopExt> rows = dataGrid.getRows();
+        MbShopExt footer = new MbShopExt();
+        footer.setBalanceAmount(0);
+        footer.setCashBalanceAmount(0);
+        for (MbShopExt row : rows) {
+            footer.setBalanceAmount(footer.getBalanceAmount() + row.getBalanceAmount());
+            //footer.setDebt(footer.getDebt() + row.getDebt());
+            footer.setCashBalanceAmount(footer.getCashBalanceAmount()+row.getCashBalanceAmount());
+        }
+        dataGrid.setFooter(Arrays.asList(footer));
+        return dataGrid;
     }
 
     @RequestMapping("/getAllShopLocation")

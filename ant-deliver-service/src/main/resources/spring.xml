@@ -15,6 +15,7 @@
 	<!-- 引入同文件夹下的redis配置文件 -->
 	<import resource="spring-redis.xml"/>
 	<import resource="spring-dubbo.xml"/>
+	<import resource="spring-tasks.xml"/>
 
 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" >
 		<property name="locations">

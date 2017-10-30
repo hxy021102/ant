@@ -87,6 +87,7 @@
 			<mvc:mapping path="/**/add*"/>
 			<mvc:mapping path="/**/edit*"/>
 			<mvc:mapping path="/**/update*"/>
+			<mvc:mapping path="/mbOrderController/printOrderView"/>
 			<!--不需要拦截的url-->
 			<mvc:exclude-mapping  path="/**/*Page" />
 			<mvc:exclude-mapping  path="/api/**" />

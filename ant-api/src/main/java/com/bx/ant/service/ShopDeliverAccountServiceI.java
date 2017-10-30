@@ -1,6 +1,6 @@
 package com.bx.ant.service;
 
-import com.mobian.pageModel.ShopDeliverAccount;
+import com.bx.ant.pageModel.ShopDeliverAccount;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
@@ -51,4 +51,14 @@ public interface ShopDeliverAccountServiceI {
 	 */
 	public void delete(Integer id);
 
+	/**
+	 * 第三方账号查询门店账号
+	 * @param refId
+	 * @param refType
+	 * @return
+	 */
+	ShopDeliverAccount getByRef(String refId, String refType);
+
+	boolean checkUserName(String userName);
+	ShopDeliverAccount getFromCache(Integer id);
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://code.alibabatech.com/schema/dubbo
+       http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+    <dubbo:application name="deliver-service"/>
+    <dubbo:registry address="${dubbo.registry.address}" check="false"/>
+
+    <!-- 扫描注解包路径，多个包用逗号分隔，不填pacakge表示扫描当前ApplicationContext中所有的类 -->
+    <!--<dubbo:annotation package="com.bx.ant.controller" />-->
+    <dubbo:consumer check="false" />
+    <dubbo:reference id="shopDeliverAccountService" interface="com.bx.ant.service.ShopDeliverAccountServiceI"/>
+    <dubbo:reference id="shopDeliverApplyService" interface="com.bx.ant.service.ShopDeliverApplyServiceI"/>
+    <dubbo:reference id="deliverOrderService" interface="com.bx.ant.service.DeliverOrderServiceI"/>
+    <dubbo:reference id="deliverOrderAllocationService" interface="com.bx.ant.service.DeliverOrderAllocationServiceI" retries="0" timeout="60000"/>
+    <dubbo:reference id="supplierService" interface="com.bx.ant.service.SupplierServiceI"/>
+    <dubbo:reference id="supplierItemRelationService" interface="com.bx.ant.service.SupplierItemRelationServiceI"/>
+
+    <dubbo:reference id="deliverOrderShopService" interface="com.bx.ant.service.DeliverOrderShopServiceI"/>
+    <dubbo:reference id="deliverOrderShopItemService" interface="com.bx.ant.service.DeliverOrderShopItemServiceI"/>
+    <dubbo:reference id="deliverOrderLogService" interface="com.bx.ant.service.DeliverOrderLogServiceI"/>
+    <dubbo:reference id="deliverOrderItemService" interface="com.bx.ant.service.DeliverOrderItemServiceI"/>
+    <dubbo:reference id="supplierOrderBillService" interface="com.bx.ant.service.SupplierOrderBillServiceI"/>
+    <dubbo:reference id="deliverOrderPayService" interface="com.bx.ant.service.DeliverOrderPayServiceI"/>
+    <dubbo:reference id="shopOrderBillService" interface="com.bx.ant.service.ShopOrderBillServiceI"/>
+    <dubbo:reference id="deliverOrderShopPayService" interface="com.bx.ant.service.DeliverOrderShopPayServiceI"/>
+    <dubbo:reference id="shopItemService" interface="com.bx.ant.service.ShopItemServiceI"/>
+</beans>

@@ -39,7 +39,7 @@
 			<table class="table table-hover table-condensed">
 				<tr>
 					<th>编码</th>
-					<td><input name="code" type="text" class="span2" maxlength="2"></td>
+					<td><input name="code" type="text" class="span2" maxlength="3"></td>
 					<th>名称</th>
 					<td><input name="name" type="text" placeholder="请输入名称"
 						class="easyui-validatebox span2" data-options="required:true"
