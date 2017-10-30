@@ -182,14 +182,14 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 			deliverOrderShop.setAmount(amount);
 			deliverOrderShopService.edit(deliverOrderShop);
 
-			//添加deliverOrderShopPay
-			DeliverOrderShopPay deliverOrderShopPay = new DeliverOrderShopPay();
-			deliverOrderShopPay.setDeliverOrderId(deliverOrderId);
-			deliverOrderShopPay.setDeliverOrderShopId(deliverOrderShop.getId());
-			deliverOrderShopPay.setShopId(deliverOrderShop.getShopId());
-			deliverOrderShopPay.setStatus(DeliverOrderServiceI.SHOP_PAY_STATUS_NOT_PAY);
-			deliverOrderShopPay.setAmount(amount);
-			deliverOrderShopPayService.add(deliverOrderShopPay);
+//			//添加deliverOrderShopPay
+//			DeliverOrderShopPay deliverOrderShopPay = new DeliverOrderShopPay();
+//			deliverOrderShopPay.setDeliverOrderId(deliverOrderId);
+//			deliverOrderShopPay.setDeliverOrderShopId(deliverOrderShop.getId());
+//			deliverOrderShopPay.setShopId(deliverOrderShop.getShopId());
+//			deliverOrderShopPay.setStatus(DeliverOrderServiceI.SHOP_PAY_STATUS_NOT_PAY);
+//			deliverOrderShopPay.setAmount(amount);
+//			deliverOrderShopPayService.add(deliverOrderShopPay);
 
 		}
 	}

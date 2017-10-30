@@ -48,6 +48,12 @@ public class ApiDeliverOrderController extends BaseController {
         TokenWrap token = getTokenWrap(request);
         Integer shopId = token.getShopId();
         deliverOrder.setShopId(shopId);
+
+        if (F.empty(pageHelper.getSort())) {
+            pageHelper.setSort("updatetime");
+            pageHelper.setOrder("desc");
+        }
+
         json.setMsg("u know");
         json.setObj(deliverOrderService.dataGridExt(deliverOrder, pageHelper));
         json.setSuccess(true);
@@ -128,6 +134,12 @@ public class ApiDeliverOrderController extends BaseController {
         DeliverOrderShop orderShop = new DeliverOrderShop();
         orderShop.setStatus(DeliverOrderShopServiceI.STATUS_REFUSED);
         orderShop.setShopId(shopId);
+
+        if (F.empty(pageHelper.getSort())) {
+            pageHelper.setSort("updatetime");
+            pageHelper.setOrder("desc");
+        }
+
         List<DeliverOrderShop> orderShops = deliverOrderShopService.dataGrid(orderShop, pageHelper).getRows();
         Collections.sort(orderShops, new Comparator<DeliverOrderShop>() {
             @Override

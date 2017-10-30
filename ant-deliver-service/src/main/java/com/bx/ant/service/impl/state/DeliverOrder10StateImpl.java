@@ -75,7 +75,7 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
 
         //2. 添加门店订单相关
         //2.1 添加门店订单明细List<deliverOrderShopItem>
-        //2.2 添加门店订单表记录deliverOrderShopPay(未支付状态)
+
         //2.3 编辑deliverOrderShop中金额amount字段
         deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItemList, deliverOrderShop);
 
