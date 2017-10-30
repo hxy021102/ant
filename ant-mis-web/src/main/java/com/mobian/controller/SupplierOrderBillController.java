@@ -182,9 +182,6 @@ public class SupplierOrderBillController extends BaseController {
 	@ResponseBody
 	public Json editStatus(SupplierOrderBill supplierOrderBill, Boolean isAgree) {
 		Json j = new Json();
-//        SupplierOrderBill supplierOrderBill = new SupplierOrderBill();
-//        supplierOrderBill.setId(supplierOrderBillId);
-//        supplierOrderBill.setRemark(remark);
         if(isAgree) {
 			supplierOrderBill.setStatus("BAS02");//审核通过
 		}else {
@@ -195,10 +192,10 @@ public class SupplierOrderBillController extends BaseController {
         for(DeliverOrderPay d : list) {
 			DeliverOrder deliverOrder = deliverOrderService.get(d.getDeliverOrderId());
         	if(isAgree) {
-				d.setStatus("SPS04");//审核通过
+				d.setStatus("DPS02");//已结算
 				deliverOrder.setPayStatus("DPS02");//修改订单状态为已结算
 			}else {
-				d.setStatus("SPS03");//审核拒绝
+				d.setStatus("DPS04");//审核拒绝
 			}
 			d.setPayWay(supplierOrderBill.getPayWay());
 			deliverOrderPayService.edit(d);

@@ -286,7 +286,7 @@ public class DeliverOrderController extends BaseController {
 	   		d.setPayStatus("DPS03");//结算中
 			deliverOrderService.edit(d);
 		}
-	   	j.setMsg("生成账单成功");
+	   	j.setMsg("创建账单成功！");
 	   	j.setSuccess(true);
 	   	return  j;
 	}
