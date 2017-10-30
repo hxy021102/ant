@@ -26,8 +26,7 @@ public class MbSupplier implements java.io.Serializable {
 	//供应商code
 	private String supplierCode;
 	//财务联系人
-	private String financialContactId;
-	private String financialContactPeople;
+	private String financialContact;
 	//财务联系人电话
 	private String financialContactPhone;
 	public String getRegionPath() {
@@ -152,12 +151,12 @@ public class MbSupplier implements java.io.Serializable {
 		this.supplierCode = supplierCode;
 	}
 
-	public String getFinancialContactId() {
-		return financialContactId;
+	public String getFinancialContact() {
+		return financialContact;
 	}
 
-	public void setFinancialContactId(String financialContactId) {
-		this.financialContactId = financialContactId;
+	public void setFinancialContact(String financialContact) {
+		this.financialContact = financialContact;
 	}
 
 	public String getFinancialContactPhone() {
@@ -168,11 +167,5 @@ public class MbSupplier implements java.io.Serializable {
 		this.financialContactPhone = financialContactPhone;
 	}
 
-	public String getFinancialContactPeople() {
-		return financialContactPeople;
-	}
 
-	public void setFinancialContactPeople(String financialContactPeople) {
-		this.financialContactPeople = financialContactPeople;
-	}
 }

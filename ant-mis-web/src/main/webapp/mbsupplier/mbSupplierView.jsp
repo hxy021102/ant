@@ -425,11 +425,11 @@
 					</td>
 				</tr>
 				<tr>
-					<th><%=TmbSupplier.ALIAS_FINANCIAL_CONTACT_ID%></th>
+					<th><%=TmbSupplier.ALIAS_FINANCIAL_CONTACT%></th>
 					<td>
-						<c:if test="${mbSupplier.financialContactId != null}">
-							${mbSupplier.financialContactPeople}
-						</c:if>
+
+							${mbSupplier.financialContact}
+
 					</td>
 					<th><%=TmbSupplier.ALIAS_FINANCIAL_CONTACT_PHONE%></th>
 					<td>

@@ -88,9 +88,9 @@
 
                 </tr>
                 <tr>
-                    <th><%=TmbSupplier.ALIAS_FINANCIAL_CONTACT_ID%></th>
+                    <th><%=TmbSupplier.ALIAS_FINANCIAL_CONTACT%></th>
                     <td>
-                        <input class="span2" name="financialContactId" type="text" value="${mbSupplier.financialContactId}"/>
+                        <input class="span2" name="financialContact" type="text" value="${mbSupplier.financialContact}"/>
                     </td>
                     <th><%=TmbSupplier.ALIAS_FINANCIAL_CONTACT_PHONE%></th>
                     <td>

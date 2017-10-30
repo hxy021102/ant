@@ -72,10 +72,6 @@ public class MbSupplierController extends BaseController {
                 String name = d.getRegionNameZh();
                 m.setRegionName(name);
             }
-            if (!F.empty(m.getFinancialContactId())) {
-                User user = userService.get(m.getFinancialContactId());
-                m.setFinancialContactPeople(user.getNickname());
-            }
         }
         return g;
     }
@@ -151,10 +147,6 @@ public class MbSupplierController extends BaseController {
         if (mbSupplier.getWarehouseId() != null) {
             MbWarehouse mbWarehouse = mbWarehouseService.get(mbSupplier.getWarehouseId());
             mbSupplier.setWarehouseName(mbWarehouse.getName());
-        }
-        if (mbSupplier.getFinancialContactId() != null) {
-            User user = userService.get(mbSupplier.getFinancialContactId());
-            mbSupplier.setFinancialContactPeople(user.getNickname());
         }
         request.setAttribute("mbSupplier", mbSupplier);
         return "/mbsupplier/mbSupplierView";

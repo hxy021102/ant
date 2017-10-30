@@ -36,7 +36,7 @@ public class TmbSupplier implements java.io.Serializable,IEntity{
 	public static final String ALIAS_CERTIFICATE_LIST = "证照资质";
 	public static final String ALIAS_WAREHOUSE_ID = "仓库";
 	public static final String ALIAS_SUPPLIER_CODE = "供应商代码";
-	public static final String ALIAS_FINANCIAL_CONTACT_ID = "财务联系人";
+	public static final String ALIAS_FINANCIAL_CONTACT = "财务联系人";
 	public static final String ALIAS_FINANCIAL_CONTACT_PHONE = "财务联系人电话";
 	
 	//date formats
@@ -73,7 +73,7 @@ public class TmbSupplier implements java.io.Serializable,IEntity{
 	//
 	private String supplierCode;
 	//
-	private String financialContactId;
+	private String financialContact;
 	//
 	private String financialContactPhone;
 	//columns END
@@ -204,13 +204,12 @@ public class TmbSupplier implements java.io.Serializable,IEntity{
 	public void setSupplierCode(String supplierCode) {
 		this.supplierCode = supplierCode;
 	}
-	@Column(name = "financial_contact_id", unique = false, nullable = true, insertable = true, updatable = true, length = 32)
-	public String getFinancialContactId() {
-		return financialContactId;
+	@Column(name = "financial_contact", unique = false, nullable = true, insertable = true, updatable = true, length = 32)
+	public String getFinancialContact() {
+		return financialContact;
 	}
-
-	public void setFinancialContactId(String financialContactId) {
-		this.financialContactId = financialContactId;
+	public void setFinancialContact(String financialContact) {
+		this.financialContact = financialContact;
 	}
 
 	@Column(name = "financial_contact_phone", unique = false, nullable = true, insertable = true, updatable = true, length = 32)
