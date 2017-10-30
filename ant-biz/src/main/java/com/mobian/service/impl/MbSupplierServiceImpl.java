@@ -1,5 +1,6 @@
 package com.mobian.service.impl;
 
+import com.bx.ant.pageModel.Supplier;
 import com.mobian.absx.F;
 import com.mobian.dao.MbSupplierDaoI;
 import com.mobian.model.TmbSupplier;
@@ -136,5 +137,16 @@ public class MbSupplierServiceImpl extends BaseServiceImpl<MbSupplier> implement
 		//mbSupplierDao.delete(mbSupplierDao.get(TmbSupplier.class, id));
 	}
 
-
+	@Override
+	public MbSupplier getBySupplierCode(String supplierCode) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("supplierCode", supplierCode);
+		TmbSupplier tmbSupplier = mbSupplierDao.get("from TmbSupplier t where t.supplierCode = :supplierCode", params);
+		if (tmbSupplier != null) {
+			MbSupplier mbSupplier = new MbSupplier();
+			BeanUtils.copyProperties(tmbSupplier, mbSupplier);
+			return mbSupplier;
+		}
+		return null;
+	}
 }

@@ -25,11 +25,11 @@
 					<th><%=TmbSupplier.ALIAS_NAME%></th>	
 					<td>
 						${mbSupplier.name}							
-					</td>							
-					<th><%=TmbSupplier.ALIAS_REGION_NAME%></th>
+					</td>
+					<th><%=TmbSupplier.ALIAS_SUPPLIER_CODE%></th>
 					<td>
-						${mbSupplier.regionName}
-					</td>							
+						${mbSupplier.supplierCode}
+					</td>
 				</tr>		
 				<tr>	
 					<th><%=TmbSupplier.ALIAS_ADDRESS%></th>	
@@ -47,8 +47,24 @@
 					<td>
 						${mbSupplier.contactPhone}
 					</td>
-				</tr>		
-				<tr>	
+				</tr>
+				<tr>
+					<th><%=TmbSupplier.ALIAS_FINANCIAL_CONTACT_ID%></th>
+					<td>
+						<c:if test="${mbSupplier.financialContactId != null}">
+							${mbSupplier.financialContactPeople}
+						</c:if>
+					</td>
+					<th><%=TmbSupplier.ALIAS_FINANCIAL_CONTACT_PHONE%></th>
+					<td>
+						${mbSupplier.financialContactPhone}
+					</td>
+				</tr>
+				<tr>
+					<th><%=TmbSupplier.ALIAS_REGION_NAME%></th>
+					<td>
+						${mbSupplier.regionName}
+					</td>
 					<th><%=TmbSupplier.ALIAS_WAREHOUSE_ID%></th>	
 					<td colspan="3">
 						${mbSupplier.warehouseName}

@@ -60,11 +60,10 @@
                         <input name="name" type="text" class="easyui-validatebox span2" data-options="required:true"
                                value="${mbSupplier.name}"/>
                     </td>
-                    <th><%=TmbSupplier.ALIAS_REGION_ID%>
-                    </th>
+                    <th><%=TmbSupplier.ALIAS_SUPPLIER_CODE%></th>
                     <td>
-                        <jb:selectGrid dataType="region" name="regionId" value="${mbSupplier.regionId}"></jb:selectGrid>
-
+                        <input  name="supplierCode" type="text" class="easyui-validatebox span2" data-options="required:true"
+                              value="${mbSupplier.supplierCode}"/>
                     </td>
                 </tr>
                 <tr>
@@ -74,7 +73,6 @@
                         <input class="span2" name="address" type="text" value="${mbSupplier.address}"
                                style="width:90%"/>
                     </td>
-
                 </tr>
                 <tr>
                     <th><%=TmbSupplier.ALIAS_CONTACT_PEOPLE%>
@@ -90,6 +88,22 @@
 
                 </tr>
                 <tr>
+                    <th><%=TmbSupplier.ALIAS_FINANCIAL_CONTACT_ID%></th>
+                    <td>
+                        <input class="span2" name="financialContactId" type="text" value="${mbSupplier.financialContactId}"/>
+                    </td>
+                    <th><%=TmbSupplier.ALIAS_FINANCIAL_CONTACT_PHONE%></th>
+                    <td>
+                        <input class="span2" name="financialContactPhone" type="text" value="${mbSupplier.financialContactPhone}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th><%=TmbSupplier.ALIAS_REGION_ID%>
+                    </th>
+                    <td>
+                        <jb:selectGrid dataType="region" name="regionId" value="${mbSupplier.regionId}"></jb:selectGrid>
+
+                    </td>
                     <th><%=TmbSupplier.ALIAS_WAREHOUSE_ID%>
                     </th>
                     <td colspan="3">
