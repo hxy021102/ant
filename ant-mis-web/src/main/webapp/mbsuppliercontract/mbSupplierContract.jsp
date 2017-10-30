@@ -62,7 +62,10 @@
                 }, {
                     field : 'code',
                     title : '<%=TmbSupplierContract.ALIAS_CODE%>',
-                    width : 30
+                    width : 30,
+                    formatter : function (value, row, index) {
+                        return '<a onclick="viewContract(' + row.id + ')">' + row.id + '</a>';
+                    }
                 },  {
                     field : 'name',
                     title : '<%=TmbSupplierContract.ALIAS_NAME%>',
@@ -122,6 +125,14 @@
                 }
             });
         });
+        function viewContract(id) {
+            var href = '${pageContext.request.contextPath}/mbSupplierContractController/view?id=' + id;
+            parent.$("#index_tabs").tabs('add', {
+                title : '合同详情-' + id,
+                content : '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+                closable : true
+            });
+        }
 
         function deleteFun(id) {
             if (id == undefined) {
