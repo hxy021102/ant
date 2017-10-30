@@ -102,14 +102,7 @@
 				} , {
 				field : 'handleStatusName',
 				title : '<%=TmbRechargeLog.ALIAS_HANDLE_STATUS%>',
-				width : 50,
-				formatter:function(value, row){
-					if(row.refType == 'BT003' ||(row.refType == 'BT013'&&row.payCode)){
-						return value;
-					}else{
-						return '';
-					}
-				}
+				width : 50
 				} , {
 				field : 'action',
 				title : '操作',
@@ -186,9 +179,9 @@
 			id = rows[0].id;
 		}
 		parent.$.modalDialog({
-			title: '汇款审核',
+			title: '审核',
 			width: 780,
-			height: 200,
+			height: 250,
 			href: '${pageContext.request.contextPath}/mbRechargeLogController/editAuditPage?id=' + id ,
 			buttons: [{
 				text: '通过',

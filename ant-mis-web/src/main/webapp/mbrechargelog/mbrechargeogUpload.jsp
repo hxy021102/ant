@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="com.mobian.model.TmbItemStock" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%>  
@@ -34,7 +33,7 @@
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;">	
-		<a href="${pageContext.request.contextPath}/mbrechargelog/mbItemStockTemplate.xlsx" target="_blank">下载模板</a>
+		<a href="${pageContext.request.contextPath}/mbrechargelog/mbRechargeLogTemplate.xlsx" target="_blank">下载模板</a>
 		<form id="form" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="id"/>
 			<table class="table table-hover table-condensed">
