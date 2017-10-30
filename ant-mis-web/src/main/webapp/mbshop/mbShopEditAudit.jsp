@@ -126,6 +126,10 @@
 					<td>
 						<jb:select dataType="ST" name="shopType" mustSelect="true" required="true"></jb:select>
 					</td>
+					<th><%=TmbShop.ALIAS_SALES_LOGIN_ID%></th>
+					<td>
+						<jb:selectSql name="salesLoginId" dataType="SQ018" value="${mbShop.salesLoginId}"></jb:selectSql>
+					</td>
 					<%--<th><%=TmbShop.ALIAS_SALES_LOGIN_ID%></th>
 					<td>
 						<jb:selectSql name="salesLoginId" dataType="SQ018"></jb:selectSql>

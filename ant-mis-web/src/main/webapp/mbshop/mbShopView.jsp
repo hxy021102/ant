@@ -162,7 +162,7 @@
                         title: '<%=TmbShopInvoice.ALIAS_REGISTER_PHONE%>',
                         width: 80
                     }, {
-                        field: 'bankName',
+                        field: 'bankNames',
                         title: '<%=TmbShopInvoice.ALIAS_BANK_NAME%>',
                         width: 80
                     }, {
@@ -1003,7 +1003,7 @@
 </head>
 <body>
 <div class="easyui-layout" data-options="fit:true,border:false">
-    <div data-options="region:'north',border:false" style="height: 145px; overflow: hidden;">
+    <div data-options="region:'north',border:false" style="height: 150px; overflow: hidden;">
         <table class="table table-hover table-condensed">
             <tr>
 
@@ -1123,7 +1123,7 @@
             </tr>
             <tr>
                 <th>销售人员</th>
-                <td>
+                <td colspan="8">
                     ${mbShopExt.salesLoginName}
                 </td>
             </tr>

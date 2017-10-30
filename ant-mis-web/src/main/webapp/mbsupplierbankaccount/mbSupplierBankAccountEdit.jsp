@@ -40,17 +40,17 @@
 				<tr>
 					<th><%=TmbSupplierBankAccount.ALIAS_ACCOUNT_NAME%></th>	
 					<td>
-											<input class="span2" name="accountName" type="text" value="${mbSupplierBankAccount.accountName}"/>
+						<input class="span2" name="accountName" type="text" value="${mbSupplierBankAccount.accountName}"/>
 					</td>
 					<th><%=TmbSupplierBankAccount.ALIAS_ACCOUNT_BANK%></th>
 					<td>
-											<input class="span2" name="accountBank" type="text" value="${mbSupplierBankAccount.accountBank}"/>
+						<jb:select name="accountBank" dataType="BN" value="${mbSupplierBankAccount.accountBank}"></jb:select>
 					</td>
 				</tr>
 				<tr>
 					<th><%=TmbSupplierBankAccount.ALIAS_BANK_NUMBER%></th>	
 					<td colspan="3">
-											<input class="span2" name="bankNumber" type="text" value="${mbSupplierBankAccount.bankNumber}"/>
+						<input class="span2" name="bankNumber" type="text" value="${mbSupplierBankAccount.bankNumber}"/>
 					</td>							
 				</tr>
 			</table>				

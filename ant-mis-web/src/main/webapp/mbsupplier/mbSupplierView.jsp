@@ -106,7 +106,7 @@
                 title : '开户名称',
                 width : 50
             }, {
-                field : 'accountBank',
+                field : 'accountBankName',
                 title : '开户银行',
                 width : 50
             }, {
@@ -178,7 +178,7 @@
         	title : '注册电话',
         	width : 80
     		}, {
-        	field : 'bankName',
+        	field : 'bankNames',
         	title : '银行名称',
         	width : 80
     		}, {
