@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bx.ant.dao.DeliverOrderItemDaoI;
 import com.bx.ant.pageModel.*;
 import com.bx.ant.service.*;
+import com.bx.ant.service.session.TokenServiceI;
 import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderDaoI;
 import com.bx.ant.model.TdeliverOrder;
@@ -70,6 +71,8 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 
 	@javax.annotation.Resource
 	private SupplierItemRelationServiceI supplierItemRelationService;
+	@Resource
+	private TokenServiceI tokenService;
 
 
 	@Override
@@ -678,5 +681,14 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	@Override
 	public Integer clearAllocationOrderRedis(Integer shopId) {
 		return updateAllocationOrderRedis(shopId, 0);
+	}
+
+	@Override
+	public void handleAssignDeliverOrder(DeliverOrder deliverOrder) {
+		if (tokenService.getTokenByShopId(deliverOrder.getShopId()) == null) {
+			throw new ServiceException("门店不在线，token已失效");
+		}else{
+
+		}
 	}
 }

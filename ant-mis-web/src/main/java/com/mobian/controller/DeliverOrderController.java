@@ -389,9 +389,9 @@ public class DeliverOrderController extends BaseController {
 	@ResponseBody
 	public Json assignOrderShop(DeliverOrder deliverOrder) {
 		Json j = new Json();
-		deliverOrderService.edit(deliverOrder);
+		deliverOrderService.handleAssignDeliverOrder(deliverOrder);
 		j.setSuccess(true);
-		j.setMsg("编辑成功！");
+		j.setMsg("指派成功！");
 		return j;
 	}
 }

@@ -244,4 +244,10 @@ public interface DeliverOrderServiceI {
 	 * @return
 	 */
 	Integer clearAllocationOrderRedis(Integer shopId);
+
+	/**
+	 * 处理指派后的订单
+	 * @param deliverOrder
+	 */
+	void handleAssignDeliverOrder(DeliverOrder deliverOrder);
 }

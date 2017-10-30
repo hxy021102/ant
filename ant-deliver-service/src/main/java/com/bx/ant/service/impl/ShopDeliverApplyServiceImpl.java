@@ -4,6 +4,7 @@ import com.bx.ant.dao.ShopDeliverApplyDaoI;
 import com.bx.ant.model.TshopDeliverApply;
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.ShopDeliverApplyQuery;
+import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
@@ -33,6 +34,8 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 
 	@Resource
 	private MbShopServiceI mbShopService;
+	@Autowired
+	private DeliverOrderServiceI deliverOrderService;
 
 	@Override
 	public DataGrid dataGrid(ShopDeliverApply shopDeliverApply, PageHelper ph) {
@@ -234,6 +237,7 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 			if (point != null) {
 				deliverOrder.setLongitude(point[0]);
 				deliverOrder.setLatitude(point[1]);
+				deliverOrderService.edit(deliverOrder);
 			}
 		}
 		//3、获取最大配送距离并计算符合配送距离的门店
