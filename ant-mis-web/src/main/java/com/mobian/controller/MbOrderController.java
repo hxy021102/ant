@@ -351,7 +351,7 @@ public class MbOrderController extends BaseController {
 			MbOrderRefundLog mbOrderRefundLog = mbOrderRefundLogService.get(id);
 			id = mbOrderRefundLog.getOrderId();
 		}
-		if("BT002".equals(type)) {
+		if("BT002".equals(type)||"BT007".equals(type)||"BT008".equals(type)) {
 			MbPayment mbPayment = mbPaymentService.get(id);
 			id = mbPayment.getOrderId();
 		}

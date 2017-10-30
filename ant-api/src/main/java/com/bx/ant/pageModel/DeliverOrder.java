@@ -1,5 +1,6 @@
-package com.mobian.pageModel;
+package com.bx.ant.pageModel;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @SuppressWarnings("serial")
@@ -24,7 +25,14 @@ public class DeliverOrder implements java.io.Serializable {
 	private String payWay;
 	private String contactPhone;
 	private String contactPeople;
+	private BigDecimal longitude;
+	private BigDecimal latitude;
 	private String remark;
+	private Integer shopId;
+	private Double shopDistance;
+	private String supplierOrderId;
+
+
 
 	
 
@@ -157,4 +165,43 @@ public class DeliverOrder implements java.io.Serializable {
 		return this.remark;
 	}
 
+	public Integer getShopId() {
+		return shopId;
+	}
+
+	public void setShopId(Integer shopId) {
+		this.shopId = shopId;
+	}
+
+	public BigDecimal getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(BigDecimal longitude) {
+		this.longitude = longitude;
+	}
+
+	public BigDecimal getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(BigDecimal latitude) {
+		this.latitude = latitude;
+	}
+
+	public Double getShopDistance() {
+		return shopDistance;
+	}
+
+	public void setShopDistance(Double shopDistance) {
+		this.shopDistance = shopDistance;
+	}
+
+	public String getSupplierOrderId() {
+		return supplierOrderId;
+	}
+
+	public void setSupplierOrderId(String supplierOrderId) {
+		this.supplierOrderId = supplierOrderId;
+	}
 }

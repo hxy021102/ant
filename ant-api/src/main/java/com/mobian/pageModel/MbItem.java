@@ -39,6 +39,10 @@ public class MbItem implements java.io.Serializable {
 
 	private String keyword;
 
+	// 派单门店商品信息
+	private Boolean online;
+	private String status;
+
 	public String getUrl() {
 		return url;
 	}
@@ -253,6 +257,22 @@ public class MbItem implements java.io.Serializable {
 	public Integer getPurchasePrice() { return purchasePrice;}
 
 	public void setPurchasePrice(Integer purchasePrice) { this.purchasePrice = purchasePrice; }
+
+	public Boolean getOnline() {
+		return online;
+	}
+
+	public void setOnline(Boolean online) {
+		this.online = online;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
 	public String getStandard() {
 		return standard;

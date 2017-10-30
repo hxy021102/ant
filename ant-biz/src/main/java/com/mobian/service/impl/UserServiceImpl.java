@@ -43,8 +43,9 @@ public class UserServiceImpl implements UserServiceI {
 		}
 		return null;
 	}
-	public User getFromCache(String  id) {
-		 Tuser source =userDao.getById(id);
+
+	public User getFromCache(String id) {
+		Tuser source = userDao.getById(id);
 		if (source != null) {
 			User target = new User();
 			BeanUtils.copyProperties(source, target);
@@ -53,6 +54,22 @@ public class UserServiceImpl implements UserServiceI {
 			return null;
 		}
 	}
+
+	@Override
+	public List<User> getUserListByResourceId(String resourceId) {
+		String hql = "from Tuser t join fetch t.troles role join fetch role.tresources resource where resource.id = :id";
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", resourceId);
+		List<Tuser> tuserList = userDao.find(hql,params);
+		List<User> userList = new ArrayList<User>();
+		for (Tuser tuser : tuserList) {
+			User u = new User();
+			BeanUtils.copyProperties(tuser, u);
+			userList.add(u);
+		}
+		return userList;
+	}
+
 	@Override
 	synchronized public void reg(User user) throws Exception {
 		Map<String, Object> params = new HashMap<String, Object>();

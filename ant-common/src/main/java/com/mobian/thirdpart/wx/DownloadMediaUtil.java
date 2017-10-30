@@ -1,7 +1,10 @@
 package com.mobian.thirdpart.wx;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mobian.absx.F;
+import com.mobian.thirdpart.oss.OSSUtil;
 import com.mobian.util.Constants;
+import com.mobian.util.Util;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -82,5 +85,48 @@ public class DownloadMediaUtil {
             System.out.println(error);
         }
         return null;
+    }
+
+
+    public static String downloadHeadImage(String headimgurl, String openid) {
+        if(F.empty(headimgurl)) return OSSUtil.cdnUrl + "mmopen/headimage/user-default.png";
+
+        try {
+            URL url = new URL(headimgurl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setUseCaches(false);
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            if(!F.empty(openid) && F.empty(DownloadMediaUtil.getFileExtName(conn.getHeaderField("Content-Type")))) {
+                conn.disconnect();
+                JSONObject jsonObject = JSONObject.parseObject(HttpUtil.httpsRequest(WeixinUtil.getUserInfoUrl(openid, null), "GET", null));
+                return downloadHeadImage(jsonObject.getString("headimgurl"));
+            }
+            String filePath = "mmopen/" + Util.CreateNoncestr(64) + "/ant/" + Util.CreateNoncestr(16);
+//            if(headimgurl.indexOf("mmopen") > -1) {
+//                filePath = headimgurl.substring(headimgurl.indexOf("mmopen"));
+//            } else if(headimgurl.indexOf("mmhead") > -1) {
+//                filePath = headimgurl.substring(headimgurl.indexOf("mmhead"));
+//            }else {
+//                filePath = "mmopen/" + Util.CreateNoncestr(64) + "/zcys/" + Util.CreateNoncestr();
+//            }
+
+            String result = OSSUtil.putInputStream(OSSUtil.bucketName, conn.getInputStream(), filePath);
+            conn.disconnect();
+
+            return result;
+        } catch (Exception e) {
+            String error = String.format("上传头像失败：%s", e);
+            System.out.println(error);
+            headimgurl = OSSUtil.cdnUrl + "mmopen/headimage/user-default.png";
+        }
+        return headimgurl;
+    }
+
+    public static String downloadHeadImage(String headimgurl) {
+        return downloadHeadImage(headimgurl, null);
     }
 }

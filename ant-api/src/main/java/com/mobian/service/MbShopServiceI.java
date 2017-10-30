@@ -15,6 +15,18 @@ public interface MbShopServiceI {
 	 * 加盟
 	 */
 	String ST01 = "ST01";
+	/**
+	 * 直营门店
+	 */
+	String ST03 = "ST03";
+	/**
+	 * 待审核
+	 */
+	String AS_01 = "AS01";
+	/**
+	 * 审核通过
+	 */
+	String AS_02 = "AS02";
 
 	/**
 	 * 获取MbShop数据表格

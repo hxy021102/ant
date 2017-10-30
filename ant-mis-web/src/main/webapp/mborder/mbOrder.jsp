@@ -89,11 +89,13 @@
 			}, {
 				field : 'deliveryRequireTime',
 				title : '<%=TmbOrder.ALIAS_DELIVERY_REQUIRE_TIME%>',
-				width : 50
+				width : 50,
+                sortable: true
 			}, {
 				field : 'addtime',
 				title : '<%=TmbOrder.ALIAS_ADDTIME%>',
-				width : 50
+				width : 50,
+                sortable: true
 			}
 			] ],
 			toolbar : '#toolbar',

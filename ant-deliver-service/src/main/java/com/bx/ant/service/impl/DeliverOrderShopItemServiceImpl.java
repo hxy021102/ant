@@ -1,13 +1,15 @@
 package com.bx.ant.service.impl;
 
+import com.bx.ant.pageModel.*;
+import com.bx.ant.service.*;
 import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderShopItemDaoI;
 import com.bx.ant.model.TdeliverOrderShopItem;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.DeliverOrderShopItem;
-import com.mobian.pageModel.PageHelper;
-import com.bx.ant.service.DeliverOrderShopItemServiceI;
+import com.mobian.exception.ServiceException;
+import com.mobian.pageModel.*;
+import com.mobian.service.MbItemServiceI;
 import com.mobian.util.MyBeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,21 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 
 	@Autowired
 	private DeliverOrderShopItemDaoI deliverOrderShopItemDao;
+
+	@Autowired
+	private ShopItemServiceI shopItemService;
+
+	@javax.annotation.Resource
+	private MbItemServiceI mbItemService;
+
+	@Autowired
+	private DeliverOrderShopServiceI  deliverOrderShopService;
+
+	@Autowired
+	private DeliverOrderShopItemServiceImpl deliverOrderShopItemService;
+
+	@Autowired
+	private DeliverOrderShopPayServiceI deliverOrderShopPayService;
 
 	@Override
 	public DataGrid dataGrid(DeliverOrderShopItem deliverOrderShopItem, PageHelper ph) {
@@ -119,6 +136,124 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 		params.put("id", id);
 		deliverOrderShopItemDao.executeHql("update TdeliverOrderShopItem t set t.isdeleted = 1 where t.id = :id",params);
 		//deliverOrderShopItemDao.delete(deliverOrderShopItemDao.get(TdeliverOrderShopItem.class, id));
+	}
+
+	@Override
+	public void addByDeliverOrderItemList(List<DeliverOrderItem> deliverOrderItems, DeliverOrderShop deliverOrderShop) {
+		if (F.empty(deliverOrderShop.getId()) || F.empty(deliverOrderShop.getShopId()))
+			throw new ServiceException("数据传递不完整");
+
+		if (CollectionUtils.isNotEmpty(deliverOrderItems)) {
+			int amount = 0;
+			Long deliverOrderId = null;
+			for (DeliverOrderItem d : deliverOrderItems) {
+//				ShopItem shopItem = shopItemService.getByShopIdAndItemId(deliverOrderShop.getShopId(), d.getItemId());
+				ShopItem shopItem = shopItemService.getByShopIdAndItemId(deliverOrderShop.getShopId(), d.getItemId(), true, "SIS02");
+				if (shopItem == null) throw new ServiceException("无法找到门店对应商品");
+				if (F.empty(shopItem.getQuantity()) || d.getQuantity() > shopItem.getQuantity()) throw new ServiceException("门店对应商品库存不足");
+
+				//记录deliverOrderId
+				deliverOrderId = d.getDeliverOrderId();
+
+				//扣除库存
+                ShopItem shopItemN = new ShopItem();
+                shopItemN.setId(shopItem.getId());
+                shopItemN.setQuantity( - d.getQuantity());
+				shopItemService.updateQunatity(shopItemN);
+
+				//添加deliverOrderShopItem
+				DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
+				deliverOrderShopItem.setDeliverOrderId(d.getDeliverOrderId());
+				deliverOrderShopItem.setDeliverOrderShopId(deliverOrderShop.getId());
+				deliverOrderShopItem.setFreight(shopItem.getFreight());
+				deliverOrderShopItem.setPrice(shopItem.getPrice() == null ? 0 : shopItem.getPrice());
+				deliverOrderShopItem.setInPrice(shopItem.getInPrice() == null ? 0 : shopItem.getInPrice());
+				deliverOrderShopItem.setShopId(deliverOrderShop.getShopId());
+				deliverOrderShopItem.setItemId(d.getItemId());
+				deliverOrderShopItem.setQuantity(d.getQuantity() == null ? 0 : d.getQuantity());
+				add(deliverOrderShopItem);
+
+				//计算总金额
+				amount += deliverOrderShopItem.getPrice() * deliverOrderShopItem.getQuantity();
+
+			}
+
+			//编辑门店订单金额
+			deliverOrderShop.setAmount(amount);
+			deliverOrderShopService.edit(deliverOrderShop);
+
+			//添加deliverOrderShopPay
+			DeliverOrderShopPay deliverOrderShopPay = new DeliverOrderShopPay();
+			deliverOrderShopPay.setDeliverOrderId(deliverOrderId);
+			deliverOrderShopPay.setDeliverOrderShopId(deliverOrderShop.getId());
+			deliverOrderShopPay.setShopId(deliverOrderShop.getShopId());
+			deliverOrderShopPay.setStatus(DeliverOrderServiceI.SHOP_PAY_STATUS_NOT_PAY);
+			deliverOrderShopPay.setAmount(amount);
+			deliverOrderShopPayService.add(deliverOrderShopPay);
+
+		}
+	}
+
+	@Override
+	public List<DeliverOrderShopItem> list(DeliverOrderShopItem deliverOrderShopItem) {
+		List<DeliverOrderShopItem> ol = new ArrayList<DeliverOrderShopItem>();
+		Map<String, Object> params = new HashMap<String, Object>();
+		String hql = " from TdeliverOrderShopItem t ";
+		String where = whereHql(deliverOrderShopItem, params);
+		List<TdeliverOrderShopItem> l = deliverOrderShopItemDao.find(hql + where, params);
+		if (CollectionUtils.isNotEmpty(l)) {
+			for (TdeliverOrderShopItem t : l) {
+				DeliverOrderShopItemExt o = new DeliverOrderShopItemExt();
+				BeanUtils.copyProperties(t, o);
+				fillInfo(o);
+				ol.add(o);
+			}
+		}
+		return ol;
+	}
+
+	protected void fillInfo(DeliverOrderShopItemExt deliverOrderShopItemExt) {
+		fillItemInfo(deliverOrderShopItemExt);
+	}
+
+	protected void fillItemInfo(DeliverOrderShopItemExt deliverOrderShopItemExt) {
+		if (!F.empty(deliverOrderShopItemExt.getItemId())) {
+			MbItem item = mbItemService.getFromCache(deliverOrderShopItemExt.getItemId());
+			if (item != null) {
+				deliverOrderShopItemExt.setItemName(item.getName());
+				deliverOrderShopItemExt.setPictureUrl(item.getUrl());
+				deliverOrderShopItemExt.setQuantityUnitName(item.getQuantityUnitName());
+			}
+		}
+	}
+
+	@Override
+	public DataGrid dataGridWithName(DeliverOrderShopItem deliverOrderShopItem, PageHelper ph) {
+		DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+		deliverOrderShop.setDeliverOrderId(deliverOrderShopItem.getDeliverOrderId());
+		deliverOrderShop.setStatus("DSS02");
+		List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(deliverOrderShop);
+		DataGrid dg = new DataGrid();
+		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
+			deliverOrderShopItem.setDeliverOrderShopId(deliverOrderShops.get(0).getId());
+			DataGrid dataGrid = dataGrid(deliverOrderShopItem, ph);
+			List<DeliverOrderShopItem> deliverOrderShopItems = dataGrid.getRows();
+			if (CollectionUtils.isNotEmpty(deliverOrderShopItems)) {
+				List<DeliverOrderShopItemExt> deliverOrderShopItemExts = new ArrayList<DeliverOrderShopItemExt>();
+				for (DeliverOrderShopItem orderShopItem : deliverOrderShopItems) {
+					DeliverOrderShopItemExt deliverOrderShopItemExt = new DeliverOrderShopItemExt();
+					BeanUtils.copyProperties(orderShopItem, deliverOrderShopItemExt);
+					MbItem mbItem = mbItemService.getFromCache(orderShopItem.getItemId());
+					deliverOrderShopItemExt.setItemCode(mbItem.getCode());
+					deliverOrderShopItemExt.setItemName(mbItem.getName());
+					deliverOrderShopItemExts.add(deliverOrderShopItemExt);
+				}
+				dg.setRows(deliverOrderShopItemExts);
+				dg.setTotal(dataGrid.getTotal());
+				return dg;
+			}
+		}
+		return dg;
 	}
 
 }

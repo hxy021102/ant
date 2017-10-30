@@ -60,6 +60,9 @@ public class TdeliverOrderItem implements java.io.Serializable,IEntity{
 	private Integer inPrice;
 	//
 	private Integer freight;
+
+	private Integer quantity;
+
 	//columns END
 
 
@@ -160,8 +163,17 @@ public class TdeliverOrderItem implements java.io.Serializable,IEntity{
 		return this.freight;
 	}
 	
-	public void setFreight(Integer freight) {
+	public void setFreight(Integer freight)
+	{
 		this.freight = freight;
+	}
+	@Column(name = "quantity", unique = false, nullable = true, insertable = true, updatable = true, length = 11)
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
 	}
 	
 	

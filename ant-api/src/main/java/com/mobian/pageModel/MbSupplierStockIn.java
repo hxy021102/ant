@@ -36,6 +36,8 @@ public class MbSupplierStockIn implements java.io.Serializable {
 	private String supplierName;
 	private Integer paymentDays;
 
+	private Integer[] supplierOrderIdList;
+
 	public Integer getPaymentDays() {
 		return paymentDays;
 	}
@@ -206,5 +208,13 @@ public class MbSupplierStockIn implements java.io.Serializable {
 
 	public void setDriverName(String driverName) {
 		this.driverName = driverName;
+	}
+
+	public Integer[] getSupplierOrderIdList() {
+		return supplierOrderIdList;
+	}
+
+	public void setSupplierOrderIdList(Integer[] supplierOrderIdList) {
+		this.supplierOrderIdList = supplierOrderIdList;
 	}
 }

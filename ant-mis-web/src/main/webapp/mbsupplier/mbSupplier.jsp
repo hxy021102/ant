@@ -18,11 +18,6 @@
 		$.canDelete = true;
 	</script>
 </c:if>
-<c:if test="${fn:contains(sessionInfo.resourceList, '/mbSupplierController/view')}">
-	<script type="text/javascript">
-		$.canView = true;
-	</script>
-</c:if>
 	<c:if test="${fn:contains(sessionInfo.resourceList, '/mbSupplierController/view')}">
 		<script type="text/javascript">
             $.canStock = true;
@@ -51,8 +46,10 @@
 			columns : [ [ {
 				field : 'id',
 				title : '编号',
-				width : 150,
-				hidden : true
+				width : 25,
+				formatter: function (value,row,index) {
+					return '<a onclick="viewSupplier('+value+')">'+ value +'</a>'
+                }
 				}, {
 				field : 'addtime',
 				title : '<%=TmbSupplier.ALIAS_ADDTIME%>',
@@ -94,11 +91,6 @@
 					if ($.canDelete) {
 						str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/cancel.png');
 					}
-					str += '&nbsp;';
-					if ($.canView) {
-						str += $.formatString('<img onclick="viewFun(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/map/magnifier.png');
-					}
-
 					return str;
 				}
 			} ] ],
@@ -168,6 +160,14 @@
 			height : 500,
 			href : '${pageContext.request.contextPath}/mbSupplierController/view?id=' + id
 		});
+	}
+	function viewSupplier(id) {
+        var href = '${pageContext.request.contextPath}/mbSupplierController/view?id=' + id;
+        parent.$("#index_tabs").tabs('add', {
+            title: '供应商详情-' + id,
+            content: '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            closable: true
+        });
 	}
 
 	function addFun() {

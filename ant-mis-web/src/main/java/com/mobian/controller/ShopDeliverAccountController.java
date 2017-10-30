@@ -2,20 +2,27 @@ package com.mobian.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bx.ant.pageModel.ShopDeliverApply;
+import com.bx.ant.service.ShopDeliverAccountServiceI;
+import com.bx.ant.service.ShopDeliverApplyServiceI;
+import com.mobian.absx.F;
+import com.mobian.pageModel.*;
 import com.mobian.pageModel.Colum;
-import com.mobian.pageModel.ShopDeliverAccount;
+import com.bx.ant.pageModel.ShopDeliverAccount;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
-import com.bx.ant.service.ShopDeliverAccountServiceI;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
+import com.bx.ant.pageModel.ShopDeliverAccount;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -31,8 +38,10 @@ import com.alibaba.fastjson.JSON;
 @Controller
 @RequestMapping("/shopDeliverAccountController")
 public class ShopDeliverAccountController extends BaseController {
-
-	private ShopDeliverAccountServiceI shopDeliverAccountService;
+	@Resource
+    private ShopDeliverAccountServiceI shopDeliverAccountService;
+	@Resource
+	private ShopDeliverApplyServiceI shopDeliverApplyService;
 
 
 	/**
@@ -48,18 +57,26 @@ public class ShopDeliverAccountController extends BaseController {
 	/**
 	 * 获取ShopDeliverAccount数据表格
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 */
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(ShopDeliverAccount shopDeliverAccount, PageHelper ph) {
-		return shopDeliverAccountService.dataGrid(shopDeliverAccount, ph);
+		DataGrid g = shopDeliverAccountService.dataGrid(shopDeliverAccount, ph);
+		List<ShopDeliverAccount> list =	g.getRows();
+		for(ShopDeliverAccount s : list) {
+			ShopDeliverApply shopDeliverApply =	shopDeliverApplyService.getByAccountId(s.getId());
+			if(shopDeliverApply !=null && "DAS02".equals(shopDeliverApply.getStatus())) {
+				s.setShopId(shopDeliverApply.getShopId());
+			}
+		}
+		return g;
 	}
 	/**
 	 * 获取ShopDeliverAccount数据表格excel
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 * @throws NoSuchMethodException 
 	 * @throws SecurityException 
@@ -111,6 +128,8 @@ public class ShopDeliverAccountController extends BaseController {
 	@RequestMapping("/view")
 	public String view(HttpServletRequest request, Integer id) {
 		ShopDeliverAccount shopDeliverAccount = shopDeliverAccountService.get(id);
+		ShopDeliverApply shopDeliverApply = shopDeliverApplyService.getByAccountId(shopDeliverAccount.getId());
+		shopDeliverAccount.setShopId(shopDeliverApply.getShopId());
 		request.setAttribute("shopDeliverAccount", shopDeliverAccount);
 		return "/shopdeliveraccount/shopDeliverAccountView";
 	}
@@ -158,5 +177,30 @@ public class ShopDeliverAccountController extends BaseController {
 		j.setSuccess(true);
 		return j;
 	}
-
+	@RequestMapping("/selectQuery")
+	@ResponseBody
+	public List<ItemTree> query(String q, String shopId) {
+		ShopDeliverAccount shopDeliverAccount = new ShopDeliverAccount();
+		List<ItemTree> lt = new ArrayList<ItemTree>();
+		if (!F.empty(q)) {
+			shopDeliverAccount.setKeyword(q);
+		} else {
+			return lt;
+		}
+		PageHelper ph = new PageHelper();
+		ph.setHiddenTotal(true);
+		ph.setPage(100);
+		DataGrid diveRegionList = shopDeliverAccountService.dataGrid(shopDeliverAccount, ph);
+		List<ShopDeliverAccount> rows = diveRegionList.getRows();
+		if (!CollectionUtils.isEmpty(rows)) {
+			for (ShopDeliverAccount d : rows) {
+				ItemTree tree = new ItemTree();
+				tree.setId(d.getId() + "");
+				tree.setText(d.getUserName());
+				tree.setParentName(d.getNickName());
+				lt.add(tree);
+			}
+		}
+		return lt;
+	}
 }

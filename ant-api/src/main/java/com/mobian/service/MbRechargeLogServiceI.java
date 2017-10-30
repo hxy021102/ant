@@ -3,6 +3,7 @@ package com.mobian.service;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbRechargeLog;
 import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.SessionInfo;
 
 import java.util.List;
 
@@ -67,4 +68,24 @@ public interface MbRechargeLogServiceI {
 	 * @return
 	 */
 	List<MbRechargeLog> listMbRechargeLog(MbRechargeLog mbRechargeLog);
+
+	/**
+	 * 批量添加充值记录数据
+	 * @param mbRechargeLogList
+	 */
+	void addBatchMbRechargeLog(List<MbRechargeLog> mbRechargeLogList, String  loginId);
+
+	/**
+	 * 查询充值记录集合
+	 * @param mbRechargeLog
+	 * @return
+	 */
+	List<MbRechargeLog> query(MbRechargeLog mbRechargeLog);
+
+	/**
+	 * 审核时校验银行转账信息是否唯一
+	 * @param mbRechargeLog
+	 * @return
+	 */
+	MbRechargeLog checkRechargeLogPayCode(MbRechargeLog mbRechargeLog);
 }

@@ -31,4 +31,10 @@ public interface TaskServiceI {
      */
     void updateBatchShopLocation();
 
+    /**
+     * 添加成本价
+     */
+    void updateCostPrice();
+
+
 }

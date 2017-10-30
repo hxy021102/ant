@@ -1,4 +1,6 @@
-package com.mobian.pageModel;
+package com.bx.ant.pageModel;
+
+import com.mobian.util.ConvertNameUtil;
 
 import java.util.Date;
 
@@ -22,7 +24,8 @@ public class Supplier implements java.io.Serializable {
 	private String contactPhone;
 	private String remark;
 	private String loginId;
-	private Date auditDate;			
+	private Date auditDate;
+	private String loginName;
 
 	
 
@@ -84,6 +87,11 @@ public class Supplier implements java.io.Serializable {
 	public String getStatus() {
 		return this.status;
 	}
+
+	public String getStatusName() {
+		return ConvertNameUtil.getString(this.status);
+	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -141,4 +149,11 @@ public class Supplier implements java.io.Serializable {
 		return this.auditDate;
 	}
 
+	public String getLoginName() {
+		return loginName;
+	}
+
+	public void setLoginName(String loginName) {
+		this.loginName = loginName;
+	}
 }

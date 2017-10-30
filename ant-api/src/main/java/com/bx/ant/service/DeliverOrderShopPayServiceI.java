@@ -1,8 +1,10 @@
 package com.bx.ant.service;
 
-import com.mobian.pageModel.DeliverOrderShopPay;
+import com.bx.ant.pageModel.DeliverOrderShopPay;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
+
+import java.util.List;
 
 /**
  * 
@@ -10,7 +12,6 @@ import com.mobian.pageModel.PageHelper;
  * 
  */
 public interface DeliverOrderShopPayServiceI {
-
 	/**
 	 * 获取DeliverOrderShopPay数据表格
 	 * 
@@ -35,7 +36,7 @@ public interface DeliverOrderShopPayServiceI {
 	 * @param id
 	 * @return
 	 */
-	public DeliverOrderShopPay get(Integer id);
+	public DeliverOrderShopPay get(Long id);
 
 	/**
 	 * 修改DeliverOrderShopPay
@@ -49,6 +50,27 @@ public interface DeliverOrderShopPayServiceI {
 	 * 
 	 * @param id
 	 */
-	public void delete(Integer id);
+	public void delete(Long id);
+
+    List<DeliverOrderShopPay> list(DeliverOrderShopPay deliverOrderShopPay);
+
+    void editStatus(DeliverOrderShopPay deliverOrderShopPay, String status);
+
+	/**
+	 * 获取DeliverOrderShopPay集合列表及对应的名称
+	 * @param deliverOrderShopPay
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataWithNameGrid(DeliverOrderShopPay deliverOrderShopPay, PageHelper ph);
+
+	/**
+	 * 查询DeliverOrderShopPay集合对象
+	 * @param deliverOrderShopPay
+	 * @return
+	 */
+	List<DeliverOrderShopPay> query(DeliverOrderShopPay deliverOrderShopPay);
+
+
 
 }

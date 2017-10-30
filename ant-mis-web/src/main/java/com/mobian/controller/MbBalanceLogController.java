@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -60,7 +61,22 @@ public class MbBalanceLogController extends BaseController {
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(MbBalanceLog mbBalanceLog, PageHelper ph) {
-		return mbBalanceLogService.dataGrid(mbBalanceLog,ph);
+		DataGrid dataGrid = mbBalanceLogService.dataGrid(mbBalanceLog, ph);
+		List<MbBalanceLog> rows = dataGrid.getRows();
+		MbBalanceLog foot = new MbBalanceLog();
+		foot.setAmountIn(0);
+		foot.setAmountOut(0);
+		for (MbBalanceLog row : rows) {
+			if (row.getAmount() >= 0) {
+				foot.setAmountIn(foot.getAmountIn() + row.getAmount());
+				row.setAmountIn(row.getAmount());
+			} else {
+				foot.setAmountOut(foot.getAmountOut() + row.getAmount());
+				row.setAmountOut(row.getAmount());
+			}
+		}
+		dataGrid.setFooter(Arrays.asList(foot));
+		return dataGrid;
 	}
 	/**
 	 * 获取MbBalanceLog数据表格excel
@@ -80,6 +96,7 @@ public class MbBalanceLogController extends BaseController {
 		ph.setRows(5000);
 		ph.setHiddenTotal(true);
 		DataGrid dg = dataGrid(mbBalanceLog, ph);
+		dg.setFooter(null);
 		List<MbBalanceLogExport> mbBalanceLogExports = new ArrayList<MbBalanceLogExport>();
 		List<MbBalanceLog> mbBalanceLogs = dg.getRows();
 		ThreadCache mbShopCache = new ThreadCache(MbShop.class) {

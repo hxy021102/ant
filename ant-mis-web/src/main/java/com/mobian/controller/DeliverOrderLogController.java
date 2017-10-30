@@ -3,19 +3,17 @@ package com.mobian.controller;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.UUID;
 
+
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mobian.pageModel.Colum;
-import com.mobian.pageModel.DeliverOrderLog;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.Json;
-import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.*;
+import com.bx.ant.pageModel.DeliverOrderLog;
 import com.bx.ant.service.DeliverOrderLogServiceI;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,6 +30,7 @@ import com.alibaba.fastjson.JSON;
 @RequestMapping("/deliverOrderLogController")
 public class DeliverOrderLogController extends BaseController {
 
+	@Resource
 	private DeliverOrderLogServiceI deliverOrderLogService;
 
 
@@ -48,18 +47,18 @@ public class DeliverOrderLogController extends BaseController {
 	/**
 	 * 获取DeliverOrderLog数据表格
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 */
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(DeliverOrderLog deliverOrderLog, PageHelper ph) {
-		return deliverOrderLogService.dataGrid(deliverOrderLog, ph);
+		return deliverOrderLogService.dataGridWithName(deliverOrderLog, ph);
 	}
 	/**
 	 * 获取DeliverOrderLog数据表格excel
 	 * 
-	 * @param user
+	 * @param
 	 * @return
 	 * @throws NoSuchMethodException 
 	 * @throws SecurityException 
@@ -70,7 +69,7 @@ public class DeliverOrderLogController extends BaseController {
 	 */
 	@RequestMapping("/download")
 	public void download(DeliverOrderLog deliverOrderLog, PageHelper ph,String downloadFields,HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException{
-		DataGrid dg = dataGrid(deliverOrderLog,ph);		
+		DataGrid dg = dataGrid(deliverOrderLog,ph);
 		downloadFields = downloadFields.replace("&quot;", "\"");
 		downloadFields = downloadFields.substring(1,downloadFields.length()-1);
 		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);

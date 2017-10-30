@@ -25,7 +25,7 @@ public class Tbasetype implements java.io.Serializable{
 	private Integer type;
 	private Set<Tbasedata> tbasedata = new HashSet<Tbasedata>(0);
 	@Id
-	@Column(name = "code", unique = true, nullable = false, length = 2)
+	@Column(name = "code", unique = true, nullable = false, length = 6)
 	public String getCode() {
 		return code;
 	}

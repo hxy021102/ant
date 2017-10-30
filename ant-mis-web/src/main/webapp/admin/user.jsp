@@ -36,8 +36,10 @@
 <script type="text/javascript">
 	var dataGrid;
 	$(function() {
+		$('#searchForm table').show();
+		parent.$.messager.progress('close');
 		dataGrid = $('#dataGrid').datagrid({
-			url : '${pageContext.request.contextPath}/userController/dataGrid',
+			url : '',
 			fit : true,
 			fitColumns : true,
 			border : false,
@@ -335,7 +337,10 @@
 	}
 
 	function searchFun() {
-		dataGrid.datagrid('load', $.serializeObject($('#searchForm')));
+		var options = {};
+		options.url = '${pageContext.request.contextPath}/userController/dataGrid';
+		options.queryParams = $.serializeObject($('#searchForm'));
+		dataGrid.datagrid(options);
 	}
 	function cleanFun() {
 		$('#searchForm input').val('');
