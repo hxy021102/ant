@@ -17,10 +17,9 @@ public class MbShopExt extends MbShop {
 	//门店欠款
 	private Integer debt;
 	private Integer totalDebt;
-	private String  salesLoginName;
 	//派单
 	private Integer deliver;
-	private String  salesLoginName;
+	private String salesLoginName;
 
 	public Integer getTotalDebt() {
 		return totalDebt;
@@ -86,11 +85,4 @@ public class MbShopExt extends MbShop {
 		this.deliver = deliver;
 	}
 
-	public String getSalesLoginName() {
-		return salesLoginName;
-	}
-
-	public void setSalesLoginName(String salesLoginName) {
-		this.salesLoginName = salesLoginName;
-	}
 }
