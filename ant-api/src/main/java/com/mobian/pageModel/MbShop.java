@@ -36,6 +36,7 @@ public class MbShop implements java.io.Serializable {
 
     private boolean onlyBranch; // 是否只查询分店
     private boolean onlyMain; // true:只查询主店
+    private String  salesLoginId;//销售ID
 
     private  Integer[] ids;
 
@@ -247,5 +248,13 @@ public class MbShop implements java.io.Serializable {
 
     public void setOnlyMain(boolean onlyMain) {
         this.onlyMain = onlyMain;
+    }
+
+    public String getSalesLoginId() {
+        return salesLoginId;
+    }
+
+    public void setSalesLoginId(String salesLoginId) {
+        this.salesLoginId = salesLoginId;
     }
 }

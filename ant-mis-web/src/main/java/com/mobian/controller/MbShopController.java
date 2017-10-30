@@ -1,12 +1,13 @@
 package com.mobian.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.bx.ant.pageModel.ShopDeliverApply;
 import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.*;
-import com.bx.ant.pageModel.ShopDeliverApply;
 import com.mobian.service.*;
 import com.mobian.util.ConfigUtil;
+import net.sf.json.JSONArray;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,6 +44,8 @@ public class MbShopController extends BaseController {
     private DiveRegionServiceI diveRegionService;
     @Resource
     private ShopDeliverApplyServiceI shopDeliverApplyService;
+    @Autowired
+    private UserServiceI userService;
 
 
     /**
@@ -58,7 +60,15 @@ public class MbShopController extends BaseController {
             request.setAttribute("id", id);
         return "/mbshop/mbShop";
     }
-
+    /**
+     * 跳转到MbShop分配销售管理页面
+     *
+     * @return
+     */
+    @RequestMapping("/distributionSalesManager")
+    public String distributionSalesManager(HttpServletRequest request) {
+        return "mbshop/mbShopDistributionSales";
+    }
     /**
      * 获取MbShop数据表格
      *
@@ -172,6 +182,10 @@ public class MbShopController extends BaseController {
                 mbShopExt.setCashBalanceId(mbBalance.getId());
                 mbShopExt.setCashBalanceAmount(mbBalance.getAmount());
             }
+        }
+        if(mbShopExt.getSalesLoginId() !=null) {
+            User user = userService.get(mbShopExt.getSalesLoginId());
+            mbShopExt.setSalesLoginName(user.getNickname());
         }
         Integer debt = mbOrderService.getOrderDebtMoney(id);
         debt = debt == null ? 0 : debt;
@@ -477,6 +491,29 @@ public class MbShopController extends BaseController {
         j.setSuccess(true);
         j.setObj(mbShopMaps);
         return j;
+    }
+    /**
+     * 分配门店销售人员
+     */
+    @RequestMapping("/addShopSalesPage")
+    public String addShopSalesPage() {
+        MbShop mbShop = new MbShop();
+        return "/mbshop/mbShopAddSales";
+    }
+
+    @RequestMapping("/addShopSales")
+    @ResponseBody
+    public Json addShopSales(String salesLoginId, String mbShopList) {
+        Json j = new Json();
+        JSONArray jsonArray = JSONArray.fromObject(mbShopList);
+        List<MbShop> list =(List<MbShop>)jsonArray.toCollection(jsonArray,MbShop.class);
+        for(MbShop m : list) {
+            m.setSalesLoginId(salesLoginId);
+            mbShopService.edit(m);
+        }
+        j.setSuccess(true);
+        j.setMsg("分配完成！");
+        return  j;
     }
 
 }
