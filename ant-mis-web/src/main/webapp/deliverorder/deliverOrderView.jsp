@@ -295,7 +295,7 @@
 				<th>运单ID</th>
 				<td>
 					${deliverOrder.id}
-					<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/assignOrderShopPage') and deliverOrder.status=='DOS01' }">
+					<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/assignOrderShopPage') or deliverOrder.status=='DOS01' or deliverOrder.status=='DOS10'  or deliverOrder.status=='DOS15' }">
 						<a href="javascript:void(0);" class="easyui-linkbutton" onclick="assignOrderShop();">指派</a>
 					</c:if>
 				</td>

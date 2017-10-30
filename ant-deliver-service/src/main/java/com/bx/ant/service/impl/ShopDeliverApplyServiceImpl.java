@@ -223,21 +223,25 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 	}
 
 	@Override
-	public List<MbAssignShop> queryAssignShopList(DeliverOrder deliverOrder) throws UnsupportedEncodingException {
+	public List<MbAssignShop> queryAssignShopList(DeliverOrder deliverOrder)  {
 		//1、查询开通了派单功能，且状态开启配送的门店List
 		List<ShopDeliverApply> shopDeliverApplyList = getAvailableAndWorkShop();
 		//2、计算待分配订单的数字地址
 		if ((deliverOrder.getLongitude() == null || deliverOrder.getLatitude() == null)
 				&& !F.empty(deliverOrder.getDeliveryAddress())) {
 			//用tomcat的格式（iso-8859-1）方式去读
-			byte[] b= deliverOrder.getDeliveryAddress().getBytes("ISO-8859-1");
-			String deliveryAddress=new String(b,"utf-8");
-
-			BigDecimal[] point = GeoUtil.getPosition(deliveryAddress);
-			if (point != null) {
-				deliverOrder.setLongitude(point[0]);
-				deliverOrder.setLatitude(point[1]);
-				deliverOrderService.edit(deliverOrder);
+			byte[] b= new byte[0];
+			try {
+				b = deliverOrder.getDeliveryAddress().getBytes("ISO-8859-1");
+				String deliveryAddress=new String(b,"utf-8");
+				BigDecimal[] point = GeoUtil.getPosition(deliveryAddress);
+				if (point != null) {
+					deliverOrder.setLongitude(point[0]);
+					deliverOrder.setLatitude(point[1]);
+					deliverOrderService.edit(deliverOrder);
+				}
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
 			}
 		}
 		//3、获取最大配送距离并计算符合配送距离的门店

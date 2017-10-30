@@ -89,7 +89,7 @@ public class DeliverOrderController extends BaseController {
 	public DataGrid dataGrid(DeliverOrderQuery deliverOrderQuery, PageHelper ph) {
         if(!F.empty(deliverOrderQuery.getTime())){
 			BaseData base = new BaseData();
-			base.setBasetypeCode("CH");
+			base.setId("DVS500");
 			BaseData database =basedataService.getBaseDatas(base).get(0);
 			if(database!=null){
 				deliverOrderQuery.setTime(Integer.parseInt(database.getDescription()));
@@ -389,7 +389,7 @@ public class DeliverOrderController extends BaseController {
 	@ResponseBody
 	public Json assignOrderShop(DeliverOrder deliverOrder) {
 		Json j = new Json();
-		deliverOrderService.handleAssignDeliverOrder(deliverOrder);
+		//deliverOrderService.handleAssignDeliverOrder(deliverOrder);
 		j.setSuccess(true);
 		j.setMsg("指派成功！");
 		return j;

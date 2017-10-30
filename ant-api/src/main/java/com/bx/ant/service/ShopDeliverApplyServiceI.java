@@ -90,7 +90,7 @@ public interface ShopDeliverApplyServiceI {
 	 * @param deliverOrder
 	 * @return
 	 */
-	List<MbAssignShop> queryAssignShopList(DeliverOrder deliverOrder) throws UnsupportedEncodingException;
+	List<MbAssignShop> queryAssignShopList(DeliverOrder deliverOrder);
 
 
 }

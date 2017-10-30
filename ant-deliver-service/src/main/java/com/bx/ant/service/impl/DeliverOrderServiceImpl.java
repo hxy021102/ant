@@ -16,6 +16,7 @@ import com.mobian.thirdpart.redis.Key;
 import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.thirdpart.redis.RedisUtil;
 import com.mobian.util.ConvertNameUtil;
+import com.mobian.util.GeoUtil;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -688,7 +690,21 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		if (tokenService.getTokenByShopId(deliverOrder.getShopId()) == null) {
 			throw new ServiceException("门店不在线，token已失效");
 		}else{
-
+			deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_ALLOCATION);
+			DeliverOrder order =get(deliverOrder.getId());
+			MbShop mbShop =mbShopService.getFromCache(deliverOrder.getShopId());
+			double distance = GeoUtil.getDistance(order.getLongitude().doubleValue(), order.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
+            //1、添加配送商品信息
+			DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+			deliverOrderShop.setAmount(order.getAmount());
+			deliverOrderShop.setDeliverOrderId(order.getId());
+			deliverOrderShop.setShopId(order.getShopId());
+			deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_AUDITING);
+			deliverOrderShop.setDistance(new BigDecimal(distance));
+			deliverOrderShopService.addAndGet(deliverOrderShop);
+			List<DeliverOrderItem> deliverOrderItemList = deliverOrderItemService.getDeliverOrderItemList(deliverOrder.getId());
+			//2、添加配送商品信息及修改门店商品数量、并修改配送商品总金额、
+			deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItemList, deliverOrderShop);
 		}
 	}
 }
