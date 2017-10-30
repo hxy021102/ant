@@ -90,7 +90,7 @@ public class PayCommonUtil {
 			// 校验用户姓名选项 NO_CHECK：不校验真实姓名 FORCE_CHECK：强校验真实姓名 OPTION_CHECK：针对已实名认证的用户才校验真实姓名
 			parameters.put("check_name", "OPTION_CHECK");
 			// 企业付款描述信息
-			parameters.put("desc", "集东集西提现");
+			parameters.put("desc", "");
 			// 公众账号ID 必填
 			parameters.put("mch_appid", ConvertNameUtil.getString(WeixinUtil.APPID));
 			// 商户号 必填

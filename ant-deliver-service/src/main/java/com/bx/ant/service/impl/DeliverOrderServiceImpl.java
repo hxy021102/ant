@@ -30,9 +30,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.*;
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> implements DeliverOrderServiceI {
@@ -75,6 +75,9 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	private SupplierItemRelationServiceI supplierItemRelationService;
 	@Resource
 	private TokenServiceI tokenService;
+
+	@Autowired
+	private ShopOrderBillServiceI shopOrderBillService;
 
 
 	@Override
@@ -414,7 +417,8 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 
 	@Override
 	public DataGrid dataGridWithName(DeliverOrder deliverOrder, PageHelper ph) {
-		DataGrid dataGrid = dataGrid(deliverOrder, ph);
+		DataGrid dataGrid = new DataGrid();
+		dataGrid = dataGrid(deliverOrder, ph);
 		List<DeliverOrder> deliverOrders = dataGrid.getRows();
 		if (CollectionUtils.isNotEmpty(deliverOrders)) {
 			Integer[] supplierIds = new Integer[deliverOrders.size()];
@@ -524,32 +528,73 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 //	}
 	@Override
 	public void settleShopPay() {
-		DeliverOrder deliverOrder = new DeliverOrder();
+		//1. 找到所有超时订单
+		DeliverOrderQuery deliverOrder = new DeliverOrderQuery();
 		deliverOrder.setDeliveryStatus(DELIVER_STATUS_DELIVERED);
-		deliverOrder.setPayStatus(PAY_STATUS_SUCCESS);
+		deliverOrder.setPayStatus(PAY_STATUS_AUDIT);
 		deliverOrder.setShopPayStatus(SHOP_PAY_STATUS_NOT_PAY);
 		deliverOrder.setStatus(STATUS_DELIVERY_COMPLETE);
-		PageHelper ph = new PageHelper();
-		List<DeliverOrder> deliverOrderList = dataGrid(deliverOrder, ph).getRows();
 		Date now = new Date();
-		Iterator<DeliverOrder> deliverIt = deliverOrderList.iterator();
-		while (deliverIt.hasNext()) {
-			DeliverOrder order = deliverIt.next();
-			DeliverOrderShop orderShop = new DeliverOrderShop();
-			orderShop.setDeliverOrderId(order.getId());
-			orderShop.setStatus(DeliverOrderShopServiceI.STATUS_ACCEPTED);
-			List<DeliverOrderShop> orderShops = deliverOrderShopService.query(orderShop);
-			if (CollectionUtils.isNotEmpty(orderShops)) {
-				if (now.getTime() - orderShops.get(0) .getAddtime().getTime() > TIME_DIF_SHOP_PAY_SETTLED) {
-				    //设置下一个状态
-					order.setRemark("" + (TIME_DIF_SHOP_PAY_SETTLED / (24 * 60 * 60 * 1000)) + "");
-					order.setStatus(STATUS_CLOSED);
-					transform(order);
-				}
+		deliverOrder.setEndDate(new Date(now.getTime() - TIME_DIF_SHOP_PAY_SETTLED));
+		PageHelper ph = new PageHelper();
+		List<DeliverOrder> deliverOrderList = dataGridExt(deliverOrder, ph).getRows();
+
+		//2. 根据shopId进行分类:一个shop对应一个账单
+		Map<Integer,ShopOrderBillQuery> deliverOrderMap = new HashMap<Integer, ShopOrderBillQuery>();
+		int listSize = deliverOrderList.size();
+		for (int i = 0;i<listSize;i++) {
+			DeliverOrder order = deliverOrderList.get(i);
+			ShopOrderBillQuery shopOrderBillQuery;
+			//2.1初始化一个账单
+			if (!deliverOrderMap.containsKey(order.getShopId())) {
+				shopOrderBillQuery = new ShopOrderBillQuery();
+
+				List<DeliverOrder> deliverOrders = new ArrayList<DeliverOrder>();
+				deliverOrders.add(order);
+
+				Long[] deliverOrderIds = {order.getId()};
+				shopOrderBillQuery.setAmount(order.getAmount());
+				shopOrderBillQuery.setShopId(order.getShopId());
+				shopOrderBillQuery.setDeliverOrderIds(deliverOrderIds);
+				shopOrderBillQuery.setDeliverOrderList(deliverOrders);
+				shopOrderBillQuery.setPayWay("DPW01");
+
+
+			//2.2 填充账单
+			} else {
+				shopOrderBillQuery = deliverOrderMap.get(order.getShopId());
+
+				//2.2.1 添加deliverOrderIds
+				int arrayLen = shopOrderBillQuery.getDeliverOrderIds().length;
+				Long[] deliverOrderIds = new Long[arrayLen + 1];
+				System.arraycopy(shopOrderBillQuery.getDeliverOrderIds(),0,deliverOrderIds,0, arrayLen);
+				deliverOrderIds[arrayLen] = order.getId();
+				shopOrderBillQuery.setDeliverOrderIds(deliverOrderIds);
+
+
+				//2.2.2 计算金额并填充信息
+				shopOrderBillQuery.setAmount(order.getAmount() + shopOrderBillQuery.getAmount());
+				shopOrderBillQuery.setDeliverOrderIds(deliverOrderIds);
+				shopOrderBillQuery.getDeliverOrderList().add(order);
 			}
-//			else {
-//				throw new ServiceException("数据异常");
-//			}
+			deliverOrderMap.put(order.getShopId(), shopOrderBillQuery);
+		}
+
+		//3. 对账单进行添加并进行结算
+		for (Map.Entry entry : deliverOrderMap.entrySet()) {
+			ShopOrderBillQuery shopOrderBillQuery = (ShopOrderBillQuery) entry.getValue();
+			shopOrderBillService.addAndPayShopOrderBillAndShopPay(shopOrderBillQuery);
+			List<DeliverOrder> orderList = shopOrderBillQuery.getDeliverOrderList();
+			int size = orderList.size();
+			for (int i = 0;i<size;i++) {
+				DeliverOrder order = orderList.get(i);
+				DeliverOrderExt orderExt = new DeliverOrderExt();
+				orderExt.setId(order.getId());
+				orderExt.setShopId(order.getShopId());
+				orderExt.setBalanceLogType("BT060");
+				orderExt.setStatus(STATUS_CLOSED);
+				transform(orderExt);
+			}
 		}
 	}
 	@Override
@@ -684,6 +729,54 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	public Integer clearAllocationOrderRedis(Integer shopId) {
 		return updateAllocationOrderRedis(shopId, 0);
 	}
+
+	@Override
+	public void addByTableList(List<Object> lo, Integer supplierId) {
+		//1. 填充订单信息
+		DeliverOrder order = new DeliverOrder();
+		order.setSupplierOrderId((String) lo.get(0));
+		order.setContactPeople((String)lo.get(3));
+		order.setDeliveryAddress((String)lo.get(4));
+		order.setContactPhone((String)lo.get(5));
+
+		//1.2 若没有备注则忽略备注
+		if (lo.size() > 6 && lo.get(6) != null ) {
+			order.setRemark(((String) lo.get(6)));
+		}
+		order.setSupplierId(supplierId);
+
+
+		//2. 订单合法性校验
+		List<DeliverOrder> orderList = query(order) ;
+		//2.1 检测是否重复导入
+		if (CollectionUtils.isNotEmpty(orderList))  throw new ServiceException("检测到存在重复订单:" + JSONObject.toJSONString(order));
+		//2.2 剔除非上海订单
+
+		//2.3 检测数据是否合理
+		String p = "((\\d{11})|^((\\d{7,8})|(\\d{4}|\\d{3})-(\\d{7,8})|(\\d{4}|\\d{3})-(\\d{7,8})-(\\d{4}|\\d{3}|\\d{2}|\\d{1})|(\\d{7,8})-(\\d{4}|\\d{3}|\\d{2}|\\d{1}))$)";
+		Pattern pattern = Pattern.compile(p);
+		Matcher matcher = pattern.matcher(order.getContactPhone()) ;
+		if (!matcher.find()) throw new  ServiceException("电话号码非法");
+
+		//填充订单明细
+		List<SupplierItemRelationView> supplierItemRelations = new  ArrayList<SupplierItemRelationView>();
+		SupplierItemRelationView itemRelation = new SupplierItemRelationView();
+		itemRelation.setSupplierId(supplierId);
+		itemRelation.setSupplierItemCode((String)lo.get(1));
+
+		List<SupplierItemRelation> itemRelations = supplierItemRelationService.dataGrid(itemRelation, new PageHelper()).getRows();
+		if (CollectionUtils.isNotEmpty(itemRelations)) {
+			itemRelation.setItemId(itemRelations.get(0).getItemId());
+			itemRelation.setQuantity(Integer.parseInt((String)lo.get(2)));
+			supplierItemRelations.add(itemRelation);
+
+			//添加订单和订单明细
+
+			addAndItems(order, supplierItemRelations);
+		}
+	}
+
+
 
 	@Override
 	public void handleAssignDeliverOrder(DeliverOrder deliverOrder) {

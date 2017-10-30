@@ -1,9 +1,13 @@
 package com.bx.ant.controller;
 
 import com.aliyun.mns.model.TopicMessage;
+import com.bx.ant.pageModel.ShopDeliverAccount;
+import com.bx.ant.pageModel.ShopDeliverApply;
 import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderShopPayServiceI;
+import com.bx.ant.service.ShopDeliverAccountServiceI;
+import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.*;
 import com.bx.ant.pageModel.DeliverOrderShopPay;
@@ -17,6 +21,7 @@ import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.thirdpart.redis.RedisUtil;
 import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.Util;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,6 +61,12 @@ public class ApiDeliverBalanceController extends BaseController {
     @Resource
     private RedisUtil redisUtil;
 
+    @Resource
+    private ShopDeliverAccountServiceI shopDeliverAccountService;
+
+    @Resource
+    private ShopDeliverApplyServiceI shopDeliverApplyService;
+
 
     @RequestMapping("/viewDeliverBanlanceLogList")
     @ResponseBody
@@ -77,7 +88,7 @@ public class ApiDeliverBalanceController extends BaseController {
     @ResponseBody
     public Json viewBanlanceLogDetial(MbBalanceLog balanceLog) {
         Json json = new Json();
-        if ("BT060".equals(balanceLog.getRefType())) {
+        if ("BT060".equals(balanceLog.getRefType()) ||"BT061".equals(balanceLog.getRefType()) ) {
             DeliverOrderShopPay deliverOrderShopPay = deliverOrderPayShopService.get(Long.parseLong(balanceLog.getRefId()));
             json.setObj(deliverOrderService.getDeliverOrderExt(deliverOrderShopPay.getDeliverOrderId()));
         }
@@ -278,4 +289,70 @@ public class ApiDeliverBalanceController extends BaseController {
         }
         return j;
     }
+    @ResponseBody
+    @RequestMapping("/withdraw")
+    public Json test(HttpServletRequest request, Integer amount){
+        Json json = new Json();
+
+        //1. 单次限额1W
+        if (amount > 10000 * 100) {
+            json.setSuccess(false);
+            json.setMsg("超过单次额度");
+            return json;
+        }
+
+        //2. 获取账户
+        TokenWrap tokenWrap = getTokenWrap(request);
+        Integer shopId = tokenWrap.getShopId();
+        MbBalance balance = mbBalanceService.addOrGetMbBalanceDelivery(shopId);
+
+        //3. 判断余额
+        if(amount > balance.getAmount()) {
+            json.setSuccess(false);
+            json.setMsg("余额不足");
+            return json;
+        }
+
+        //4. 申请提现
+        MbWithdrawLog withdrawLog = new MbWithdrawLog();
+        withdrawLog.setAmount(amount);
+
+        ShopDeliverApply shopDeliverApply = new ShopDeliverApply();
+        shopDeliverApply.setShopId(shopId);
+        shopDeliverApply.setStatus("DAS02");
+        List<ShopDeliverApply> shopDeliverApplies = shopDeliverApplyService.query(shopDeliverApply);
+        if (CollectionUtils.isNotEmpty(shopDeliverApplies)) {
+            shopDeliverApply = shopDeliverApplies.get(0);
+            ShopDeliverAccount shopDeliverAccount = shopDeliverAccountService.get(shopDeliverApply.getAccountId());
+            withdrawLog.setBalanceId(balance.getId());
+            withdrawLog.setApplyLoginId(shopDeliverAccount.getId() +"");
+            withdrawLog.setReceiver(shopDeliverAccount.getNickName());
+            withdrawLog.setReceiverAccount(shopDeliverAccount.getRefId());
+            json.setMsg("申请成功");
+            json.setSuccess(true);
+            return json;
+        }
+
+
+
+
+
+        //4. 微信转账
+
+
+        //5. 操作账户余额
+//        MbBalanceLog balanceLog = new MbBalanceLog();
+//        balanceLog.setBalanceId(balance.getId());
+//        balanceLog.setAmount( - amount);
+//        balanceLog.setRefId("");
+//        balanceLog.setRefType("");
+//        balanceLog.setRemark("");
+//        mbBalanceLogService.addAndUpdateBalance(balanceLog);
+
+        json.setMsg("申请失败");
+        json.setSuccess(false);
+        return json;
+
+    }
+
 }
