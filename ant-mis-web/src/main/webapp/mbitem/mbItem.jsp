@@ -52,7 +52,7 @@
 				}, {
 				field : 'code',
 				title : '<%=TmbItem.ALIAS_CODE%>',
-				width : 50
+				width : 40
 				}, {
 				field : 'name',
 				title : '<%=TmbItem.ALIAS_NAME%>',
@@ -60,7 +60,7 @@
 				}, {
                 field : 'isShelves',
                 title : '<%=TmbItem.ALIAS_ISSHELVES%>',
-                width : 20,
+                width : 10,
                 formatter : function(value, row, index) {
                     if (row.isShelves == true) {
                         return "是";
@@ -79,7 +79,7 @@
 			    }, {
                 field: 'quantityUnitName',
                 title: '<%=TmbItem.ALIAS_QUANTITY_UNIT%>',
-                width: 50
+                width: 30
             	}, {
 				field: 'quantity',
 				title: '<%=TmbItem.ALIAS_QUANTITY%>',
@@ -87,7 +87,19 @@
 			}, {
 			    field: 'categoryName',
 				title: '<%=TmbItemCategory.ALIAS_NAME%>',
-				width: 30
+				width:15,
+            },{
+                field: 'standard',
+                title: '规格',
+                width:20,
+            },{
+                field: 'barCode',
+                title: '条形码',
+                width:30,
+            },{
+                field: 'carton',
+                title: '箱规',
+                width:20,
             }, {
 				field: 'seq',
 				title: '排序',
@@ -95,11 +107,11 @@
 			}, {
 				field : 'addtime',
 				title : '<%=TmbItem.ALIAS_ADDTIME%>',
-				width : 50
+				width : 40
 			}, {
 				field : 'updatetime',
 				title : '<%=TmbItem.ALIAS_UPDATETIME%>',
-				width : 50
+				width : 40
 			}, {
 				field : 'action',
 				title : '操作',
