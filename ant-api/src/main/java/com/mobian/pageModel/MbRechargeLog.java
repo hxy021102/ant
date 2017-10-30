@@ -30,7 +30,7 @@ public class MbRechargeLog implements java.io.Serializable {
 	private String bankCode;
 	private Integer shopId;
 	private String shopName;
-
+	private String payerBankCode;
 	private String payCode;
 	public String getPayCode() {
 		return payCode;
@@ -211,6 +211,14 @@ public class MbRechargeLog implements java.io.Serializable {
 
 	public void setShopName(String shopName) {
 		this.shopName = shopName;
+	}
+
+	public String getPayerBankCode() {
+		return payerBankCode;
+	}
+
+	public void setPayerBankCode(String payerBankCode) {
+		this.payerBankCode = payerBankCode;
 	}
 
 	@Override

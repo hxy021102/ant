@@ -19,7 +19,7 @@ public class MbShopExt extends MbShop {
 	private Integer totalDebt;
 	//派单
 	private Integer deliver;
-	private String  salesLoginName;
+	private String salesLoginName;
 
 	public Integer getTotalDebt() {
 		return totalDebt;
@@ -69,6 +69,14 @@ public class MbShopExt extends MbShop {
 		this.cashBalanceAmount = cashBalanceAmount;
 	}
 
+	public String getSalesLoginName() {
+		return salesLoginName;
+	}
+
+	public void setSalesLoginName(String salesLoginName) {
+		this.salesLoginName = salesLoginName;
+	}
+
 	public Integer getDeliver() {
 		return deliver;
 	}
@@ -77,11 +85,4 @@ public class MbShopExt extends MbShop {
 		this.deliver = deliver;
 	}
 
-	public String getSalesLoginName() {
-		return salesLoginName;
-	}
-
-	public void setSalesLoginName(String salesLoginName) {
-		this.salesLoginName = salesLoginName;
-	}
 }
