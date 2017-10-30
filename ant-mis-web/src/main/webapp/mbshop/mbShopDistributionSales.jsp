@@ -28,6 +28,7 @@
 
         var dataGrid;
         $(function () {
+            parent.$.messager.progress('close');
             dataGrid = $('#dataGrid').datagrid({
 
                 url: '',
