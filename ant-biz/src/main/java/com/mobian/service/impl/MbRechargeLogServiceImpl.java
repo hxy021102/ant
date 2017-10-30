@@ -140,9 +140,9 @@ public class MbRechargeLogServiceImpl extends BaseServiceImpl<MbRechargeLog> imp
 		BeanUtils.copyProperties(mbRechargeLog, tmbBalanceLog);
 		tmbBalanceLog.setIsdeleted(false);
 		tmbBalanceLog.setRefId(String.valueOf(mbRechargeLog.getId()));
-		if(mbRechargeLog.getRefType()!=null) {
+		if (mbRechargeLog.getRefType() != null) {
 			tmbBalanceLog.setRefType(mbRechargeLog.getRefType());
-		}else{
+		} else {
 			tmbBalanceLog.setRefType("BT004");
 		}
 		tmbBalanceLog.setRemark(mbRechargeLog.getContent());
@@ -199,10 +199,9 @@ public class MbRechargeLogServiceImpl extends BaseServiceImpl<MbRechargeLog> imp
 		MbRechargeLog rechargeLog = new MbRechargeLog();
 		rechargeLog.setBankCode(t.getBankCode());
 		rechargeLog.setPayCode(mbRechargeLog.getPayCode());
-		rechargeLog.setHandleStatus("HS02");
-		//TODO
+		rechargeLog.setHandleStatus(MbRechargeLogServiceI.HS02);
 		synchronized (this) {
-			if ("HS02".equals(mbRechargeLog.getHandleStatus()) && !"BT013".equals(t.getRefType())&&!F.empty(t.getPayCode())) {
+			if (MbRechargeLogServiceI.HS02.equals(mbRechargeLog.getHandleStatus()) && !MbBalanceLogServiceI.BT013.equals(t.getRefType())&&!F.empty(t.getPayCode())) {
                 List<MbPaymentItem> paymentItems = mbPaymentItemService.listMbPaymentItem(paymentItem);
 					List<MbRechargeLog> rechargeLogs = listMbRechargeLog(rechargeLog);
 				if (CollectionUtils.isEmpty(paymentItems) && CollectionUtils.isEmpty(rechargeLogs)) {
@@ -210,24 +209,24 @@ public class MbRechargeLogServiceImpl extends BaseServiceImpl<MbRechargeLog> imp
 				} else {
 					throw new ServiceException("银行汇款单号已存在,请重新确认!");
 				}
-            } else if ("HS02".equals(mbRechargeLog.getHandleStatus()) && "BT013".equals(t.getRefType())) {
+            } else if (MbRechargeLogServiceI.HS02.equals(mbRechargeLog.getHandleStatus()) && MbBalanceLogServiceI.BT013.equals(t.getRefType())) {
                 edit(mbRechargeLog);
-            }else if ("HS03".equals(mbRechargeLog.getHandleStatus())) {
+            }else if (MbRechargeLogServiceI.HS03.equals(mbRechargeLog.getHandleStatus())) {
 				mbRechargeLog.setPayCode(null);
 				edit(mbRechargeLog);
 			}
 		}
 		// 审核成功更新用户余额
-		if("HS02".equals(mbRechargeLog.getHandleStatus())) {
+		if(MbRechargeLogServiceI.HS02.equals(mbRechargeLog.getHandleStatus())) {
 			MbBalanceLog tmbBalanceLog = new MbBalanceLog();
 			tmbBalanceLog.setBalanceId(mbRechargeLog.getBalanceId());
 			tmbBalanceLog.setAmount(mbRechargeLog.getAmount());
 			tmbBalanceLog.setRefId(String.valueOf(mbRechargeLog.getId()));
 			//如果类型不是转账汇款，将充值记录表类型设置为充值日志类型
-			if (!"BT003".equals(t.getRefType())) {
+			if (!MbBalanceLogServiceI.BT003.equals(t.getRefType())) {
 				tmbBalanceLog.setRefType(t.getRefType());
 			}else{
-				tmbBalanceLog.setRefType("BT003"); // 转账汇款
+				tmbBalanceLog.setRefType(MbBalanceLogServiceI.BT003); // 转账汇款
             }
 			tmbBalanceLog.setRemark(mbRechargeLog.getHandleRemark());
 			mbBalanceLogService.addAndUpdateBalance(tmbBalanceLog);

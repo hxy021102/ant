@@ -180,6 +180,7 @@ public class MbRechargeLogController extends BaseController {
         MbBalance mbBalance = mbBalanceService.addOrGetMbBalance(mbRechargeLog.getShopId());
         mbRechargeLog.setBalanceId(mbBalance.getId());
         mbRechargeLog.setApplyLoginId(sessionInfo.getId());
+        mbRechargeLog.setHandleStatus(MbRechargeLogServiceI.HS02);
         mbRechargeLogService.addAndUpdateBalance(mbRechargeLog);
         j.setSuccess(true);
         j.setMsg("添加成功！");
@@ -275,8 +276,7 @@ public class MbRechargeLogController extends BaseController {
         if (F.empty(mbRechargeLog.getHandleRemark())&&F.empty(mbRechargeLog.getShopId())) {
             j.setSuccess(false);
             j.setMsg("请选择门店和填写备注！");
-
-        } else if (F.empty(mbRechargeLog.getPayCode()) && "HS02".equals(mbRechargeLog.getHandleStatus())&&(!"BT004".equals(mbRechargeLog.getRefType()))) {
+        } else if (F.empty(mbRechargeLog.getPayCode()) && MbRechargeLogServiceI.HS02.equals(mbRechargeLog.getHandleStatus())&&(!"BT004".equals(mbRechargeLog.getRefType()))) {
             j.setSuccess(false);
             j.setMsg("请输入银行汇款单号");
         } else {
@@ -362,12 +362,12 @@ public class MbRechargeLogController extends BaseController {
             in.close();
             List<MbRechargeLog> mbRechargeLogList = new ArrayList<MbRechargeLog>();
             DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            BaseData baseData = new BaseData();
+            baseData.setBasetypeCode("TB");
+            List<BaseData> baseDataList = basedataService.getBaseDatas(baseData);
             for (int i = 0; i < listOb.size(); i++) {
                 List<Object> lo = listOb.get(i);
                 MbRechargeLog mbRechargeLog = new MbRechargeLog();
-                BaseData baseData = new BaseData();
-                baseData.setBasetypeCode("TB");
-                List<BaseData> baseDataList = basedataService.getBaseDatas(baseData);
                 if (CollectionUtils.isNotEmpty(baseDataList)) {
                     for (BaseData data : baseDataList) {
                         JSONObject jsonObject = JSONObject.fromObject(data.getDescription());
@@ -388,7 +388,9 @@ public class MbRechargeLogController extends BaseController {
                 String dateStr = lo.get(0).toString();
                 Date date = sdf.parse(dateStr);
                 mbRechargeLog.setRemitterTime(date);
-                mbRechargeLog.setAmount(Integer.parseInt(lo.get(1).toString())*100);
+                Float f = new Float(lo.get(1).toString());
+                f = f * 100;
+                mbRechargeLog.setAmount(f.intValue());
                 mbRechargeLog.setContent(lo.get(2).toString());
                 mbRechargeLog.setPayerBankCode(lo.get(3).toString());
                 mbRechargeLog.setRemitter(lo.get(4).toString());
