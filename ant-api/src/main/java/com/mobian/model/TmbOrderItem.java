@@ -60,6 +60,8 @@ public class TmbOrderItem implements java.io.Serializable,IEntity{
 	private Integer buyPrice;
 	//
 	private Integer orderId;
+
+	private Integer costPrice;
 	//columns END
 
 
@@ -163,8 +165,17 @@ public class TmbOrderItem implements java.io.Serializable,IEntity{
 	public void setOrderId(Integer orderId) {
 		this.orderId = orderId;
 	}
-	
-	
+
+	@Column(name = "cost_price", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public Integer getCostPrice() {
+		return costPrice;
+	}
+
+	public void setCostPrice(Integer costPrice) {
+		this.costPrice = costPrice;
+	}
+
+
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

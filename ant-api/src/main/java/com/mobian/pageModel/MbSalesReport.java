@@ -16,17 +16,25 @@ public class MbSalesReport implements java.io.Serializable{
     private Integer backQuantity;
     //实际销售量
     private Integer salesQuantity;
-
+    //销售总金额
     private Integer totalPrice;
     private Date startDate;
     private Date endDate;
     //退回商品金额
     private Integer backMoney;
+
+    /**
+     * 进货成本
+     */
+    private Integer totalCost;
+
     //订单状态
     private String  orderStatus;
     //发货仓库
     private Integer warehouseId;
     private String  warehouseName;
+
+    private String shopType;
 
     public String getWarehouseName() {
         return warehouseName;
@@ -132,5 +140,19 @@ public class MbSalesReport implements java.io.Serializable{
         this.endDate = endDate;
     }
 
+    public Integer getTotalCost() {
+        return totalCost;
+    }
 
+    public void setTotalCost(Integer totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    public String getShopType() {
+        return shopType;
+    }
+
+    public void setShopType(String shopType) {
+        this.shopType = shopType;
+    }
 }

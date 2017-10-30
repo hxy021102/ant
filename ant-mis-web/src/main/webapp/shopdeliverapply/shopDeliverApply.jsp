@@ -17,6 +17,11 @@
           $.canDelete = true;
 	    </script>
     </c:if>
+	<c:if test="${fn:contains(sessionInfo.resourceList, '/shopDeliverApplyController/editPage')}">
+		<script type="text/javascript">
+            $.canEdit = true;
+		</script>
+	</c:if>
 <script type="text/javascript">
 	var dataGrid;
 	$(function() {
@@ -75,6 +80,10 @@
                     str += '&nbsp;';
                     if ($.canExamine&&row.status=="DAS01") {
 						str += $.formatString('<img onclick="examineFun(\'{0}\');" src="{1}" title="审核"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/joystick.png');
+                    }
+                    str += '&nbsp;';
+                    if ($.canEdit&&row.status=="DAS02") {
+                        str += $.formatString('<img onclick="editDeliverDistance(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/pencil.png');
                     }
 					return str;
 				}
@@ -155,6 +164,26 @@
                     }
                 }
             ]
+        });
+    }
+    function editDeliverDistance(id) {
+        if (id == undefined) {
+            var rows = dataGrid.datagrid('getSelections');
+            id = rows[0].id;
+        }
+        parent.$.modalDialog({
+            title : '修改最大配送距离',
+            width : 250,
+            height : 250,
+            href : '${pageContext.request.contextPath}/shopDeliverApplyController/editPage?id=' + id,
+            buttons: [{
+                text: '确认',
+                handler: function () {
+                    parent.$.modalDialog.openner_dataGrid =  dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                    var f = parent.$.modalDialog.handler.find('#form');
+                    f.submit();
+                }
+            }]
         });
     }
     function downloadTable(){

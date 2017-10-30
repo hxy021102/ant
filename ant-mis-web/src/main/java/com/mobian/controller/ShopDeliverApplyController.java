@@ -133,7 +133,7 @@ public class ShopDeliverApplyController extends BaseController {
 	public String editPage(HttpServletRequest request, Integer id) {
 		ShopDeliverApply shopDeliverApply = shopDeliverApplyService.get(id);
 		request.setAttribute("shopDeliverApply", shopDeliverApply);
-		return "/shopdeliverapply/shopDeliverApplyEdit";
+		return "/shopdeliverapply/shopDeliverApplyEditDeliverDistance";
 	}
 
 	/**

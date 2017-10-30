@@ -12,8 +12,9 @@
     <script type="text/javascript">
         var dataGrid;
         $(function () {
+            parent.$.messager.progress('close');
             dataGrid = $('#dataGrid').datagrid({
-                url:  '${pageContext.request.contextPath}/mbShopController/dataGridShopArrears',
+                url:  '',
                 fit: true,
                 fitColumns: true,
                 border: false,
@@ -29,12 +30,14 @@
                 striped: true,
                 rownumbers: true,
                 singleSelect: true,
+                showFooter:true,
                 columns: [[
                     {
                         field: 'id',
                         title: '门店ID',
                         width: 20,
                         formatter: function (value, row, index) {
+                            if(value)
                             return '<a onclick="viewShop(' + row.id + ')">' + row.id + '</a>';
                         }
                     }, {
@@ -68,6 +71,7 @@
                         align: 'right',
                         formatter: function (value, row) {
                             if(row.balanceAmount == undefined)return "";
+                            if(row.id==undefined)return $.formatMoney(row.balanceAmount);
                             return '<a onclick="viewBalance(' + row.id + ')">' + $.formatMoney(row.balanceAmount) + '</a>';
                         }
                     }, {
@@ -107,7 +111,7 @@
         });
         function loadTongDebt() {
             return $('#tongDataGrid').datagrid({
-                url:  '${pageContext.request.contextPath}/mbShopController/dataGridShopBarrel',
+                url:  '',
                 fit: true,
                 fitColumns: true,
                 border: false,
@@ -123,12 +127,14 @@
                 striped: true,
                 rownumbers: true,
                 singleSelect: true,
+                showFooter:true,
                 columns: [[
                     {
                         field: 'id',
                         title: '门店ID',
                         width: 20,
                         formatter: function (value, row, index) {
+                            if(value)
                             return '<a onclick="viewShop(' + row.id + ')">' + row.id + '</a>';
                         }
                     }, {
@@ -162,6 +168,7 @@
                         align: 'right',
                         formatter: function (value, row) {
                             if(row.balanceAmount == undefined)return "";
+                            if(row.id == undefined)return $.formatMoney(row.balanceAmount);
                             return '<a onclick="viewBalance(' + row.id + ')">' + $.formatMoney(row.balanceAmount) + '</a>';
                         }
                     }, {
@@ -171,6 +178,7 @@
                         align: 'right',
                         formatter: function (value, row) {
                             if(row.cashBalanceAmount == undefined)return "";
+                            if(row.id == undefined)return $.formatMoney(row.cashBalanceAmount);
                             return '<a onclick="viewCashBalance(' + row.cashBalanceId + ',' + row.id + ')">' + $.formatMoney(row.cashBalanceAmount) + '</a>';
                         }
                     }, {
@@ -219,17 +227,26 @@
         var gridMap = {};
         $(function() {
             gridMap = {
-                handle:function(obj,clallback){
+                handle: function (obj, clallback) {
                     if (obj.grid == null) {
                         obj.grid = clallback();
                     } else {
-                        obj.grid.datagrid('reload');
+                        var options = {};
+                        options.url = obj.gridUrl;
+                        options.queryParams = $.serializeObject($('#searchForm'));
+                        obj.grid.datagrid(options);
                     }
                 }, 1: {
                     invoke: function () {
-                        gridMap.handle(this,loadTongDebt());
-                    }, grid: null
-                },
+                        gridMap.handle(this);
+                    }, grid: loadTongDebt(),
+                    gridUrl: '${pageContext.request.contextPath}/mbShopController/dataGridShopBarrel'
+                }, 0: {
+                    invoke: function () {
+                        gridMap.handle(this);
+                    }, grid: dataGrid,
+                    gridUrl: '${pageContext.request.contextPath}/mbShopController/dataGridShopArrears'
+                }
             };
             $('#shop_view_tabs').tabs({
                 onSelect: function (title, index) {
@@ -238,10 +255,30 @@
             });
         });
 
+        function reloadDataTable(){
+            var tab = $('#shop_view_tabs').tabs('getSelected');
+            var index = $('#shop_view_tabs').tabs('getTabIndex',tab);
+            gridMap[index].invoke();
+        }
+
     </script>
 </head>
 <body>
 <div class="easyui-layout" data-options="fit : true,border : false">
+    <div data-options="region:'north',title:'查询条件',border:false" style="height: 65px; overflow: hidden;">
+        <form id="searchForm">
+            <table class="table table-hover table-condensed">
+                <tr>
+                    <th><%=TmbShop.ALIAS_SHOP_TYPE%>
+                    </th>
+                    <td>
+                        <jb:select dataType="ST" name="shopType" mustSelect="true" onselect="reloadDataTable"></jb:select>
+                    </td>
+                </tr>
+
+            </table>
+        </form>
+    </div>
     <div data-options="region:'center',border:false">
         <div id="shop_view_tabs" class="easyui-tabs" data-options="fit : true,border:false">
             <div title="余额欠款">

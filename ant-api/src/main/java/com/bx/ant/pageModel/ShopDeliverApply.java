@@ -3,6 +3,7 @@ package com.bx.ant.pageModel;
 import com.mobian.pageModel.MbShop;
 import com.mobian.util.ConvertNameUtil;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @SuppressWarnings("serial")
@@ -24,6 +25,8 @@ public class ShopDeliverApply implements java.io.Serializable {
 	private String statusName;
 
 	private MbShop mbShop;
+
+	private BigDecimal maxDeliveryDistance;
 
 	public void setId(Integer value) {
 		this.id = value;
@@ -119,5 +122,13 @@ public class ShopDeliverApply implements java.io.Serializable {
 
 	public void setStatusName(String statusName) {
 		this.statusName = statusName;
+	}
+
+	public BigDecimal getMaxDeliveryDistance() {
+		return maxDeliveryDistance;
+	}
+
+	public void setMaxDeliveryDistance(BigDecimal maxDeliveryDistance) {
+		this.maxDeliveryDistance = maxDeliveryDistance;
 	}
 }
