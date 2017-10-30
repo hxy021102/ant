@@ -32,7 +32,7 @@
 				<tr>
 					<th><%=TmbSupplierInvoice.ALIAS_BANK_NAME%></th>	
 					<td>
-						${mbSupplierInvoice.bankName}
+						${mbSupplierInvoice.bankNames}
 					</td>
 					<th><%=TmbSupplierInvoice.ALIAS_BANK_NUMBER%></th>
 					<td>

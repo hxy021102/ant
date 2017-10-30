@@ -66,7 +66,7 @@
                     <th><%=TmbShopInvoice.ALIAS_BANK_NAME%>
                     </th>
                     <td>
-                        <input class="span2" name="bankName" type="text" value="${mbShopInvoice.bankName}"/>
+                        <jb:select name="bankName" dataType="BN" value="${mbShopInvoice.bankName}"></jb:select>
                     </td>
                     <th><%=TmbShopInvoice.ALIAS_BANK_NUMBER%>
                     </th>

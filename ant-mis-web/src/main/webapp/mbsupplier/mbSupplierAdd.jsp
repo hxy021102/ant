@@ -68,9 +68,9 @@
 
 				</tr>
 				<tr>
-					<th><%=TmbSupplier.ALIAS_FINANCIAL_CONTACT_ID%></th>
+					<th><%=TmbSupplier.ALIAS_FINANCIAL_CONTACT%></th>
 					<td>
-						<jb:selectSql name="financialContactId" dataType="SQ019"></jb:selectSql>
+						<input class="span2" name="financialContact" type="text"/>
 					</td>
 					<th><%=TmbSupplier.ALIAS_FINANCIAL_CONTACT_PHONE%></th>
 					<td>

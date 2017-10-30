@@ -61,7 +61,7 @@
 				<tr>
 					<th><%=TmbSupplierInvoice.ALIAS_BANK_NAME%></th>	
 					<td>
-											<input class="span2" name="bankName" type="text"/>
+						<jb:select name="bankName" dataType="BN"></jb:select>
 					</td>
 					<th><%=TmbSupplierInvoice.ALIAS_BANK_NUMBER%></th>
 					<td>

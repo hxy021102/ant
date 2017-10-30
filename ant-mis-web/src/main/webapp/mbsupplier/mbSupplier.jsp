@@ -79,8 +79,8 @@
                 title : '<%=TmbSupplier.ALIAS_FINANCIAL_CONTACT_PHONE%>',
                 width : 55
             	}, {
-                field : 'financialContactPeople',
-                title : '<%=TmbSupplier.ALIAS_FINANCIAL_CONTACT_ID%>',
+                field : 'financialContact',
+                title : '<%=TmbSupplier.ALIAS_FINANCIAL_CONTACT%>',
                 width : 40
             	}, {
 				field : 'action',

@@ -1,5 +1,7 @@
 package com.mobian.pageModel;
 
+import com.mobian.util.ConvertNameUtil;
+
 import java.util.Date;
 
 @SuppressWarnings("serial")
@@ -16,6 +18,8 @@ public class MbSupplierBankAccount implements java.io.Serializable {
 	private String accountName;
 	private String accountBank;
 	private String bankNumber;
+	//
+	private String accountBankName;
 
 	
 
@@ -85,4 +89,11 @@ public class MbSupplierBankAccount implements java.io.Serializable {
 		return this.bankNumber;
 	}
 
+	public String getAccountBankName() {
+		return ConvertNameUtil.getString(this.accountBank);
+	}
+
+	public void setAccountBankName(String accountBankName) {
+		this.accountBankName = accountBankName;
+	}
 }
