@@ -186,9 +186,9 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 					params.put("endDate", orderQuery.getEndDate());
 
 				}
-				if (!F.empty(orderQuery.getTime())){
-					whereHql += " DATEDIFF(minute,NOW() - t.addTime) >= :time ";
-					params.put("time", orderQuery.getTime());
+				if (orderQuery.getTime() != null && orderQuery.getTime() != 0) {
+					whereHql += "and t.status='DOS01' or t.status = 'DOS15' and (CURRENT_TIMESTAMP() - t.addtime) >= :time ";
+					params.put("time", orderQuery.getTime() * 100);
 				}
 			}
 		}
@@ -444,6 +444,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 					deliverOrderQuery.setStatusName(order.getStatus());
 					deliverOrderQuery.setShopPayStatusName(order.getShopPayStatus());
 					deliverOrderQuery.setDeliveryStatusName(order.getDeliveryStatus());
+					deliverOrderQuery.setPayStatusName(order.getPayStatus());
 					deliverOrderQueries.add(deliverOrderQuery);
 				}
 				DataGrid dg = new DataGrid();
@@ -783,7 +784,6 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		if (tokenService.getTokenByShopId(deliverOrder.getShopId()) == null) {
 			throw new ServiceException("门店不在线，token已失效");
 		}else{
-			deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_ALLOCATION);
 			DeliverOrder order =get(deliverOrder.getId());
 			MbShop mbShop =mbShopService.getFromCache(deliverOrder.getShopId());
 			double distance = GeoUtil.getDistance(order.getLongitude().doubleValue(), order.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
@@ -798,6 +798,11 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			List<DeliverOrderItem> deliverOrderItemList = deliverOrderItemService.getDeliverOrderItemList(deliverOrder.getId());
 			//2、添加配送商品信息及修改门店商品数量、并修改配送商品总金额、
 			deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItemList, deliverOrderShop);
+			//3. 对门店新订单进行计数
+			 addAllocationOrderRedis(deliverOrder.getShopId());
+			//4. 编辑订单并添加修改记录
+			deliverOrder.setStatus("DOS10");
+			editAndAddLog(deliverOrder, DeliverOrderLogServiceI.TYPE_ASSIGN_DELIVER_ORDER, "指派订单给门店");
 		}
 	}
 }

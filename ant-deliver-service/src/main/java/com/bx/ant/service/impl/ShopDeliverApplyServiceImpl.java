@@ -260,6 +260,7 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 				if(distance == 0) break; // 解决同一个地址不分配的问题
 			}
 		}
+		Collections.sort(mbAssignShopArrayList);
 		return mbAssignShopArrayList;
 	}
 }

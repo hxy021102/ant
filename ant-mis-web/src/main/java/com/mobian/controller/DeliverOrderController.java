@@ -89,12 +89,11 @@ public class DeliverOrderController extends BaseController {
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(DeliverOrderQuery deliverOrderQuery, PageHelper ph) {
-        if(!F.empty(deliverOrderQuery.getTime())){
+        if(deliverOrderQuery.getTime()!=null&&deliverOrderQuery.getTime()!=0){
 			BaseData base = new BaseData();
-			base.setId("DVS500");
-			BaseData database =basedataService.getBaseDatas(base).get(0);
+			BaseData database =basedataService.get("DVS500");
 			if(database!=null){
-				deliverOrderQuery.setTime(Integer.parseInt(database.getDescription()));
+				deliverOrderQuery.setTime(Double.valueOf(database.getName()));
 			}
 		}
 		return deliverOrderService.dataGridWithName(deliverOrderQuery, ph);
@@ -368,7 +367,7 @@ public class DeliverOrderController extends BaseController {
 	@ResponseBody
 	public Json assignOrderShop(DeliverOrder deliverOrder) {
 		Json j = new Json();
-		//deliverOrderService.handleAssignDeliverOrder(deliverOrder);
+		deliverOrderService.handleAssignDeliverOrder(deliverOrder);
 		j.setSuccess(true);
 		j.setMsg("指派成功！");
 		return j;

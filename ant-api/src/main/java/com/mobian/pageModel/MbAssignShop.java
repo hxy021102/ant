@@ -5,7 +5,7 @@ import com.bx.ant.pageModel.DeliverOrder;
 /**
  * Created by 黄晓渝 on 2017/10/28.
  */
-public class MbAssignShop {
+public class MbAssignShop implements Comparable<MbAssignShop>,java.io.Serializable{
     private Integer id;
     private String name;
     private String contactPhone;
@@ -59,5 +59,16 @@ public class MbAssignShop {
 
     public void setDeliverOrderId(Long deliverOrderId) {
         this.deliverOrderId = deliverOrderId;
+    }
+
+    @Override
+    public int compareTo(MbAssignShop o) {
+        if (this.distance > o.getDistance()) {
+            return 1;
+        } else if (this.distance < o.getDistance()) {
+            return -1;
+        } else {
+            return 0;
+        }
     }
 }

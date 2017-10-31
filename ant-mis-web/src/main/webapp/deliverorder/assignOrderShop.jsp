@@ -38,7 +38,7 @@
 				<tr>
 					<th>运单ID</th>
 					<td>
-						<input class="span2" name="tenantId" type="text" readonly value="${id}"/>
+						<input class="span2" name="tenantId" type="hidden" readonly value="${id}"/>
 					</td>							
 					<th>门店</th>
 					<td>

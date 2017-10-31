@@ -19,7 +19,7 @@ public class DeliverOrderQuery extends DeliverOrder {
     private double amountElement;
     private String createDate;
     private String requiredDate;
-    private Integer time;
+    private double time;
 
     public String getStatusName() {
         return ConvertNameUtil.getString(this.statusName);
@@ -109,11 +109,11 @@ public class DeliverOrderQuery extends DeliverOrder {
         this.requiredDate = requiredDate;
     }
 
-    public Integer getTime() {
+    public Double getTime() {
         return time;
     }
 
-    public void setTime(Integer time) {
+    public void setTime(double time) {
         this.time = time;
     }
 }

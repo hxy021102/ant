@@ -119,7 +119,11 @@
 				field : 'shopPayStatusName',
 				title : '结算状态',
 				width : 35
-				}] ],
+				}, {
+                field : 'payStatusName',
+                title : '供应商计算',
+                width : 35
+            }] ],
 			toolbar : '#toolbar',
 			onLoadSuccess : function() {
 				$('#searchForm table').show();
@@ -201,7 +205,11 @@
                     width : 50
                 }, {
                     field : 'shopPayStatusName',
-                    title : '结算状态',
+                    title : '门店计算',
+                    width : 35
+                }, {
+                    field : 'payStatusName',
+                    title : '供应商计算',
                     width : 35
                 }] ],
                 toolbar : '#toolbar',
@@ -326,7 +334,7 @@
         var tab = $('#deliverOrder_list_tabs').tabs('getSelected');
         var index = $('#deliverOrder_list_tabs').tabs('getTabIndex',tab);
         if(index == 1) {
-            options.url += '?status=DOS01'+'&time='+30;
+            options.url += '?time=30';
         }
         options.queryParams = $.serializeObject($('#searchForm'));
         selectDatagrid.datagrid(options);
@@ -358,7 +366,7 @@
 						</td>
 					</tr>
 					<tr>
-						<th>结算状态</th>
+						<th>门店结算</th>
 						<td>
 							<jb:select dataType="SPS" name="shopPayStatus"></jb:select>
 						</td>

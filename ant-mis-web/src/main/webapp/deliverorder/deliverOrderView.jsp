@@ -271,12 +271,12 @@
          //指派运单给门店
          function assignOrderShop() {
              parent.$.modalDialog({
-                 title : '编辑数据',
+                 title : '指派门店',
                  width : 780,
-                 height : 230,
+                 height : 200,
                  href : '${pageContext.request.contextPath}/deliverOrderController/assignOrderShopPage?id=' + ${deliverOrder.id},
                  buttons : [ {
-                     text : '编辑',
+                     text : '提交',
                      handler : function() {
                          parent.$.modalDialog.openner_dataGrid = deliverDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
                          var f = parent.$.modalDialog.handler.find('#form');
@@ -295,7 +295,7 @@
 				<th>运单ID</th>
 				<td>
 					${deliverOrder.id}
-					<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/assignOrderShopPage') or deliverOrder.status=='DOS01' or deliverOrder.status=='DOS10'  or deliverOrder.status=='DOS15' }">
+					<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/assignOrderShopPage') and ( deliverOrder.status=='DOS01' or deliverOrder.status=='DOS15')}">
 						<a href="javascript:void(0);" class="easyui-linkbutton" onclick="assignOrderShop();">指派</a>
 					</c:if>
 				</td>
@@ -350,11 +350,9 @@
 			</tr>
 			<tr>
 				<th>供应商订单ID</th>
-				<td>${deliverOrder.supplierOrderId}</td>
-			</tr>
-			<tr>
+				<td colspan="">${deliverOrder.supplierOrderId}</td>
 				<th>备注</th>
-				<td colspan="7">
+				<td colspan="6">
 					${deliverOrder.remark}
 				</td>
 			</tr>
