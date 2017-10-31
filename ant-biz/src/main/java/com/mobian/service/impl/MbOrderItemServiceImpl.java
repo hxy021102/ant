@@ -288,6 +288,7 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 			for (int i = 0; i < shopList.size(); i++) {
 				shopIds[i] = shopList.get(i).getId();
 			}
+			mbOrder.setShopId(mbSalesReport.getShopId());
 			mbOrder.setShopIds(shopIds);
 		}
         if ("OD40".equals(mbSalesReport.getOrderStatus())) {

@@ -80,8 +80,10 @@ public class MbOrderController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/manager")
-	public String manager(HttpServletRequest request,String status) {
+	public String manager(HttpServletRequest request,String status,Integer shopId,String payStatus) {
 		request.setAttribute("status", status);
+		request.setAttribute("shopId", shopId);
+		request.setAttribute("payStatus", payStatus);
 		return "/mborder/mbOrder";
 	}
 

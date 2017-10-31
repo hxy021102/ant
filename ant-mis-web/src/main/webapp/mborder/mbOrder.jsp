@@ -232,7 +232,7 @@
 						<th>门店
 						</th>
 						<td>
-							<jb:selectGrid dataType="shopId" name="shopId"></jb:selectGrid>
+							<jb:selectGrid dataType="shopId" name="shopId" value="${shopId}"></jb:selectGrid>
 						</td>
 					</tr>
 					<tr>
@@ -249,7 +249,7 @@
 						<th><%=TmbOrder.ALIAS_PAY_STATUS%>
 						</th>
 						<td>
-							<jb:select dataType="PS" name="payStatus"></jb:select>
+							<jb:select dataType="PS" name="payStatus" value="${payStatus}"></jb:select>
 						</td>
 						<th><%=TmbOrder.ALIAS_PAY_WAY%>
 						</th>
