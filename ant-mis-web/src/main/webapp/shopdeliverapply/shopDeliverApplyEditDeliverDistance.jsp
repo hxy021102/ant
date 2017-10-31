@@ -43,6 +43,10 @@
                         <input name="maxDeliveryDistance" type="text" class="span2" value="${shopDeliverApply.maxDeliveryDistance}">
                     </td>
                 </tr>
+                <tr>
+                    <th></th>
+                    <td><font color="red">(单位：米)  &nbsp;&nbsp;&nbsp;&nbsp;默认5000米</font></td>
+                </tr>
             </table>
         </form>
     </div>
