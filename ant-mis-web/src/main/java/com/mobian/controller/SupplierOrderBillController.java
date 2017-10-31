@@ -196,6 +196,7 @@ public class SupplierOrderBillController extends BaseController {
 				deliverOrder.setPayStatus("DPS02");//修改订单状态为已结算
 			}else {
 				d.setStatus("DPS04");//审核拒绝
+				deliverOrder.setPayStatus("DPS01");//订单变成未结算
 			}
 			d.setPayWay(supplierOrderBill.getPayWay());
 			deliverOrderPayService.edit(d);
