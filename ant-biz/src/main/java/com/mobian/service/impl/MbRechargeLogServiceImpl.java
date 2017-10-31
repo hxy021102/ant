@@ -52,17 +52,13 @@ public class MbRechargeLogServiceImpl extends BaseServiceImpl<MbRechargeLog> imp
 
 				if(userId != null){
 					if("BT003".equals(dbMbMechargeLog.getRefType())) {
-						MbUser user = mbUserService.get(Integer.valueOf(userId));
+						MbUser user = mbUserService.getFromCache(Integer.valueOf(userId));
 						dbMbMechargeLog.setApplyLoginName(user.getNickName());
 					} else {
-						User user = userService.get(userId);
+						User user = userService.getFromCache(userId);
 						dbMbMechargeLog.setApplyLoginName(user.getName());
 					}
-
 				}
-
-
-
 				ol.add(dbMbMechargeLog);
 			}
 		}
@@ -118,6 +114,15 @@ public class MbRechargeLogServiceImpl extends BaseServiceImpl<MbRechargeLog> imp
 			if (!F.empty(mbRechargeLog.getPayCode())) {
 				whereHql += " and t.payCode = :payCode";
 				params.put("payCode", mbRechargeLog.getPayCode());
+			}
+
+			if(mbRechargeLog.getAddtimeBegin()!=null){
+				whereHql += " and t.addtime >= :addtimeBegin";
+				params.put("addtimeBegin", mbRechargeLog.getAddtimeBegin());
+			}
+			if(mbRechargeLog.getAddtimeEnd()!=null){
+				whereHql += " and t.addtime <= :addtimeEnd";
+				params.put("addtimeEnd", mbRechargeLog.getAddtimeEnd());
 			}
 		}
 		return whereHql;
@@ -192,24 +197,30 @@ public class MbRechargeLogServiceImpl extends BaseServiceImpl<MbRechargeLog> imp
 		*/
 		TmbRechargeLog t = mbRechargeLogDao.get(TmbRechargeLog.class,mbRechargeLog.getId());
 
-		MbPaymentItem paymentItem = new MbPaymentItem();
-		paymentItem.setBankCode(t.getBankCode());
-		paymentItem.setPayCode(mbRechargeLog.getPayCode());
 
 		MbRechargeLog rechargeLog = new MbRechargeLog();
 		rechargeLog.setBankCode(t.getBankCode());
 		rechargeLog.setPayCode(mbRechargeLog.getPayCode());
 		rechargeLog.setHandleStatus(MbRechargeLogServiceI.HS02);
 		synchronized (this) {
-			if (MbRechargeLogServiceI.HS02.equals(mbRechargeLog.getHandleStatus()) && !MbBalanceLogServiceI.BT013.equals(t.getRefType())&&!F.empty(t.getPayCode())) {
-                List<MbPaymentItem> paymentItems = mbPaymentItemService.listMbPaymentItem(paymentItem);
-					List<MbRechargeLog> rechargeLogs = listMbRechargeLog(rechargeLog);
+			if (MbRechargeLogServiceI.HS02.equals(mbRechargeLog.getHandleStatus()) && MbBalanceLogServiceI.BT003.equals(t.getRefType()) && !F.empty(t.getPayCode())) {
+				MbPaymentItem paymentItem = new MbPaymentItem();
+				paymentItem.setBankCode(t.getBankCode());
+				paymentItem.setPayCode(mbRechargeLog.getPayCode());
+				List<MbPaymentItem> paymentItems = mbPaymentItemService.listMbPaymentItem(paymentItem);
+				List<MbRechargeLog> rechargeLogs = listMbRechargeLog(rechargeLog);
 				if (CollectionUtils.isEmpty(paymentItems) && CollectionUtils.isEmpty(rechargeLogs)) {
 					edit(mbRechargeLog);
 				} else {
 					throw new ServiceException("银行汇款单号已存在,请重新确认!");
 				}
-            } else if (MbRechargeLogServiceI.HS02.equals(mbRechargeLog.getHandleStatus()) && MbBalanceLogServiceI.BT013.equals(t.getRefType())) {
+			} else if (MbRechargeLogServiceI.HS02.equals(mbRechargeLog.getHandleStatus())) {
+				if(!F.empty(mbRechargeLog.getPayCode())) {
+					List<MbRechargeLog> rechargeLogs = listMbRechargeLog(rechargeLog);
+					if (!CollectionUtils.isEmpty(rechargeLogs)){
+						throw new ServiceException("流水号已存在,请重新确认!");
+					}
+				}
                 edit(mbRechargeLog);
             }else if (MbRechargeLogServiceI.HS03.equals(mbRechargeLog.getHandleStatus())) {
 				mbRechargeLog.setPayCode(null);

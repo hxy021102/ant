@@ -280,11 +280,13 @@ public class MbRechargeLogController extends BaseController {
             j.setSuccess(false);
             j.setMsg("请输入银行汇款单号");
         } else {
-            MbBalance mbBalance = mbBalanceService.queryByShopId(mbRechargeLog.getShopId());
-            if(mbBalance!=null){
-                mbRechargeLog.setBalanceId(mbBalance.getId());
-            }else {
-                throw new ServiceException("门店余额账户不存在！");
+            if (MbRechargeLogServiceI.HS02.equals(mbRechargeLog.getHandleStatus())) {
+                MbBalance mbBalance = mbBalanceService.queryByShopId(mbRechargeLog.getShopId());
+                if (mbBalance != null) {
+                    mbRechargeLog.setBalanceId(mbBalance.getId());
+                } else {
+                    throw new ServiceException("门店余额账户不存在！");
+                }
             }
             mbRechargeLog.setHandleLoginId(sessionInfo.getId());
             mbRechargeLog.setHandleTime(new Date());

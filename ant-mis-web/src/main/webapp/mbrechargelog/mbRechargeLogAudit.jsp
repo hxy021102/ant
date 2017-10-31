@@ -37,12 +37,13 @@
 		<form id="form" method="post">
 				<input type="hidden" name="id" value = "${id}"/>
 				<input name="handleStatus" type="hidden"/>
+				<input type="hidden" name="amount" style="width: 90%" value="${mbRechargeLog.amount}"/>
 				<table class="table table-hover table-condensed">
 				<tr>
 					<c:choose>
 						<c:when test="${mbRechargeLog.refType == 'BT004'}">
 							<input type="hidden" name="refType" style="width: 90%" value="${mbRechargeLog.refType}"/>
-							<input type="hidden" name="amount" style="width: 90%" value="${mbRechargeLog.amount}"/>
+
 						</c:when>
 						<c:otherwise>
 							<%--订单冲单业务--%>

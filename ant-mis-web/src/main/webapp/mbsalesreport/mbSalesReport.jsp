@@ -163,18 +163,22 @@
 </head>
 <body>
 <div class="easyui-layout" data-options="fit : true,border : false">
-    <div data-options="region:'north',title:'查询条件',border:false" style="height: 65px; overflow: hidden;">
+    <div data-options="region:'north',title:'查询条件',border:false" style="height: 115px; overflow: hidden;">
         <form id="searchForm">
             <table class="table table-hover table-condensed" style="display: none;">
                 <tr>
-                    <td>
+                    <th>
                         发货时间：
+                    </th>
+                    <td>
                         <input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'<%=TmbSupplierOrderItem.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'endDate\',{M:-1});}',maxDate:'#F{$dp.$D(\'endDate\',{d:-1});}'})" id="startDate" name="startDate"/>
                         <input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'<%=TmbSupplierOrderItem.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'startDate\',{d:1});}',maxDate:'#F{$dp.$D(\'startDate\',{M:1});}'})" id="endDate" name="endDate"/>
                     </td>
-                    <td>
+                    <th>
                         订单状态：
-                        <select    name="orderStatus" class="easyui-combobox" data-options="width:140,height:29">
+                    </th>
+                    <td>
+                        <select name="orderStatus" class="easyui-combobox" data-options="width:140,height:29">
                             <option value=""></option>
                             <option value="OD20">已发货</option>
                             <option value="OD35,OD30">已签收</option>
@@ -185,13 +189,18 @@
                     <td>
                         <jb:selectSql dataType="SQ004" name="warehouseId"></jb:selectSql>
                     </td>
-                    <th style="width: 50px;"><%=TmbShop.ALIAS_SHOP_TYPE%>
+                </tr>
+                <tr>
+                    <th><%=TmbShop.ALIAS_SHOP_TYPE%>
                     </th>
                     <td>
                         <jb:select dataType="ST" name="shopType" mustSelect="true"></jb:select>
                     </td>
+                    <th>主店名称</th>
+                    <td colspan="3">
+                        <jb:selectGrid dataType="shopId" name="shopId" params="{onlyMain:true}"></jb:selectGrid>
+                    </td>
                 </tr>
-
             </table>
         </form>
     </div>
