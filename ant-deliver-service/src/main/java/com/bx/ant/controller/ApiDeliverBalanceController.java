@@ -14,12 +14,14 @@ import com.bx.ant.pageModel.DeliverOrderShopPay;
 import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.MbShopServiceI;
+import com.mobian.service.MbWithdrawLogServiceI;
 import com.mobian.thirdpart.mns.MNSTemplate;
 import com.mobian.thirdpart.mns.MNSUtil;
 import com.mobian.thirdpart.redis.Key;
 import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.thirdpart.redis.RedisUtil;
 import com.mobian.util.ConvertNameUtil;
+import com.mobian.util.HttpUtil;
 import com.mobian.util.Util;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +68,9 @@ public class ApiDeliverBalanceController extends BaseController {
 
     @Resource
     private ShopDeliverApplyServiceI shopDeliverApplyService;
+
+    @Autowired
+    private MbWithdrawLogServiceI mbWithdrawLogService;
 
 
     @RequestMapping("/viewDeliverBanlanceLogList")
@@ -289,13 +294,20 @@ public class ApiDeliverBalanceController extends BaseController {
         }
         return j;
     }
+
+    /**
+     * 提现
+     * @param request
+     * @param amount
+     * @return
+     */
     @ResponseBody
     @RequestMapping("/withdraw")
-    public Json test(HttpServletRequest request, Integer amount){
+    public Json test(HttpServletRequest request, MbWithdrawLog withdrawLog){
         Json json = new Json();
 
         //1. 单次限额1W
-        if (amount > 10000 * 100) {
+        if (F.empty(withdrawLog.getAmount()) || withdrawLog.getAmount() > 10000 * 100) {
             json.setSuccess(false);
             json.setMsg("超过单次额度");
             return json;
@@ -304,18 +316,26 @@ public class ApiDeliverBalanceController extends BaseController {
         //2. 获取账户
         TokenWrap tokenWrap = getTokenWrap(request);
         Integer shopId = tokenWrap.getShopId();
-        MbBalance balance = mbBalanceService.addOrGetMbBalanceDelivery(shopId);
 
-        //3. 判断余额
-        if(amount > balance.getAmount()) {
-            json.setSuccess(false);
-            json.setMsg("余额不足");
-            return json;
-        }
+        //3. 添加申请
+        withdrawLog.setApplyLoginIP(HttpUtil.getIpAddress(request));
+        mbWithdrawLogService.addByShopId(shopId, withdrawLog);
+        json.setMsg("申请成功");
+        json.setSuccess(true);
+        return json;
+    }
 
-        //4. 申请提现
+
+    @RequestMapping("/withdrawDataGrid")
+    @ResponseBody
+    public DataGrid dataGridWithdraw(HttpServletRequest request, PageHelper pageHelper) {
+        DataGrid dataGrid = new DataGrid();
+
+        //通过门店ID找到申请者账户
+       TokenWrap tokenWrap = getTokenWrap(request);
+       Integer shopId = tokenWrap.getShopId();
+
         MbWithdrawLog withdrawLog = new MbWithdrawLog();
-        withdrawLog.setAmount(amount);
 
         ShopDeliverApply shopDeliverApply = new ShopDeliverApply();
         shopDeliverApply.setShopId(shopId);
@@ -323,36 +343,15 @@ public class ApiDeliverBalanceController extends BaseController {
         List<ShopDeliverApply> shopDeliverApplies = shopDeliverApplyService.query(shopDeliverApply);
         if (CollectionUtils.isNotEmpty(shopDeliverApplies)) {
             shopDeliverApply = shopDeliverApplies.get(0);
-            ShopDeliverAccount shopDeliverAccount = shopDeliverAccountService.get(shopDeliverApply.getAccountId());
-            withdrawLog.setBalanceId(balance.getId());
-            withdrawLog.setApplyLoginId(shopDeliverAccount.getId() +"");
-            withdrawLog.setReceiver(shopDeliverAccount.getNickName());
-            withdrawLog.setReceiverAccount(shopDeliverAccount.getRefId());
-            json.setMsg("申请成功");
-            json.setSuccess(true);
-            return json;
+            withdrawLog.setApplyLoginId(shopDeliverApply.getAccountId() + "");
+            //未指定排序则默认为修改时间降序
+            if (F.empty(pageHelper.getSort())) {
+                pageHelper.setSort("updatetime");
+                pageHelper.setOrder("desc");
+            }
+            //获取数据
+            dataGrid = mbWithdrawLogService.dataGrid(withdrawLog, pageHelper);
         }
-
-
-
-
-
-        //4. 微信转账
-
-
-        //5. 操作账户余额
-//        MbBalanceLog balanceLog = new MbBalanceLog();
-//        balanceLog.setBalanceId(balance.getId());
-//        balanceLog.setAmount( - amount);
-//        balanceLog.setRefId("");
-//        balanceLog.setRefType("");
-//        balanceLog.setRemark("");
-//        mbBalanceLogService.addAndUpdateBalance(balanceLog);
-
-        json.setMsg("申请失败");
-        json.setSuccess(false);
-        return json;
-
+        return dataGrid;
     }
-
 }

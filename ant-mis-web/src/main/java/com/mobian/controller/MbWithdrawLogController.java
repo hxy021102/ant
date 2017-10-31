@@ -166,7 +166,6 @@ public class MbWithdrawLogController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/editAuditPage")
-	@ResponseBody
 	public String editAuditPage(HttpServletRequest request, Integer id) {
 		request.setAttribute("id", id);
 		return "/mbwithdrawlog/mbWithDrawLogAudit";

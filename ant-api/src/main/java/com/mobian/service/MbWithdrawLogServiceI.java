@@ -51,5 +51,17 @@ public interface MbWithdrawLogServiceI {
 	 */
 	public void delete(Integer id);
 
+	/**
+	 * 审核提现申请
+	 * @param mbWithdrawLog
+	 * @param login
+	 */
     void editAudit(MbWithdrawLog mbWithdrawLog, String login);
+
+	/**
+	 * 通过门店ID填充并添加withdrawLog
+	 * @param shopId
+	 * @param withdrawLog
+	 */
+	void addByShopId(Integer shopId, MbWithdrawLog withdrawLog);
 }

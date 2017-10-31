@@ -23,6 +23,11 @@
 		$.canView = true;
 	</script>
 </c:if>
+	<c:if test="${fn:contains(sessionInfo.resourceList, '/mbWithdrawLogController/editAudit')}">
+	<script type="text/javascript">
+		$.canEditAuditt = true;
+	</script>
+</c:if>
 <script type="text/javascript">
 	var dataGrid;
 	$(function() {
@@ -98,10 +103,10 @@
 				width : 100,
 				formatter : function(value, row, index) {
 					var str = '';
-					if ($.canEdit) {
-						str += $.formatString('<img onclick="editFun(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_edit.png');
-					}
-					str += '&nbsp;';
+					<%--if ($.canEdit) {--%>
+						<%--str += $.formatString('<img onclick="editFun(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_edit.png');--%>
+					<%--}--%>
+//					str += '&nbsp;';
 					if ($.canDelete) {
 						str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_delete.png');
 					}
@@ -109,7 +114,7 @@
 					if ($.canView) {
 						str += $.formatString('<img onclick="viewFun(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_link.png');
 					}
-					if ($.canEditAudit){
+					if ($.canEditAuditt){
                         str += $.formatString('<img onclick="editAuditFun(\'{0}\');" src="{1}" title="审核"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/joystick.png');
                     }
 					return str;
@@ -221,11 +226,12 @@
             var rows = dataGrid.datagrid('getSelections');
             id = rows[0].id;
         }
+        console.log('ididididididiid:'+id);
         parent.$.modalDialog({
             title: '提现审核',
             width: 780,
             height: 200,
-            href: '${pageContext.request.contextPath}/mbWithDrawLogController/editAuditPage?id=' + id ,
+            href: '${pageContext.request.contextPath}/mbWithdrawLogController/editAuditPage?id=' + id ,
             buttons: [{
                 text: '通过',
                 handler: function () {

@@ -38,6 +38,7 @@ public class TmbWithdrawLog implements java.io.Serializable,IEntity{
 	public static final String ALIAS_HANDLE_REMARK = "处理结果";
 	public static final String ALIAS_HANDLE_TIME = "处理时间";
 	public static final String ALIAS_PAY_CODE = "流水号";
+//	public static final String ALI
 	
 	//date formats
 	public static final String FORMAT_ADDTIME = com.mobian.util.Constants.DATE_FORMAT_FOR_ENTITY;
@@ -86,6 +87,8 @@ public class TmbWithdrawLog implements java.io.Serializable,IEntity{
 	private java.lang.String payCode;
 	//@Length(max=64)
 	private java.lang.String receiverAccount;
+
+	private java.lang.String applyLoginIP;
 	//columns END
 
 
@@ -271,6 +274,15 @@ public class TmbWithdrawLog implements java.io.Serializable,IEntity{
 
 	public void setReceiverAccount(String receiverAccount) {
 		this.receiverAccount = receiverAccount;
+	}
+
+	@Column(name = "apply_login_ip", unique = false, nullable = true, insertable = true, updatable = true, length = 64)
+	public String getApplyLoginIP() {
+		return applyLoginIP;
+	}
+
+	public void setApplyLoginIP(String applyLoginIP) {
+		this.applyLoginIP = applyLoginIP;
 	}
 	
 	

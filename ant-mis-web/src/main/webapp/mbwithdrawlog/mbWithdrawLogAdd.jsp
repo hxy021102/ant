@@ -38,31 +38,9 @@
 				<input type="hidden" name="id"/>
 			<table class="table table-hover table-condensed">
 				<tr>	
-					<th><%=TmbWithdrawLog.ALIAS_TENANT_ID%></th>	
-					<td>
-											<input class="span2" name="tenantId" type="text"/>
-					</td>							
-					<th><%=TmbWithdrawLog.ALIAS_ADDTIME%></th>	
-					<td>
-					<input class="span2" name="addtime" type="text" onclick="WdatePicker({dateFmt:'<%=TmbWithdrawLog.FORMAT_ADDTIME%>'})"  maxlength="0" class="required " />
-					</td>							
-				</tr>	
-				<tr>	
-					<th><%=TmbWithdrawLog.ALIAS_UPDATETIME%></th>	
-					<td>
-					<input class="span2" name="updatetime" type="text" onclick="WdatePicker({dateFmt:'<%=TmbWithdrawLog.FORMAT_UPDATETIME%>'})"  maxlength="0" class="required " />
-					</td>							
-					<th><%=TmbWithdrawLog.ALIAS_ISDELETED%></th>	
-					<td>
-					
-											<input  name="isdeleted" type="text" class="easyui-validatebox span2" data-options="required:true"/>
-					</td>							
-				</tr>	
-				<tr>	
 					<th><%=TmbWithdrawLog.ALIAS_BALANCE_ID%></th>	
 					<td>
-					
-											<input  name="balanceId" type="text" class="easyui-validatebox span2" data-options="required:true"/>
+						<input  name="balanceId" type="text" class="easyui-validatebox span2" data-options="required:true"/>
 					</td>							
 					<th><%=TmbWithdrawLog.ALIAS_AMOUNT%></th>	
 					<td>
@@ -91,42 +69,16 @@
 					<input class="span2" name="remitterTime" type="text" onclick="WdatePicker({dateFmt:'<%=TmbWithdrawLog.FORMAT_REMITTER_TIME%>'})"  maxlength="0" class="" />
 					</td>							
 				</tr>	
-				<tr>	
-					<th><%=TmbWithdrawLog.ALIAS_CONTENT%></th>	
+				<tr>
+					<th>提现账户</th>
 					<td>
-											<input class="span2" name="content" type="text"/>
-					</td>							
-					<th><%=TmbWithdrawLog.ALIAS_BANK_CODE%></th>	
+						<input class="span2" name="receiverAccount" type="text"/>
+					</td>
+					<th>申请者IP</th>
 					<td>
-											<jb:select dataType="TB" name="bankCode"></jb:select>	
-					</td>							
-				</tr>	
-				<tr>	
-					<th><%=TmbWithdrawLog.ALIAS_HANDLE_STATUS%></th>	
-					<td>
-											<jb:select dataType="HS" name="handleStatus"></jb:select>	
-					</td>							
-					<th><%=TmbWithdrawLog.ALIAS_HANDLE_LOGIN_ID%></th>	
-					<td>
-											<input class="span2" name="handleLoginId" type="text"/>
-					</td>							
-				</tr>	
-				<tr>	
-					<th><%=TmbWithdrawLog.ALIAS_HANDLE_REMARK%></th>	
-					<td>
-											<input class="span2" name="handleRemark" type="text"/>
-					</td>							
-					<th><%=TmbWithdrawLog.ALIAS_HANDLE_TIME%></th>	
-					<td>
-					<input class="span2" name="handleTime" type="text" onclick="WdatePicker({dateFmt:'<%=TmbWithdrawLog.FORMAT_HANDLE_TIME%>'})"  maxlength="0" class="" />
-					</td>							
-				</tr>	
-				<tr>	
-					<th><%=TmbWithdrawLog.ALIAS_PAY_CODE%></th>	
-					<td>
-											<input class="span2" name="payCode" type="text"/>
-					</td>							
-				</tr>	
+						<input class="span2" name="applyLoginIP" type="text"/>
+					</td>
+				</tr>
 			</table>		
 		</form>
 	</div>
