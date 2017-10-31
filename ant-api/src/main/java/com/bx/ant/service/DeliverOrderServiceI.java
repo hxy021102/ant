@@ -245,6 +245,8 @@ public interface DeliverOrderServiceI {
 	 */
 	Integer clearAllocationOrderRedis(Integer shopId);
 
+	DeliverOrder getBySupplierOrderId(String supplierOrderId);
+
 	/**
 	 * 通过excel获取到的list生成订单
 	 * lo[0]订单号

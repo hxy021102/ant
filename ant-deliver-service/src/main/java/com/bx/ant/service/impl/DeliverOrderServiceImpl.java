@@ -2,6 +2,7 @@ package com.bx.ant.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bx.ant.dao.DeliverOrderItemDaoI;
+import com.bx.ant.model.TdeliverOrderShopItem;
 import com.bx.ant.pageModel.*;
 import com.bx.ant.service.*;
 import com.mobian.absx.F;
@@ -719,6 +720,19 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	@Override
 	public Integer clearAllocationOrderRedis(Integer shopId) {
 		return updateAllocationOrderRedis(shopId, 0);
+	}
+
+	@Override
+	public DeliverOrder getBySupplierOrderId(String supplierOrderId) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("supplierOrderId", supplierOrderId);
+		TdeliverOrder t = deliverOrderDao.get("from TdeliverOrder t  where t.isdeleted = 0 and t.supplierOrderId = :supplierOrderId", params);
+		if(t != null) {
+			DeliverOrder o = new DeliverOrder();
+			BeanUtils.copyProperties(t, o);
+			return o;
+		}
+		return null;
 	}
 
 	@Override
