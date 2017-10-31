@@ -952,6 +952,15 @@
             });
         }
 
+        function viewOrderUnfinish(id) {
+            var href = '${pageContext.request.contextPath}/mbOrderController/manager?payStatus=PS01&shopId=' + id;
+            parent.$("#index_tabs").tabs('add', {
+                title: '未支付订单-' + id,
+                content: '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+                closable: true
+            });
+        }
+
 
         //桶余额
         function viewCashBalance(balanceId,shopId) {
@@ -1068,7 +1077,7 @@
                 <td>
                     <c:choose>
                         <c:when test="${debt>0}">
-                            <font color="red" class="money_input">${debt}</font>
+                            <a href="javascript:void(0);" onclick="viewOrderUnfinish('${mbShopExt.id}')" class="money_input" style="color: red">${debt}</a>
                         </c:when>
                         <c:otherwise>
                             ${debt/100.0}
