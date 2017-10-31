@@ -58,10 +58,4 @@ public interface MbWithdrawLogServiceI {
 	 */
     void editAudit(MbWithdrawLog mbWithdrawLog, String login);
 
-	/**
-	 * 通过门店ID填充并添加withdrawLog
-	 * @param shopId
-	 * @param withdrawLog
-	 */
-	void addByShopId(Integer shopId, MbWithdrawLog withdrawLog);
 }

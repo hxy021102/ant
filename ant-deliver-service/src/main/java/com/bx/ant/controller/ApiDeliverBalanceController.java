@@ -1,6 +1,7 @@
 package com.bx.ant.controller;
 
 import com.aliyun.mns.model.TopicMessage;
+import com.bx.ant.pageModel.DeliverOrderShopPay;
 import com.bx.ant.pageModel.ShopDeliverAccount;
 import com.bx.ant.pageModel.ShopDeliverApply;
 import com.bx.ant.pageModel.session.TokenWrap;
@@ -10,7 +11,6 @@ import com.bx.ant.service.ShopDeliverAccountServiceI;
 import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.*;
-import com.bx.ant.pageModel.DeliverOrderShopPay;
 import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.MbShopServiceI;
@@ -69,7 +69,7 @@ public class ApiDeliverBalanceController extends BaseController {
     @Resource
     private ShopDeliverApplyServiceI shopDeliverApplyService;
 
-    @Autowired
+    @Resource
     private MbWithdrawLogServiceI mbWithdrawLogService;
 
 
@@ -298,7 +298,7 @@ public class ApiDeliverBalanceController extends BaseController {
     /**
      * 提现
      * @param request
-     * @param amount
+     * @param
      * @return
      */
     @ResponseBody
@@ -317,19 +317,46 @@ public class ApiDeliverBalanceController extends BaseController {
         TokenWrap tokenWrap = getTokenWrap(request);
         Integer shopId = tokenWrap.getShopId();
 
-//        String oldCode = (String) redisUtil.getString(Key.build(Namespace.SHOP_BALANCE_ROLL_VALIDATE_CODE, tokenWrap.getName()));
-//        if(F.empty(oldCode)) {
-//            json.setMsg("验证码已过期！");
-//            return json;
-//        }
-//        if(!oldCode.equals(vcode)) {
-//            json.setMsg("验证码错误！");
-//            return json;
-//        }
+        // 短信验证
+        String oldCode = (String) redisUtil.getString(Key.build(Namespace.SHOP_BALANCE_ROLL_VALIDATE_CODE, tokenWrap.getName()));
+        if(F.empty(oldCode)) {
+            json.setMsg("验证码已过期！");
+            return json;
+        }
+        if(!oldCode.equals(vcode)) {
+            json.setMsg("验证码错误！");
+            return json;
+        }
 
-        //3. 添加申请
-        withdrawLog.setApplyLoginIP(HttpUtil.getIpAddress(request));
-        mbWithdrawLogService.addByShopId(shopId, withdrawLog);
+        MbBalance balance = mbBalanceService.addOrGetMbBalanceDelivery(shopId);
+
+        //1. 判断余额
+        if(F.empty(withdrawLog.getAmount()) || withdrawLog.getAmount() > balance.getAmount()) {
+            //throw new ServiceException("转账金额为空或余额不足");
+            json.setSuccess(false);
+            json.setMsg("转账金额为空或余额不足");
+            return json;
+        }
+
+        //2. 填充数据
+        ShopDeliverApply shopDeliverApply = new ShopDeliverApply();
+        shopDeliverApply.setShopId(shopId);
+        shopDeliverApply.setStatus("DAS02");
+        List<ShopDeliverApply> shopDeliverApplies = shopDeliverApplyService.query(shopDeliverApply);
+        if (CollectionUtils.isNotEmpty(shopDeliverApplies)) {
+            shopDeliverApply = shopDeliverApplies.get(0);
+            ShopDeliverAccount shopDeliverAccount = shopDeliverAccountService.get(shopDeliverApply.getAccountId());
+            withdrawLog.setBalanceId(balance.getId());
+            withdrawLog.setApplyLoginId(shopDeliverAccount.getId() +"");
+            withdrawLog.setReceiver(shopDeliverAccount.getNickName());
+            withdrawLog.setReceiverAccount(shopDeliverAccount.getRefId());
+            withdrawLog.setHandleStatus("HS01");
+            withdrawLog.setRefType("BT101");
+            withdrawLog.setApplyLoginIP(HttpUtil.getIpAddress(request));
+
+            mbWithdrawLogService.add(withdrawLog);
+        }
+
         json.setMsg("申请成功");
         json.setSuccess(true);
         return json;

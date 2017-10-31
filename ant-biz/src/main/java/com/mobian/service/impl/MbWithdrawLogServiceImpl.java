@@ -1,12 +1,5 @@
 package com.mobian.service.impl;
 
-import java.io.IOException;
-import java.util.*;
-
-import com.bx.ant.pageModel.ShopDeliverAccount;
-import com.bx.ant.pageModel.ShopDeliverApply;
-import com.bx.ant.service.ShopDeliverAccountServiceI;
-import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.absx.F;
 import com.mobian.dao.MbWithdrawLogDaoI;
 import com.mobian.exception.ServiceException;
@@ -14,17 +7,16 @@ import com.mobian.model.TmbWithdrawLog;
 import com.mobian.pageModel.*;
 import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.MbWithdrawLogServiceI;
-
 import com.mobian.thirdpart.wx.HttpUtil;
 import com.mobian.thirdpart.wx.PayCommonUtil;
 import com.mobian.thirdpart.wx.WeixinUtil;
 import com.mobian.thirdpart.wx.XMLUtil;
-import org.apache.commons.collections.CollectionUtils;
-import org.jdom.JDOMException;
+import com.mobian.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.mobian.util.MyBeanUtils;
+
+import java.util.*;
 
 @Service
 public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> implements MbWithdrawLogServiceI {
@@ -37,12 +29,6 @@ public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> imp
 
 	@Autowired
 	private MbBalanceLogServiceImpl mbBalanceLogService;
-
-	@Autowired
-	private ShopDeliverApplyServiceI shopDeliverApplyService;
-
-	@Autowired
-	private ShopDeliverAccountServiceI shopDeliverAccountService;
 
 	@Override
 	public DataGrid dataGrid(MbWithdrawLog mbWithdrawLog, PageHelper ph) {
@@ -219,31 +205,4 @@ public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> imp
 		}
 	}
 
-	@Override
-	public void addByShopId(Integer shopId, MbWithdrawLog withdrawLog) {
-		MbBalance balance = mbBalanceService.addOrGetMbBalanceDelivery(shopId);
-
-		//1. 判断余额
-		if(F.empty(withdrawLog.getAmount()) || withdrawLog.getAmount() > balance.getAmount()) {
-			throw new ServiceException("转账金额为空或余额不足");
-		}
-
-		//2. 	填充数据
-		ShopDeliverApply shopDeliverApply = new ShopDeliverApply();
-		shopDeliverApply.setShopId(shopId);
-		shopDeliverApply.setStatus("DAS02");
-		List<ShopDeliverApply> shopDeliverApplies = shopDeliverApplyService.query(shopDeliverApply);
-		if (CollectionUtils.isNotEmpty(shopDeliverApplies)) {
-			shopDeliverApply = shopDeliverApplies.get(0);
-			ShopDeliverAccount shopDeliverAccount = shopDeliverAccountService.get(shopDeliverApply.getAccountId());
-			withdrawLog.setBalanceId(balance.getId());
-			withdrawLog.setApplyLoginId(shopDeliverAccount.getId() +"");
-			withdrawLog.setReceiver(shopDeliverAccount.getNickName());
-			withdrawLog.setReceiverAccount(shopDeliverAccount.getRefId());
-			withdrawLog.setHandleStatus("HS01");
-			withdrawLog.setRefType("BT101");
-
-			add(withdrawLog);
-		}
-	}
 }
