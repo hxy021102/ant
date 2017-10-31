@@ -63,45 +63,25 @@
 			<input type="hidden" name="id" value="${shopItem.id}"/>
 			<table class="table table-hover table-condensed">
 				<tr>
-					<th> 门店ID
-					</th>
-					<td>
-						<input class="span2" name="tenantId" readonly type="text" value="${shopItem.shopId}"/>
-					</td>
-					<th>状态
-					</th>
-					<td>
-						<input class="span2 " name="statusName" readonly value="${shopItem.statusName}"type="text" />
-						<input class="span2 " name="status"  type="hidden" value="${shopItem.status}"/>
-					</td>
-				</tr>
-				<tr>
-					<th>商品ID
-					</th>
-					<td>
-						<input name="itemId" type="text" class=" span2"  readonly  value="${shopItem.itemId}"/>
-					</td>
 					<th>商品名称
 					</th>
 					<td>
 						<input name="name" type="text" class=" span2"  readonly value="${shopItem.name}"/>
 					</td>
-				</tr>
-				<tr>
 					<th>采购价格
 					</th>
 					<td>
 						<input class="span2 easyui-validatebox money_input" name="priceStr" id="inPrice" value="${shopItem.inPrice}"type="text" onblur="computerPrice()" data-options="required:true"/>
 						<input class="span2 "   name="inPrice"  type="hidden"  value="${shopItem.inPrice}"/>
 					</td>
+				</tr>
+				<tr>
 					<th>运费
 					</th>
 					<td>
 						<input class="span2 easyui-validatebox money_input" name="priceStr" id="freight" type="text" value="${shopItem.freight}" onblur="computerPrice()" data-options="required:true"/>
 						<input class="span2 " name="freight" type="hidden" value="${shopItem.freight}"/>
 					</td>
-				</tr>
-				<tr>
 					<th>价格
 					</th>
 					<td colspan="3">

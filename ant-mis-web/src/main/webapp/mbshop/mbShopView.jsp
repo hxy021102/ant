@@ -568,10 +568,6 @@
                     title : '商品名称',
                     width : 60
                 }, {
-                    field : 'shopId',
-                    title : '门店ID',
-                    width : 20
-                }, {
                     field : 'price',
                     title : '价格',
                     width : 20,
@@ -608,7 +604,7 @@
                 },{
                     field : 'online',
                     title : '是否上架',
-                    width : 5,
+                    width : 20,
                     formatter:function(value){
                         if (value == true)
                             return "是";
@@ -682,7 +678,7 @@
             parent.$.modalDialog({
                 title: '商品价格修改',
                 width: 780,
-                height: 500,
+                height: 200,
                 href: '${pageContext.request.contextPath}/shopItemController/editPricePage?id=' + id,
                 buttons: [{
                     text: '编辑',
