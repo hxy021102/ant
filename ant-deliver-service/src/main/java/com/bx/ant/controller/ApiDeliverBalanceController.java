@@ -303,7 +303,7 @@ public class ApiDeliverBalanceController extends BaseController {
      */
     @ResponseBody
     @RequestMapping("/withdraw")
-    public Json test(HttpServletRequest request, MbWithdrawLog withdrawLog){
+    public Json test(HttpServletRequest request, MbWithdrawLog withdrawLog, String vcode){
         Json json = new Json();
 
         //1. 单次限额1W
@@ -316,6 +316,16 @@ public class ApiDeliverBalanceController extends BaseController {
         //2. 获取账户
         TokenWrap tokenWrap = getTokenWrap(request);
         Integer shopId = tokenWrap.getShopId();
+
+//        String oldCode = (String) redisUtil.getString(Key.build(Namespace.SHOP_BALANCE_ROLL_VALIDATE_CODE, tokenWrap.getName()));
+//        if(F.empty(oldCode)) {
+//            json.setMsg("验证码已过期！");
+//            return json;
+//        }
+//        if(!oldCode.equals(vcode)) {
+//            json.setMsg("验证码错误！");
+//            return json;
+//        }
 
         //3. 添加申请
         withdrawLog.setApplyLoginIP(HttpUtil.getIpAddress(request));
