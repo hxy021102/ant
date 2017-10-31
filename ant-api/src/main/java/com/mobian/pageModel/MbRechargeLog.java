@@ -32,17 +32,17 @@ public class MbRechargeLog implements java.io.Serializable {
 	private String shopName;
 	private String payerBankCode;
 	private String payCode;
+
+	private Date addtimeBegin;
+	private Date addtimeEnd;
+
+
 	public String getPayCode() {
 		return payCode;
 	}
 	public void setPayCode(String payCode) {
 		this.payCode = payCode;
 	}
-
-
-
-
-
 
 	public String getHandleStatusName() {
 		return ConvertNameUtil.getString(this.handleStatus);
@@ -60,7 +60,6 @@ public class MbRechargeLog implements java.io.Serializable {
 		return this.id;
 	}
 
-	
 	public void setTenantId(Integer tenantId) {
 		this.tenantId = tenantId;
 	}
@@ -219,6 +218,22 @@ public class MbRechargeLog implements java.io.Serializable {
 
 	public void setPayerBankCode(String payerBankCode) {
 		this.payerBankCode = payerBankCode;
+	}
+
+	public Date getAddtimeBegin() {
+		return addtimeBegin;
+	}
+
+	public void setAddtimeBegin(Date addtimeBegin) {
+		this.addtimeBegin = addtimeBegin;
+	}
+
+	public Date getAddtimeEnd() {
+		return addtimeEnd;
+	}
+
+	public void setAddtimeEnd(Date addtimeEnd) {
+		this.addtimeEnd = addtimeEnd;
 	}
 
 	@Override

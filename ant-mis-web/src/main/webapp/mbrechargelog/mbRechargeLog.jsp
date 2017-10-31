@@ -294,12 +294,17 @@
 		<div data-options="region:'north',title:'查询条件',border:false" style="height: 65px; overflow: hidden;">
 			<form id="searchForm">
 				<table class="table table-hover table-condensed" style="display: none;">
-						<tr>	
-							<th style="width: 50px">门店ID</th>
+						<tr>
+							<th>时间</th>
+							<td>
+								<input type="text" class="span2 easyui-validatebox" onclick="WdatePicker({dateFmt:'<%=TmbRechargeLog.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'addtimeEnd\',{M:-1});}',maxDate:'#F{$dp.$D(\'addtimeEnd\',{d:-1});}'})" id="addtimeBegin" name="addtimeBegin"/>
+								<input type="text" class="span2 easyui-validatebox" onclick="WdatePicker({dateFmt:'<%=TmbRechargeLog.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'addtimeBegin\',{d:1});}',maxDate:'#F{$dp.$D(\'addtimeBegin\',{M:1});}'})" id="addtimeEnd" name="addtimeEnd"/>
+							</td>
+							<th>门店ID</th>
 							<td>
 								<input type="text" name="shopId" maxlength="10" class="span2"/>
 							</td>
-							<th style="width: 50px">处理状态</th>
+							<th>处理状态</th>
 							<td>
 								<jb:select dataType="HS" name="handleStatus" value="HS01"></jb:select>
 							</td>
