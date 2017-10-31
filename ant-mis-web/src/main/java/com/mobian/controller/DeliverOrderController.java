@@ -1,11 +1,14 @@
 package com.mobian.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.bx.ant.pageModel.*;
 import com.bx.ant.service.DeliverOrderItemServiceI;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.SupplierItemRelationServiceI;
 import com.bx.ant.service.SupplierServiceI;
+import com.mobian.absx.F;
+import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
 import com.mobian.util.ConfigUtil;
 import com.mobian.util.ImportExcelUtil;
@@ -30,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * DeliverOrder管理控制器
@@ -311,45 +316,22 @@ public class DeliverOrderController extends BaseController {
 			in.close();
 			List<DeliverOrder> deliverOrderList = new ArrayList<>();
 			Iterator<List<Object>> listIterator = listOb.iterator();
-			listIterator.next();
+//			listIterator.next();
 			while (listIterator.hasNext()) {
 				List<Object> lo = listIterator.next();
 
-				//填充订单信息
-				DeliverOrder order = new DeliverOrder();
-				order.setSupplierOrderId((String) lo.get(0));
-				order.setContactPeople((String)lo.get(3));
-				order.setDeliveryAddress((String)lo.get(4));
-
-				//剔除非上海订单
-
-
-
-				order.setContactPhone((String)lo.get(5));
-				order.setRemark(((String)lo.get(6)));
-				order.setSupplierId(supplierId);
-
-
-				//填充订单明细
-				List<SupplierItemRelationView> supplierItemRelations = new  ArrayList<SupplierItemRelationView>();
-				SupplierItemRelationView itemRelation = new SupplierItemRelationView();
-				itemRelation.setSupplierId(supplierId);
-				itemRelation.setSupplierItemCode((String)lo.get(1));
-
-				List<SupplierItemRelation> itemRelations = supplierItemRelationService.dataGrid(itemRelation, new PageHelper()).getRows();
-				if (CollectionUtils.isNotEmpty(itemRelations)) {
-					itemRelation.setItemId(itemRelations.get(0).getItemId());
-					itemRelation.setQuantity(Integer.parseInt((String)lo.get(2)));
-					supplierItemRelations.add(itemRelation);
-
-					//添加订单和订单明细
-					deliverOrderService.addAndItems(order, supplierItemRelations);
-				}
-//				order.set
+				if(lo.size() < 6) throw new ServiceException("数据不完整,请确认除备注外是否有空数据");
+				deliverOrderService.addByTableList(lo, supplierId);
+				json.setSuccess(true);
+				json.setMsg("添加完成");
+				return json;
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+
+		json.setMsg("error");
+		json.setSuccess(false);
+		return json;
 	}
 }
