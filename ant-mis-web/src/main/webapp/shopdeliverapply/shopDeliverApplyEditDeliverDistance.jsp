@@ -38,9 +38,45 @@
             <input type="hidden" name="id" value = "${shopDeliverApply.id}"/>
             <table class="table table-hover table-condensed">
                 <tr>
-                    <th>最大配送距离</th>
+                    <th style="width: 100px;">最大配送距离</th>
                     <td>
                         <input name="maxDeliveryDistance" type="text" class="span2" value="${shopDeliverApply.maxDeliveryDistance}">
+                    </td>
+                </tr>
+                <tr>
+                    <th>是否短信通知</th>
+                    <td>
+                     <select class="easyui-combobox" name="smsRemind" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+                         <c:if test="${shopDeliverApply.smsRemind == false}">
+                             <option value="1">是</option>
+                             <option value="0" selected="selected">否</option>
+                         </c:if>
+                         <c:if test="${shopDeliverApply.smsRemind == true}">
+                             <option value="1" selected="selected">是</option>
+                             <option value="0">否</option>
+                         </c:if>
+                     </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>是否必须上传回单</th>
+                    <td>
+                        <select class="easyui-combobox" name="uploadRequired" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+                            <c:if test="${shopDeliverApply.uploadRequired == false}">
+                                <option value="1">是</option>
+                                <option value="0" selected="selected">否</option>
+                            </c:if>
+                            <c:if test="${shopDeliverApply.uploadRequired == true}">
+                                <option value="1" selected="selected">是</option>
+                                <option value="0">否</option>
+                            </c:if>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>派单类型</th>
+                    <td>
+                    <jb:select name="deliveryType" dataType="DAT" required="true" value="${shopDeliverApply.deliveryType}"></jb:select>
                     </td>
                 </tr>
             </table>
