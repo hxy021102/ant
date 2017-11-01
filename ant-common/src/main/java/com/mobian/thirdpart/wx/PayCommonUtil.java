@@ -86,11 +86,11 @@ public class PayCommonUtil {
 		try {
 			SortedMap<Object,Object> parameters = new TreeMap<Object,Object>();
 			// 金额  必填（单位为分必须为整数）
-			parameters.put("amount", (long)((double)params.get("amount")*100) + "");
+			parameters.put("amount", (int)(params.get("amount")) + "");
 			// 校验用户姓名选项 NO_CHECK：不校验真实姓名 FORCE_CHECK：强校验真实姓名 OPTION_CHECK：针对已实名认证的用户才校验真实姓名
-			parameters.put("check_name", "OPTION_CHECK");
+			parameters.put("check_name", "NO_CHECK");
 			// 企业付款描述信息
-			parameters.put("desc", "集东集西提现");
+			parameters.put("desc", "仓蚁管家提现");
 			// 公众账号ID 必填
 			parameters.put("mch_appid", ConvertNameUtil.getString(WeixinUtil.APPID));
 			// 商户号 必填
@@ -102,7 +102,7 @@ public class PayCommonUtil {
 			// 商户订单号  必填
 			parameters.put("partner_trade_no", params.get("partner_trade_no").toString());
 			// 收款用户姓名
-			parameters.put("re_user_name", params.get("re_user_name").toString());
+//			parameters.put("re_user_name", params.get("re_user_name").toString());
 			// 调用接口的机器Ip地址
 			parameters.put("spbill_create_ip", params.get("spbill_create_ip").toString());
 

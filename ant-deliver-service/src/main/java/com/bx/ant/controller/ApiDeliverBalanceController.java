@@ -1,22 +1,29 @@
 package com.bx.ant.controller;
 
 import com.aliyun.mns.model.TopicMessage;
+import com.bx.ant.pageModel.DeliverOrderShopPay;
+import com.bx.ant.pageModel.ShopDeliverAccount;
+import com.bx.ant.pageModel.ShopDeliverApply;
 import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderShopPayServiceI;
+import com.bx.ant.service.ShopDeliverAccountServiceI;
+import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.*;
-import com.bx.ant.pageModel.DeliverOrderShopPay;
 import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.MbShopServiceI;
+import com.mobian.service.MbWithdrawLogServiceI;
 import com.mobian.thirdpart.mns.MNSTemplate;
 import com.mobian.thirdpart.mns.MNSUtil;
 import com.mobian.thirdpart.redis.Key;
 import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.thirdpart.redis.RedisUtil;
 import com.mobian.util.ConvertNameUtil;
+import com.mobian.util.HttpUtil;
 import com.mobian.util.Util;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,6 +63,15 @@ public class ApiDeliverBalanceController extends BaseController {
     @Resource
     private RedisUtil redisUtil;
 
+    @Resource
+    private ShopDeliverAccountServiceI shopDeliverAccountService;
+
+    @Resource
+    private ShopDeliverApplyServiceI shopDeliverApplyService;
+
+    @Resource
+    private MbWithdrawLogServiceI mbWithdrawLogService;
+
 
     @RequestMapping("/viewDeliverBanlanceLogList")
     @ResponseBody
@@ -77,7 +93,7 @@ public class ApiDeliverBalanceController extends BaseController {
     @ResponseBody
     public Json viewBanlanceLogDetial(MbBalanceLog balanceLog) {
         Json json = new Json();
-        if ("BT060".equals(balanceLog.getRefType())) {
+        if ("BT060".equals(balanceLog.getRefType()) ||"BT061".equals(balanceLog.getRefType()) ) {
             DeliverOrderShopPay deliverOrderShopPay = deliverOrderPayShopService.get(Long.parseLong(balanceLog.getRefId()));
             json.setObj(deliverOrderService.getDeliverOrderExt(deliverOrderShopPay.getDeliverOrderId()));
         }
@@ -277,5 +293,102 @@ public class ApiDeliverBalanceController extends BaseController {
             logger.error("获取短信验证码接口异常", e);
         }
         return j;
+    }
+
+    /**
+     * 提现
+     * @param request
+     * @param
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/withdraw")
+    public Json test(HttpServletRequest request, MbWithdrawLog withdrawLog, String vcode){
+        Json json = new Json();
+
+        //1. 单次限额1W
+        if (F.empty(withdrawLog.getAmount()) || withdrawLog.getAmount() > 10000 * 100) {
+            json.setSuccess(false);
+            json.setMsg("超过单次额度");
+            return json;
+        }
+
+        //2. 获取账户
+        TokenWrap tokenWrap = getTokenWrap(request);
+        Integer shopId = tokenWrap.getShopId();
+
+        // 短信验证
+        String oldCode = (String) redisUtil.getString(Key.build(Namespace.SHOP_BALANCE_ROLL_VALIDATE_CODE, tokenWrap.getName()));
+        if(F.empty(oldCode)) {
+            json.setMsg("验证码已过期！");
+            return json;
+        }
+        if(!oldCode.equals(vcode)) {
+            json.setMsg("验证码错误！");
+            return json;
+        }
+
+        MbBalance balance = mbBalanceService.addOrGetMbBalanceDelivery(shopId);
+
+        //1. 判断余额
+        if(F.empty(withdrawLog.getAmount()) || withdrawLog.getAmount() > balance.getAmount()) {
+            //throw new ServiceException("转账金额为空或余额不足");
+            json.setSuccess(false);
+            json.setMsg("转账金额为空或余额不足");
+            return json;
+        }
+
+        //2. 填充数据
+        ShopDeliverApply shopDeliverApply = new ShopDeliverApply();
+        shopDeliverApply.setShopId(shopId);
+        shopDeliverApply.setStatus("DAS02");
+        List<ShopDeliverApply> shopDeliverApplies = shopDeliverApplyService.query(shopDeliverApply);
+        if (CollectionUtils.isNotEmpty(shopDeliverApplies)) {
+            shopDeliverApply = shopDeliverApplies.get(0);
+            ShopDeliverAccount shopDeliverAccount = shopDeliverAccountService.get(shopDeliverApply.getAccountId());
+            withdrawLog.setBalanceId(balance.getId());
+            withdrawLog.setApplyLoginId(shopDeliverAccount.getId() +"");
+            withdrawLog.setReceiver(shopDeliverAccount.getNickName());
+            withdrawLog.setReceiverAccount(shopDeliverAccount.getRefId());
+            withdrawLog.setHandleStatus("HS01");
+            withdrawLog.setRefType("BT101");
+            withdrawLog.setApplyLoginIP(HttpUtil.getIpAddress(request));
+
+            mbWithdrawLogService.add(withdrawLog);
+        }
+
+        json.setMsg("申请成功");
+        json.setSuccess(true);
+        return json;
+    }
+
+
+    @RequestMapping("/withdrawDataGrid")
+    @ResponseBody
+    public DataGrid dataGridWithdraw(HttpServletRequest request, PageHelper pageHelper) {
+        DataGrid dataGrid = new DataGrid();
+
+        //通过门店ID找到申请者账户
+       TokenWrap tokenWrap = getTokenWrap(request);
+       Integer shopId = tokenWrap.getShopId();
+
+        MbWithdrawLog withdrawLog = new MbWithdrawLog();
+
+        ShopDeliverApply shopDeliverApply = new ShopDeliverApply();
+        shopDeliverApply.setShopId(shopId);
+        shopDeliverApply.setStatus("DAS02");
+        List<ShopDeliverApply> shopDeliverApplies = shopDeliverApplyService.query(shopDeliverApply);
+        if (CollectionUtils.isNotEmpty(shopDeliverApplies)) {
+            shopDeliverApply = shopDeliverApplies.get(0);
+            withdrawLog.setApplyLoginId(shopDeliverApply.getAccountId() + "");
+            //未指定排序则默认为修改时间降序
+            if (F.empty(pageHelper.getSort())) {
+                pageHelper.setSort("updatetime");
+                pageHelper.setOrder("desc");
+            }
+            //获取数据
+            dataGrid = mbWithdrawLogService.dataGrid(withdrawLog, pageHelper);
+        }
+        return dataGrid;
     }
 }

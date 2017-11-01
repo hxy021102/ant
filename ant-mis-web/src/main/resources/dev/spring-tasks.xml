@@ -27,6 +27,8 @@
 
 		<!--<task:scheduled ref="deliverOrderTaskService" method="checkTimeOutOrder" cron="0 0/1 * * * ? "></task:scheduled>-->
 
+		<!--<task:scheduled ref="deliverOrderTaskService" method="youzanOrders" cron="0 0/1 * * * ? "></task:scheduled>-->
+
 	</task:scheduled-tasks>
 
 </beans>
