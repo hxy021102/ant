@@ -62,7 +62,7 @@
 				}, {
 				field : 'addtime',
 				title : '<%=TmbWithdrawLog.ALIAS_ADDTIME%>',
-				width : 70,
+				width : 80,
 				},  {
 				field : 'balanceId',
 				title : '<%=TmbWithdrawLog.ALIAS_BALANCE_ID%>',
@@ -70,7 +70,7 @@
 				formatter:function (value, row, index) {
                     var str = '';
 					if ($.canView) {
-                        str += $.formatString('<a onclick="viewFun(\'{0}\');"  title="查看"/>{0}',  value);
+                        str += $.formatString('<a href="javascript:void(0);" onclick="viewBalance(\'{0}\');" class="easyui-linkbutton">{1}</a>',value, value);
                         return str;
                     } else {
 					    return value;
@@ -81,6 +81,7 @@
 				field : 'amount',
 				title : '<%=TmbWithdrawLog.ALIAS_AMOUNT%>',
 				width : 50,
+				align: "right",
 				formatter: function (value, row, index) {
 				    if (value != null)
 						return $.formatMoney(value);
@@ -90,11 +91,11 @@
 				}, {
 				field : 'refTypeName',
 				title : '<%=TmbWithdrawLog.ALIAS_REF_TYPE%>',
-				width : 50		
+				width : 70
 				},{
                     field : 'receiverAccount',
                     title : '收款账户',
-                    width : 50
+                    width : 120
                 }, {
 				field : 'applyLoginName',
 				title : '申请人名称',
@@ -114,11 +115,12 @@
 				}, {
 				field : 'payCode',
 				title : '<%=TmbWithdrawLog.ALIAS_PAY_CODE%>',
-				width : 50		
+				width : 60
 				}, {
 				field : 'content',
 				title : '<%=TmbWithdrawLog.ALIAS_CONTENT%>',
-				width : 50
+				width : 50,
+				hidden:true
 				}, {
 				field : 'action',
 				title : '操作',
@@ -276,7 +278,15 @@
             ]
         });
     }
-	function searchFun() {
+    function viewBalance(id) {
+        var href = '${pageContext.request.contextPath}/mbUserController/viewBalance?shopId=' + id;
+        parent.$("#index_tabs").tabs('add', {
+            title: '余额-' + id,
+            content: '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            closable: true
+        });
+    }
+    function searchFun() {
 		dataGrid.datagrid('load', $.serializeObject($('#searchForm')));
 	}
 	function cleanFun() {

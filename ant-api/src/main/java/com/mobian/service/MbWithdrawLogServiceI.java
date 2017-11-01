@@ -61,5 +61,18 @@ public interface MbWithdrawLogServiceI {
 	 */
     void editAudit(MbWithdrawLog mbWithdrawLog, String login, HttpServletRequest request);
 
+	/**
+	 * 获取扩展视图DataGrid mbWithDrawLogView
+	 * @param mbWithdrawLogView
+	 * @param pageHelper
+	 * @return
+	 */
     DataGrid dataGridView(MbWithdrawLogView mbWithdrawLogView, PageHelper pageHelper);
+
+	/**
+	 * 获取扩展视图mbWithDrawLogView
+	 * @param id
+	 * @return
+	 */
+	MbWithdrawLogView getView(Integer id);
 }

@@ -255,5 +255,13 @@ public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> imp
 		return dataGrid;
 	}
 
+	@Override
+	public MbWithdrawLogView getView(Integer id) {
+		MbWithdrawLog mbWithdrawLog = get(id);
+		MbWithdrawLogView mbWithdrawLogView = new MbWithdrawLogView();
+		BeanUtils.copyProperties(mbWithdrawLog, mbWithdrawLogView);
+		fillLoginInfo(mbWithdrawLogView);
+		return mbWithdrawLogView;
+	}
 
 }
