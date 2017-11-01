@@ -6,6 +6,7 @@ import com.mobian.exception.ServiceException;
 import com.mobian.model.TmbWithdrawLog;
 import com.mobian.pageModel.*;
 import com.mobian.service.MbBalanceServiceI;
+import com.mobian.service.MbUserServiceI;
 import com.mobian.service.MbWithdrawLogServiceI;
 import com.mobian.thirdpart.wx.HttpUtil;
 import com.mobian.thirdpart.wx.PayCommonUtil;
@@ -13,6 +14,7 @@ import com.mobian.thirdpart.wx.WeixinUtil;
 import com.mobian.thirdpart.wx.XMLUtil;
 import com.mobian.util.IpUtil;
 import com.mobian.util.MyBeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,9 @@ public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> imp
 
 	@Autowired
 	private MbBalanceLogServiceImpl mbBalanceLogService;
+
+	@Autowired
+	private MbUserServiceI mbUserService;
 
 	@Override
 	public DataGrid dataGrid(MbWithdrawLog mbWithdrawLog, PageHelper ph) {
@@ -80,8 +85,8 @@ public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> imp
 				params.put("applyLoginId", mbWithdrawLog.getApplyLoginId());
 			}		
 			if (!F.empty(mbWithdrawLog.getReceiver())) {
-				whereHql += " and t.receiver= :receiver";
-				params.put("remitter", mbWithdrawLog.getReceiver());
+				whereHql += " and t.receiver LIKE receiver ";
+				params.put("remitter", mbWithdrawLog.getReceiver() + "%");
 			}		
 			if (!F.empty(mbWithdrawLog.getContent())) {
 				whereHql += " and t.content = :content";
@@ -104,8 +109,8 @@ public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> imp
 				params.put("handleRemark", mbWithdrawLog.getHandleRemark());
 			}		
 			if (!F.empty(mbWithdrawLog.getPayCode())) {
-				whereHql += " and t.payCode = :payCode";
-				params.put("payCode", mbWithdrawLog.getPayCode());
+				whereHql += " and t.payCode LIKE payCode";
+				params.put("payCode", mbWithdrawLog.getPayCode() + "%");
 			}
 			if (!F.empty(mbWithdrawLog.getReceiverAccount())) {
 				whereHql += " and t.receiverAccount = :receiverAccount";
@@ -114,6 +119,17 @@ public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> imp
 			if (!F.empty(mbWithdrawLog.getApplyLoginIP())) {
 				whereHql += " and t.applyLoginIP = :applyLoginIP";
 				params.put("applyLoginIP", mbWithdrawLog.getApplyLoginIP());
+			}
+			if (mbWithdrawLog instanceof MbWithdrawLogView) {
+				MbWithdrawLogView mbWithdrawLogView = (MbWithdrawLogView)mbWithdrawLog;
+				if(mbWithdrawLogView.getAddtimeBegin() != null){
+					whereHql += " and t.addtime >= :addtimeBegin";
+					params.put("addtimeBegin", mbWithdrawLogView.getAddtimeBegin());
+				}
+				if(mbWithdrawLogView.getAddtimeEnd() != null){
+					whereHql += " and t.addtime <= :addtimeEnd";
+					params.put("addtimeEnd", mbWithdrawLogView.getAddtimeEnd());
+				}
 			}
 		}	
 		return whereHql;
@@ -213,5 +229,31 @@ public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> imp
 			edit(withdrawLog);
 		}
 	}
+	protected void fillLoginInfo(MbWithdrawLogView mbWithdrawLogView) {
+		if (!F.empty(mbWithdrawLogView.getHandleLoginId())) {
+			MbUser mbUser = mbUserService.getFromCache(Integer.parseInt(mbWithdrawLogView.getHandleLoginId()));
+			if (mbUser != null) {
+				mbWithdrawLogView.setHandleLoginName(mbUser.getUserName());
+			}
+		}
+	}
+
+	@Override
+	public DataGrid dataGridView(MbWithdrawLogView mbWithdrawLogView, PageHelper pageHelper){
+		DataGrid dataGrid = new DataGrid();
+		List<MbWithdrawLog> ol = new ArrayList<MbWithdrawLog>();
+		List<MbWithdrawLog> l = dataGrid(mbWithdrawLogView, pageHelper).getRows();
+		if (CollectionUtils.isNotEmpty(l)) {
+			for (MbWithdrawLog log : l) {
+				MbWithdrawLogView logView = new MbWithdrawLogView();
+				BeanUtils.copyProperties(log, logView);
+				fillLoginInfo(logView);
+				ol.add(logView);
+			}
+		}
+		dataGrid.setRows(ol);
+		return dataGrid;
+	}
+
 
 }

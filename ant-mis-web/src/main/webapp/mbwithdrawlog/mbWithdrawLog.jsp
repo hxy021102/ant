@@ -28,11 +28,17 @@
 		$.canEditAuditt = true;
 	</script>
 </c:if>
+	<c:if test="${fn:contains(sessionInfo.resourceList, '/mbBalanceController/view')}">
+		<script type="text/javascript">
+            $.canViewBalance = true;
+		</script>
+	</c:if>
+
 <script type="text/javascript">
 	var dataGrid;
 	$(function() {
 		dataGrid = $('#dataGrid').datagrid({
-			url : '${pageContext.request.contextPath}/mbWithdrawLogController/dataGrid',
+			url : '${pageContext.request.contextPath}/mbWithdrawLogController/dataGridView',
 			fit : true,
 			fitColumns : true,
 			border : false,
@@ -56,17 +62,33 @@
 				}, {
 				field : 'addtime',
 				title : '<%=TmbWithdrawLog.ALIAS_ADDTIME%>',
-				width : 50,
+				width : 70,
 				},  {
 				field : 'balanceId',
 				title : '<%=TmbWithdrawLog.ALIAS_BALANCE_ID%>',
 				width : 50,
+				formatter:function (value, row, index) {
+                    var str = '';
+					if ($.canView) {
+                        str += $.formatString('<a onclick="viewFun(\'{0}\');"  title="查看"/>{0}',  value);
+                        return str;
+                    } else {
+					    return value;
+					}
+
+                }
 				}, {
 				field : 'amount',
 				title : '<%=TmbWithdrawLog.ALIAS_AMOUNT%>',
-				width : 50		
+				width : 50,
+				formatter: function (value, row, index) {
+				    if (value != null)
+						return $.formatMoney(value);
+				    else
+				        return '--';
+                }
 				}, {
-				field : 'refType',
+				field : 'refTypeName',
 				title : '<%=TmbWithdrawLog.ALIAS_REF_TYPE%>',
 				width : 50		
 				},{
@@ -107,13 +129,13 @@
 						<%--str += $.formatString('<img onclick="editFun(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_edit.png');--%>
 					<%--}--%>
 //					str += '&nbsp;';
-					if ($.canDelete) {
-						str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_delete.png');
-					}
-					str += '&nbsp;';
-					if ($.canView) {
-						str += $.formatString('<img onclick="viewFun(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_link.png');
-					}
+                    if ($.canDelete) {
+                        str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/cancel.png');
+                    }
+                    str += '&nbsp;';
+                    if ($.canView) {
+                        str += $.formatString('<img onclick="viewFun(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/link.png');
+                    }
 					if ($.canEditAuditt){
                         str += $.formatString('<img onclick="editAuditFun(\'{0}\');" src="{1}" title="审核"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/joystick.png');
                     }
@@ -310,9 +332,9 @@
 	</div>
 	<div id="toolbar" style="display: none;">
 		<c:if test="${fn:contains(sessionInfo.resourceList, '/mbWithdrawLogController/addPage')}">
-			<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'bug_add'">添加</a>
+			<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'pencil_add'">添加</a>
 		</c:if>
-		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">过滤条件</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
+		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
 		<c:if test="${fn:contains(sessionInfo.resourceList, '/mbWithdrawLogController/download')}">
 			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_go',plain:true" onclick="downloadTable();">导出</a>		
 			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">

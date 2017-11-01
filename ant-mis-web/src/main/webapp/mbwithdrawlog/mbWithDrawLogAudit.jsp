@@ -41,7 +41,7 @@
 				<tr>
 					<th>原因</th>
 					<td>
-						<textarea name="handleRemark"  class="easyui-validatebox" data-options="required:true"  style="width: 90%"></textarea>
+						<textarea name="handleRemark"  class="easyui-validatebox" data-options="required:true"  style="width: 95%"></textarea>
 					</td>
 				</tr>
 			</table>

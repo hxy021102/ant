@@ -182,5 +182,11 @@ public class MbWithdrawLogController extends BaseController {
 
 	}
 
+	@RequestMapping("/dataGridView")
+	@ResponseBody
+	public DataGrid dataGridView(MbWithdrawLogView mbWithdrawLogView, PageHelper pageHelper) {
+		return mbWithdrawLogService.dataGridView(mbWithdrawLogView, pageHelper);
+	}
+
 
 }
