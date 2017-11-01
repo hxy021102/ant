@@ -242,12 +242,12 @@ public class MbSupplierOrderServiceImpl extends BaseServiceImpl<MbSupplierOrder>
         return whereHql;
     }
 
-    public void deleteSupplierOrderAndItem(Integer id){
+    public void deleteSupplierOrderAndItem(Integer id) {
         List<MbSupplierOrderItem> orderItemsList = mbSupplierOrderItemService.mbSupplierOrderItemByOrderId(id);
         for (MbSupplierOrderItem m : orderItemsList) {
             mbSupplierOrderItemService.delete(m.getId());
         }
-            delete(id);
+        delete(id);
     }
 
     @Override

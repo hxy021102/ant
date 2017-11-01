@@ -45,7 +45,7 @@
 					</td>
 					<th><%=TmbSupplierBankAccount.ALIAS_ACCOUNT_BANK%></th>
 					<td>
-						<input class="span2" name="accountBank" type="text"/>
+						<jb:select name="accountBank" dataType="BN"></jb:select>
 					</td>
 				</tr>	
 				<tr>	

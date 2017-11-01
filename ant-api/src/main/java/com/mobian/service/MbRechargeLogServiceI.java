@@ -14,6 +14,9 @@ import java.util.List;
  */
 public interface MbRechargeLogServiceI {
 
+	String HS02 = "HS02";
+	String HS03 = "HS03";
+
 	/**
 	 * 获取MbRechargeLog数据表格
 	 * 
@@ -23,7 +26,7 @@ public interface MbRechargeLogServiceI {
 	 *            分页帮助类
 	 * @return
 	 */
-	public DataGrid dataGrid(MbRechargeLog mbRechargeLog, PageHelper ph);
+	DataGrid dataGrid(MbRechargeLog mbRechargeLog, PageHelper ph);
 
 	/**
 	 * 添加MbRechargeLog

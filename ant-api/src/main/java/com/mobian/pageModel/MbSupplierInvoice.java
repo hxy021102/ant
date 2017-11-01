@@ -1,5 +1,7 @@
 package com.mobian.pageModel;
 
+import com.mobian.util.ConvertNameUtil;
+
 import java.util.Date;
 
 @SuppressWarnings("serial")
@@ -22,6 +24,8 @@ public class MbSupplierInvoice implements java.io.Serializable {
 	private String invoiceUse;
 	private String invoiceType;
 	private Boolean invoiceDefault;
+	//
+	private String bankNames;
 
 
 
@@ -135,4 +139,11 @@ public class MbSupplierInvoice implements java.io.Serializable {
 		return this.invoiceDefault;
 	}
 
+	public String getBankNames() {
+		return ConvertNameUtil.getString(this.bankName);
+	}
+
+	public void setBankNames(String bankNames) {
+		this.bankNames = bankNames;
+	}
 }

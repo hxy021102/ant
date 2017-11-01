@@ -282,6 +282,15 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
         mbOrder.setDeliveryTimeEnd(mbSalesReport.getEndDate());
         mbOrder.setDeliveryWarehouseId(mbSalesReport.getWarehouseId());
         mbOrder.setStatus(mbSalesReport.getOrderStatus());
+		if(!F.empty(mbSalesReport.getShopId())){
+			List<MbShop> shopList = mbShopService.queryListById(mbSalesReport.getShopId());
+			Integer[] shopIds = new Integer[shopList.size()];
+			for (int i = 0; i < shopList.size(); i++) {
+				shopIds[i] = shopList.get(i).getId();
+			}
+			mbOrder.setShopId(mbSalesReport.getShopId());
+			mbOrder.setShopIds(shopIds);
+		}
         if ("OD40".equals(mbSalesReport.getOrderStatus())) {
             mbOrder.setPayStatus("PS01");
         }
@@ -455,7 +464,7 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 	@Override
 	public List<MbOrderItem> queryListByWithoutCostPrice() {
 		List<MbOrderItem> ol = new ArrayList<MbOrderItem>();
-		List<TmbOrderItem> l =  mbOrderItemDao.find("from TmbOrderItem t where t.isdeleted = 0 and t.costPrice is null",1,2000);
+		List<TmbOrderItem> l =  mbOrderItemDao.find("from TmbOrderItem t where t.isdeleted = 0 and t.costPrice is null", 1,2000);
 		if (CollectionUtils.isNotEmpty(l)) {
 			for (TmbOrderItem t : l) {
 				MbOrderItem o = new MbOrderItem();

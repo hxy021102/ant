@@ -30,6 +30,8 @@ public class MbOrderInvoice implements java.io.Serializable {
     private String shopName;
     private String invoiceStatusName;
     private String invoiceUseName;
+    //
+    private String bankNames;
 
     public String getLoginName() {
         return loginName;
@@ -200,4 +202,11 @@ public class MbOrderInvoice implements java.io.Serializable {
         return this.remark;
     }
 
+    public String getBankNames() {
+        return ConvertNameUtil.getString(this.bankName);
+    }
+
+    public void setBankNames(String bankNames) {
+        this.bankNames = bankNames;
+    }
 }

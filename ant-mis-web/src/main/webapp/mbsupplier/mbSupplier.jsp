@@ -51,18 +51,14 @@
 					return '<a onclick="viewSupplier('+value+')">'+ value +'</a>'
                 }
 				}, {
-				field : 'addtime',
-				title : '<%=TmbSupplier.ALIAS_ADDTIME%>',
-				width : 75
-				}, {
-				field : 'updatetime',
-				title : '<%=TmbSupplier.ALIAS_UPDATETIME%>',
-				width : 75
-				}, {
 				field : 'name',
 				title : '<%=TmbSupplier.ALIAS_NAME%>',
 				width : 100
 				}, {
+                field : 'supplierCode',
+                title : '<%=TmbSupplier.ALIAS_SUPPLIER_CODE%>',
+                width : 50
+            	}, {
 				field : 'regionName',
 				title : '<%=TmbSupplier.ALIAS_REGION_NAME%>',
 				width : 35
@@ -79,6 +75,14 @@
 				title : '<%=TmbSupplier.ALIAS_CONTACT_PEOPLE%>',
 				width : 40
 				}, {
+                field : 'financialContactPhone',
+                title : '<%=TmbSupplier.ALIAS_FINANCIAL_CONTACT_PHONE%>',
+                width : 55
+            	}, {
+                field : 'financialContact',
+                title : '<%=TmbSupplier.ALIAS_FINANCIAL_CONTACT%>',
+                width : 40
+            	}, {
 				field : 'action',
 				title : '操作',
 				width : 40,

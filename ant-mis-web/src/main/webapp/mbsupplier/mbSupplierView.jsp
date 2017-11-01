@@ -106,7 +106,7 @@
                 title : '开户名称',
                 width : 50
             }, {
-                field : 'accountBank',
+                field : 'accountBankName',
                 title : '开户银行',
                 width : 50
             }, {
@@ -178,7 +178,7 @@
         	title : '注册电话',
         	width : 80
     		}, {
-        	field : 'bankName',
+        	field : 'bankNames',
         	title : '银行名称',
         	width : 80
     		}, {
@@ -401,11 +401,11 @@
 					<th><%=TmbSupplier.ALIAS_NAME%></th>	
 					<td>
 						${mbSupplier.name}							
-					</td>							
-					<th><%=TmbSupplier.ALIAS_REGION_NAME%></th>
+					</td>
+					<th><%=TmbSupplier.ALIAS_SUPPLIER_CODE%></th>
 					<td>
-						${mbSupplier.regionName}
-					</td>							
+						${mbSupplier.supplierCode}
+					</td>
 				</tr>		
 				<tr>	
 					<th><%=TmbSupplier.ALIAS_ADDRESS%></th>	
@@ -423,8 +423,24 @@
 					<td>
 						${mbSupplier.contactPhone}
 					</td>
-				</tr>		
-				<tr>	
+				</tr>
+				<tr>
+					<th><%=TmbSupplier.ALIAS_FINANCIAL_CONTACT%></th>
+					<td>
+
+							${mbSupplier.financialContact}
+
+					</td>
+					<th><%=TmbSupplier.ALIAS_FINANCIAL_CONTACT_PHONE%></th>
+					<td>
+						${mbSupplier.financialContactPhone}
+					</td>
+				</tr>
+				<tr>
+					<th><%=TmbSupplier.ALIAS_REGION_NAME%></th>
+					<td>
+						${mbSupplier.regionName}
+					</td>
 					<th><%=TmbSupplier.ALIAS_WAREHOUSE_ID%></th>	
 					<td colspan="3">
 						${mbSupplier.warehouseName}
