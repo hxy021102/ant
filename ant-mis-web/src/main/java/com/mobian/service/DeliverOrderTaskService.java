@@ -3,6 +3,7 @@ package com.mobian.service;
 import com.bx.ant.service.DeliverOrderAllocationServiceI;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderShopServiceI;
+import com.bx.ant.service.DeliverOrderYouzanServiceI;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -19,6 +20,9 @@ public class DeliverOrderTaskService {
     private DeliverOrderServiceI deliverOrderService;
 
     @Resource
+    private DeliverOrderYouzanServiceI deliverOrderYouzanService;
+
+    @Resource
     private DeliverOrderShopServiceI deliverOrderShopService;
 
 
@@ -32,5 +36,9 @@ public class DeliverOrderTaskService {
 
     public void checkTimeOutOrder(){
         deliverOrderShopService.checkTimeOutOrder();
+    }
+
+    public void youzanOrders(){
+        deliverOrderYouzanService.youzanOrders();
     }
 }

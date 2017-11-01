@@ -1,25 +1,20 @@
 package com.mobian.controller;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import com.alibaba.fastjson.JSON;
 import com.mobian.pageModel.*;
 import com.mobian.service.MbWithdrawLogServiceI;
-
 import com.mobian.util.ConfigUtil;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSON;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 /**
  * MbWithdrawLog管理控制器
@@ -166,7 +161,6 @@ public class MbWithdrawLogController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/editAuditPage")
-	@ResponseBody
 	public String editAuditPage(HttpServletRequest request, Integer id) {
 		request.setAttribute("id", id);
 		return "/mbwithdrawlog/mbWithDrawLogAudit";
@@ -174,12 +168,12 @@ public class MbWithdrawLogController extends BaseController {
 
 	@RequestMapping("/editAudit")
 	@ResponseBody
-	public Json editAudit(MbWithdrawLog mbWithdrawLog, HttpSession session) {
+	public Json editAudit(MbWithdrawLog mbWithdrawLog, HttpSession session, HttpServletRequest request) {
 		Json json = new Json();
 		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
 		String loginId = sessionInfo.getId();
 
-		mbWithdrawLogService.editAudit(mbWithdrawLog, loginId);
+		mbWithdrawLogService.editAudit(mbWithdrawLog, loginId, request);
 
 
 

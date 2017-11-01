@@ -178,6 +178,7 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 			BeanUtils.copyProperties(shopOrderBillQuery, shopOrderBill);
 			shopOrderBill.setStatus("BAS01");
 			add(shopOrderBill);
+			shopOrderBillQuery.setId(shopOrderBill.getId());
 			DeliverOrderQuery deliverOrderQuery = new DeliverOrderQuery();
 			deliverOrderQuery.setStartDate(shopOrderBill.getStartDate());
 			deliverOrderQuery.setEndDate(shopOrderBill.getEndDate());
@@ -208,9 +209,11 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 	@Override
 	public void addAndPayShopOrderBillAndShopPay(ShopOrderBillQuery shopOrderBillQuery) {
 		addShopOrderBillAndShopPay(shopOrderBillQuery);
-		shopOrderBillQuery.setStatus("BAS02");
-		shopOrderBillQuery.setRemark("到期自动结算");
-		edit(shopOrderBillQuery);
+		if(!F.empty(shopOrderBillQuery.getId())) {
+			shopOrderBillQuery.setStatus("BAS02");
+			shopOrderBillQuery.setRemark("到期自动结算");
+			edit(shopOrderBillQuery);
+		}
 	}
 
 	@Override

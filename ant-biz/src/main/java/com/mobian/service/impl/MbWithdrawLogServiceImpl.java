@@ -1,25 +1,24 @@
 package com.mobian.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.mobian.absx.F;
 import com.mobian.dao.MbWithdrawLogDaoI;
 import com.mobian.exception.ServiceException;
 import com.mobian.model.TmbWithdrawLog;
-import com.mobian.pageModel.MbBalance;
-import com.mobian.pageModel.MbWithdrawLog;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.*;
 import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.MbWithdrawLogServiceI;
-
+import com.mobian.thirdpart.wx.HttpUtil;
+import com.mobian.thirdpart.wx.PayCommonUtil;
+import com.mobian.thirdpart.wx.WeixinUtil;
+import com.mobian.thirdpart.wx.XMLUtil;
+import com.mobian.util.IpUtil;
+import com.mobian.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.mobian.util.MyBeanUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 @Service
 public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> implements MbWithdrawLogServiceI {
@@ -29,6 +28,9 @@ public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> imp
 
 	@Autowired
 	private MbBalanceServiceI mbBalanceService;
+
+	@Autowired
+	private MbBalanceLogServiceImpl mbBalanceLogService;
 
 	@Override
 	public DataGrid dataGrid(MbWithdrawLog mbWithdrawLog, PageHelper ph) {
@@ -109,6 +111,10 @@ public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> imp
 				whereHql += " and t.receiverAccount = :receiverAccount";
 				params.put("receiverAccount", mbWithdrawLog.getReceiverAccount());
 			}
+			if (!F.empty(mbWithdrawLog.getApplyLoginIP())) {
+				whereHql += " and t.applyLoginIP = :applyLoginIP";
+				params.put("applyLoginIP", mbWithdrawLog.getApplyLoginIP());
+			}
 		}	
 		return whereHql;
 	}
@@ -149,17 +155,63 @@ public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> imp
 	}
 
 	@Override
-	public void editAudit(MbWithdrawLog mbWithdrawLog, String login) {
+	public void editAudit(MbWithdrawLog mbWithdrawLog, String loginId, HttpServletRequest request) {
 		MbWithdrawLog withdrawLog = get(mbWithdrawLog.getId());
-		if ("HAS02".equals(mbWithdrawLog.getHandleStatus())) {
+		//通过
+		if ("HS02".equals(mbWithdrawLog.getHandleStatus())) {
 			//1.  判断是否合规
 			if (F.empty(withdrawLog.getBalanceId())) throw new ServiceException("余额账户为空");
 			MbBalance balance = mbBalanceService.get(withdrawLog.getBalanceId());
-
-
-
-
+			if (balance.getAmount() < withdrawLog.getAmount()) throw new ServiceException("余额不足");
+			//2. 参数填充
 			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("amount", withdrawLog.getAmount());
+			params.put("openid", withdrawLog.getReceiverAccount());
+			params.put("partner_trade_no", withdrawLog.getId());
+//			params.put("re_user_name", withdrawLog.getReceiver());
+			params.put("spbill_create_ip", IpUtil.getIp(request));
+
+			try {
+				//3. 扣款
+				String requestXml = PayCommonUtil.requestTransfersXML(params);
+				System.out.println("~~~~~~~~~~~~微信企业付款接口请求参数requestXml:" + requestXml);
+				String result = HttpUtil.httpsRequestSSL(WeixinUtil.TRANSFERS_URL, requestXml);
+				System.out.println("~~~~~~~~~~~~微信企业付款接口返回结果result:" + result);
+
+				Map<String, String> resultMap = XMLUtil.doXMLParse(result);
+
+				if (!F.empty(resultMap.get("result_code")) && resultMap.get("result_code").toString().equalsIgnoreCase("SUCCESS")) {
+					//4. 扣除余额
+					MbBalanceLog balanceLog = new MbBalanceLog();
+					balanceLog.setBalanceId(balance.getId());
+					balanceLog.setAmount( - withdrawLog.getAmount());
+					balanceLog.setRefId(withdrawLog.getId() + "");
+					balanceLog.setRefType("BT101");
+					balanceLog.setRemark("提现扣款");
+					mbBalanceLogService.addAndUpdateBalance(balanceLog);
+
+					//5. 编辑提现申请记录
+					mbWithdrawLog.setHandleLoginId(loginId);
+					mbWithdrawLog.setHandleTime(new Date());
+					mbWithdrawLog.setReceiverTime(new Date());
+					edit(mbWithdrawLog);
+				} else {
+					withdrawLog.setHandleStatus("HS01");
+					withdrawLog.setHandleRemark("提现失败" + resultMap.get("err_code_des"));
+					edit(withdrawLog);
+				}
+			} catch (Exception e) {
+				withdrawLog.setHandleStatus("HS01");
+				withdrawLog.setHandleRemark("提现失败--接口异常");
+				edit(withdrawLog);
+			}
+		}
+		//拒绝
+		else if ("HS03".equals(mbWithdrawLog.getHandleStatus())) {
+		    mbWithdrawLog.setHandleLoginId(loginId);
+		    mbWithdrawLog.setHandleTime(new Date());
+			edit(withdrawLog);
 		}
 	}
+
 }

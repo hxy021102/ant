@@ -52,11 +52,11 @@
 				<tr>	
 					<th><%=TmbWithdrawLog.ALIAS_REMITTER%></th>	
 					<td>
-						${mbWithdrawLog.remitter}							
+						${mbWithdrawLog.receiver}
 					</td>							
 					<th><%=TmbWithdrawLog.ALIAS_REMITTER_TIME%></th>	
 					<td>
-						${mbWithdrawLog.remitterTime}							
+						${mbWithdrawLog.receiverTime}
 					</td>							
 				</tr>		
 				<tr>	

@@ -4,6 +4,8 @@ import com.mobian.pageModel.MbWithdrawLog;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 
  * @author John
@@ -51,5 +53,11 @@ public interface MbWithdrawLogServiceI {
 	 */
 	public void delete(Integer id);
 
-    void editAudit(MbWithdrawLog mbWithdrawLog, String login);
+	/**
+	 * 审核提现申请
+	 * @param mbWithdrawLog
+	 * @param login
+	 */
+    void editAudit(MbWithdrawLog mbWithdrawLog, String login, HttpServletRequest request);
+
 }
