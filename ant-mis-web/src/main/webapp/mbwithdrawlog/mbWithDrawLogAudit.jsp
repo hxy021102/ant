@@ -32,7 +32,7 @@
 	});
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
-	<div data-options="region:'center',border:false" title="audit" style="overflow: hidden;">
+	<div data-options="region:'center',border:false" title="" style="overflow: hidden;">
 		<form id="form" method="post">
 				<input type="hidden" name="id" value = "${id}"/>
 				<input name="handleStatus" type="hidden"/>
