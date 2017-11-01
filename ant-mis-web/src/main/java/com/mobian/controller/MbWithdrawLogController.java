@@ -3,7 +3,9 @@ package com.mobian.controller;
 import com.alibaba.fastjson.JSON;
 import com.mobian.pageModel.*;
 import com.mobian.service.MbWithdrawLogServiceI;
+import com.mobian.util.BeanUtil;
 import com.mobian.util.ConfigUtil;
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -105,8 +107,9 @@ public class MbWithdrawLogController extends BaseController {
 	 */
 	@RequestMapping("/view")
 	public String view(HttpServletRequest request, Integer id) {
-		MbWithdrawLog mbWithdrawLog = mbWithdrawLogService.get(id);
-		request.setAttribute("mbWithdrawLog", mbWithdrawLog);
+		MbWithdrawLogView mbWithdrawLogView = mbWithdrawLogService.getView(id);
+
+		request.setAttribute("mbWithdrawLog", mbWithdrawLogView);
 		return "/mbwithdrawlog/mbWithdrawLogView";
 	}
 
@@ -180,6 +183,12 @@ public class MbWithdrawLogController extends BaseController {
 		return null;
 
 
+	}
+
+	@RequestMapping("/dataGridView")
+	@ResponseBody
+	public DataGrid dataGridView(MbWithdrawLogView mbWithdrawLogView, PageHelper pageHelper) {
+		return mbWithdrawLogService.dataGridView(mbWithdrawLogView, pageHelper);
 	}
 
 

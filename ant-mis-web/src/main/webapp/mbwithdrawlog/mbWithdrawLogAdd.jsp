@@ -30,6 +30,20 @@
 				}
 			}
 		});
+        $('.money_input').blur(function () {
+            var source = $(this);
+            var target = source.next();
+            if (!/^([-1-9]\d*|0)(\.\d{2})?$/.test(source.val())) {
+                source.val("").focus();
+            }
+            var val = source.val().trim();
+            if (val.indexOf('.') > -1) {
+                val = val.replace('.', "");
+            } else if (val != '') {
+                val += "00";
+            }
+            target.val(val);
+        });
 	});
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
@@ -44,39 +58,30 @@
 					</td>							
 					<th><%=TmbWithdrawLog.ALIAS_AMOUNT%></th>	
 					<td>
-					
-											<input  name="amount" type="text" class="easyui-validatebox span2" data-options="required:true"/>
+						<input  name="amountStr" type="text" class="easyui-validatebox span2 money_input" data-options="required:true"/>
+						<input type="hidden" name="amount">
 					</td>							
 				</tr>	
 				<tr>	
 					<th><%=TmbWithdrawLog.ALIAS_REF_TYPE%></th>	
 					<td>
-					
-											<input  name="refType" type="text" class="easyui-validatebox span2" data-options="required:true"/>
+						<input  name="refType" type="text" class="easyui-validatebox span2" data-options="required:true" value="BT101"/>
 					</td>							
-					<th><%=TmbWithdrawLog.ALIAS_APPLY_LOGIN_ID%></th>	
+					<th><%=TmbWithdrawLog.ALIAS_APPLY_LOGIN_ID%>(shopAccountId) </th>
 					<td>
-											<input class="span2" name="applyLoginId" type="text"/>
+						<input class="span2" name="applyLoginId" type="number" data-options="required:true"/>
 					</td>							
 				</tr>	
 				<tr>	
-					<th><%=TmbWithdrawLog.ALIAS_REMITTER%></th>	
-					<td>
-											<input class="span2" name="remitter" type="text"/>
-					</td>							
-					<th><%=TmbWithdrawLog.ALIAS_REMITTER_TIME%></th>	
-					<td>
-					<input class="span2" name="remitterTime" type="text" onclick="WdatePicker({dateFmt:'<%=TmbWithdrawLog.FORMAT_REMITTER_TIME%>'})"  maxlength="0" class="" />
-					</td>							
+					<th>申请人名称</th>
+					<td colspan="4">
+						<input class="span2" name="receiver" type="text"/>
+					</td>
 				</tr>	
 				<tr>
-					<th>提现账户</th>
-					<td>
-						<input class="span2" name="receiverAccount" type="text"/>
-					</td>
-					<th>申请者IP</th>
-					<td>
-						<input class="span2" name="applyLoginIP" type="text"/>
+					<th>提现微信账户</th>
+					<td colspan="4">
+						<input class="span6" name="receiverAccount" type="text" data-options="required:true"/>
 					</td>
 				</tr>
 			</table>		
