@@ -536,12 +536,22 @@
 			<form id="searchForm">
 				<table class="table table-hover table-condensed" style="display: none;">
 						<tr>
-							<td>
-								<strong><%=TmbSupplierOrder.ALIAS_SUPPLIER_NAME%></strong>&nbsp;&nbsp;<jb:selectGrid dataType="supplierId" name="supplierId"></jb:selectGrid>
+                            <th>时间</th>
+                            <td>
+                                <input type="text" class="span2 easyui-validatebox" onclick="WdatePicker({dateFmt:'<%=TmbRechargeLog.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'addtimeEnd\',{M:-1});}',maxDate:'#F{$dp.$D(\'addtimeEnd\',{d:-1});}'})" id="addtimeStart" name="addtimeStart"/>
+                                <input type="text" class="span2 easyui-validatebox" onclick="WdatePicker({dateFmt:'<%=TmbRechargeLog.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'addtimeStart\',{d:1});}',maxDate:'#F{$dp.$D(\'addtimeStart\',{M:1});}'})" id="addtimeEnd" name="addtimeEnd"/>
+                            </td>
+							<th>
+								<%=TmbSupplierOrder.ALIAS_SUPPLIER_NAME%>
+							</th>
+                            <td>
+                                <jb:selectGrid dataType="supplierId" name="supplierId"></jb:selectGrid>
 							</td>
-							</td>
+                            <th>
+                                <%=TmbSupplierOrder.ALIAS_STATUS%>
+                            </th>
 							<td>
-								<strong><%=TmbSupplierOrder.ALIAS_STATUS%></strong>&nbsp;&nbsp;<jb:select dataType="SS" name="status" value="${status}"></jb:select>
+								<jb:select dataType="SS" name="status" value="${status}"></jb:select>
 							</td>
 					    </tr>
 				</table>
@@ -562,7 +572,7 @@
 		</c:if>
 	</div>
     <%--弹框--%>
-	<div  id="dlg" class="easyui-dialog"    closed="true" 	style="width: 730px; height: 500px;align:center" buttons="#dlg-buttons">
+	<div  id="dlg" class="easyui-dialog" closed="true" 	style="width: 730px; height: 500px;align:center" buttons="#dlg-buttons">
 		<div data-options="region:'center',border:false" title="" style="overflow: hidden;">
 			<form id="form" method="post">
 				<input type="hidden" name="id"/>

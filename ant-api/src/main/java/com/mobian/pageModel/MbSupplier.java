@@ -23,6 +23,12 @@ public class MbSupplier implements java.io.Serializable {
 	private String  warehouseName;
 	//新加地址
 	private String regionPath;
+	//供应商code
+	private String supplierCode;
+	//财务联系人
+	private String financialContact;
+	//财务联系人电话
+	private String financialContactPhone;
 	public String getRegionPath() {
 		return regionPath;
 	}
@@ -136,5 +142,30 @@ public class MbSupplier implements java.io.Serializable {
 	public Integer getWarehouseId() {
 		return this.warehouseId;
 	}
+
+	public String getSupplierCode() {
+		return supplierCode;
+	}
+
+	public void setSupplierCode(String supplierCode) {
+		this.supplierCode = supplierCode;
+	}
+
+	public String getFinancialContact() {
+		return financialContact;
+	}
+
+	public void setFinancialContact(String financialContact) {
+		this.financialContact = financialContact;
+	}
+
+	public String getFinancialContactPhone() {
+		return financialContactPhone;
+	}
+
+	public void setFinancialContactPhone(String financialContactPhone) {
+		this.financialContactPhone = financialContactPhone;
+	}
+
 
 }

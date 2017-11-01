@@ -14,6 +14,7 @@ import com.mobian.absx.F;
 import com.mobian.pageModel.*;
 import com.mobian.service.MbSupplierServiceI;
 
+import com.mobian.service.UserServiceI;
 import com.mobian.service.impl.DiveRegionServiceImpl;
 import com.mobian.service.impl.MbItemStockServiceImpl;
 import com.mobian.service.impl.MbWarehouseServiceImpl;
@@ -40,6 +41,8 @@ public class MbSupplierController extends BaseController {
     private DiveRegionServiceImpl diveRegionService;
     @Autowired
     private MbWarehouseServiceImpl mbWarehouseService;
+    @Autowired
+    private UserServiceI userService;
 
     /**
      * 跳转到MbSupplier管理页面
@@ -114,9 +117,18 @@ public class MbSupplierController extends BaseController {
     @ResponseBody
     public Json add(MbSupplier mbSupplier) {
         Json j = new Json();
-        mbSupplierService.add(mbSupplier);
-        j.setSuccess(true);
-        j.setMsg("添加成功！");
+        if(mbSupplier.getSupplierCode() !=null) {
+            MbSupplier supplier = mbSupplierService.getBySupplierCode(mbSupplier.getSupplierCode());
+            if(supplier != null) {
+                j.setSuccess(false);
+                j.setMsg("已存在相同供应商代码！请重新添加！");
+            }else {
+                mbSupplierService.add(mbSupplier);
+                j.setSuccess(true);
+                j.setMsg("添加成功！");
+
+            }
+        }
         return j;
     }
 
@@ -128,14 +140,12 @@ public class MbSupplierController extends BaseController {
     @RequestMapping("/view")
     public String view(HttpServletRequest request, Integer id) {
         MbSupplier mbSupplier = mbSupplierService.get(id);
-        Integer regionId = mbSupplier.getRegionId();
-        if (regionId != null) {
-            DiveRegion diveRegion = diveRegionService.getFromCache(regionId + "");
+        if (mbSupplier.getRegionId() != null) {
+            DiveRegion diveRegion = diveRegionService.getFromCache(mbSupplier.getRegionId() + "");
             mbSupplier.setRegionName(diveRegion.getRegionNameZh());
         }
-        Integer warehouseId = mbSupplier.getWarehouseId();
-        if (warehouseId != null) {
-            MbWarehouse mbWarehouse = mbWarehouseService.get(warehouseId);
+        if (mbSupplier.getWarehouseId() != null) {
+            MbWarehouse mbWarehouse = mbWarehouseService.get(mbSupplier.getWarehouseId());
             mbSupplier.setWarehouseName(mbWarehouse.getName());
         }
         request.setAttribute("mbSupplier", mbSupplier);
@@ -185,6 +195,7 @@ public class MbSupplierController extends BaseController {
         j.setSuccess(true);
         return j;
     }
+
 
     @RequestMapping("/selectQuery")
     @ResponseBody

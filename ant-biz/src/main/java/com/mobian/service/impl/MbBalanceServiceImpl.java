@@ -92,6 +92,7 @@ public class MbBalanceServiceImpl extends BaseServiceImpl<MbBalance> implements 
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
 		TmbBalance t = mbBalanceDao.get("from TmbBalance t  where t.id = :id", params);
+		if (t == null) return null;
 		MbBalance o = new MbBalance();
 		BeanUtils.copyProperties(t, o);
 		return o;

@@ -13,6 +13,9 @@ import java.util.List;
  */
 public interface MbBalanceLogServiceI {
 
+	String BT013 = "BT013";
+	String BT003 = "BT003";
+
 	/**
 	 * 获取MbBalanceLog数据表格
 	 * 

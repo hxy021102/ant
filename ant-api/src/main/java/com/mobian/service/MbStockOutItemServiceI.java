@@ -22,14 +22,14 @@ public interface MbStockOutItemServiceI {
 	 *            分页帮助类
 	 * @return
 	 */
-	public DataGrid dataGrid(MbStockOutItem mbStockOutItem, PageHelper ph);
+	DataGrid dataGrid(MbStockOutItem mbStockOutItem, PageHelper ph);
 
 	/**
 	 * 添加MbStockOutItem
 	 * 
 	 * @param mbStockOutItem
 	 */
-	public void add(MbStockOutItem mbStockOutItem);
+	void add(MbStockOutItem mbStockOutItem);
 
 	/**
 	 * 获得MbStockOutItem对象
@@ -37,24 +37,31 @@ public interface MbStockOutItemServiceI {
 	 * @param id
 	 * @return
 	 */
-	public MbStockOutItem get(Integer id);
+	MbStockOutItem get(Integer id);
 
 	/**
 	 * 修改MbStockOutItem
 	 * 
 	 * @param mbStockOutItem
 	 */
-	public void edit(MbStockOutItem mbStockOutItem);
+	void edit(MbStockOutItem mbStockOutItem);
 
 	/**
 	 * 删除MbStockOutItem
 	 * 
 	 * @param id
 	 */
-	public void delete(Integer id);
+	void delete(Integer id);
+
 	/**
 	 * 通过出库项查看入库项明细
 	 */
 	List<MbStockOutItem> queryStockOutItem(MbStockOutItem mbStockOutItem);
+
+	/**
+	 * 查询出库无cost price
+	 * @return
+	 */
+	List<MbStockOutItem> queryStockOutItemWithoutCostPrice();
 
 }

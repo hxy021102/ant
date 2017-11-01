@@ -128,8 +128,12 @@
 					</td>
 					<th><%=TmbShop.ALIAS_SALES_LOGIN_ID%></th>
 					<td>
-						<jb:selectSql name="salesLoginId" dataType="SQ018"></jb:selectSql>
+						<jb:selectSql name="salesLoginId" dataType="SQ018" value="${mbShop.salesLoginId}"></jb:selectSql>
 					</td>
+					<%--<th><%=TmbShop.ALIAS_SALES_LOGIN_ID%></th>
+					<td>
+						<jb:selectSql name="salesLoginId" dataType="SQ018"></jb:selectSql>
+					</td>--%>
 				</tr>
 				<tr>
 					<th><%=TmbShop.ALIAS_ADDRESS%>
