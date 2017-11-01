@@ -183,8 +183,8 @@ public class MbShopController extends BaseController {
                 mbShopExt.setCashBalanceAmount(mbBalance.getAmount());
             }
         }
-        if(mbShopExt.getSalesLoginId() !=null) {
-            User user = userService.get(mbShopExt.getSalesLoginId());
+        if(!F.empty(mbShopExt.getSalesLoginId())) {
+            User user = userService.getFromCache(mbShopExt.getSalesLoginId());
             mbShopExt.setSalesLoginName(user.getNickname());
         }
         Integer debt = mbOrderService.getOrderDebtMoney(id);
