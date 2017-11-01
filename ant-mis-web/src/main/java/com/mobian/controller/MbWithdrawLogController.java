@@ -173,12 +173,12 @@ public class MbWithdrawLogController extends BaseController {
 
 	@RequestMapping("/editAudit")
 	@ResponseBody
-	public Json editAudit(MbWithdrawLog mbWithdrawLog, HttpSession session) {
+	public Json editAudit(MbWithdrawLog mbWithdrawLog, HttpSession session, HttpServletRequest request) {
 		Json json = new Json();
 		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
 		String loginId = sessionInfo.getId();
 
-		mbWithdrawLogService.editAudit(mbWithdrawLog, loginId);
+		mbWithdrawLogService.editAudit(mbWithdrawLog, loginId, request);
 
 
 

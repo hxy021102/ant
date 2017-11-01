@@ -11,11 +11,13 @@ import com.mobian.thirdpart.wx.HttpUtil;
 import com.mobian.thirdpart.wx.PayCommonUtil;
 import com.mobian.thirdpart.wx.WeixinUtil;
 import com.mobian.thirdpart.wx.XMLUtil;
+import com.mobian.util.IpUtil;
 import com.mobian.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Service
@@ -153,10 +155,10 @@ public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> imp
 	}
 
 	@Override
-	public void editAudit(MbWithdrawLog mbWithdrawLog, String loginId) {
+	public void editAudit(MbWithdrawLog mbWithdrawLog, String loginId, HttpServletRequest request) {
 		MbWithdrawLog withdrawLog = get(mbWithdrawLog.getId());
 		//通过
-		if ("HAS02".equals(mbWithdrawLog.getHandleStatus())) {
+		if ("HS02".equals(mbWithdrawLog.getHandleStatus())) {
 			//1.  判断是否合规
 			if (F.empty(withdrawLog.getBalanceId())) throw new ServiceException("余额账户为空");
 			MbBalance balance = mbBalanceService.get(withdrawLog.getBalanceId());
@@ -166,31 +168,38 @@ public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> imp
 			params.put("amount", withdrawLog.getAmount());
 			params.put("openid", withdrawLog.getReceiverAccount());
 			params.put("partner_trade_no", withdrawLog.getId());
-			params.put("re_user_name", withdrawLog.getReceiver());
-			params.put("spbill_create_ip",withdrawLog.getApplyLoginIP());
+//			params.put("re_user_name", withdrawLog.getReceiver());
+			params.put("spbill_create_ip", IpUtil.getIp(request));
 
-			//3. 扣款
-			String requestXml = PayCommonUtil.requestRefundXML(params);
-			System.out.println("~~~~~~~~~~~~微信企业付款接口请求参数requestXml:" + requestXml);
-			String result = HttpUtil.httpsRequestSSL(WeixinUtil.TRANSFERS_URL, requestXml);
-			System.out.println("~~~~~~~~~~~~微信企业付款接口返回结果result:" + result);
-
-			//4. 扣除余额
-			MbBalanceLog balanceLog = new MbBalanceLog();
-			balanceLog.setBalanceId(balance.getId());
-			balanceLog.setAmount( - withdrawLog.getAmount());
-			balanceLog.setRefId(withdrawLog.getId() + "");
-			balanceLog.setRefType("BT101");
-			balanceLog.setRemark("提现扣款");
-			mbBalanceLogService.addAndUpdateBalance(balanceLog);
-
-			//5. 编辑提现申请记录
-			mbWithdrawLog.setHandleLoginId(loginId);
-			mbWithdrawLog.setHandleTime(new Date());
-			mbWithdrawLog.setReceiverTime(new Date());
-			edit(mbWithdrawLog);
 			try {
+				//3. 扣款
+				String requestXml = PayCommonUtil.requestTransfersXML(params);
+				System.out.println("~~~~~~~~~~~~微信企业付款接口请求参数requestXml:" + requestXml);
+				String result = HttpUtil.httpsRequestSSL(WeixinUtil.TRANSFERS_URL, requestXml);
+				System.out.println("~~~~~~~~~~~~微信企业付款接口返回结果result:" + result);
+
 				Map<String, String> resultMap = XMLUtil.doXMLParse(result);
+
+				if (!F.empty(resultMap.get("result_code")) && resultMap.get("result_code").toString().equalsIgnoreCase("SUCCESS")) {
+					//4. 扣除余额
+					MbBalanceLog balanceLog = new MbBalanceLog();
+					balanceLog.setBalanceId(balance.getId());
+					balanceLog.setAmount( - withdrawLog.getAmount());
+					balanceLog.setRefId(withdrawLog.getId() + "");
+					balanceLog.setRefType("BT101");
+					balanceLog.setRemark("提现扣款");
+					mbBalanceLogService.addAndUpdateBalance(balanceLog);
+
+					//5. 编辑提现申请记录
+					mbWithdrawLog.setHandleLoginId(loginId);
+					mbWithdrawLog.setHandleTime(new Date());
+					mbWithdrawLog.setReceiverTime(new Date());
+					edit(mbWithdrawLog);
+				} else {
+					withdrawLog.setHandleStatus("HS01");
+					withdrawLog.setHandleRemark("提现失败" + resultMap.get("err_code_des"));
+					edit(withdrawLog);
+				}
 			} catch (Exception e) {
 				withdrawLog.setHandleStatus("HS01");
 				withdrawLog.setHandleRemark("提现失败--接口异常");
@@ -198,7 +207,7 @@ public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> imp
 			}
 		}
 		//拒绝
-		if ("HS03".equals(mbWithdrawLog)) {
+		else if ("HS03".equals(mbWithdrawLog.getHandleStatus())) {
 		    mbWithdrawLog.setHandleLoginId(loginId);
 		    mbWithdrawLog.setHandleTime(new Date());
 			edit(withdrawLog);
