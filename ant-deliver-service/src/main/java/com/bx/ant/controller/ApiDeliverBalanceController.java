@@ -126,7 +126,7 @@ public class ApiDeliverBalanceController extends BaseController {
         //默认时间为当月
         if (date == null) {
              Calendar now = Calendar.getInstance();
-             date = now.get(Calendar.YEAR) + "-" + now.get(Calendar.MONTH) ;
+             date = now.get(Calendar.YEAR) + "-" + (now.get(Calendar.MONTH) + 1) ;
         }
 
         //设定搜索时间为月初00:00:00至下月初00:00:00
@@ -378,7 +378,7 @@ public class ApiDeliverBalanceController extends BaseController {
         //默认时间为当月
         if (date == null) {
             Calendar now = Calendar.getInstance();
-            date = now.get(Calendar.YEAR) + "-" + now.get(Calendar.MONTH) ;
+            date = now.get(Calendar.YEAR) + "-" + (now.get(Calendar.MONTH) + 1) ;
         }
 
         //设定搜索时间为月初00:00:00至下月初00:00:00
