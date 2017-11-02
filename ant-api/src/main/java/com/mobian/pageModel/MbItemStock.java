@@ -20,6 +20,7 @@ public class MbItemStock implements java.io.Serializable {
 	private String warehouseName;
 	private String itemName;
 
+	private Integer inPrice;
 	private Integer adjustment;
 	private String itemCode;
 	private String logType;
@@ -234,5 +235,13 @@ public class MbItemStock implements java.io.Serializable {
 
 	public void setIsPack(Boolean pack) {
 		isPack = pack;
+	}
+
+	public Integer getInPrice() {
+		return inPrice;
+	}
+
+	public void setInPrice(Integer inPrice) {
+		this.inPrice = inPrice;
 	}
 }
