@@ -140,8 +140,8 @@ public class MbItemStockLogController extends BaseController {
 				export.setOutQuantity(export.getQuantity());
 				footer.setOutQuantity(footer.getOutQuantity()+export.getQuantity());
 				if(!F.empty(export.getOutPrice())) {
-					footer.setOutAmount(footer.getOutAmount() + export.getOutAmount());
 					export.setOutAmount(export.getOutPrice() * export.getOutQuantity());
+					footer.setOutAmount(footer.getOutAmount() + export.getOutAmount());
 				}
 			}
 			MbItemStock mbItemStock1 = mbItemStock.getValue(export.getItemStockId());
