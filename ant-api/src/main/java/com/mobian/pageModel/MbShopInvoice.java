@@ -27,6 +27,7 @@ public class MbShopInvoice implements java.io.Serializable {
     private String invoiceUseName;
     private String invoiceTypeName;
     private Boolean invoiceDefault;
+    private String bankNames;
 
     public Boolean getInvoiceDefault() {
         return invoiceDefault;
@@ -165,4 +166,11 @@ public class MbShopInvoice implements java.io.Serializable {
         return this.invoiceType;
     }
 
+    public String getBankNames() {
+        return ConvertNameUtil.getString(this.bankName);
+    }
+
+    public void setBankNames(String bankNames) {
+        this.bankNames = bankNames;
+    }
 }

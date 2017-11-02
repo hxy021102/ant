@@ -54,6 +54,7 @@ public interface DeliverOrderServiceI {
 	Long TIME_DIF_SHOP_PAY_SETTLED = new Long(1 * 1 * 1 * 60 * 1000) ;
 
     void transformByShopIdAndStatus(Long id, Integer shopId, String status);
+    void transformByShopIdAndStatus(DeliverOrder deliverOrder);
 
     /**
 	 * 获取当前状态
@@ -244,6 +245,8 @@ public interface DeliverOrderServiceI {
 	 * @return
 	 */
 	Integer clearAllocationOrderRedis(Integer shopId);
+
+	DeliverOrder getBySupplierOrderId(String supplierOrderId);
 
 	/**
 	 * 通过excel获取到的list生成订单

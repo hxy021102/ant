@@ -80,8 +80,10 @@ public class MbOrderController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/manager")
-	public String manager(HttpServletRequest request,String status) {
+	public String manager(HttpServletRequest request,String status,Integer shopId,String payStatus) {
 		request.setAttribute("status", status);
+		request.setAttribute("shopId", shopId);
+		request.setAttribute("payStatus", payStatus);
 		return "/mborder/mbOrder";
 	}
 
@@ -351,7 +353,7 @@ public class MbOrderController extends BaseController {
 			MbOrderRefundLog mbOrderRefundLog = mbOrderRefundLogService.get(id);
 			id = mbOrderRefundLog.getOrderId();
 		}
-		if("BT002".equals(type)) {
+		if("BT002".equals(type)||"BT007".equals(type)||"BT008".equals(type)) {
 			MbPayment mbPayment = mbPaymentService.get(id);
 			id = mbPayment.getOrderId();
 		}

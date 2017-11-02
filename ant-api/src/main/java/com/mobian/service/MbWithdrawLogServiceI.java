@@ -2,7 +2,10 @@ package com.mobian.service;
 
 import com.mobian.pageModel.MbWithdrawLog;
 import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.MbWithdrawLogView;
 import com.mobian.pageModel.PageHelper;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 
@@ -51,5 +54,25 @@ public interface MbWithdrawLogServiceI {
 	 */
 	public void delete(Integer id);
 
-    void editAudit(MbWithdrawLog mbWithdrawLog, String login);
+	/**
+	 * 审核提现申请
+	 * @param mbWithdrawLog
+	 * @param login
+	 */
+    void editAudit(MbWithdrawLog mbWithdrawLog, String login, HttpServletRequest request);
+
+	/**
+	 * 获取扩展视图DataGrid mbWithDrawLogView
+	 * @param mbWithdrawLogView
+	 * @param pageHelper
+	 * @return
+	 */
+    DataGrid dataGridView(MbWithdrawLogView mbWithdrawLogView, PageHelper pageHelper);
+
+	/**
+	 * 获取扩展视图mbWithDrawLogView
+	 * @param id
+	 * @return
+	 */
+	MbWithdrawLogView getView(Integer id);
 }

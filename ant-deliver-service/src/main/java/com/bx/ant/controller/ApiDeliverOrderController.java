@@ -1,10 +1,10 @@
 package com.bx.ant.controller;
 
+import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.DeliverOrderShop;
 import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderShopServiceI;
-import com.bx.ant.pageModel.DeliverOrder;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
@@ -14,11 +14,16 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by  wanxp 2017/9/22.
@@ -28,6 +33,7 @@ import java.util.*;
 @Controller
 @RequestMapping("/api/deliver/deliverOrder")
 public class ApiDeliverOrderController extends BaseController {
+    public static final String ORDER_COMPLETE = "orderComplete";
 
     @Resource
     private MbShopServiceI mbShopService;
@@ -155,9 +161,9 @@ public class ApiDeliverOrderController extends BaseController {
                 }
             }
             dataGrid.setRows(ol);
-            json.setMsg("u know");
-            json.setObj(dataGrid);
         }
+        json.setMsg("u know");
+        json.setObj(dataGrid);
         json.setSuccess(true);
         return json;
     }
@@ -304,12 +310,11 @@ public class ApiDeliverOrderController extends BaseController {
     /**
      * 门店运单发货完成
      * @param request
-     * @param id
      * @return
      */
     @RequestMapping("/editOrderComplete")
     @ResponseBody
-    public Json completeOrder(HttpServletRequest request, Long id){
+    public Json completeOrder(HttpServletRequest request, DeliverOrder deliverOrder){
         Json json = new Json();
 
         //获取shopId
@@ -317,10 +322,30 @@ public class ApiDeliverOrderController extends BaseController {
         TokenWrap token = getTokenWrap(request);
         Integer shopId = token.getShopId();
 
-        deliverOrderService.transformByShopIdAndStatus(id,shopId,deliverOrderService.STATUS_DELIVERY_COMPLETE);
+        deliverOrder.setShopId(shopId);
+        deliverOrder.setStatus(deliverOrderService.STATUS_DELIVERY_COMPLETE);
+
+        deliverOrderService.transformByShopIdAndStatus(deliverOrder);
 
         json.setMsg("u know");
         json.setSuccess(true);
+        return json;
+    }
+
+    /**
+     * 图片上传
+     * @return
+     */
+    @RequestMapping("/uploadImage")
+    @ResponseBody
+    public Json uploadImage(@RequestParam(required = false) MultipartFile imageFile){
+        Json json = new Json();
+
+        String path = uploadFile(ORDER_COMPLETE, imageFile);
+
+        json.setMsg("u know");
+        json.setSuccess(true);
+        json.setObj(path);
         return json;
     }
 

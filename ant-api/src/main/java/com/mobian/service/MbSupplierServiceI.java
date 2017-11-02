@@ -1,8 +1,11 @@
 package com.mobian.service;
 
+import com.bx.ant.pageModel.Supplier;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbSupplier;
 import com.mobian.pageModel.PageHelper;
+
+import java.util.List;
 
 /**
  * 
@@ -51,6 +54,10 @@ public interface MbSupplierServiceI {
 	 * @param id
 	 */
 	public void delete(Integer id);
+	/**
+	 *  通过供应商编码查找
+	 */
+	 MbSupplier  getBySupplierCode(String supplierCode);
 
 
 }

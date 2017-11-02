@@ -35,6 +35,9 @@ public class TmbSupplier implements java.io.Serializable,IEntity{
 	public static final String ALIAS_CONTACT_PEOPLE = "联系人";
 	public static final String ALIAS_CERTIFICATE_LIST = "证照资质";
 	public static final String ALIAS_WAREHOUSE_ID = "仓库";
+	public static final String ALIAS_SUPPLIER_CODE = "供应商代码";
+	public static final String ALIAS_FINANCIAL_CONTACT = "财务联系人";
+	public static final String ALIAS_FINANCIAL_CONTACT_PHONE = "财务联系人电话";
 	
 	//date formats
 	public static final String FORMAT_ADDTIME = com.mobian.util.Constants.DATE_FORMAT_FOR_ENTITY;
@@ -67,6 +70,12 @@ public class TmbSupplier implements java.io.Serializable,IEntity{
 	private String certificateList;
 	//
 	private Integer warehouseId;
+	//
+	private String supplierCode;
+	//
+	private String financialContact;
+	//
+	private String financialContactPhone;
 	//columns END
 
 
@@ -188,8 +197,29 @@ public class TmbSupplier implements java.io.Serializable,IEntity{
 	public void setWarehouseId(Integer warehouseId) {
 		this.warehouseId = warehouseId;
 	}
+	@Column(name = "supplier_code", unique = false, nullable = true, insertable = true, updatable = true, length = 32)
+	public String getSupplierCode() {
+		return supplierCode;
+	}
+	public void setSupplierCode(String supplierCode) {
+		this.supplierCode = supplierCode;
+	}
+	@Column(name = "financial_contact", unique = false, nullable = true, insertable = true, updatable = true, length = 32)
+	public String getFinancialContact() {
+		return financialContact;
+	}
+	public void setFinancialContact(String financialContact) {
+		this.financialContact = financialContact;
+	}
 
+	@Column(name = "financial_contact_phone", unique = false, nullable = true, insertable = true, updatable = true, length = 32)
+	public String getFinancialContactPhone() {
+		return financialContactPhone;
+	}
 
+	public void setFinancialContactPhone(String financialContactPhone) {
+		this.financialContactPhone = financialContactPhone;
+	}
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

@@ -26,8 +26,7 @@ public class MbWithdrawLog implements java.io.Serializable {
 	private Date handleTime;			
 	private java.lang.String payCode;
 	private java.lang.String receiverAccount;
-
-	
+	private java.lang.String applyLoginIP	;
 
 	public void setId(java.lang.Integer value) {
 		this.id = value;
@@ -164,5 +163,13 @@ public class MbWithdrawLog implements java.io.Serializable {
 
 	public void setReceiverAccount(String receiverAccount) {
 		this.receiverAccount = receiverAccount;
+	}
+
+	public String getApplyLoginIP() {
+		return applyLoginIP;
+	}
+
+	public void setApplyLoginIP(String applyLoginIP) {
+		this.applyLoginIP = applyLoginIP;
 	}
 }

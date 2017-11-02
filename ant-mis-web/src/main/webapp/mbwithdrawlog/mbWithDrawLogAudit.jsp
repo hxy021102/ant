@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="com.mobian.model.TmbRechargeLog" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%> 
@@ -7,7 +6,7 @@
 	$(function() {
 		parent.$.messager.progress('close');
 		$('#form').form({
-			url : '${pageContext.request.contextPath}/mbWithDrawLogController/editAudit',
+			url : '${pageContext.request.contextPath}/mbWithdrawLogController/editAudit',
 			onSubmit : function() {
 				parent.$.messager.progress({
 					title : '提示',
@@ -38,27 +37,11 @@
 				<input type="hidden" name="id" value = "${id}"/>
 				<input name="handleStatus" type="hidden"/>
 			<table class="table table-hover table-condensed">
-				<%--<tr>--%>
 
-				<%--</tr>--%>
-				<%--<c:choose>--%>
-					<%--<c:when test="${mbRechargeLog.bankCode == 'TB10'}">--%>
-						<%--<th>订单ID</th>--%>
-						<%--<td>--%>
-							<%--<input type="text" name="payCode" readonly = "true" value="${mbRechargeLog.payCode}"/>--%>
-						<%--</td>--%>
-					<%--</c:when>--%>
-					<%--<c:otherwise>--%>
-						<%--<th><%=TmbRechargeLog.ALIAS_PAYCODE%></th>--%>
-						<%--<td>--%>
-							<%--<input type="text" name="payCode" style="width: 90%" />--%>
-						<%--</td>--%>
-					<%--</c:otherwise>--%>
-				<%--</c:choose>--%>
 				<tr>
 					<th>原因</th>
 					<td>
-						<textarea name="handleRemark"  class="easyui-validatebox" data-options="required:true"  style="width: 90%"></textarea>
+						<textarea name="handleRemark"  class="easyui-validatebox" data-options="required:true"  style="width: 95%"></textarea>
 					</td>
 				</tr>
 			</table>

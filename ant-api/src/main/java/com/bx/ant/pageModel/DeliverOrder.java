@@ -31,9 +31,8 @@ public class DeliverOrder implements java.io.Serializable {
 	private Integer shopId;
 	private Double shopDistance;
 	private String supplierOrderId;
-
-
-
+	private String completeImages;
+	private String completeRemark;
 	
 
 	public void setId(Long value) {
@@ -203,5 +202,21 @@ public class DeliverOrder implements java.io.Serializable {
 
 	public void setSupplierOrderId(String supplierOrderId) {
 		this.supplierOrderId = supplierOrderId;
+	}
+
+	public String getCompleteImages() {
+		return completeImages;
+	}
+
+	public void setCompleteImages(String completeImages) {
+		this.completeImages = completeImages;
+	}
+
+	public String getCompleteRemark() {
+		return completeRemark;
+	}
+
+	public void setCompleteRemark(String completeRemark) {
+		this.completeRemark = completeRemark;
 	}
 }

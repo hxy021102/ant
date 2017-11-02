@@ -251,7 +251,7 @@
             </tr >
                     <th>备注:</th>
                     <td colspan="6">
-                        <textarea name="remark" rows="4" style="width: 95%"/>
+                        <textarea name="remark" rows="2" style="width: 95%"/>
                     </td>
                 </tr>
             </table>
@@ -259,8 +259,8 @@
                 <a href="javascript:void(0)" class="easyui-linkbutton item_add" data-options="iconCls:'pencil_add',plain:true" onclick="append()">添加</a>
                 <a href="javascript:void(0)" class="easyui-linkbutton item_add" data-options="iconCls:'pencil_delete',plain:true" onclick="removeit()">删除</a>
             </div>
-            <div style="overflow: auto;height: 150px">
-                <table id="itemListTable" title="商品列表"></table>
+            <div style="overflow: auto;height: 200px">
+                <table id="itemListTable" title="商品列表" style="height: 150px; overflow: hidden;" ></table>
             </div>
         </form>
 
