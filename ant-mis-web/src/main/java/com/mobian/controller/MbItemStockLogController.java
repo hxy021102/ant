@@ -1,8 +1,13 @@
 package com.mobian.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.mobian.absx.F;
+import com.mobian.concurrent.ThreadCache;
 import com.mobian.pageModel.*;
+import com.mobian.service.MbItemServiceI;
 import com.mobian.service.MbItemStockLogServiceI;
+import com.mobian.service.MbItemStockServiceI;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +17,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * MbItemStockLog管理控制器
@@ -26,6 +35,12 @@ public class MbItemStockLogController extends BaseController {
 
 	@Autowired
 	private MbItemStockLogServiceI mbItemStockLogService;
+
+	@Autowired
+	private MbItemStockServiceI mbItemStockService;
+
+	@Autowired
+	private MbItemServiceI mbItemService;
 
 
 	/**
@@ -46,6 +61,106 @@ public class MbItemStockLogController extends BaseController {
 	public DataGrid dataGrid(MbItemStockLog mbItemStockLog, PageHelper ph) {
 		return mbItemStockLogService.dataGrid(mbItemStockLog, ph);
 	}
+
+	/**
+	 * 获取MbItemStockLog数据表格
+	 */
+	@RequestMapping("/dataGridReport")
+	@ResponseBody
+	public DataGrid dataGridReport(MbItemStockLog mbItemStockLog, PageHelper ph, Integer itemId) {
+		if (!F.empty(itemId) || !F.empty(mbItemStockLog.getWarehouseId())) {
+			MbItemStock request = new MbItemStock();
+			request.setItemId(itemId);
+			request.setWarehouseId(mbItemStockLog.getWarehouseId());
+			List<MbItemStock> mbItemStockList = mbItemStockService.query(request);
+			Integer[] ids = new Integer[mbItemStockList.size()];
+			for (int i = 0; i < mbItemStockList.size(); i++) {
+				ids[i] = mbItemStockList.get(i).getId();
+			}
+			mbItemStockLog.setItemStockIds(ids);
+		}
+
+		DataGrid dataGrid = mbItemStockLogService.dataGrid(mbItemStockLog, ph);
+		List<MbItemStockLog> rows = dataGrid.getRows();
+		List<MbItemStockLogExport> mbItemStockLogExportList = new ArrayList<MbItemStockLogExport>();
+		ThreadCache mbItemStock = new ThreadCache(MbItemStock.class) {
+			@Override
+			protected Object handle(Object key) {
+				return mbItemStockService.get((Integer) key);
+			}
+		};
+		MbItemStockLogExport footer = new MbItemStockLogExport();
+		footer.setInQuantity(0);
+		footer.setOutQuantity(0);
+		footer.setInAmount(0);
+		footer.setOutAmount(0);
+		footer.setSummary("合计");
+		for (MbItemStockLog row : rows) {
+			MbItemStockLogExport export = new MbItemStockLogExport();
+			BeanUtils.copyProperties(row, export);
+			mbItemStockLogExportList.add(export);
+			//入库单；取入库价格
+			if (!F.empty(row.getReason())) {
+				Pattern p = Pattern.compile("([\\s\\S]*)ID[:：](\\d+)[\\s\\S]*库存[:：](\\d+)");
+				Matcher m = p.matcher(row.getReason());
+				String[] strs = new String[3];
+				boolean isMatch = m.find();
+				int i = 0, j = m.groupCount();
+				while (isMatch && i < j) {
+					strs[i] = m.group(i + 1);
+					i++;
+				}
+				if (isMatch) {
+					export.setRefTypeName(strs[0]);
+					export.setSummary(row.getReason());
+					export.setRefId(strs[1]);
+					if (F.empty(export.getEndQuantity())) {
+						String endQuantity = strs[2];
+						if (!F.empty(endQuantity)) {
+							export.setEndQuantity(Integer.parseInt(endQuantity));
+						}
+					}
+				} else {
+					export.setRefTypeName(export.getLogTypeName());
+				}
+			} else {
+				export.setRefTypeName(export.getLogTypeName());
+			}
+
+			if (!F.empty(export.getRefTypeName()) && export.getRefTypeName().indexOf("入库") > -1) {
+				export.setInQuantity(export.getQuantity());
+				if(!F.empty(export.getInPrice())) {
+					export.setInAmount(export.getInPrice() * export.getInQuantity());
+					footer.setInAmount(footer.getInAmount() + export.getInAmount());
+				}
+				footer.setInQuantity(footer.getInQuantity() + export.getQuantity());
+
+			} else {
+				export.setOutPrice(export.getCostPrice());
+				export.setOutQuantity(export.getQuantity());
+				footer.setOutQuantity(footer.getOutQuantity()+export.getQuantity());
+				if(!F.empty(export.getOutPrice())) {
+					footer.setOutAmount(footer.getOutAmount() + export.getOutAmount());
+					export.setOutAmount(export.getOutPrice() * export.getOutQuantity());
+				}
+			}
+			MbItemStock mbItemStock1 = mbItemStock.getValue(export.getItemStockId());
+
+			MbItem mbItem = mbItemService.getFromCache(mbItemStock1.getItemId());
+			if(mbItem!=null)
+			export.setItemName(mbItem.getName());
+
+		}
+		if (!F.empty(footer.getInQuantity()))
+			footer.setInPrice(footer.getInAmount() / footer.getInQuantity());
+		if (!F.empty(footer.getOutQuantity()))
+			footer.setOutPrice(footer.getOutAmount() / footer.getOutQuantity());
+		dataGrid.setFooter(Arrays.asList(footer));
+
+		dataGrid.setRows(mbItemStockLogExportList);
+		return dataGrid;
+	}
+
 	/**
 	 * 获取MbItemStockLog数据表格excel
 	 */
@@ -68,6 +183,8 @@ public class MbItemStockLogController extends BaseController {
 		MbItemStockLog mbItemStockLog = new MbItemStockLog();
 		return "/mbitemstocklog/mbItemStockLogAdd";
 	}
+
+
 
 	/**
 	 * 添加MbItemStockLog
