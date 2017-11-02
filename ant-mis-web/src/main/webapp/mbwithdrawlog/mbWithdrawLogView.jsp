@@ -10,25 +10,15 @@
 	<div data-options="region:'center',border:false">
 		<table class="table table-hover table-condensed">
 				<tr>	
-					<th><%=TmbWithdrawLog.ALIAS_TENANT_ID%></th>	
-					<td>
-						${mbWithdrawLog.tenantId}							
-					</td>							
-					<th><%=TmbWithdrawLog.ALIAS_ADDTIME%></th>	
+					<th><%=TmbWithdrawLog.ALIAS_ADDTIME%></th>
 					<td>
 						${mbWithdrawLog.addtime}							
 					</td>							
-				</tr>		
-				<tr>	
-					<th><%=TmbWithdrawLog.ALIAS_UPDATETIME%></th>	
+					<th><%=TmbWithdrawLog.ALIAS_UPDATETIME%></th>
 					<td>
-						${mbWithdrawLog.updatetime}							
+						${mbWithdrawLog.updatetime}
 					</td>							
-					<th><%=TmbWithdrawLog.ALIAS_ISDELETED%></th>	
-					<td>
-						${mbWithdrawLog.isdeleted}							
-					</td>							
-				</tr>		
+				</tr>
 				<tr>	
 					<th><%=TmbWithdrawLog.ALIAS_BALANCE_ID%></th>	
 					<td>
@@ -36,17 +26,17 @@
 					</td>							
 					<th><%=TmbWithdrawLog.ALIAS_AMOUNT%></th>	
 					<td>
-						${mbWithdrawLog.amount}							
+						${mbWithdrawLog.amount / 100.00}
 					</td>							
 				</tr>		
 				<tr>	
 					<th><%=TmbWithdrawLog.ALIAS_REF_TYPE%></th>	
 					<td>
-						${mbWithdrawLog.refType}							
+						${mbWithdrawLog.refTypeName}
 					</td>							
 					<th><%=TmbWithdrawLog.ALIAS_APPLY_LOGIN_ID%></th>	
 					<td>
-						${mbWithdrawLog.applyLoginId}							
+						${mbWithdrawLog.applyLoginId}
 					</td>							
 				</tr>		
 				<tr>	
@@ -61,39 +51,35 @@
 				</tr>		
 				<tr>	
 					<th><%=TmbWithdrawLog.ALIAS_CONTENT%></th>	
-					<td>
+					<td colspan="4">
 						${mbWithdrawLog.content}							
-					</td>							
-					<th><%=TmbWithdrawLog.ALIAS_BANK_CODE%></th>	
-					<td>
-						${mbWithdrawLog.bankCode}							
-					</td>							
+					</td>
 				</tr>		
 				<tr>	
 					<th><%=TmbWithdrawLog.ALIAS_HANDLE_STATUS%></th>	
 					<td>
-						${mbWithdrawLog.handleStatus}							
+						${mbWithdrawLog.handleStatusName}
 					</td>							
 					<th><%=TmbWithdrawLog.ALIAS_HANDLE_LOGIN_ID%></th>	
 					<td>
-						${mbWithdrawLog.handleLoginId}							
+						${mbWithdrawLog.handleLoginName}
 					</td>							
 				</tr>		
-				<tr>	
-					<th><%=TmbWithdrawLog.ALIAS_HANDLE_REMARK%></th>	
-					<td>
-						${mbWithdrawLog.handleRemark}							
-					</td>							
+				<tr>
 					<th><%=TmbWithdrawLog.ALIAS_HANDLE_TIME%></th>	
 					<td>
-						${mbWithdrawLog.handleTime}							
-					</td>							
-				</tr>		
-				<tr>	
-					<th><%=TmbWithdrawLog.ALIAS_PAY_CODE%></th>	
+						${mbWithdrawLog.handleTime}
+					</td>
+					<th><%=TmbWithdrawLog.ALIAS_PAY_CODE%></th>
 					<td>
-						${mbWithdrawLog.payCode}							
-					</td>							
+						${mbWithdrawLog.payCode}
+					</td>
+				</tr>		
+				<tr>
+					<th><%=TmbWithdrawLog.ALIAS_HANDLE_REMARK%></th>
+					<td colspan="4">
+						${mbWithdrawLog.handleRemark}
+					</td>
 				</tr>		
 		</table>
 	</div>

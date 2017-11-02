@@ -126,7 +126,7 @@ public class ApiDeliverBalanceController extends BaseController {
         //默认时间为当月
         if (date == null) {
              Calendar now = Calendar.getInstance();
-             date = now.get(Calendar.YEAR) + "-" + now.get(Calendar.MONTH) ;
+             date = now.get(Calendar.YEAR) + "-" + (now.get(Calendar.MONTH) + 1) ;
         }
 
         //设定搜索时间为月初00:00:00至下月初00:00:00
@@ -365,14 +365,33 @@ public class ApiDeliverBalanceController extends BaseController {
 
     @RequestMapping("/withdrawDataGrid")
     @ResponseBody
-    public DataGrid dataGridWithdraw(HttpServletRequest request, PageHelper pageHelper) {
+    public Json dataGridWithdraw(HttpServletRequest request, PageHelper pageHelper, String date) {
+        Json json = new Json();
         DataGrid dataGrid = new DataGrid();
 
         //通过门店ID找到申请者账户
        TokenWrap tokenWrap = getTokenWrap(request);
        Integer shopId = tokenWrap.getShopId();
 
-        MbWithdrawLog withdrawLog = new MbWithdrawLog();
+        MbWithdrawLogView withdrawLogView = new MbWithdrawLogView();
+
+        //默认时间为当月
+        if (date == null) {
+            Calendar now = Calendar.getInstance();
+            date = now.get(Calendar.YEAR) + "-" + (now.get(Calendar.MONTH) + 1) ;
+        }
+
+        //设定搜索时间为月初00:00:00至下月初00:00:00
+        try {
+            Date timeStart  = new SimpleDateFormat("yyyy-MM").parse(date);
+            withdrawLogView.setAddtimeBegin(timeStart);
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(timeStart);
+            calendar.add(Calendar.MONTH,1);
+            withdrawLogView.setAddtimeEnd(calendar.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         ShopDeliverApply shopDeliverApply = new ShopDeliverApply();
         shopDeliverApply.setShopId(shopId);
@@ -380,15 +399,18 @@ public class ApiDeliverBalanceController extends BaseController {
         List<ShopDeliverApply> shopDeliverApplies = shopDeliverApplyService.query(shopDeliverApply);
         if (CollectionUtils.isNotEmpty(shopDeliverApplies)) {
             shopDeliverApply = shopDeliverApplies.get(0);
-            withdrawLog.setApplyLoginId(shopDeliverApply.getAccountId() + "");
+            withdrawLogView.setApplyLoginId(shopDeliverApply.getAccountId() + "");
             //未指定排序则默认为修改时间降序
             if (F.empty(pageHelper.getSort())) {
                 pageHelper.setSort("updatetime");
                 pageHelper.setOrder("desc");
             }
             //获取数据
-            dataGrid = mbWithdrawLogService.dataGrid(withdrawLog, pageHelper);
+            dataGrid = mbWithdrawLogService.dataGridView(withdrawLogView, pageHelper);
         }
-        return dataGrid;
+        json.setObj(dataGrid);
+        json.setSuccess(true);
+        json.setMsg("查询数据成功");
+        return json;
     }
 }
