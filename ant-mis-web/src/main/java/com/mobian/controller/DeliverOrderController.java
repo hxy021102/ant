@@ -93,10 +93,12 @@ public class DeliverOrderController extends BaseController {
 			BaseData base = new BaseData();
 			BaseData database =basedataService.get("DVS500");
 			if(database!=null){
-				deliverOrderQuery.setTime(Double.valueOf(database.getName()));
+				deliverOrderQuery.setTime(Integer.parseInt(database.getName()));
 			}
-		}
-		return deliverOrderService.dataGridWithName(deliverOrderQuery, ph);
+			return deliverOrderService.dataGridOutTimeDeliverOrder(deliverOrderQuery, ph);
+		}else
+			return deliverOrderService.dataGridWithName(deliverOrderQuery, ph);
+
 	}
 	@RequestMapping("/unPayOrderDataGrid")
 	@ResponseBody
@@ -367,7 +369,7 @@ public class DeliverOrderController extends BaseController {
 	@ResponseBody
 	public Json assignOrderShop(DeliverOrder deliverOrder) {
 		Json j = new Json();
-		deliverOrderService.handleAssignDeliverOrder(deliverOrder);
+	 	deliverOrderService.handleAssignDeliverOrder(deliverOrder);
 		j.setSuccess(true);
 		j.setMsg("指派成功！");
 		return j;

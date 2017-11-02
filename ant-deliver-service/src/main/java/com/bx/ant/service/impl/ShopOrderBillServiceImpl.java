@@ -169,10 +169,12 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 	}
 
 	@Override
-	public void addShopOrderBillAndShopPay(ShopOrderBillQuery shopOrderBillQuery) {
+	public Boolean addShopOrderBillAndShopPay(ShopOrderBillQuery shopOrderBillQuery) {
 		ShopOrderBill shopOrderBill = new ShopOrderBill();
 		DeliverOrderShopPayQuery shopPayQuery = new DeliverOrderShopPayQuery();
 		shopPayQuery.setDeliverOrderIds(shopOrderBillQuery.getDeliverOrderIds());
+		String[] statusArray = {"SPS01","SPS02","SPS04"};
+ 		shopPayQuery.setStatusArray(statusArray);
 		List<DeliverOrderShopPay> orderShopPays = deliverOrderShopPayService.query(shopPayQuery);
 		if (CollectionUtils.isEmpty(orderShopPays)) {
 			BeanUtils.copyProperties(shopOrderBillQuery, shopOrderBill);
@@ -198,12 +200,14 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 					orderShopPay.setShopId(shopOrderBill.getShopId());
 					orderShopPay.setDeliverOrderId(deliverOrder.getId());
 					orderShopPay.setStatus("SPS02");
-					orderShopPay.setShopOrderBillId(shopOrderBillQuery.getId());
+					orderShopPay.setShopOrderBillId(shopOrderBill.getId());
 					orderShopPay.setDeliverOrderShopId(deliverOrderShop.getId());
 					deliverOrderShopPayService.add(orderShopPay);
 				}
 			}
-		}
+			return true;
+		} else
+			return false;
 	}
 
 	@Override
@@ -264,6 +268,7 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 				orderExt.setId(orderShopPay.getDeliverOrderId());
 				orderExt.setShopId(shopOrderBill.getShopId());
 				orderExt.setBalanceLogType("BT061");
+				orderExt.setPayWay(shopOrderBill.getPayWay());
 				orderExt.setStatus(DeliverOrderServiceI.STATUS_CLOSED);
 				deliverOrderService.transform(orderExt);
 			}

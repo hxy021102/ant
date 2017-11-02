@@ -151,7 +151,7 @@ public class ApiDeliverOrderController extends BaseController {
             //通过deliverOrderShop获取deliverOrder
             for (DeliverOrderShop deliverOrderShop : orderShops) {
                 if (!F.empty(deliverOrderShop.getDeliverOrderId())) {
-                    ol.add(deliverOrderService.getDeliverOrderExt(deliverOrderShop.getDeliverOrderId()));
+                    ol.add(deliverOrderService.getDeliverOrderExt(deliverOrderShop));
                 }
             }
             dataGrid.setRows(ol);

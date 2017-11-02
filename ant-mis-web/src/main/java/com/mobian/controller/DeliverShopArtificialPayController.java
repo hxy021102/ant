@@ -8,6 +8,7 @@ import com.bx.ant.service.ShopOrderBillServiceI;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,10 +68,14 @@ public class DeliverShopArtificialPayController extends BaseController {
 	@ResponseBody
 	public Json addShopOrderBill(@RequestBody ShopOrderBillQuery shopOrderBillQuery) {
 		Json j = new Json();
-		shopOrderBillService.addShopOrderBillAndShopPay(shopOrderBillQuery);
-		j.setSuccess(true);
-		j.setMsg("创建门店账单成功！");
-		j.setObj(shopOrderBillQuery);
+		Boolean result=shopOrderBillService.addShopOrderBillAndShopPay(shopOrderBillQuery);
+		if(result) {
+			j.setSuccess(true);
+			j.setMsg("创建门店账单成功！");
+		}else {
+			j.setSuccess(false);
+			j.setMsg("失败，运单不能重复创建！");
+		}
 		return j;
 	}
 
@@ -103,7 +108,11 @@ public class DeliverShopArtificialPayController extends BaseController {
 	@RequestMapping("/viewBill")
 	public String viewBill(HttpServletRequest request,Long id) {
 		ShopOrderBill shopOrderBill = shopOrderBillService.getViewShopOrderBill(id);
-		request.setAttribute("shopOrderBill", shopOrderBill);
+		ShopOrderBillQuery shopOrderBillQuery =new ShopOrderBillQuery();
+		BeanUtils.copyProperties(shopOrderBill,shopOrderBillQuery);
+		shopOrderBillQuery.setStatusName(shopOrderBill.getStatus());
+		shopOrderBillQuery.setPayWayName(shopOrderBill.getPayWay());
+		request.setAttribute("shopOrderBill", shopOrderBillQuery);
 		return "/shopartificialpay/shopOrderBillView";
 	}
 

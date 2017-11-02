@@ -23,9 +23,9 @@
 				parent.$.messager.progress('close');
 				result = $.parseJSON(result);
 				if (result.success) {
-					//parent.$.modalDialog.openner_dataGrid.datagrid('reload');//之所以能在这里调用到parent.$.modalDialog.openner_dataGrid这个对象，是因为user.jsp页面预定义好了
+                    parent.$.modalDialog.opener_url.reload();
+                    //parent.$.modalDialog.openner_dataGrid.datagrid('reload');//之所以能在这里调用到parent.$.modalDialog.openner_dataGrid这个对象，是因为user.jsp页面预定义好了
 					parent.$.modalDialog.handler.dialog('close');
-                    window.location.reload();
 				} else {
 					parent.$.messager.alert('错误', result.msg, 'error');
 				}

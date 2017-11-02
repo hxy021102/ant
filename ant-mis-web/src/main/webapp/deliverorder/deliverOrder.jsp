@@ -117,11 +117,11 @@
                 width : 50
                 }, {
 				field : 'shopPayStatusName',
-				title : '结算状态',
+				title : '门店结算',
 				width : 35
 				}, {
                 field : 'payStatusName',
-                title : '供应商计算',
+                title : '供应商结算',
                 width : 35
             }] ],
 			toolbar : '#toolbar',
@@ -205,11 +205,11 @@
                     width : 50
                 }, {
                     field : 'shopPayStatusName',
-                    title : '门店计算',
+                    title : '门店结算',
                     width : 35
                 }, {
                     field : 'payStatusName',
-                    title : '供应商计算',
+                    title : '供应商结算',
                     width : 35
                 }] ],
                 toolbar : '#toolbar',
@@ -292,7 +292,7 @@
 		});
 	}
 	function downloadTable(){
-		var options = dataGrid.datagrid("options");
+		var options = selectDatagrid.datagrid("options");
 		var $colums = [];		
 		$.merge($colums, options.columns); 
 		$.merge($colums, options.frozenColumns);
@@ -342,7 +342,7 @@
 	}
 	function cleanFun() {
 		$('#searchForm input').val('');
-		dataGrid.datagrid('load', {});
+        selectDatagrid.datagrid('load', {});
 	}
 </script>
 </head>

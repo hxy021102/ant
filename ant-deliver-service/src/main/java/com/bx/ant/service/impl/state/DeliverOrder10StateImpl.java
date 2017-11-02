@@ -7,6 +7,7 @@ import com.bx.ant.pageModel.Supplier;
 import com.bx.ant.service.*;
 import com.mobian.thirdpart.youzan.YouzanUtil;
 import com.mobian.util.ConvertNameUtil;
+import com.mobian.absx.F;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -75,7 +76,7 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
         DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
 
         //1.1设置默认金额为订单金额
-        deliverOrderShop.setAmount(deliverOrder.getAmount());
+      //  deliverOrderShop.setAmount(deliverOrder.getAmount());
         deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
         deliverOrderShop.setShopId(deliverOrder.getShopId());
         deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_AUDITING);
@@ -102,6 +103,11 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
         Supplier supplier = supplierService.get(deliverOrder.getSupplierId());
         if(ConvertNameUtil.getString(YouzanUtil.APPKEY).equals(supplier.getAppKey())) {
             deliverOrderYouzanService.youzanOrderConfirm(deliverOrder.getSupplierOrderId());
+        }
+        if(F.empty(deliverOrder.getDeliverOrderLogType())) {
+            deliverOrderService.editAndAddLog(deliverOrder, DeliverOrderLogServiceI.TYPE_ASSIGN_DELIVER_ORDER, "系统自动分配订单");
+        }else{
+            deliverOrderService.editAndAddLog(deliverOrder, deliverOrder.getDeliverOrderLogType(), "指派订单给门店");
         }
     }
 
