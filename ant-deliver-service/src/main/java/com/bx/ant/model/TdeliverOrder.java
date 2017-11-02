@@ -96,6 +96,9 @@ public class TdeliverOrder implements java.io.Serializable,IEntity{
 
 	private BigDecimal latitude;
 
+	private String completeImages;
+	private String completeRemark;
+
 
 		public TdeliverOrder(){
 		}
@@ -305,7 +308,25 @@ public class TdeliverOrder implements java.io.Serializable,IEntity{
 	public void setSupplierOrderId(String supplierOrderId) {
 		this.supplierOrderId = supplierOrderId;
 	}
-	
+
+	@Column(name = "complete_images", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
+	public String getCompleteImages() {
+		return completeImages;
+	}
+
+	public void setCompleteImages(String completeImages) {
+		this.completeImages = completeImages;
+	}
+
+	@Column(name = "complete_remark", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
+	public String getCompleteRemark() {
+		return completeRemark;
+	}
+
+	public void setCompleteRemark(String completeRemark) {
+		this.completeRemark = completeRemark;
+	}
+
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

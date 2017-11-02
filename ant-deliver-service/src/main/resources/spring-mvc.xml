@@ -59,6 +59,7 @@
 						<value>/api/apiCommon/error</value><!-- token过期错误返回 -->
 
 						<value>/api/pay/paySuccess</value><!-- 微信支付成功回调 -->
+						<value>/api/deliver/deliverOrder/uploadImage</value><!-- 送达完成上传图片 -->
 					</list>
 				</property>
 				<property name="tokenService" ref="tokenServiceImpl" />

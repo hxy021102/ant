@@ -303,6 +303,13 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		deliverOrder.setStatus(status);
 
 		//状态翻转
+		transformByShopIdAndStatus(deliverOrder);
+	}
+
+	@Override
+	public void transformByShopIdAndStatus(DeliverOrder deliverOrder) {
+
+		//状态翻转
 		transform(deliverOrder);
 	}
 
