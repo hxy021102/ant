@@ -64,6 +64,12 @@ public class TmbItemStockLog implements java.io.Serializable,IEntity{
 	private String remark;
 	//columns END
 
+	private Integer costPrice;
+
+	private Integer endQuantity;
+
+	private Integer inPrice;
+
 
 		public TmbItemStockLog(){
 		}
@@ -174,8 +180,32 @@ public class TmbItemStockLog implements java.io.Serializable,IEntity{
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
-	
-	
+	@Column(name = "cost_price", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public Integer getCostPrice() {
+		return costPrice;
+	}
+
+	public void setCostPrice(Integer costPrice) {
+		this.costPrice = costPrice;
+	}
+
+	@Column(name = "end_quantity", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public Integer getEndQuantity() {
+		return endQuantity;
+	}
+
+	public void setEndQuantity(Integer endQuantity) {
+		this.endQuantity = endQuantity;
+	}
+	@Column(name = "in_price", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public Integer getInPrice() {
+		return inPrice;
+	}
+
+	public void setInPrice(Integer inPrice) {
+		this.inPrice = inPrice;
+	}
+
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

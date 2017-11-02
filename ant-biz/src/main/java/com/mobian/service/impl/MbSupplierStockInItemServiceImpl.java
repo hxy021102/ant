@@ -190,7 +190,7 @@ public class MbSupplierStockInItemServiceImpl extends BaseServiceImpl<MbSupplier
 					o.setSupplierName(mbSupplier.getName());
 				}
 				if(o.getItemId() != null) {
-					MbItem mbItem = mbItemService.get(o.getItemId());
+					MbItem mbItem = mbItemService.getFromCache(o.getItemId());
 					o.setProductName(mbItem.getName());
 					o.setCode(mbItem.getCode());
 				}
