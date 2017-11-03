@@ -1,5 +1,11 @@
 package com.mobian.service.impl;
 
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderPay;
+import com.bx.ant.pageModel.SupplierOrderBill;
+import com.bx.ant.service.DeliverOrderPayServiceI;
+import com.bx.ant.service.DeliverOrderServiceI;
+import com.bx.ant.service.SupplierOrderBillServiceI;
 import com.mobian.absx.F;
 import com.mobian.concurrent.ThreadCache;
 import com.mobian.model.TmbContract;
@@ -23,9 +29,9 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.util.CollectionUtils;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.*;
+import javax.annotation.Resource;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -64,6 +70,13 @@ public class TaskServiceImpl implements TaskServiceI {
     private RedisUtil redisUtil;
     @Autowired
     private HibernateTransactionManager transactionManager;
+    @Resource
+    private DeliverOrderServiceI deliverOrderService;
+    @Resource
+    private SupplierOrderBillServiceI supplierOrderBillService;
+    @Resource
+    private DeliverOrderPayServiceI deliverOrderPayService;
+
 
     @Override
     public void setContractPrice() {
@@ -300,4 +313,37 @@ public class TaskServiceImpl implements TaskServiceI {
 
     }
 
+    @Override
+    public void updateYouzanBill() {
+        List<DeliverOrder> list = new ArrayList<>();
+        Integer amount = 0;
+        for (DeliverOrder d : list) {
+            if(d.getAmount() != null) {
+                amount += d.getAmount();
+            }
+        }
+        SupplierOrderBill supplierOrderBill = new SupplierOrderBill();
+        supplierOrderBill.setSupplierId(list.get(0).getSupplierId());
+        supplierOrderBill.setStatus("BAS04");//自动结算
+        supplierOrderBill.setAmount(amount);
+        SupplierOrderBill bill = new SupplierOrderBill();
+        PageHelper pg = new PageHelper();
+        DataGrid dg = supplierOrderBillService.dataGrid(bill,pg);
+        List<SupplierOrderBill> l = dg.getRows();
+        supplierOrderBill.setStartDate(l.get(l.size()-1).getEndDate());//账单记录表最后一个账单的结束时间
+        supplierOrderBill.setEndDate(new Date());//当前时间
+        supplierOrderBill.setPayWay(list.get(0).getPayWay());
+        supplierOrderBillService.add(supplierOrderBill);//创建账单
+        for (DeliverOrder d : list) {
+            d.setPayStatus("DPS02");//已结算
+            DeliverOrderPay deliverOrderPay = new DeliverOrderPay();
+            deliverOrderPay.setDeliverOrderId(d.getId());
+            deliverOrderPay.setSupplierOrderBillId(supplierOrderBill.getId().intValue());
+            deliverOrderPay.setSupplierId(list.get(0).getSupplierId());
+            deliverOrderPay.setAmount(d.getAmount());
+            deliverOrderPay.setStatus("DPS02");//已结算
+            deliverOrderPayService.add(deliverOrderPay);
+        }
+
+    }
 }

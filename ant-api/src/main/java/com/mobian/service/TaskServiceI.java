@@ -36,5 +36,12 @@ public interface TaskServiceI {
      */
     void updateCostPrice();
 
+    /**
+     * 自动结算有赞订单
+     */
+    void updateYouzanBill();
+
+
+
 
 }
