@@ -191,7 +191,7 @@ public class MbItemStockLogServiceImpl extends BaseServiceImpl<MbItemStockLog> i
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("updatetimeBegin", DateUtil.addDayToDate(new Date(), -1));*/
 		String sql = "from TmbItemStockLog t where t.isdeleted = 0 and (t.costPrice is null or (t.reason like '入库ID%' and t.endQuantity is null))";
-		List<TmbItemStockLog> l =  mbItemStockLogDao.find(sql, 1,200);
+		List<TmbItemStockLog> l =  mbItemStockLogDao.find(sql, 1,2000);
 		if (CollectionUtils.isNotEmpty(l)) {
 			for (TmbItemStockLog t : l) {
 				MbItemStockLog o = new MbItemStockLog();
