@@ -142,7 +142,7 @@
         parent.$.modalDialog({
             title : '审核派单',
             width : 780,
-            height : 300,
+            height : 450,
             href : '${pageContext.request.contextPath}/shopDeliverApplyController/examinePage?id=' + id,
             buttons: [{
                 text: '通过',
@@ -173,8 +173,8 @@
         }
         parent.$.modalDialog({
             title : '修改最大配送距离',
-            width : 300,
-            height : 250,
+            width : 500,
+            height : 400,
             href : '${pageContext.request.contextPath}/shopDeliverApplyController/editPage?id=' + id,
             buttons: [{
                 text: '确认',
