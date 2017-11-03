@@ -159,4 +159,11 @@ public interface MbShopServiceI {
 	 */
 	List<MbShopMap> getShopMapData(MbShop mbShop);
 
+/*	*//**
+	 * 获取满足指派要求的门店
+	 * @param deliverOrder
+	 * @return
+	 *//*
+	List<MbAssignShop> queryAssignShopList(DeliverOrder deliverOrder);*/
+
 }

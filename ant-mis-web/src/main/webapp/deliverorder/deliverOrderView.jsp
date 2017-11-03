@@ -10,9 +10,9 @@
 	<title>DeliverOrder管理</title>
 	<jsp:include page="../inc.jsp"></jsp:include>
 	 <script type="text/javascript">
-
+		 var deliverDataGrid;
          function loadDeliverDataGrid() {
-         return $('#deliverDataGrid').datagrid({
+         return deliverDataGrid=$('#deliverDataGrid').datagrid({
              url : '${pageContext.request.contextPath}/deliverOrderShopController/dataGrid?deliverOrderId='+${deliverOrder.id},
              fit : true,
              fitColumns : true,
@@ -34,7 +34,7 @@
                  width : 30,
              },{
                  field : 'shopName',
-                 title : '名店名称',
+                 title : '门店名称',
                  width : 80
              }, {
                  field : 'statusName',
@@ -268,7 +268,24 @@
              gridMap[0].invoke();
          });
 
-
+         //指派运单给门店
+         function assignOrderShop() {
+             parent.$.modalDialog({
+                 title : '指派门店',
+                 width : 780,
+                 height : 200,
+                 href : '${pageContext.request.contextPath}/deliverOrderController/assignOrderShopPage?id=' + ${deliverOrder.id},
+                 buttons : [ {
+                     text : '提交',
+                     handler : function() {
+                         parent.$.modalDialog.opener_url = window.location;
+                        // parent.$.modalDialog.openner_dataGrid = deliverDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                         var f = parent.$.modalDialog.handler.find('#form');
+                         f.submit();
+                     }
+                 } ]
+             });
+         }
 	 </script>
 </head>
 <body>
@@ -279,6 +296,9 @@
 				<th>运单ID</th>
 				<td>
 					${deliverOrder.id}
+					<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/assignOrderShopPage') and ( deliverOrder.status=='DOS01' or deliverOrder.status=='DOS15')}">
+						<a href="javascript:void(0);" class="easyui-linkbutton" onclick="assignOrderShop();">指派</a>
+					</c:if>
 				</td>
 				<th>供应商名称</th>
 				<td>
@@ -331,11 +351,9 @@
 			</tr>
 			<tr>
 				<th>供应商订单ID</th>
-				<td>${deliverOrder.supplierOrderId}</td>
-			</tr>
-			<tr>
+				<td colspan="">${deliverOrder.supplierOrderId}</td>
 				<th>备注</th>
-				<td colspan="7">
+				<td colspan="6">
 					${deliverOrder.remark}
 				</td>
 			</tr>

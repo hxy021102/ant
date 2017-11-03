@@ -20,6 +20,7 @@ public class Tree implements java.io.Serializable {
 	private String iconCls;
 	private String pid;
 	private String parentName;
+	private double distance;
 
 	public String getId() {
 		return id;
@@ -91,5 +92,13 @@ public class Tree implements java.io.Serializable {
 
 	public void setParentName(String parentName) {
 		this.parentName = parentName;
+	}
+
+	public double getDistance() {
+		return distance;
+	}
+
+	public void setDistance(double distance) {
+		this.distance = distance;
 	}
 }

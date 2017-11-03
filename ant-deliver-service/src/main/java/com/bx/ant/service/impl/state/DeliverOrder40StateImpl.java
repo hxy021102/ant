@@ -12,6 +12,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -27,10 +28,10 @@ public class DeliverOrder40StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderShopServiceI deliverOrderShopService;
 
-    @Autowired
+    @javax.annotation.Resource
     private MbBalanceServiceI mbBalanceService;
 
-    @Autowired
+    @Resource
     private MbBalanceLogServiceI mbBalanceLogService;
 
     @Autowired
@@ -71,6 +72,7 @@ public class DeliverOrder40StateImpl implements DeliverOrderState {
             //修改运单门店支付状态
             deliverOrderShopPay = orderShopPays.get(0);
             deliverOrderShopPay.setStatus(DeliverOrderServiceI.SHOP_PAY_STATUS_SUCCESS);
+            deliverOrderShopPay.setPayWay(deliverOrder.getPayWay());
             deliverOrderShopPayService.edit(deliverOrderShopPay);
 
             MbBalance balance = mbBalanceService.addOrGetMbBalanceDelivery(deliverOrderShop.getShopId());

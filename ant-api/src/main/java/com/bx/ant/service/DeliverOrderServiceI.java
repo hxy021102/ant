@@ -1,10 +1,7 @@
 package com.bx.ant.service;
 
-import com.bx.ant.pageModel.DeliverOrderExt;
-import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.*;
 
-import com.bx.ant.pageModel.DeliverOrderQuery;
-import com.bx.ant.pageModel.SupplierItemRelationView;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
@@ -143,10 +140,10 @@ public interface DeliverOrderServiceI {
 
 	/**
 	 * 获取到含明细的运单
-	 * @param id
+	 * @param deliverOrderShop
 	 * @return
 	 */
-	DeliverOrder getDeliverOrderExt(Long id);
+	DeliverOrder getDeliverOrderExt(DeliverOrderShop deliverOrderShop);
 
 	/**
 	 * 获取包含DeliverOrderShopItemList的order
@@ -260,4 +257,18 @@ public interface DeliverOrderServiceI {
 	 * @param supplierId
 	 */
     void addByTableList(List<Object> lo, Integer supplierId);
+
+	/**
+	 * 处理指派后的订单
+	 * @param deliverOrder
+	 */
+	void handleAssignDeliverOrder(DeliverOrder deliverOrder);
+
+	/**
+	 * 获取超时的未处理的订单
+	 * @param deliverOrderQuery
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridOutTimeDeliverOrder(DeliverOrderQuery deliverOrderQuery,PageHelper ph);
 }

@@ -10,15 +10,18 @@ import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbItem;
+import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.PageHelper;
 import com.bx.ant.pageModel.ShopItem;
 import com.mobian.service.MbItemServiceI;
+import com.mobian.service.MbShopServiceI;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +40,8 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 
 	@Autowired
 	private ShopItemServiceImpl shopItemService;
+	@Resource
+	private MbShopServiceI mbShopService;
 
 	@Override
 	public DataGrid dataGrid(ShopItem shopItem, PageHelper ph) {
@@ -319,6 +324,8 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 				if (F.empty(shop.getQuantity())) {
 					shopItemQuery.setQuantity(0);
 				}
+				MbShop mbShop=mbShopService.getFromCache(shop.getShopId());
+    			shopItemQuery.setShopName(mbShop.getName());
 				shopItemQuery.setStatusName(shop.getStatus());
 				shopItemQuery.setName(item.getName());
 				shopItemQuery.setQuantityUnitName(item.getQuantityUnitName());

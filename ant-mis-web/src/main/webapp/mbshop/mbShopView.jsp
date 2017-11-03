@@ -562,11 +562,16 @@
                 }, {
                     field : 'itemId',
                     title : '商品ID',
-                    width : 20
+                    width : 20,
+                    hidden : true
                 },{
                     field : 'name',
                     title : '商品名称',
                     width : 60
+                }, {
+                    field : 'shopName',
+                    title : '门店名称',
+                    width : 20
                 }, {
                     field : 'price',
                     title : '价格',

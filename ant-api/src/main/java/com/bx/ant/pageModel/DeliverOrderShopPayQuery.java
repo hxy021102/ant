@@ -8,6 +8,7 @@ public class DeliverOrderShopPayQuery extends DeliverOrderShopPay{
 	private String statusName;
     private Long[] deliverOrderIds;
     private String payWayName;
+    private String[] statusArray;
 	public String getShopName() {
 		return shopName;
 	}
@@ -38,5 +39,13 @@ public class DeliverOrderShopPayQuery extends DeliverOrderShopPay{
 
 	public void setPayWayName(String payWayName) {
 		this.payWayName = payWayName;
+	}
+
+	public String[] getStatusArray() {
+		return statusArray;
+	}
+
+	public void setStatusArray(String[] statusArray) {
+		this.statusArray = statusArray;
 	}
 }

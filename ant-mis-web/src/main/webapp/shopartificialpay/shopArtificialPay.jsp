@@ -42,16 +42,20 @@
                 title : '创建时间',
                 width : 50,
             },{
-                field : 'shopId',
-                title : '门店ID',
-                width : 30,
-            },{
                 field : 'shopName',
                 title : '名店名称',
                 width : 80
             }, {
                 field : 'statusName',
                 title : '状态',
+                width : 50
+            },{
+                field : 'deliveryStatusName',
+                title : '配送状态',
+                width : 50
+            },{
+                field : 'shopPayStatusName',
+                title : '门店结算状态',
                 width : 50
             },{
                 field : 'amount',
@@ -85,7 +89,7 @@
         shopOrderBillQuery.deliverOrderIds=deliverOrderIds;
         shopOrderBillQuery.amount=totalAmount;
         shopOrderBillQuery.deliverOrderList=rows;
-         parent.$.messager.confirm("询问","总金额："+totalAmount/100.0+"\n起始时间："+shopOrderBillQuery.startDate+"\n结束时间:"+shopOrderBillQuery.endDate+"\n是否确认创建账单?",function (result) {
+         parent.$.messager.confirm("询问","总金额："+$.formatMoney(totalAmount) +"<br/>起始时间："+shopOrderBillQuery.startDate+"<br/>结束时间:"+shopOrderBillQuery.endDate+"<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>是否确认创建账单?</strong>",function (result) {
            if(result)  {
         $.ajax({
             url:  '${pageContext.request.contextPath}/deliverShopArtificialPayController/addShopOrderBill',
@@ -115,7 +119,7 @@
 		}
       });
 	  }else{
-            parent.$.messager.alert("提示","请选择要结算的运单！")
+            parent.$.messager.alert("提示","请选择要创建的运单！")
         }
 
     }
