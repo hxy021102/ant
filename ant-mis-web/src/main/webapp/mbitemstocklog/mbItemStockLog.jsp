@@ -36,7 +36,7 @@
 			pagination : true,
 			idField : 'id',
 			pageSize : 10,
-			pageList : [ 10, 20, 30, 40, 50 ],
+			pageList : [ 100, 500, 1000, 2000, 5000 ],
 			sortName : 'id',
 			sortOrder : 'desc',
 			checkOnSelect : false,
