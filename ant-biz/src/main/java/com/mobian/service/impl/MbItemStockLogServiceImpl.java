@@ -4,18 +4,17 @@ import com.mobian.absx.F;
 import com.mobian.dao.MbItemStockLogDaoI;
 import com.mobian.model.TmbItemStock;
 import com.mobian.model.TmbItemStockLog;
+import com.mobian.model.TmbOrderItem;
 import com.mobian.pageModel.*;
 import com.mobian.service.*;
+import com.mobian.util.DateUtil;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class MbItemStockLogServiceImpl extends BaseServiceImpl<MbItemStockLog> implements MbItemStockLogServiceI {
@@ -45,7 +44,7 @@ public class MbItemStockLogServiceImpl extends BaseServiceImpl<MbItemStockLog> i
 				BeanUtils.copyProperties(t, o);
 
 				if (o.getLoginId() != null) {
-					User user = userService.get(String.valueOf(o.getLoginId()));
+					User user = userService.getFromCache(String.valueOf(o.getLoginId()));
 					if (user != null) {
 						o.setLoginName(user.getName());
 					}
@@ -183,6 +182,24 @@ public class MbItemStockLogServiceImpl extends BaseServiceImpl<MbItemStockLog> i
 		}
 		dataGrid.setRows(mbItemStockLogs);
 		return dataGrid;
+	}
+
+	@Override
+	public List<MbItemStockLog> queryListByWithoutCostPrice() {
+		List<MbItemStockLog> ol = new ArrayList<MbItemStockLog>();
+		/*String sql = "from TmbItemStockLog t where t.isdeleted = 0 and t.costPrice is null and t.addtime >= :updatetimeBegin";
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("updatetimeBegin", DateUtil.addDayToDate(new Date(), -1));*/
+		String sql = "from TmbItemStockLog t where t.isdeleted = 0 and (t.costPrice is null or (t.reason like '入库ID%' and t.endQuantity is null))";
+		List<TmbItemStockLog> l =  mbItemStockLogDao.find(sql, 1,2000);
+		if (CollectionUtils.isNotEmpty(l)) {
+			for (TmbItemStockLog t : l) {
+				MbItemStockLog o = new MbItemStockLog();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		return ol;
 	}
 
 }
