@@ -213,11 +213,13 @@ public class TaskServiceImpl implements TaskServiceI {
                 DefaultTransactionDefinition def = new DefaultTransactionDefinition();
                 def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);// 事物隔离级别，开启新事务
                 TransactionStatus status = transactionManager.getTransaction(def); // 获得事务状态
-                mbItemStockLog.setCostPrice(stock.getAveragePrice() == null ? -1 : stock.getAveragePrice());
+                if(F.empty(mbItemStockLog.getCostPrice())) {
+                    mbItemStockLog.setCostPrice(stock.getAveragePrice() == null ? -1 : stock.getAveragePrice());
+                }
                 try {
                     //入库单；取入库价格
                     if (!F.empty(mbItemStockLog.getReason())) {
-                        Pattern p = Pattern.compile("([\\s\\S]*)ID[:：](\\d+)[\\s\\S]*库存：(\\d+)");
+                        Pattern p = Pattern.compile("([\\s\\S]*)ID[:：](\\d+)[\\s\\S]*库存[:：](\\d+)");
                         Matcher m = p.matcher(mbItemStockLog.getReason());
                         String[] strs = new String[3];
                         boolean isMatch = m.find();
