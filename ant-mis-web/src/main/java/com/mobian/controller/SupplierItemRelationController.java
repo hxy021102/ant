@@ -110,8 +110,11 @@ public class SupplierItemRelationController extends BaseController {
 	 */
 	@RequestMapping("/add")
 	@ResponseBody
-	public Json add(SupplierItemRelation supplierItemRelation) {
-		Json j = new Json();		
+	public Json add(SupplierItemRelation supplierItemRelation,String priceStrr) {
+		Json j = new Json();
+		Double d =	(Double.valueOf(priceStrr).doubleValue())*100;
+		Integer price = d.intValue();
+		supplierItemRelation.setPrice(price);
 		supplierItemRelationService.add(supplierItemRelation);
 		j.setSuccess(true);
 		j.setMsg("添加成功！");		
@@ -150,8 +153,11 @@ public class SupplierItemRelationController extends BaseController {
 	 */
 	@RequestMapping("/edit")
 	@ResponseBody
-	public Json edit(SupplierItemRelation supplierItemRelation) {
-		Json j = new Json();		
+	public Json edit(SupplierItemRelation supplierItemRelation,String priceStrr) {
+		Json j = new Json();
+		Double d =	(Double.valueOf(priceStrr).doubleValue())*100;
+		Integer price = d.intValue();
+		supplierItemRelation.setPrice(price);
 		supplierItemRelationService.edit(supplierItemRelation);
 		j.setSuccess(true);
 		j.setMsg("编辑成功！");		

@@ -61,7 +61,9 @@
                 title : '所绑门店',
                 width : 50 ,
 				formatter : function (value,row,index) {
-					return '<a onclick="viewShop('+ value +')" >' + row.shopId + '</a>';
+                    if (value != null){
+					return '<a onclick="viewShop('+ value +')" >' + value + '</a>';
+                    }
                 }
             	}, {
 				field : 'sex',
@@ -70,7 +72,7 @@
 				formatter : function(value,row,index) {
 				    if(row.sex == 1) {
 				       return '男';
-					}else {
+					}else if(row.sex == 0) {
 				       return '女';
  					}
 				}

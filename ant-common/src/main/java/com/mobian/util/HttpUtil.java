@@ -1,8 +1,10 @@
 package com.mobian.util;
 
 import org.apache.log4j.Logger;
+import org.omg.CORBA.Request;
 
 import javax.net.ssl.*;
+import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -199,9 +201,34 @@ public class HttpUtil {
 
 		return map;
 	}
+
+	/**
+	 * 获取用户真实IP
+	 * @param request
+	 * @return
+	 */
+	public static String getIpAddress(HttpServletRequest request) {
+		//直接拿到最初IP
+		String ip = request.getHeader("X-Real-IP");
+		if (null != ip && !"".equals(ip.trim()) && !"unknown".equalsIgnoreCase(ip)) {
+			return ip;
+		}
+		//多次代理拿到最初的IP
+		ip =request.getHeader("X-Forwarded-For");
+		if (null != ip && !"".equals(ip.trim()) && !"unknown".equalsIgnoreCase(ip)) {
+			int index = ip.indexOf(',');
+			if (index != -1) {
+				return ip.substring(0,index);
+			} else {
+				return ip;
+			}
+		}
+		//不通过代理上网,服务器端拿到真实IP
+		return request.getRemoteAddr();
+	}
+
 	
 	public static void main(String[] args) {
-		
 		System.out.println(httpRequest("http://139.196.34.76/ValidCode/ValidCode", "POST", "{\"mobile\": \"18701959799\", \"channel\": \"register\"}"));
 	}
 }

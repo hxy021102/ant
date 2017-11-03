@@ -102,21 +102,14 @@
 				} , {
 				field : 'handleStatusName',
 				title : '<%=TmbRechargeLog.ALIAS_HANDLE_STATUS%>',
-				width : 50,
-				formatter:function(value, row){
-					if(row.refType == 'BT003' ||(row.refType == 'BT013'&&row.payCode)){
-						return value;
-					}else{
-						return '';
-					}
-				}
+				width : 50
 				} , {
 				field : 'action',
 				title : '操作',
 				width : 30,
 				formatter : function(value, row, index) {
 					var str = '';
-                    if ($.canEditAudit && (row.refType == 'BT003' ||(row.refType == 'BT013'&&row.payCode)) && row.handleStatus == 'HS01') {
+                    if ($.canEditAudit && row.handleStatus == 'HS01' && row.refType != "BT012") {
 						str += $.formatString('<img onclick="editAuditFun(\'{0}\');" src="{1}" title="审核"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/joystick.png');
 					}
 					return str;
@@ -186,9 +179,9 @@
 			id = rows[0].id;
 		}
 		parent.$.modalDialog({
-			title: '汇款审核',
+			title: '审核',
 			width: 780,
-			height: 200,
+			height: 250,
 			href: '${pageContext.request.contextPath}/mbRechargeLogController/editAuditPage?id=' + id ,
 			buttons: [{
 				text: '通过',
@@ -251,7 +244,22 @@
 			} ]
 		});
 	}
-
+    function rechargeLogUpload(){
+        parent.$.modalDialog({
+            title : '批量导入',
+            width : 780,
+            height : 200,
+            href : '${pageContext.request.contextPath}/mbRechargeLogController/uploadPage',
+            buttons : [ {
+                text : '保存',
+                handler : function() {
+                    parent.$.modalDialog.openner_dataGrid = dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                    var f = parent.$.modalDialog.handler.find('#form');
+                    f.submit();
+                }
+            } ]
+        });
+    }
 	function downloadTable(){
 		var options = dataGrid.datagrid("options");
 		var $colums = [];		
@@ -286,12 +294,17 @@
 		<div data-options="region:'north',title:'查询条件',border:false" style="height: 65px; overflow: hidden;">
 			<form id="searchForm">
 				<table class="table table-hover table-condensed" style="display: none;">
-						<tr>	
-							<th style="width: 50px">门店ID</th>
+						<tr>
+							<th>时间</th>
+							<td>
+								<input type="text" class="span2 easyui-validatebox" onclick="WdatePicker({dateFmt:'<%=TmbRechargeLog.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'addtimeEnd\',{M:-1});}',maxDate:'#F{$dp.$D(\'addtimeEnd\',{d:-1});}'})" id="addtimeBegin" name="addtimeBegin"/>
+								<input type="text" class="span2 easyui-validatebox" onclick="WdatePicker({dateFmt:'<%=TmbRechargeLog.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'addtimeBegin\',{d:1});}',maxDate:'#F{$dp.$D(\'addtimeBegin\',{M:1});}'})" id="addtimeEnd" name="addtimeEnd"/>
+							</td>
+							<th>门店ID</th>
 							<td>
 								<input type="text" name="shopId" maxlength="10" class="span2"/>
 							</td>
-							<th style="width: 50px">处理状态</th>
+							<th>处理状态</th>
 							<td>
 								<jb:select dataType="HS" name="handleStatus" value="HS01"></jb:select>
 							</td>
@@ -314,6 +327,9 @@
 			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">
 			</form>
 			<iframe id="downloadIframe" name="downloadIframe" style="display: none;"></iframe>
+		</c:if>
+		<c:if test="${fn:contains(sessionInfo.resourceList, '/mbRechargeLogController/uploadPage')}">
+			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_add',plain:true" onclick="rechargeLogUpload();">导入</a>
 		</c:if>
 	</div>	
 </body>

@@ -44,6 +44,19 @@
             target.val(val);
         });
 	});
+//	function getPrice() {
+//	    var freight = $('#freightStr').val();
+//        var inPrice = $('#inPriceStr').val();
+//	    $('#priceStr').val(Number(freight)+Number(inPrice));
+//	    console.log($('#priceStr').val());
+//	}
+    function addPrice(arg1,arg2){
+        var r1,r2,m;
+        try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0}
+        try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0}
+        m=Math.pow(10,Math.max(r1,r2))
+        $('#priceStr').val((arg1*m+arg2*m)/m);
+    }
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;">	
@@ -54,32 +67,32 @@
 				<tr>
 					<th>商品</th>
 					<td >
-						  <jb:selectGrid name="itemId" dataType="itemId"></jb:selectGrid>
+						  <jb:selectGrid name="itemId" dataType="itemId" required="true"></jb:selectGrid>
 					</td>
 					<th>外部商品编码</th>
 					<td >
 						<input name="supplierItemCode" type="text" class="easyui-validatebox span2" data-options="required:true"/>
 					</td>
 				</tr>
-				<tr>	
-					<th>价格</th>
-					<td>
-											<input class="span2 money_input easyui-validatebox" name="priceStr" type="text" data-options="required:true"/>
-						   <input type="hidden" name="price">
-					</td>							
-					<th>采购价</th>
-					<td>
-											<input class="span2 money_input easyui-validatebox" name="inPriceStr" type="text" data-options="required:true"/>
-							<input type="hidden" name="inPrice">
-
-					</td>							
-				</tr>	
-				<tr>	
+				<tr>
 					<th>运费</th>
 					<td>
-											<input class="span2 money_input easyui-validatebox" name="freightStr" type="text" data-options="required:true"/>
+						<input class="span2 money_input easyui-validatebox" id="freightStr" name="freightStr" type="text" data-options="required:true" onblur="addPrice($('#freightStr').val(),$('#inPriceStr').val())"/>
 						<input type="hidden" name="freight">
+					</td>
+
+					<th>采购价</th>
+					<td>
+											<input class="span2 money_input easyui-validatebox" id="inPriceStr" name="inPriceStr" type="text" data-options="required:true" onblur="addPrice($('#freightStr').val(),$('#inPriceStr').val())"/>
+						<input type="hidden"  name="inPrice">
 					</td>							
+				</tr>	
+				<tr>
+					<th>价格</th>
+					<td>
+						<input class="span2 money_input " id="priceStr" name="priceStrr" type="text"  readonly="readonly" />
+						<input type="hidden" name="price">
+					</td>
 					<th>上下架</th>
 					<td>
 					<select name="online" class="easyui-combobox" data-options="width:140,height:29">

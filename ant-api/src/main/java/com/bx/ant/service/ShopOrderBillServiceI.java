@@ -31,7 +31,7 @@ public interface ShopOrderBillServiceI {
 	 * 
 	 * @param shopOrderBill
 	 */
-	public Long add(ShopOrderBill shopOrderBill);
+	 void add(ShopOrderBill shopOrderBill);
 
 	/**
 	 * 获得ShopOrderBill对象
@@ -39,21 +39,21 @@ public interface ShopOrderBillServiceI {
 	 * @param id
 	 * @return
 	 */
-	public ShopOrderBill get(Long id);
+	 ShopOrderBill get(Long id);
 
 	/**
 	 * 修改ShopOrderBill
 	 * 
 	 * @param shopOrderBill
 	 */
-	public void edit(ShopOrderBill shopOrderBill);
+	 void edit(ShopOrderBill shopOrderBill);
 
 	/**
 	 * 删除ShopOrderBill
 	 * 
 	 * @param id
 	 */
-	public void delete(Integer id);
+	 void delete(Integer id);
 
 	/**
 	 * 获取门店账单及所对应的名称
@@ -64,9 +64,15 @@ public interface ShopOrderBillServiceI {
 	DataGrid dataGridWithName(ShopOrderBill shopOrderBill, PageHelper ph);
 
 	/**
-	 * 创建门店结算对账单和运单门店结算明细
+	 * 创建并结算门店结算对账单和运单门店结算明细
 	 */
-	Json addShopOrderBillAndShopPay(ShopOrderBillQuery shopOrderBillQuery);
+	void addShopOrderBillAndShopPay(ShopOrderBillQuery shopOrderBillQuery);
+
+	/**
+	 * 创建并结算门店结算对账单和运单门店结算明细
+	 * @param shopOrderBillQuery
+	 */
+	void addAndPayShopOrderBillAndShopPay(ShopOrderBillQuery shopOrderBillQuery);
 
 	/**
 	 * 获取ShopOrderBill详情页面信息

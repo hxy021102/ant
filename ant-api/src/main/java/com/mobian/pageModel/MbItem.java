@@ -20,6 +20,9 @@ public class MbItem implements java.io.Serializable {
 	private Integer marketPrice;
 	private Integer purchasePrice;
 	private Integer weight;
+	private String  standard;   //规格
+	private String barCode;     //条形码
+	private String carton;      //箱规
 
 	private String categoryName;
 	private String url;
@@ -269,5 +272,29 @@ public class MbItem implements java.io.Serializable {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getStandard() {
+		return standard;
+	}
+
+	public void setStandard(String standard) {
+		this.standard = standard;
+	}
+
+	public String getBarCode() {
+		return barCode;
+	}
+
+	public void setBarCode(String barCode) {
+		this.barCode = barCode;
+	}
+
+	public String getCarton() {
+		return carton;
+	}
+
+	public void setCarton(String carton) {
+		this.carton = carton;
 	}
 }

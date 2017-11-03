@@ -214,6 +214,12 @@
             <version>2.2.4</version>
         </dependency>
 
+        <!--有赞sdk-->
+        <dependency>
+            <groupId>youzan-sdk</groupId>
+            <artifactId>youzan-sdk</artifactId>
+            <version>2.0.2</version>
+        </dependency>
 
         <!--极光推送-->
         <dependency>

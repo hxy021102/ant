@@ -3,6 +3,7 @@ package com.bx.ant.pageModel;
 import com.mobian.pageModel.MbShop;
 import com.mobian.util.ConvertNameUtil;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @SuppressWarnings("serial")
@@ -24,6 +25,11 @@ public class ShopDeliverApply implements java.io.Serializable {
 	private String statusName;
 
 	private MbShop mbShop;
+
+	private BigDecimal maxDeliveryDistance;
+	private Boolean smsRemind;//短信通知
+	private Boolean uploadRequired; //上传回单
+	private String  deliveryType; //派单类型
 
 	public void setId(Integer value) {
 		this.id = value;
@@ -119,5 +125,37 @@ public class ShopDeliverApply implements java.io.Serializable {
 
 	public void setStatusName(String statusName) {
 		this.statusName = statusName;
+	}
+
+	public BigDecimal getMaxDeliveryDistance() {
+		return maxDeliveryDistance;
+	}
+
+	public void setMaxDeliveryDistance(BigDecimal maxDeliveryDistance) {
+		this.maxDeliveryDistance = maxDeliveryDistance;
+	}
+
+	public Boolean getSmsRemind() {
+		return smsRemind;
+	}
+
+	public void setSmsRemind(Boolean smsRemind) {
+		this.smsRemind = smsRemind;
+	}
+
+	public Boolean getUploadRequired() {
+		return uploadRequired;
+	}
+
+	public void setUploadRequired(Boolean uploadRequired) {
+		this.uploadRequired = uploadRequired;
+	}
+
+	public String getDeliveryType() {
+		return deliveryType;
+	}
+
+	public void setDeliveryType(String deliveryType) {
+		this.deliveryType = deliveryType;
 	}
 }

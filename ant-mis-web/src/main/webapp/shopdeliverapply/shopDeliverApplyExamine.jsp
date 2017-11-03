@@ -38,10 +38,52 @@
 				<input type="hidden" name="id" value = "${shopDeliverApply.id}"/>
 			    <input type="hidden" name="status" value = ""/>
 			<table class="table table-hover table-condensed">
-				 <tr>
+				<tr>
+					<th style="width: 80px">最大配送距离</th>
+					<td>
+						<input name="maxDeliveryDistance" type="text" class="span2"><font color="red">(单位：&nbsp;&nbsp;米)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;默认5000米</font>
+					</td>
+				</tr>
+				<tr>
+					<th>是否短信通知</th>
+					<td>
+						<select class="easyui-combobox" name="smsRemind" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+							<c:if test="${shopDeliverApply.smsRemind == false}">
+								<option value="1">是</option>
+								<option value="0" selected="selected">否</option>
+							</c:if>
+							<c:if test="${shopDeliverApply.smsRemind == true}">
+								<option value="1" selected="selected">是</option>
+								<option value="0">否</option>
+							</c:if>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>是否必须上传回单</th>
+					<td>
+						<select class="easyui-combobox" name="uploadRequired" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+							<c:if test="${shopDeliverApply.uploadRequired == false}">
+								<option value="1">是</option>
+								<option value="0" selected="selected">否</option>
+							</c:if>
+							<c:if test="${shopDeliverApply.uploadRequired == true}">
+								<option value="1" selected="selected">是</option>
+								<option value="0">否</option>
+							</c:if>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>派单类型</th>
+					<td>
+						<jb:select name="deliveryType" dataType="DAT" required="true" value="${shopDeliverApply.deliveryType}"></jb:select>
+					</td>
+				</tr>
+				<tr>
 					<th>审核结果</th>
 					<td colspan="2">
-						<textarea name="result" style="width: 97%" rows="4"    class="easyui-validatebox"    > </textarea>
+						<textarea name="result" style="width: 97%" rows="3"    class="easyui-validatebox"    > </textarea>
 					</td>
 				</tr>
 			</table>				

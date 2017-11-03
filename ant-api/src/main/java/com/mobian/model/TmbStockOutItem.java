@@ -55,6 +55,8 @@ public class TmbStockOutItem implements java.io.Serializable,IEntity{
 	private Integer itemId;
 	//
 	private Integer quantity;
+
+	private Integer costPrice;
 	//columns END
 
 
@@ -140,8 +142,15 @@ public class TmbStockOutItem implements java.io.Serializable,IEntity{
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
-	
-	
+
+	@Column(name = "cost_price", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public Integer getCostPrice() {
+		return costPrice;
+	}
+
+	public void setCostPrice(Integer costPrice) {
+		this.costPrice = costPrice;
+	}
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

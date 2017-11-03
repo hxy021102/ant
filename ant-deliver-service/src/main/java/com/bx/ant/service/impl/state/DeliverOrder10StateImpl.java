@@ -1,8 +1,12 @@
 package com.bx.ant.service.impl.state;
 
-import com.bx.ant.pageModel.*;
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderItem;
+import com.bx.ant.pageModel.DeliverOrderShop;
+import com.bx.ant.pageModel.Supplier;
 import com.bx.ant.service.*;
-import com.bx.ant.service.impl.DeliverOrderShopItemServiceImpl;
+import com.mobian.thirdpart.youzan.YouzanUtil;
+import com.mobian.util.ConvertNameUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +50,12 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderShopPayServiceI deliverOrderShopPayService;
 
+    @Resource
+    private SupplierServiceI supplierService;
+
+    @Resource
+    private DeliverOrderYouzanServiceI deliverOrderYouzanService;
+
     @Override
     public String getStateName() {
         return "10";
@@ -75,7 +85,7 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
 
         //2. 添加门店订单相关
         //2.1 添加门店订单明细List<deliverOrderShopItem>
-        //2.2 添加门店订单表记录deliverOrderShopPay(未支付状态)
+
         //2.3 编辑deliverOrderShop中金额amount字段
         deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItemList, deliverOrderShop);
 
@@ -87,6 +97,12 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
         deliverOrder.setStatus(prefix + getStateName());
 
         deliverOrderService.editAndAddLog(deliverOrder, DeliverOrderLogServiceI.TYPE_ASSIGN_DELIVER_ORDER, "系统自动分配订单");
+
+        // 有赞商城订单，对接有赞api-卖家确认发货
+        Supplier supplier = supplierService.get(deliverOrder.getSupplierId());
+        if(ConvertNameUtil.getString(YouzanUtil.APPKEY).equals(supplier.getAppKey())) {
+            deliverOrderYouzanService.youzanOrderConfirm(deliverOrder.getSupplierOrderId());
+        }
     }
 
     @Override

@@ -35,4 +35,6 @@
 
        <dubbo:service interface="com.mobian.service.UserServiceI" ref="userServiceImpl" protocol="dubbo"/>
 
+       <dubbo:service interface="com.mobian.service.MbWithdrawLogServiceI" ref="mbWithdrawLogServiceImpl" protocol="dubbo"/>
+
 </beans>

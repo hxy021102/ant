@@ -3,6 +3,7 @@ package com.mobian.controller;
 import com.alibaba.fastjson.JSON;
 import com.mobian.pageModel.*;
 import com.mobian.service.MbSupplierContractServiceI;
+import com.mobian.service.MbSupplierServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,8 @@ public class MbSupplierContractController extends BaseController {
 
     @Autowired
     private MbSupplierContractServiceI mbSupplierContractService;
+    @Autowired
+    private MbSupplierServiceI mbSupplierService;
 
     public static final String MB_SUPPCONTRACT = "mbSupplierContract";
 
@@ -120,6 +123,10 @@ public class MbSupplierContractController extends BaseController {
     @RequestMapping("/view")
     public String view(HttpServletRequest request, Integer id) {
         MbSupplierContract mbSupplierContract = mbSupplierContractService.get(id);
+        if (mbSupplierContract != null) {
+            MbSupplier mbSupplier = mbSupplierService.getFromCache(mbSupplierContract.getSupplierId());
+            mbSupplierContract.setSupplierName(mbSupplier.getName());
+        }
         request.setAttribute("mbSupplierContract", mbSupplierContract);
         return "/mbsuppliercontract/mbSupplierContractView";
     }

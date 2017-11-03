@@ -7,20 +7,15 @@ import com.mobian.util.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by wenming on 2016/7/9.
  */
 public class AccessTokenInstance {
-    public final static ExecutorService executors = Executors.newFixedThreadPool(1);
 
     private static Logger log = LoggerFactory.getLogger(AccessTokenInstance.class);
-    public static final String ACCESS_TOKEN = "WP100";
-    public static final String JSAPI_TICKET = "WP200";
-    public static final String WX_PREFIX = "WP";
 
     public static AccessToken accessToken = null;
     public static JsapiTicket jsapiTicket = null;
@@ -46,7 +41,7 @@ public class AccessTokenInstance {
     }
 
     private void start() {
-        executors.execute(new Runnable(){
+        ((Executor)BeanUtil.getBean("taskExecutor")).execute(new Runnable() {
             public void run() {
                 while (true) {
                     try {

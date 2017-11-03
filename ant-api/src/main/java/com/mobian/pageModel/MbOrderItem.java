@@ -17,6 +17,7 @@ public class MbOrderItem implements java.io.Serializable {
 	private Integer quantity;
 	private Integer marketPrice;
 	private Integer buyPrice;
+	private Integer costPrice;
 	private Integer orderId;
 	private Date updatetimeBegin;
 	private Date updatetimeEnd;
@@ -163,5 +164,13 @@ public class MbOrderItem implements java.io.Serializable {
 
 	public void setVoucherQuantityUsed(Integer voucherQuantityUsed) {
 		this.voucherQuantityUsed = voucherQuantityUsed;
+	}
+
+	public Integer getCostPrice() {
+		return costPrice;
+	}
+
+	public void setCostPrice(Integer costPrice) {
+		this.costPrice = costPrice;
 	}
 }

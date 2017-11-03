@@ -20,15 +20,18 @@ public class MbItemStockLog implements java.io.Serializable {
 	private String logType;
 	private String reason;
 	private String remark;
+	private Integer costPrice;
+	private Integer endQuantity;
+	private Integer inPrice;
 
 	private String loginName;
 	private String logTypeName;
 	private String itemName;
-    private Date   stockLogStartTime;
-    private Date   stockLogEndTime;
-    private Integer warehouseId;
-    private Integer[] itemStockIds;
-    private String warehouseName;
+	private Date stockLogStartTime;
+	private Date stockLogEndTime;
+	private Integer warehouseId;
+	private Integer[] itemStockIds;
+	private String warehouseName;
 	public String getLoginName() {
 		return loginName;
 	}
@@ -171,5 +174,29 @@ public class MbItemStockLog implements java.io.Serializable {
 
 	public void setWarehouseName(String warehouseName) {
 		this.warehouseName = warehouseName;
+	}
+
+	public Integer getCostPrice() {
+		return costPrice;
+	}
+
+	public void setCostPrice(Integer costPrice) {
+		this.costPrice = costPrice;
+	}
+
+	public Integer getEndQuantity() {
+		return endQuantity;
+	}
+
+	public void setEndQuantity(Integer endQuantity) {
+		this.endQuantity = endQuantity;
+	}
+
+	public Integer getInPrice() {
+		return inPrice;
+	}
+
+	public void setInPrice(Integer inPrice) {
+		this.inPrice = inPrice;
 	}
 }
