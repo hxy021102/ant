@@ -173,7 +173,7 @@
         }
         parent.$.modalDialog({
             title : '修改最大配送距离',
-            width : 250,
+            width : 300,
             height : 250,
             href : '${pageContext.request.contextPath}/shopDeliverApplyController/editPage?id=' + id,
             buttons: [{
