@@ -1,6 +1,9 @@
 package com.mobian.controller;
 
+
 import com.alibaba.fastjson.JSON;
+import com.bx.ant.pageModel.ShopDeliverApply;
+import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.ShopDeliverApply;
 import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.absx.F;
@@ -20,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -516,4 +520,31 @@ public class MbShopController extends BaseController {
         return  j;
     }
 
+    /**
+     * 获取符合指派的门店
+     * @param q
+     * @param request
+     * @return
+     */
+    @RequestMapping("/selectssignShopQuery")
+    @ResponseBody
+    public List<Tree> selectssignShopQuery(String q, HttpServletRequest request) throws UnsupportedEncodingException {
+        String paramsJson = request.getParameter("params");
+        List<Tree> lt = new ArrayList<Tree>();
+        if (!F.empty(paramsJson)) {
+           DeliverOrder deliverOrder = JSON.parseObject(paramsJson, DeliverOrder.class);
+            List<MbAssignShop> mbAssignShopList =  shopDeliverApplyService.queryAssignShopList(deliverOrder);
+            if (CollectionUtils.isNotEmpty(mbAssignShopList)) {
+                for (MbAssignShop assignShop : mbAssignShopList) {
+                    Tree tree = new Tree();
+                    tree.setId(assignShop.getId() + "");
+                    tree.setText(assignShop.getName());
+                    tree.setParentName(assignShop.getContactPhone());
+                    tree.setDistance(assignShop.getDistance());
+                    lt.add(tree);
+                }
+            }
+        }
+        return lt;
+    }
 }

@@ -26,6 +26,13 @@ public interface MbItemStockServiceI {
 	DataGrid dataGrid(MbItemStock mbItemStock, PageHelper ph);
 
 	/**
+	 * 查询
+	 * @param mbItemStock
+	 * @return
+	 */
+	List<MbItemStock> query(MbItemStock mbItemStock);
+
+	/**
 	 * 为一个MbItemStock填充仓库和商品信息
 	 * @param mbItemStock
 	 */

@@ -122,9 +122,9 @@ public class MbSupplierStockInServiceImpl extends BaseServiceImpl<MbSupplierStoc
             changeShop.setAveragePrice(averagePrice);
             changeShop.setLogType("SL02");
             changeShop.setReason(String.format("入库ID：%s发货入库，库存:%s", mbSupplierStockIn.getId(),totalQuantity));
-            mbItemStockService.editAndInsertLog(changeShop, mbSupplierStockIn.getLoginId());
+            changeShop.setInPrice(mbSupplierStockInItem.getPrice());
             mbItemStockService.editItemStockAveragePrice(changeShop);
-
+            mbItemStockService.editAndInsertLog(changeShop, mbSupplierStockIn.getLoginId());
         }
 
     }

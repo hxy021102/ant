@@ -1,6 +1,7 @@
 package com.bx.ant.controller;
 
 import com.aliyun.mns.model.TopicMessage;
+import com.bx.ant.pageModel.DeliverOrderShop;
 import com.bx.ant.pageModel.DeliverOrderShopPay;
 import com.bx.ant.pageModel.ShopDeliverAccount;
 import com.bx.ant.pageModel.ShopDeliverApply;
@@ -95,7 +96,10 @@ public class ApiDeliverBalanceController extends BaseController {
         Json json = new Json();
         if ("BT060".equals(balanceLog.getRefType()) ||"BT061".equals(balanceLog.getRefType()) ) {
             DeliverOrderShopPay deliverOrderShopPay = deliverOrderPayShopService.get(Long.parseLong(balanceLog.getRefId()));
-            json.setObj(deliverOrderService.getDeliverOrderExt(deliverOrderShopPay.getDeliverOrderId()));
+            DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+            deliverOrderShop.setDeliverOrderId(deliverOrderShopPay.getDeliverOrderId());
+            deliverOrderShop.setId(deliverOrderShopPay.getDeliverOrderShopId());
+            json.setObj(deliverOrderService.getDeliverOrderExt(deliverOrderShop));
         }
         json.setMsg("u know");
         json.setSuccess(true);

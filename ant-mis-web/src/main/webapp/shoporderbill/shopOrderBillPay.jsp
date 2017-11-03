@@ -22,13 +22,32 @@
 				parent.$.messager.progress('close');
 				result = $.parseJSON(result);
 				if (result.success) {
-					parent.$.modalDialog.openner_dataGrid.datagrid('reload');//之所以能在这里调用到parent.$.modalDialog.openner_dataGrid这个对象，是因为user.jsp页面预定义好了
+                    parent.$.modalDialog.opener_url.reload();
+					//parent.$.modalDialog.openner_dataGrid.datagrid('reload');//之所以能在这里调用到parent.$.modalDialog.openner_dataGrid这个对象，是因为user.jsp页面预定义好了
 					parent.$.modalDialog.handler.dialog('close');
+
 				} else {
 					parent.$.messager.alert('错误', result.msg, 'error');
 				}
 			}
 		});
+        $('.money_input').blur(function () {
+            var source = $(this);
+            var target = source.next();
+            if (!/^([1-9]\d*|0)(\.\d{2})?$/.test(source.val())) {
+                source.val("").focus();
+            }
+            var val = source.val().trim();
+            if (val.indexOf('.') > -1) {
+                val = val.replace('.', "");
+            } else if (val != '') {
+                val += "00";
+            }
+            target.val(val);
+        });
+        $('.money_input').each(function(){
+            $(this).val($.formatMoney($(this).val().trim()));
+        });
 	});
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
@@ -37,20 +56,17 @@
 				<input type="hidden" name="id" value = "${shopOrderBill.id}"/>
 			<table class="table table-hover table-condensed">
 				<tr>
-					<th>门店ID</th>
-					<td>
-						<input class="span2" name="shopId" readonly type="text" value="${shopOrderBill.shopId}"/>
-					</td>
 					<th>门店名称</th>
 					<td>
 						<input class="span2" name="shopName" readonly type="text" value="${shopOrderBill.shopName}"/>
 					</td>
-				</tr>
-				<tr>
 					<th>支付总金额</th>
 					<td>
-						<input class="span2" name="amount" readonly type="text" value="${shopOrderBill.amount}"/>
+						<input class="span2 easyui-validatebox money_input" name="priceStr" type="text" readonly value="${shopOrderBill.amount}" data-options="required:true"/>
+						<input class="span2" name="amount"  type="hidden" value="${shopOrderBill.amount}"/>
 					</td>
+				</tr>
+				<tr>
 					<th>结算方式</th>
 					<td>
 						<jb:select dataType="DPW" name="payWay" value="${shopOrderBill.payWay}"></jb:select>

@@ -1,27 +1,22 @@
 package com.mobian.controller;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.UUID;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.mobian.pageModel.Colum;
+import com.alibaba.fastjson.JSON;
 import com.bx.ant.pageModel.DeliverOrderShopItem;
+import com.bx.ant.service.DeliverOrderShopItemServiceI;
+import com.mobian.pageModel.Colum;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
-import com.bx.ant.service.DeliverOrderShopItemServiceI;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSON;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 /**
  * DeliverOrderShopItem管理控制器
@@ -153,7 +148,7 @@ public class DeliverOrderShopItemController extends BaseController {
 	 */
 	@RequestMapping("/delete")
 	@ResponseBody
-	public Json delete(Integer id) {
+	public Json delete(Long id) {
 		Json j = new Json();
 		deliverOrderShopItemService.delete(id);
 		j.setMsg("删除成功！");

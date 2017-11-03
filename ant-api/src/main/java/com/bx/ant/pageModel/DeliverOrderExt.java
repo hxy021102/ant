@@ -14,6 +14,7 @@ public class DeliverOrderExt extends DeliverOrder {
     private Integer shopPayAmount;
     private String balanceLogType;
     private String shopPayWay;
+    private Long orderShopId;
 
 
     private List<DeliverOrderItem> deliverOrderItemList;
@@ -81,5 +82,13 @@ public class DeliverOrderExt extends DeliverOrder {
 
     public void setShopPayWay(String shopPayWay) {
         this.shopPayWay = shopPayWay;
+    }
+
+    public Long getOrderShopId() {
+        return orderShopId;
+    }
+
+    public void setOrderShopId(Long orderShopId) {
+        this.orderShopId = orderShopId;
     }
 }

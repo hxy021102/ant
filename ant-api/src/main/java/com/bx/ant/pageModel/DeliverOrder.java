@@ -33,6 +33,9 @@ public class DeliverOrder implements java.io.Serializable {
 	private String supplierOrderId;
 	private String completeImages;
 	private String completeRemark;
+    private String deliverOrderLogType;
+
+
 	
 
 	public void setId(Long value) {
@@ -218,5 +221,13 @@ public class DeliverOrder implements java.io.Serializable {
 
 	public void setCompleteRemark(String completeRemark) {
 		this.completeRemark = completeRemark;
+	}
+
+	public String getDeliverOrderLogType() {
+		return deliverOrderLogType;
+	}
+
+	public void setDeliverOrderLogType(String deliverOrderLogType) {
+		this.deliverOrderLogType = deliverOrderLogType;
 	}
 }

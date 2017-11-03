@@ -1,8 +1,9 @@
 package com.mobian.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.bx.ant.pageModel.*;
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderQuery;
+import com.bx.ant.pageModel.Supplier;
 import com.bx.ant.service.DeliverOrderItemServiceI;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.SupplierItemRelationServiceI;
@@ -10,11 +11,13 @@ import com.bx.ant.service.SupplierServiceI;
 import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
+import com.mobian.service.BasedataServiceI;
 import com.mobian.util.ConfigUtil;
 import com.mobian.util.ImportExcelUtil;
 import net.sf.json.JSONArray;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,8 +36,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * DeliverOrder管理控制器
@@ -55,7 +56,8 @@ public class DeliverOrderController extends BaseController {
 
 	@Resource
 	private SupplierItemRelationServiceI supplierItemRelationService;
-
+    @Autowired
+	private BasedataServiceI basedataService;
 
 	/**
 	 * 跳转到DeliverOrder管理页面
@@ -87,7 +89,16 @@ public class DeliverOrderController extends BaseController {
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(DeliverOrderQuery deliverOrderQuery, PageHelper ph) {
-		return deliverOrderService.dataGridWithName(deliverOrderQuery, ph);
+        if(deliverOrderQuery.getTime()!=null&&deliverOrderQuery.getTime()!=0){
+			BaseData base = new BaseData();
+			BaseData database =basedataService.get("DVS500");
+			if(database!=null){
+				deliverOrderQuery.setTime(Integer.parseInt(database.getName()));
+			}
+			return deliverOrderService.dataGridOutTimeDeliverOrder(deliverOrderQuery, ph);
+		}else
+			return deliverOrderService.dataGridWithName(deliverOrderQuery, ph);
+
 	}
 	@RequestMapping("/unPayOrderDataGrid")
 	@ResponseBody
@@ -333,5 +344,34 @@ public class DeliverOrderController extends BaseController {
 		json.setMsg("error");
 		json.setSuccess(false);
 		return json;
+	}
+
+	/**
+	 * 跳转到指派运单给门店页
+	 * @param request
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/assignOrderShopPage")
+	public String assignOrderShopPage(HttpServletRequest request, Long id) {
+		DeliverOrder deliverOrder = deliverOrderService.get(id);
+	 	request.setAttribute("deliverOrder", JSON.toJSONString(deliverOrder));
+		request.setAttribute("id", id);
+		return "/deliverorder/assignOrderShop";
+	}
+
+	/**
+	 * 指派运单给门店
+	 * @param deliverOrder
+	 * @return
+	 */
+	@RequestMapping("/assignOrderShop")
+	@ResponseBody
+	public Json assignOrderShop(DeliverOrder deliverOrder) {
+		Json j = new Json();
+	 	deliverOrderService.handleAssignDeliverOrder(deliverOrder);
+		j.setSuccess(true);
+		j.setMsg("指派成功！");
+		return j;
 	}
 }

@@ -228,10 +228,10 @@ public class MbSupplierStockInController extends BaseController {
         mbSupplierStockInItem.setSupplierStockInId(id);
         List<MbSupplierStockInItem> mbSupplierStockInItemList = mbSupplierStockInItemService.query(mbSupplierStockInItem);
         for (MbSupplierStockInItem m : mbSupplierStockInItemList) {
-            MbItem mbItem = mbItemService.get(m.getItemId());
+            MbItem mbItem = mbItemService.getFromCache(m.getItemId());
             m.setCode(mbItem.getCode());
             m.setQuantityUnitName(mbItem.getQuantityUnitName());
-            MbItemCategory mbItemCategory = mbItemCategoryService.get(mbItem.getCategoryId());
+            MbItemCategory mbItemCategory = mbItemCategoryService.getFromCache(mbItem.getCategoryId());
             m.setCategoryName(mbItemCategory.getName());
             m.setProductName(mbItem.getName());
         }
@@ -291,7 +291,7 @@ public class MbSupplierStockInController extends BaseController {
         SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
         Json j = new Json();
         mbSupplierStockInService.addPay(id, remark, sessionInfo.getId());
-        j.setMsg("更行付款状态成功！");
+        j.setMsg("更新付款状态成功！");
         j.setSuccess(true);
         return j;
     }
