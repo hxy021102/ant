@@ -29,4 +29,9 @@
     <dubbo:reference id="shopOrderBillService" interface="com.bx.ant.service.ShopOrderBillServiceI"/>
     <dubbo:reference id="deliverOrderShopPayService" interface="com.bx.ant.service.DeliverOrderShopPayServiceI"/>
     <dubbo:reference id="shopItemService" interface="com.bx.ant.service.ShopItemServiceI"/>
+
+
+    <dubbo:reference interface="com.bx.ant.service.DriverAccountServiceI" id="driverAccountService" />
+    <dubbo:reference interface="com.bx.ant.service.DriverOrderShopServiceI" id="driverOrderShopService" />
+    <dubbo:reference interface="com.bx.ant.service.DriverOrderShopBillServiceI" id="driverOrderShopBillService" />
 </beans>

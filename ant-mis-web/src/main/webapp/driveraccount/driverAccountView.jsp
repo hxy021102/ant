@@ -1,0 +1,94 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="com.bx.ant.model.TdriverAccount" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<script type="text/javascript">
+	$(function() {
+		parent.$.messager.progress('close');		
+	});
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+	<div data-options="region:'center',border:false">
+		<table class="table table-hover table-condensed">
+				<tr>	
+					<th><%=TdriverAccount.ALIAS_TENANT_ID%></th>	
+					<td>
+						${driverAccount.tenantId}							
+					</td>							
+					<th><%=TdriverAccount.ALIAS_ADDTIME%></th>	
+					<td>
+						${driverAccount.addtime}							
+					</td>							
+				</tr>		
+				<tr>	
+					<th><%=TdriverAccount.ALIAS_UPDATETIME%></th>	
+					<td>
+						${driverAccount.updatetime}							
+					</td>							
+					<th><%=TdriverAccount.ALIAS_ISDELETED%></th>	
+					<td>
+						${driverAccount.isdeleted}							
+					</td>							
+				</tr>		
+				<tr>	
+					<th><%=TdriverAccount.ALIAS_USER_NAME%></th>	
+					<td>
+						${driverAccount.userName}							
+					</td>							
+					<th><%=TdriverAccount.ALIAS_PASSWORD%></th>	
+					<td>
+						${driverAccount.password}							
+					</td>							
+				</tr>		
+				<tr>	
+					<th><%=TdriverAccount.ALIAS_NICK_NAME%></th>	
+					<td>
+						${driverAccount.nickName}							
+					</td>							
+					<th><%=TdriverAccount.ALIAS_ICON%></th>	
+					<td>
+						${driverAccount.icon}							
+					</td>							
+				</tr>		
+				<tr>	
+					<th><%=TdriverAccount.ALIAS_SEX%></th>	
+					<td>
+						${driverAccount.sex}							
+					</td>							
+					<th><%=TdriverAccount.ALIAS_REF_ID%></th>	
+					<td>
+						${driverAccount.refId}							
+					</td>							
+				</tr>		
+				<tr>	
+					<th><%=TdriverAccount.ALIAS_REF_TYPE%></th>	
+					<td>
+						${driverAccount.refType}							
+					</td>							
+					<th><%=TdriverAccount.ALIAS_CONACT_PHONE%></th>	
+					<td>
+						${driverAccount.conactPhone}							
+					</td>							
+				</tr>		
+				<tr>	
+					<th><%=TdriverAccount.ALIAS_TYPE%></th>	
+					<td>
+						${driverAccount.type}							
+					</td>							
+					<th><%=TdriverAccount.ALIAS_HANDLE_STATUS%></th>	
+					<td>
+						${driverAccount.handleStatus}							
+					</td>							
+				</tr>		
+				<tr>	
+					<th><%=TdriverAccount.ALIAS_HANDLE_LOGIN_ID%></th>	
+					<td>
+						${driverAccount.handleLoginId}							
+					</td>							
+					<th><%=TdriverAccount.ALIAS_HANDLE_REMARK%></th>	
+					<td>
+						${driverAccount.handleRemark}							
+					</td>							
+				</tr>		
+		</table>
+	</div>
+</div>
