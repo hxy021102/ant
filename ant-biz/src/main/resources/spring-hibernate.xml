@@ -96,6 +96,7 @@
 	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
 		<tx:attributes>
 			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="insert*" propagation="REQUIRED" />
 			<tx:method name="append*" propagation="REQUIRED" />
 			<tx:method name="save*" propagation="REQUIRED" />
 			<tx:method name="update*" propagation="REQUIRED" />
@@ -110,8 +111,7 @@
 			<tx:method name="find*" propagation="REQUIRED" read-only="true" />
 			<tx:method name="load*" propagation="REQUIRED" read-only="true" />
 			<tx:method name="search*" propagation="REQUIRED" read-only="true" />
-			<tx:method name="datagrid*" propagation="REQUIRED"
-				read-only="true" />
+			<tx:method name="datagrid*" propagation="REQUIRED" read-only="true" />
 
 			<tx:method name="*" propagation="REQUIRED" />
 		</tx:attributes>

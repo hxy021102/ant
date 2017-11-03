@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.mobian.model.TmbSupplierOrderItem" %>
+<%@ page import="com.mobian.model.TmbShop" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%>
@@ -43,6 +44,7 @@
                 striped : true,
                 rownumbers : true,
                 singleSelect : true,
+                showFooter:true,
                 columns : [ [ {
                     field : 'itemCode',
                     title : '商品代码',
@@ -50,10 +52,6 @@
                 }, {
                     field : 'itemName',
                     title : '商品名称',
-                    width : 80
-                },{
-                    field : 'warehouseName',
-                    title : '发货仓库',
                     width : 80
                 },  {
                     field : 'quantity',
@@ -72,8 +70,43 @@
                     title : '销售总额',
                     width : 50,
                     align:"right",
+                    formatter:function(value,row){
+                        if(row.backMoney){
+                            value = value - row.backMoney;
+                        }
+                        return $.formatMoney(value);
+                    }
+                }, {
+                    field : 'totalPrice1',
+                    title : '销售单价',
+                    width : 50,
+                    align:"right",
+                    formatter:function(value,row){
+                        return $.formatMoney(parseInt(row.totalPrice/row.salesQuantity));
+                    }
+                }, {
+                    field : 'totalCost',
+                    title : '进货成本',
+                    width : 50,
+                    align:"right",
                     formatter:function(value){
                         return $.formatMoney(value);
+                    }
+                }, {
+                    field : 'totalCost2',
+                    title : '成本单价',
+                    width : 50,
+                    align:"right",
+                    formatter:function(value,row){
+                        return $.formatMoney(parseInt(row.totalCost/row.salesQuantity));
+                    }
+                }, {
+                    field : 'totalCost1',
+                    title : '毛利',
+                    width : 50,
+                    align:"right",
+                    formatter:function(value,row){
+                        return $.formatMoney(parseInt(row.totalPrice-row.totalCost));
                     }
                 } ] ],
                 toolbar : '#toolbar',
@@ -130,18 +163,22 @@
 </head>
 <body>
 <div class="easyui-layout" data-options="fit : true,border : false">
-    <div data-options="region:'north',title:'查询条件',border:false" style="height: 65px; overflow: hidden;">
+    <div data-options="region:'north',title:'查询条件',border:false" style="height: 115px; overflow: hidden;">
         <form id="searchForm">
             <table class="table table-hover table-condensed" style="display: none;">
                 <tr>
-                    <td>
+                    <th>
                         发货时间：
+                    </th>
+                    <td>
                         <input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'<%=TmbSupplierOrderItem.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'endDate\',{M:-1});}',maxDate:'#F{$dp.$D(\'endDate\',{d:-1});}'})" id="startDate" name="startDate"/>
                         <input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'<%=TmbSupplierOrderItem.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'startDate\',{d:1});}',maxDate:'#F{$dp.$D(\'startDate\',{M:1});}'})" id="endDate" name="endDate"/>
                     </td>
-                    <td>
+                    <th>
                         订单状态：
-                        <select    name="orderStatus" class="easyui-combobox" data-options="width:140,height:29">
+                    </th>
+                    <td>
+                        <select name="orderStatus" class="easyui-combobox" data-options="width:140,height:29">
                             <option value=""></option>
                             <option value="OD20">已发货</option>
                             <option value="OD35,OD30">已签收</option>
@@ -153,7 +190,17 @@
                         <jb:selectSql dataType="SQ004" name="warehouseId"></jb:selectSql>
                     </td>
                 </tr>
-
+                <tr>
+                    <th><%=TmbShop.ALIAS_SHOP_TYPE%>
+                    </th>
+                    <td>
+                        <jb:select dataType="ST" name="shopType" mustSelect="true"></jb:select>
+                    </td>
+                    <th>主店名称</th>
+                    <td colspan="3">
+                        <jb:selectGrid dataType="shopId" name="shopId" params="{onlyMain:true}"></jb:selectGrid>
+                    </td>
+                </tr>
             </table>
         </form>
     </div>

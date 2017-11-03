@@ -37,30 +37,66 @@
 		<form id="form" method="post">
 				<input type="hidden" name="id" value = "${id}"/>
 				<input name="handleStatus" type="hidden"/>
-			<table class="table table-hover table-condensed">
+				<input type="hidden" name="amount" style="width: 90%" value="${mbRechargeLog.amount}"/>
+				<table class="table table-hover table-condensed">
 				<tr>
+					<c:choose>
+						<c:when test="${mbRechargeLog.refType == 'BT004'}">
+							<input type="hidden" name="refType" style="width: 90%" value="${mbRechargeLog.refType}"/>
 
+						</c:when>
+						<c:otherwise>
+							<%--订单冲单业务--%>
+							<c:choose>
+								<c:when test="${mbRechargeLog.bankCode == 'TB10'}">
+									<th>订单ID</th>
+									<td>
+										<input type="text" name="payCode" readonly="true"
+											   value="${mbRechargeLog.payCode}"/>
+									</td>
+								</c:when>
+								<c:otherwise>
+									<th><%=TmbRechargeLog.ALIAS_PAYCODE%>
+									</th>
+									<td colspan="3">
+										<input type="text" name="payCode" style="width: 90%" value="${mbRechargeLog.payCode}"/>
+									</td>
+								</c:otherwise>
+							</c:choose>
+						</c:otherwise>
+					</c:choose>
 				</tr>
 				<c:choose>
-					<c:when test="${mbRechargeLog.bankCode == 'TB10'}">
-						<th>订单ID</th>
-						<td>
-							<input type="text" name="payCode" readonly = "true" value="${mbRechargeLog.payCode}"/>
-						</td>
+					<c:when test="${mbRechargeLog.balanceId == -1}">
+						<tr>
+							<th>充值类型</th>
+							<td>
+								<jb:selectSql dataType="SQ011" name="refType" required="true"
+											  value="${mbRechargeLog.refType}"></jb:selectSql>
+							</td>
+							<th>门店名称</th>
+							<td>
+								<jb:selectGrid dataType="shopId" name="shopId"></jb:selectGrid>
+							</td>
+						</tr>
+						<tr>
+							<th>原因</th>
+							<td colspan="3">
+								<textarea name="handleRemark"  class="easyui-validatebox" data-options="required:true"  style="width: 90%"></textarea>
+							</td>
+						</tr>
 					</c:when>
 					<c:otherwise>
-						<th><%=TmbRechargeLog.ALIAS_PAYCODE%></th>
-						<td>
-							<input type="text" name="payCode" style="width: 90%" />
-						</td>
+						<tr>
+							<th>原因</th>
+							<td>
+								<input type="hidden" name="shopId" style="width: 90%" value="${mbRechargeLog.shopId}"/>
+								<textarea name="handleRemark" class="easyui-validatebox" data-options="required:true"
+										  style="width: 90%"></textarea>
+							</td>
+						</tr>
 					</c:otherwise>
 				</c:choose>
-				<tr>
-					<th>原因</th>
-					<td>
-						<textarea name="handleRemark"  class="easyui-validatebox" data-options="required:true"  style="width: 90%"></textarea>
-					</td>
-				</tr>
 			</table>
 		</form>
 	</div>

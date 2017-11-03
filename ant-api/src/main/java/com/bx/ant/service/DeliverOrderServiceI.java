@@ -51,7 +51,7 @@ public interface DeliverOrderServiceI {
 	String PAY_WAY_TRANSFER = "DPW03"; //汇款
 
 	//派单结算时间差
-	Long TIME_DIF_SHOP_PAY_SETTLED = new Long(7 * 24 * 60 * 60 * 1000) ;
+	Long TIME_DIF_SHOP_PAY_SETTLED = new Long(1 * 1 * 1 * 60 * 1000) ;
 
     void transformByShopIdAndStatus(Long id, Integer shopId, String status);
 
@@ -244,4 +244,20 @@ public interface DeliverOrderServiceI {
 	 * @return
 	 */
 	Integer clearAllocationOrderRedis(Integer shopId);
+
+	DeliverOrder getBySupplierOrderId(String supplierOrderId);
+
+	/**
+	 * 通过excel获取到的list生成订单
+	 * lo[0]订单号
+	 * lo[1]商品ID
+	 * lo[2]订购的数量
+	 * 	lo[3]客户姓名
+	 * 	lo[4]客户地址
+	 * 	lo[5]联系电话
+	 * 	lo[6]备注(可选)
+	 * @param lo
+	 * @param supplierId
+	 */
+    void addByTableList(List<Object> lo, Integer supplierId);
 }

@@ -1,6 +1,7 @@
 package com.mobian.thirdpart.wx;
 
 import com.mobian.absx.F;
+import com.mobian.util.ConvertNameUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -155,17 +156,19 @@ public class HttpUtil {
 		String jsonStr = null;
 		try {
 			KeyStore keyStore  = KeyStore.getInstance("PKCS12");
-
-			FileInputStream instream = new FileInputStream(new File(HttpUtil.class.getClassLoader().getResource("apiclient_cert.p12").getPath()));
+			String mchId = ConvertNameUtil.getString(WeixinUtil.MCH_ID);
+			String path = HttpUtil.class.getClassLoader().getResource("").getPath();
+			path = path.substring(0, path.indexOf("WEB-INF")) + "WEB-INF/classes/apiclient_cert.p12";
+			FileInputStream instream = new FileInputStream(new File(path));
 			try {
-				keyStore.load(instream, "1383417502".toCharArray());
+				keyStore.load(instream, mchId.toCharArray());
 			} finally {
 				instream.close();
 			}
 
 			// Trust own CA and all self-signed certs
 			SSLContext sslcontext = SSLContexts.custom()
-					.loadKeyMaterial(keyStore, "1383417502".toCharArray())
+					.loadKeyMaterial(keyStore, mchId.toCharArray())
 					.build();
 			// Allow TLSv1 protocol only
 			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(

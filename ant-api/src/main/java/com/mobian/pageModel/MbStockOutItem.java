@@ -16,6 +16,7 @@ public class MbStockOutItem implements java.io.Serializable {
 	private Integer itemId;
 	private String itemName;
 	private Integer quantity;
+	private Integer costPrice;
 
 
 	public String getItemName() {
@@ -85,4 +86,11 @@ public class MbStockOutItem implements java.io.Serializable {
 		return this.quantity;
 	}
 
+	public Integer getCostPrice() {
+		return costPrice;
+	}
+
+	public void setCostPrice(Integer costPrice) {
+		this.costPrice = costPrice;
+	}
 }

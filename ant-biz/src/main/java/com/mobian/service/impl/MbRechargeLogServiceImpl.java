@@ -3,6 +3,7 @@ package com.mobian.service.impl;
 import com.mobian.absx.F;
 import com.mobian.dao.MbRechargeLogDaoI;
 import com.mobian.exception.ServiceException;
+import com.mobian.model.TmbItem;
 import com.mobian.model.TmbRechargeLog;
 import com.mobian.pageModel.*;
 import com.mobian.service.*;
@@ -51,17 +52,13 @@ public class MbRechargeLogServiceImpl extends BaseServiceImpl<MbRechargeLog> imp
 
 				if(userId != null){
 					if("BT003".equals(dbMbMechargeLog.getRefType())) {
-						MbUser user = mbUserService.get(Integer.valueOf(userId));
+						MbUser user = mbUserService.getFromCache(Integer.valueOf(userId));
 						dbMbMechargeLog.setApplyLoginName(user.getNickName());
 					} else {
-						User user = userService.get(userId);
+						User user = userService.getFromCache(userId);
 						dbMbMechargeLog.setApplyLoginName(user.getName());
 					}
-
 				}
-
-
-
 				ol.add(dbMbMechargeLog);
 			}
 		}
@@ -118,6 +115,15 @@ public class MbRechargeLogServiceImpl extends BaseServiceImpl<MbRechargeLog> imp
 				whereHql += " and t.payCode = :payCode";
 				params.put("payCode", mbRechargeLog.getPayCode());
 			}
+
+			if(mbRechargeLog.getAddtimeBegin()!=null){
+				whereHql += " and t.addtime >= :addtimeBegin";
+				params.put("addtimeBegin", mbRechargeLog.getAddtimeBegin());
+			}
+			if(mbRechargeLog.getAddtimeEnd()!=null){
+				whereHql += " and t.addtime <= :addtimeEnd";
+				params.put("addtimeEnd", mbRechargeLog.getAddtimeEnd());
+			}
 		}
 		return whereHql;
 	}
@@ -139,9 +145,9 @@ public class MbRechargeLogServiceImpl extends BaseServiceImpl<MbRechargeLog> imp
 		BeanUtils.copyProperties(mbRechargeLog, tmbBalanceLog);
 		tmbBalanceLog.setIsdeleted(false);
 		tmbBalanceLog.setRefId(String.valueOf(mbRechargeLog.getId()));
-		if(mbRechargeLog.getRefType()!=null) {
+		if (mbRechargeLog.getRefType() != null) {
 			tmbBalanceLog.setRefType(mbRechargeLog.getRefType());
-		}else{
+		} else {
 			tmbBalanceLog.setRefType("BT004");
 		}
 		tmbBalanceLog.setRemark(mbRechargeLog.getContent());
@@ -191,41 +197,47 @@ public class MbRechargeLogServiceImpl extends BaseServiceImpl<MbRechargeLog> imp
 		*/
 		TmbRechargeLog t = mbRechargeLogDao.get(TmbRechargeLog.class,mbRechargeLog.getId());
 
-		MbPaymentItem paymentItem = new MbPaymentItem();
-		paymentItem.setBankCode(t.getBankCode());
-		paymentItem.setPayCode(mbRechargeLog.getPayCode());
 
 		MbRechargeLog rechargeLog = new MbRechargeLog();
 		rechargeLog.setBankCode(t.getBankCode());
 		rechargeLog.setPayCode(mbRechargeLog.getPayCode());
-		rechargeLog.setHandleStatus("HS02");
-		//TODO
+		rechargeLog.setHandleStatus(MbRechargeLogServiceI.HS02);
 		synchronized (this) {
-			if ("HS02".equals(mbRechargeLog.getHandleStatus()) && !"BT013".equals(t.getRefType())) {
-                List<MbPaymentItem> paymentItems = mbPaymentItemService.listMbPaymentItem(paymentItem);
-					List<MbRechargeLog> rechargeLogs = listMbRechargeLog(rechargeLog);
+			if (MbRechargeLogServiceI.HS02.equals(mbRechargeLog.getHandleStatus()) && MbBalanceLogServiceI.BT003.equals(t.getRefType()) && !F.empty(t.getPayCode())) {
+				MbPaymentItem paymentItem = new MbPaymentItem();
+				paymentItem.setBankCode(t.getBankCode());
+				paymentItem.setPayCode(mbRechargeLog.getPayCode());
+				List<MbPaymentItem> paymentItems = mbPaymentItemService.listMbPaymentItem(paymentItem);
+				List<MbRechargeLog> rechargeLogs = listMbRechargeLog(rechargeLog);
 				if (CollectionUtils.isEmpty(paymentItems) && CollectionUtils.isEmpty(rechargeLogs)) {
 					edit(mbRechargeLog);
 				} else {
 					throw new ServiceException("银行汇款单号已存在,请重新确认!");
 				}
-            } else if ("HS02".equals(mbRechargeLog.getHandleStatus()) && "BT013".equals(t.getRefType())) {
+			} else if (MbRechargeLogServiceI.HS02.equals(mbRechargeLog.getHandleStatus())) {
+				if(!F.empty(mbRechargeLog.getPayCode())) {
+					List<MbRechargeLog> rechargeLogs = listMbRechargeLog(rechargeLog);
+					if (!CollectionUtils.isEmpty(rechargeLogs)){
+						throw new ServiceException("流水号已存在,请重新确认!");
+					}
+				}
                 edit(mbRechargeLog);
-            }else if ("HS03".equals(mbRechargeLog.getHandleStatus())) {
+            }else if (MbRechargeLogServiceI.HS03.equals(mbRechargeLog.getHandleStatus())) {
 				mbRechargeLog.setPayCode(null);
 				edit(mbRechargeLog);
 			}
 		}
 		// 审核成功更新用户余额
-		if("HS02".equals(mbRechargeLog.getHandleStatus())) {
+		if(MbRechargeLogServiceI.HS02.equals(mbRechargeLog.getHandleStatus())) {
 			MbBalanceLog tmbBalanceLog = new MbBalanceLog();
 			tmbBalanceLog.setBalanceId(mbRechargeLog.getBalanceId());
 			tmbBalanceLog.setAmount(mbRechargeLog.getAmount());
 			tmbBalanceLog.setRefId(String.valueOf(mbRechargeLog.getId()));
-			if (!"BT013".equals(t.getRefType())) {
-				tmbBalanceLog.setRefType("BT003"); // 转账汇款
+			//如果类型不是转账汇款，将充值记录表类型设置为充值日志类型
+			if (!MbBalanceLogServiceI.BT003.equals(t.getRefType())) {
+				tmbBalanceLog.setRefType(t.getRefType());
 			}else{
-                tmbBalanceLog.setRefType("BT013");  //后台-冲单
+				tmbBalanceLog.setRefType(MbBalanceLogServiceI.BT003); // 转账汇款
             }
 			tmbBalanceLog.setRemark(mbRechargeLog.getHandleRemark());
 			mbBalanceLogService.addAndUpdateBalance(tmbBalanceLog);
@@ -246,5 +258,41 @@ public class MbRechargeLogServiceImpl extends BaseServiceImpl<MbRechargeLog> imp
 			ol.add(o);
 		}
 		return ol;
+	}
+
+	@Override
+	public void addBatchMbRechargeLog(List<MbRechargeLog> mbRechargeLogList,String loginId) {
+		if (CollectionUtils.isNotEmpty(mbRechargeLogList)){
+			for(MbRechargeLog mbRechargeLog :mbRechargeLogList){
+				mbRechargeLog.setApplyLoginId(loginId);
+				add(mbRechargeLog);
+			}
+		}
+	}
+
+	@Override
+	public List<MbRechargeLog> query(MbRechargeLog mbRechargeLog) {
+		List<MbRechargeLog> ol = new ArrayList<MbRechargeLog>();
+		String hql = " from TmbRechargeLog t ";
+		Map<String, Object> params = new HashMap<String, Object>();
+		String where = whereHql(mbRechargeLog, params);
+		List<TmbRechargeLog> l = mbRechargeLogDao.find(hql + where, params);
+		if (CollectionUtils.isNotEmpty(l)) {
+			for (TmbRechargeLog t : l) {
+				MbRechargeLog o = new MbRechargeLog();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		return ol;
+	}
+
+	@Override
+	public MbRechargeLog checkRechargeLogPayCode(MbRechargeLog mbRechargeLog) {
+		List<MbRechargeLog> mbRechargeLogList = query(mbRechargeLog);
+		if (CollectionUtils.isNotEmpty(mbRechargeLogList)) {
+			return mbRechargeLogList.get(0);
+		}
+		return null;
 	}
 }

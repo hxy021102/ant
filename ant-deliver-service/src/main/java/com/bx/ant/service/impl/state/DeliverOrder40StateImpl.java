@@ -1,5 +1,6 @@
 package com.bx.ant.service.impl.state;
 
+import com.bx.ant.pageModel.DeliverOrderExt;
 import com.bx.ant.service.*;
 import com.mobian.pageModel.*;
 import com.bx.ant.pageModel.DeliverOrder;
@@ -66,12 +67,22 @@ public class DeliverOrder40StateImpl implements DeliverOrderState {
         deliverOrderShopPay.setShopId(deliverOrderShop.getShopId());
         List<DeliverOrderShopPay> orderShopPays = deliverOrderShopPayService.list(deliverOrderShopPay);
         if (CollectionUtils.isNotEmpty(orderShopPays)) {
+
+            //修改运单门店支付状态
             deliverOrderShopPay = orderShopPays.get(0);
+            deliverOrderShopPay.setStatus(DeliverOrderServiceI.SHOP_PAY_STATUS_SUCCESS);
+            deliverOrderShopPayService.edit(deliverOrderShopPay);
+
             MbBalance balance = mbBalanceService.addOrGetMbBalanceDelivery(deliverOrderShop.getShopId());
             MbBalanceLog balanceLog = new MbBalanceLog();
             balanceLog.setBalanceId(balance.getId());
             balanceLog.setRefId(deliverOrderShopPay.getId() + "");
-            balanceLog.setRefType("BT060");
+            if (deliverOrder instanceof DeliverOrderExt) {
+                DeliverOrderExt orderExt = (DeliverOrderExt) deliverOrder;
+                balanceLog.setRefType(orderExt.getBalanceLogType());
+            } else {
+                balanceLog.setRefType("BT060");
+            }
             //TODO 这里不知道是否写对?
             balanceLog.setAmount(deliverOrderShopPay.getAmount());
 

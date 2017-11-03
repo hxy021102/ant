@@ -52,7 +52,7 @@
 				<tr>	
 					<th><%=TmbOrderInvoice.ALIAS_BANK_NAME%></th>	
 					<td>
-						${mbOrderInvoice.bankName}							
+						${mbOrderInvoice.bankNames}
 					</td>							
 					<th><%=TmbOrderInvoice.ALIAS_BANK_NUMBER%></th>	
 					<td>

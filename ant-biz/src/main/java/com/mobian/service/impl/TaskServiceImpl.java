@@ -1,14 +1,12 @@
 package com.mobian.service.impl;
 
 import com.mobian.absx.F;
-import com.mobian.dao.MbOrderDaoI;
+import com.mobian.concurrent.ThreadCache;
 import com.mobian.model.TmbContract;
 import com.mobian.model.TmbContractItem;
 import com.mobian.model.TmbOrder;
 import com.mobian.model.TmbOrderItem;
-import com.mobian.pageModel.MbOrder;
-import com.mobian.pageModel.MbShop;
-import com.mobian.pageModel.User;
+import com.mobian.pageModel.*;
 import com.mobian.service.*;
 import com.mobian.thirdpart.mns.MNSTemplate;
 import com.mobian.thirdpart.mns.MNSUtil;
@@ -18,13 +16,19 @@ import com.mobian.thirdpart.redis.RedisUtil;
 import com.mobian.util.Constants;
 import com.mobian.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by john on 16/10/16.
@@ -43,13 +47,23 @@ public class TaskServiceImpl implements TaskServiceI {
     @Autowired
     private MbOrderItemServiceI mbOrderItemService;
     @Autowired
-    private MbOrderDaoI mbOrderDao;
+    private MbStockOutServiceI mbStockOutService;
+    @Autowired
+    private MbStockOutItemServiceI mbStockOutItemService;
+    @Autowired
+    private MbItemStockServiceI mbItemStockService;
+    @Autowired
+    private MbItemStockLogServiceI mbItemStockLogService;
     @Autowired
     private UserServiceI userService;
     @Autowired
     private MbShopServiceI mbShopService;
     @Autowired
+    private MbSupplierStockInItemServiceI mbSupplierStockInItemService;
+    @Autowired
     private RedisUtil redisUtil;
+    @Autowired
+    private HibernateTransactionManager transactionManager;
 
     @Override
     public void setContractPrice() {
@@ -118,6 +132,132 @@ public class TaskServiceImpl implements TaskServiceI {
         for (MbShop mbShop : mbShopList) {
             mbShopService.setShopLocation(mbShop);
             mbShopService.edit(mbShop);
+        }
+    }
+
+    @Override
+    public void updateCostPrice() {
+        try {
+            ThreadCache mbOrderCache = new ThreadCache(MbOrder.class) {
+                @Override
+                protected Object handle(Object key) {
+                    return mbOrderService.get((Integer) key);
+                }
+            };
+            ThreadCache mbStockOrderCache = new ThreadCache(MbStockOut.class) {
+                @Override
+                protected Object handle(Object key) {
+                    return mbStockOutService.get((Integer) key);
+                }
+            };
+
+            ThreadCache mbItemStock = new ThreadCache(MbItemStock.class) {
+                @Override
+                protected Object handle(Object key) {
+                    String[] keys = key.toString().split("[|]");
+                    return mbItemStockService.getByWareHouseIdAndItemId(Integer.parseInt(keys[0]), Integer.parseInt(keys[1]));
+                }
+            };
+            List<MbStockOutItem> mbStockOutItemList = mbStockOutItemService.queryStockOutItemWithoutCostPrice();
+            for (MbStockOutItem mbStockOutItem : mbStockOutItemList) {
+                MbStockOut mbStockOut = mbStockOrderCache.getValue(mbStockOutItem.getMbStockOutId());
+                if (mbStockOut != null && !F.empty(mbStockOut.getWarehouseId()) && !F.empty(mbStockOutItem.getItemId())) {
+
+                    DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+
+                    def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);// 事物隔离级别，开启新事务
+
+                    TransactionStatus status = transactionManager.getTransaction(def); // 获得事务状态
+
+                    try{
+                        MbItemStock itemStock = mbItemStock.getValue(mbStockOut.getWarehouseId() + "|" + mbStockOutItem.getItemId());
+                        mbStockOutItem.setCostPrice(itemStock.getAveragePrice());
+                        mbStockOutItemService.edit(mbStockOutItem);
+                        transactionManager.commit(status);
+                    }catch(Exception e){
+                        transactionManager.rollback(status);
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+            List<MbOrderItem> mbOrderItemList = mbOrderItemService.queryListByWithoutCostPrice();
+            for (MbOrderItem mbOrderItem : mbOrderItemList) {
+                MbOrder mbOrder = mbOrderCache.getValue(mbOrderItem.getOrderId());
+                if (mbOrder != null && !F.empty(mbOrder.getDeliveryWarehouseId()) && !F.empty(mbOrderItem.getItemId())) {
+                    DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+                    def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);// 事物隔离级别，开启新事务
+                    TransactionStatus status = transactionManager.getTransaction(def); // 获得事务状态
+                    try {
+                        MbItemStock itemStock = mbItemStock.getValue(mbOrder.getDeliveryWarehouseId() + "|" + mbOrderItem.getItemId());
+                        mbOrderItem.setCostPrice(itemStock.getAveragePrice());
+                        mbOrderItemService.edit(mbOrderItem);
+                        transactionManager.commit(status);
+                    } catch (Exception e) {
+                        transactionManager.rollback(status);
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+
+            ThreadCache mbItemStock2 = new ThreadCache(MbItemStock.class) {
+                @Override
+                protected Object handle(Object key) {
+                    return mbItemStockService.get((Integer) key);
+                }
+            };
+            List<MbItemStockLog> mbItemStockLogList = mbItemStockLogService.queryListByWithoutCostPrice();
+            for (MbItemStockLog mbItemStockLog : mbItemStockLogList) {
+                MbItemStock stock = mbItemStock2.getValue(mbItemStockLog.getItemStockId());
+                DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+                def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);// 事物隔离级别，开启新事务
+                TransactionStatus status = transactionManager.getTransaction(def); // 获得事务状态
+                mbItemStockLog.setCostPrice(stock.getAveragePrice() == null ? -1 : stock.getAveragePrice());
+                try {
+                    //入库单；取入库价格
+                    if (!F.empty(mbItemStockLog.getReason())) {
+                        Pattern p = Pattern.compile("([\\s\\S]*)ID[:：](\\d+)[\\s\\S]*库存：(\\d+)");
+                        Matcher m = p.matcher(mbItemStockLog.getReason());
+                        String[] strs = new String[3];
+                        boolean isMatch = m.find();
+                        int i = 0, j = m.groupCount();
+                        while (isMatch && i < j) {
+                            strs[i] = m.group(i + 1);
+                            i++;
+                        }
+                        if (isMatch) {
+                            if (strs[0].indexOf("入库") > -1) {
+                                MbSupplierStockInItem request = new MbSupplierStockInItem();
+                                request.setSupplierStockInId(Integer.parseInt(strs[1]));
+                                request.setQuantity(mbItemStockLog.getQuantity());
+                                request.setItemId(stock.getItemId());
+                                List<MbSupplierStockInItem> list = mbSupplierStockInItemService.query(request);
+                                if (!CollectionUtils.isEmpty(list)) {
+                                    mbItemStockLog.setInPrice(list.get(0).getPrice());
+                                }
+                            }
+                            if (F.empty(mbItemStockLog.getEndQuantity())) {
+                                String endQuantity = strs[2];
+                                if (!F.empty(endQuantity)) {
+                                    mbItemStockLog.setEndQuantity(Integer.parseInt(endQuantity));
+                                }
+                            }
+                        }
+                    }
+
+                    mbItemStockLogService.edit(mbItemStockLog);
+                    transactionManager.commit(status);
+                } catch (Exception e) {
+                    transactionManager.rollback(status);
+                    e.printStackTrace();
+                }
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            ThreadCache.clear();
         }
     }
 

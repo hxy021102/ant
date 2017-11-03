@@ -66,7 +66,12 @@ public class DeliverShopArtificialPayController extends BaseController {
 	@RequestMapping(value="/addShopOrderBill", method = RequestMethod.POST)
 	@ResponseBody
 	public Json addShopOrderBill(@RequestBody ShopOrderBillQuery shopOrderBillQuery) {
-		return  shopOrderBillService.addShopOrderBillAndShopPay(shopOrderBillQuery);
+		Json j = new Json();
+		shopOrderBillService.addShopOrderBillAndShopPay(shopOrderBillQuery);
+		j.setSuccess(true);
+		j.setMsg("创建门店账单成功！");
+		j.setObj(shopOrderBillQuery);
+		return j;
 	}
 
 	/**

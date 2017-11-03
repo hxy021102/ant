@@ -48,6 +48,11 @@
             $(this).val($.formatMoney($(this).val().trim()));
         });
 	});
+    function getPrice() {
+        var freight = $('#freightStr').val();
+        var inPrice = $('#inPriceStr').val();
+        $('#priceStr').val(Number(freight)+Number(inPrice));
+    }
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;">
@@ -64,24 +69,24 @@
 					<td><input name="supplierItemCode" type="text" class="easyui-validatebox span2" data-options="required:true" value="${supplierItemRelation.supplierItemCode}"/></td>
 			</tr>
 
-				<tr>	
-					<th>价格</th>
-					<td>
-						<input class="span2 money_input" name="priceStr" type="text" value="${supplierItemRelation.price}"/>
-						<input type="hidden" name="price" value="${mbItem.purchasePrice}">
-					</td>							
-					<th>采购价</th>
-					<td>
-						<input class="span2 money_input" name="inPriceStr" type="text" value="${supplierItemRelation.inPrice}"/>
-						<input type="hidden" name="inPrice" value="${mbItem.purchasePrice}">
-					</td>							
-			</tr>	
-				<tr>	
+				<tr>
 					<th>运费</th>
 					<td>
-						<input class="span2 money_input" name="freightStr" type="text" value="${supplierItemRelation.freight}"/>
-						<input type="hidden" name="freight" value="${mbItem.purchasePrice}">
+						<input class="span2 money_input" id="freightStr" name="freightStr" type="text" value="${supplierItemRelation.freight}" onblur="getPrice()"/>
+						<input type="hidden" name="freight" value="${supplierItemRelation.freight}">
+					</td>
+					<th>采购价</th>
+					<td>
+						<input class="span2 money_input" id="inPriceStr" name="inPriceStr" type="text" value="${supplierItemRelation.inPrice}" onblur="getPrice()"/>
+						<input type="hidden" name="inPrice" value="${supplierItemRelation.inPrice}" >
 					</td>							
+			</tr>	
+				<tr>
+					<th>价格</th>
+					<td>
+						<input class="span2 money_input" id="priceStr" name="priceStrr" type="text"  readonly="readonly" value="${supplierItemRelation.price}"/>
+						<input type="hidden" name="price" value="${supplierItemRelation.price}">
+					</td>
 					<th>上下架</th>
 					<td>
 						<select name="online" class="easyui-combobox" data-options="width:140,height:29">

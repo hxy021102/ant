@@ -162,7 +162,7 @@
                         title: '<%=TmbShopInvoice.ALIAS_REGISTER_PHONE%>',
                         width: 80
                     }, {
-                        field: 'bankName',
+                        field: 'bankNames',
                         title: '<%=TmbShopInvoice.ALIAS_BANK_NAME%>',
                         width: 80
                     }, {
@@ -948,6 +948,15 @@
             });
         }
 
+        function viewOrderUnfinish(id) {
+            var href = '${pageContext.request.contextPath}/mbOrderController/manager?payStatus=PS01&shopId=' + id;
+            parent.$("#index_tabs").tabs('add', {
+                title: '未支付订单-' + id,
+                content: '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+                closable: true
+            });
+        }
+
 
         //桶余额
         function viewCashBalance(balanceId,shopId) {
@@ -999,7 +1008,7 @@
 </head>
 <body>
 <div class="easyui-layout" data-options="fit:true,border:false">
-    <div data-options="region:'north',border:false" style="height: 145px; overflow: hidden;">
+    <div data-options="region:'north',border:false" style="height: 150px; overflow: hidden;">
         <table class="table table-hover table-condensed">
             <tr>
 
@@ -1064,7 +1073,7 @@
                 <td>
                     <c:choose>
                         <c:when test="${debt>0}">
-                            <font color="red" class="money_input">${debt}</font>
+                            <a href="javascript:void(0);" onclick="viewOrderUnfinish('${mbShopExt.id}')" class="money_input" style="color: red">${debt}</a>
                         </c:when>
                         <c:otherwise>
                             ${debt/100.0}
@@ -1116,6 +1125,12 @@
                         <a href="javascript:void(0);" onclick="viewDeliverMoney(${mbShopExt.id})" class="money_input">${money}</a>
                     </td>
                 </c:if>
+            </tr>
+            <tr>
+                <th>销售人员</th>
+                <td colspan="8">
+                    ${mbShopExt.salesLoginName}
+                </td>
             </tr>
         </table>
     </div>
