@@ -291,7 +291,7 @@ public class MbSupplierStockInController extends BaseController {
         SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
         Json j = new Json();
         mbSupplierStockInService.addPay(id, remark, sessionInfo.getId());
-        j.setMsg("更行付款状态成功！");
+        j.setMsg("更新付款状态成功！");
         j.setSuccess(true);
         return j;
     }

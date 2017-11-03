@@ -187,11 +187,11 @@ public class MbItemStockLogServiceImpl extends BaseServiceImpl<MbItemStockLog> i
 	@Override
 	public List<MbItemStockLog> queryListByWithoutCostPrice() {
 		List<MbItemStockLog> ol = new ArrayList<MbItemStockLog>();
-		/*String sql = "from TmbItemStockLog t where t.isdeleted = 0 and t.costPrice is null and t.addtime >= :updatetimeBegin";
+		String sql = "from TmbItemStockLog t where t.isdeleted = 0 and t.costPrice is null and t.addtime >= :updatetimeBegin";
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("updatetimeBegin", DateUtil.addDayToDate(new Date(), -1));*/
-		String sql = "from TmbItemStockLog t where t.isdeleted = 0 and t.costPrice is null";
-		List<TmbItemStockLog> l =  mbItemStockLogDao.find(sql, 1,200);
+		params.put("updatetimeBegin", DateUtil.addDayToDate(new Date(), -1));
+		//String sql = "from TmbItemStockLog t where t.isdeleted = 0 and (t.costPrice is null or (t.reason like '入库ID%' and t.endQuantity is null))";
+		List<TmbItemStockLog> l =  mbItemStockLogDao.find(sql,params, 1,200);
 		if (CollectionUtils.isNotEmpty(l)) {
 			for (TmbItemStockLog t : l) {
 				MbItemStockLog o = new MbItemStockLog();

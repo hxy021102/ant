@@ -683,7 +683,7 @@
             parent.$.modalDialog({
                 title: '商品价格修改',
                 width: 780,
-                height: 500,
+                height: 200,
                 href: '${pageContext.request.contextPath}/shopItemController/editPricePage?id=' + id,
                 buttons: [{
                     text: '编辑',
