@@ -90,7 +90,7 @@
 				<tr>
 					<th>价格</th>
 					<td>
-						<input class="span2 money_input easyui-validatebox" id="priceStr" name="priceStrr" type="text" data-options="required:true"  readonly="readonly" />
+						<input class="span2 money_input " id="priceStr" name="priceStrr" type="text"  readonly="readonly" />
 						<input type="hidden" name="price">
 					</td>
 					<th>上下架</th>
