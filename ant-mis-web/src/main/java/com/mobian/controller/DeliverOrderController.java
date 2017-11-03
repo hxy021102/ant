@@ -299,6 +299,8 @@ public class DeliverOrderController extends BaseController {
 	   	List<DeliverOrder> list = (List<DeliverOrder>) jsonArray.toCollection(jsonArray,DeliverOrder.class);
 	   	deliverOrderService.addOrderBill(list,supplierId,startTime,endTime);
 	   	for(DeliverOrder d : list) {
+	   		//判断是否已经创建过账单
+	   		if(d.getPayStatus() !=null && "DPS03".equals(d.getPayStatus())) continue;
 	   		d.setPayStatus("DPS03");//结算中
 			deliverOrderService.edit(d);
 		}
