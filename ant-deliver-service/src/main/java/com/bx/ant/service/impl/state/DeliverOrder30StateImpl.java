@@ -38,6 +38,8 @@ public class DeliverOrder30StateImpl implements DeliverOrderState {
         orderNew.setId(deliverOrder.getId());
         orderNew.setStatus(prefix + getStateName());
         orderNew.setDeliveryStatus(DeliverOrderServiceI.DELIVER_STATUS_DELIVERED);
+        orderNew.setCompleteImages(deliverOrder.getCompleteImages());
+        orderNew.setCompleteRemark(deliverOrder.getCompleteRemark());
         deliverOrderService.editAndAddLog(orderNew, DeliverOrderLogServiceI.TYPE_DELIVERED_DELIVER_ORDER, "运单已被派送至目的地");
 
         //

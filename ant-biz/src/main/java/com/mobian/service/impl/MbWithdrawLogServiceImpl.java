@@ -35,7 +35,7 @@ public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> imp
 	private MbBalanceLogServiceImpl mbBalanceLogService;
 
 	@Autowired
-	private MbUserServiceI mbUserService;
+	private UserServiceImpl UserService;
 
 	@Override
 	public DataGrid dataGrid(MbWithdrawLog mbWithdrawLog, PageHelper ph) {
@@ -231,9 +231,9 @@ public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> imp
 	}
 	protected void fillLoginInfo(MbWithdrawLogView mbWithdrawLogView) {
 		if (!F.empty(mbWithdrawLogView.getHandleLoginId())) {
-			MbUser mbUser = mbUserService.getFromCache(Integer.parseInt(mbWithdrawLogView.getHandleLoginId()));
-			if (mbUser != null) {
-				mbWithdrawLogView.setHandleLoginName(mbUser.getUserName());
+			User user  = UserService.getFromCache(mbWithdrawLogView.getHandleLoginId());
+			if (user != null) {
+				mbWithdrawLogView.setHandleLoginName(user.getName());
 			}
 		}
 	}

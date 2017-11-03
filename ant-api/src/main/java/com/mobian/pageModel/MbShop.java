@@ -40,6 +40,8 @@ public class MbShop implements java.io.Serializable {
 
     private  Integer[] ids;
 
+    private Double distance; // 运单和门店之间的距离
+
     public Integer[] getIds() {
         return ids;
     }
@@ -256,5 +258,13 @@ public class MbShop implements java.io.Serializable {
 
     public void setSalesLoginId(String salesLoginId) {
         this.salesLoginId = salesLoginId;
+    }
+
+    public Double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Double distance) {
+        this.distance = distance;
     }
 }

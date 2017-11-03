@@ -4,6 +4,8 @@ import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.session.TokenServiceI;
 import com.mobian.absx.Objectx;
 import com.mobian.pageModel.SessionInfo;
+import com.mobian.thirdpart.oss.OSSUtil;
+import com.mobian.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -11,9 +13,12 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -74,6 +79,25 @@ public class BaseController extends Objectx {
 //		}
 
 		return tokenWrap;
+	}
+
+	public String uploadFile(String fileType,MultipartFile file){
+		if(file==null||file.isEmpty())
+			return null;
+		String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+		String fileName = getYmdPath(fileType,suffix);
+		try {
+			return OSSUtil.putInputStream(OSSUtil.bucketName, file.getInputStream(), fileName);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String getYmdPath(String fileType,String fileName){
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+		String path = fileType+"/"+calendar.get(Calendar.YEAR)+"/"+(calendar.get(Calendar.MONTH)+1)+"/"+calendar.get(Calendar.DAY_OF_MONTH)+"/"+ Util.CreateNoncestr(32)+fileName;
+		return path;
 	}
 }
  

@@ -51,7 +51,7 @@ public class DeliverOrder40StateImpl implements DeliverOrderState {
         DeliverOrder orderNew = new DeliverOrder();
         orderNew.setId(deliverOrder.getId());
         orderNew.setStatus(prefix + getStateName());
-        orderNew.setDeliveryStatus(DeliverOrderServiceI.DELIVER_STATUS_USER_CHECK);
+//        orderNew.setDeliveryStatus(DeliverOrderServiceI.DELIVER_STATUS_USER_CHECK);
         orderNew.setShopPayStatus(DeliverOrderServiceI.SHOP_PAY_STATUS_SUCCESS);
         deliverOrderService.editAndAddLog(orderNew, DeliverOrderLogServiceI.TYPE_COMPLETE_DELIVER_ORDER, "运单已完成");
 

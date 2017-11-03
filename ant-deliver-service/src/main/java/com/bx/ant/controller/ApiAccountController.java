@@ -230,18 +230,22 @@ public class ApiAccountController extends BaseController {
                 Date todayEnd = todayC.getTime();
 
                 //获取今日营业额
-                MbBalanceLog mbBalanceLog = new MbBalanceLog();
-                mbBalanceLog.setUpdatetimeBegin(todayStart);
-                mbBalanceLog.setUpdatetimeEnd(todayEnd);
-                mbBalanceLog.setShopId(shopDeliverApply.getShopId());
-//                mbBalanceLog.setRefType("BT060");
-                mbBalanceLog.setRefTypes("BT060,BT061");
-                DataGrid dataGrid = mbBalanceLogService.updateDeliveryBalanceLogDataGrid(mbBalanceLog,new PageHelper());
+//                MbBalanceLog mbBalanceLog = new MbBalanceLog();
+//                mbBalanceLog.setUpdatetimeBegin(todayStart);
+//                mbBalanceLog.setUpdatetimeEnd(todayEnd);
+//                mbBalanceLog.setShopId(shopDeliverApply.getShopId());
+////                mbBalanceLog.setRefType("BT060");
+//                mbBalanceLog.setRefTypes("BT060,BT061");
+//                DataGrid dataGrid = mbBalanceLogService.updateDeliveryBalanceLogDataGrid(mbBalanceLog,new PageHelper());
                 Integer todayAmount = new Integer(0) ;
-                if (dataGrid.getFooter() != null && CollectionUtils.isNotEmpty(dataGrid.getFooter())) {
-                    MbBalanceLog  balanceLog =(MbBalanceLog) dataGrid.getFooter().get(0);
-                    todayAmount = balanceLog.getAmountIn() + balanceLog.getAmountOut();
-                }
+//                if (dataGrid.getFooter() != null && CollectionUtils.isNotEmpty(dataGrid.getFooter())) {
+//                    MbBalanceLog  balanceLog =(MbBalanceLog) dataGrid.getFooter().get(0);
+//                    todayAmount = balanceLog.getAmountIn() + balanceLog.getAmountOut();
+//                }
+
+
+
+
                 //获取有效订单数量
                 Integer todayQuantity = new Integer(0);
                 DeliverOrderShopQuery deliverOrderShop = new DeliverOrderShopQuery();
@@ -251,7 +255,13 @@ public class ApiAccountController extends BaseController {
                 deliverOrderShop.setUpdatetimeBegin(todayStart);
                 deliverOrderShop.setUpdatetimeEnd(todayEnd);
                 List<DeliverOrderShop> deliverOrderShopList = deliverOrderShopService.dataGrid(deliverOrderShop, new PageHelper()).getRows();
-                if (CollectionUtils.isNotEmpty(deliverOrderShopList)) todayQuantity = deliverOrderShopList.size();
+                if (CollectionUtils.isNotEmpty(deliverOrderShopList)) {
+                    todayQuantity = deliverOrderShopList.size();
+                    for (DeliverOrderShop o : deliverOrderShopList) {
+                        todayAmount += o.getAmount();
+                    }
+                }
+
 
                 Map<String, Object> obj = new HashMap<String, Object>();
                 obj.put("account", account);

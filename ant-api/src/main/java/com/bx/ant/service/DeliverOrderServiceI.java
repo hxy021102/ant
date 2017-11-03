@@ -39,7 +39,7 @@ public interface DeliverOrderServiceI {
 	//配送状态
 	String DELIVER_STATUS_STANDBY = "DDS01"; //待处理
 	String DELIVER_STATUS_DELIVERING = "DDS02"; //配送中
-	String DELIVER_STATUS_USER_CHECK = "DDS03"; //用户确认
+//	String DELIVER_STATUS_USER_CHECK = "DDS03"; //用户确认
 	String DELIVER_STATUS_DELIVERED = "DDS04"; //已配送
 
 	//支付方式
@@ -51,6 +51,7 @@ public interface DeliverOrderServiceI {
 	Long TIME_DIF_SHOP_PAY_SETTLED = new Long(1 * 1 * 1 * 60 * 1000) ;
 
     void transformByShopIdAndStatus(Long id, Integer shopId, String status);
+    void transformByShopIdAndStatus(DeliverOrder deliverOrder);
 
     /**
 	 * 获取当前状态
