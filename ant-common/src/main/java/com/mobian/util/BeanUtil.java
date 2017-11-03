@@ -21,4 +21,9 @@ public abstract class BeanUtil {
         ApplicationContext app = WebApplicationContextUtils.getWebApplicationContext(context);
         return app.getBean(requiredType);
     }
+
+    public static Object getBean(String name){
+        ApplicationContext app = WebApplicationContextUtils.getWebApplicationContext(context);
+        return app.getBean(name);
+    }
 }

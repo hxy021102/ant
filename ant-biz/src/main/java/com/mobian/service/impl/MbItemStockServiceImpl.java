@@ -59,6 +59,21 @@ public class MbItemStockServiceImpl extends BaseServiceImpl<MbItemStock> impleme
 		return dg;
 	}
 
+	@Override
+	public List<MbItemStock> query(MbItemStock mbItemStock) {
+		List<MbItemStock> ol = new ArrayList<MbItemStock>();
+		String hql = " from TmbItemStock t ";
+		List<TmbItemStock> l = super.query(hql, mbItemStock, mbItemStockDao);
+		if (l != null && l.size() > 0) {
+			for (TmbItemStock t : l) {
+				MbItemStock o = new MbItemStock();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		return ol;
+	}
+
 	public DataGrid dataGridWithOrderSum(MbItemStock mbItemStock, PageHelper ph) {
 		DataGrid dataGrid = dataGrid(mbItemStock, ph);
 		List<MbItemStock> stocksList = dataGrid.getRows();
@@ -164,16 +179,24 @@ public class MbItemStockServiceImpl extends BaseServiceImpl<MbItemStock> impleme
 	@Override
 	public void addAndInsertLog(MbItemStock mbItemStock, String loginId) {
 		Integer mbItemStockId = addAndReturnId(mbItemStock);
-		insertLog(mbItemStockId, mbItemStock.getQuantity(), loginId, mbItemStock.getLogType(), mbItemStock.getReason());
+		insertLog(mbItemStockId, mbItemStock.getQuantity(), loginId, mbItemStock.getLogType(), mbItemStock.getReason(),mbItemStock.getInPrice());
 	}
 
-	private int insertLog(Integer mbItemStockId, Integer quantity, String loginId,String logType,String reason) {
+	private int insertLog(Integer mbItemStockId, Integer quantity, String loginId, String logType, String reason,Integer inPrice) {
 		MbItemStockLog mbItemStockLog = new MbItemStockLog();
 		mbItemStockLog.setItemStockId(mbItemStockId);
 		mbItemStockLog.setQuantity(quantity);
 		mbItemStockLog.setLoginId(loginId);
 		mbItemStockLog.setLogType(logType);
 		mbItemStockLog.setReason(reason);
+		mbItemStockLog.setInPrice(inPrice);
+		List<Map> mapList = mbItemStockDao.findBySql2Map("select average_price,quantity from mb_item_stock where id = " + mbItemStockId);
+		//MbItemStock mbItemStock = get(mbItemStockId); session 一级缓存
+		if (CollectionUtils.isNotEmpty(mapList)) {
+			Map map = mapList.get(0);
+			mbItemStockLog.setCostPrice((Integer) map.get("average_price"));
+			mbItemStockLog.setEndQuantity((Integer) map.get("quantity"));
+		}
 		mbItemStockLogService.add(mbItemStockLog);
 		return mbItemStockLog.getId();
 	}
@@ -183,6 +206,7 @@ public class MbItemStockServiceImpl extends BaseServiceImpl<MbItemStock> impleme
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
 		TmbItemStock t = mbItemStockDao.get("from TmbItemStock t  where t.id = :id", params);
+		if (t == null) return null;
 		MbItemStock o = new MbItemStock();
 		BeanUtils.copyProperties(t, o);
 		return o;
@@ -236,7 +260,7 @@ public class MbItemStockServiceImpl extends BaseServiceImpl<MbItemStock> impleme
 		params.put("id", mbItemStock.getId());
 		int i = mbItemStockDao.executeHql("update TmbItemStock t set t.quantity = t.quantity+:adjustment where t.id = :id", params);
 		if (i > 0) {
-			int logId = insertLog(mbItemStock.getId(), mbItemStock.getAdjustment(), loginId, mbItemStock.getLogType(), mbItemStock.getReason());
+			int logId = insertLog(mbItemStock.getId(), mbItemStock.getAdjustment(), loginId, mbItemStock.getLogType(), mbItemStock.getReason(),mbItemStock.getInPrice());
 			return logId;
 		}
 		return null;
@@ -285,11 +309,11 @@ public class MbItemStockServiceImpl extends BaseServiceImpl<MbItemStock> impleme
 
 	@Override
 	public boolean editItemStockAveragePrice(MbItemStock mbItemStock) {
-		Map<String,Object> params=new HashMap<String,Object>();
-		params.put("averagePrice",mbItemStock.getAveragePrice());
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("averagePrice", mbItemStock.getAveragePrice());
 		params.put("id", mbItemStock.getId());
 		int result = mbItemStockDao.executeHql("update TmbItemStock t set t.averagePrice = :averagePrice where t.id = :id", params);
-		return result>0;
+		return result > 0;
 	}
 
 	@Override

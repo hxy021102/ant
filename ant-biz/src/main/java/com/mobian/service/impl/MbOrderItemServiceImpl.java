@@ -8,6 +8,7 @@ import com.mobian.model.TmbWarehouse;
 import com.mobian.pageModel.*;
 import com.mobian.service.*;
 import com.mobian.util.ConvertNameUtil;
+import com.mobian.util.DateUtil;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -282,6 +283,15 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
         mbOrder.setDeliveryTimeEnd(mbSalesReport.getEndDate());
         mbOrder.setDeliveryWarehouseId(mbSalesReport.getWarehouseId());
         mbOrder.setStatus(mbSalesReport.getOrderStatus());
+		if(!F.empty(mbSalesReport.getShopId())){
+			List<MbShop> shopList = mbShopService.queryListById(mbSalesReport.getShopId());
+			Integer[] shopIds = new Integer[shopList.size()];
+			for (int i = 0; i < shopList.size(); i++) {
+				shopIds[i] = shopList.get(i).getId();
+			}
+			mbOrder.setShopId(mbSalesReport.getShopId());
+			mbOrder.setShopIds(shopIds);
+		}
         if ("OD40".equals(mbSalesReport.getOrderStatus())) {
             mbOrder.setPayStatus("PS01");
         }
@@ -455,7 +465,10 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 	@Override
 	public List<MbOrderItem> queryListByWithoutCostPrice() {
 		List<MbOrderItem> ol = new ArrayList<MbOrderItem>();
-		List<TmbOrderItem> l =  mbOrderItemDao.find("from TmbOrderItem t where t.isdeleted = 0 and t.costPrice is null",1,2000);
+		String sql = "from TmbOrderItem t where t.isdeleted = 0 and t.costPrice is null and t.addtime >= :updatetimeBegin";
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("updatetimeBegin", DateUtil.addDayToDate(new Date(), -1));
+		List<TmbOrderItem> l =  mbOrderItemDao.find(sql,params, 1,200);
 		if (CollectionUtils.isNotEmpty(l)) {
 			for (TmbOrderItem t : l) {
 				MbOrderItem o = new MbOrderItem();

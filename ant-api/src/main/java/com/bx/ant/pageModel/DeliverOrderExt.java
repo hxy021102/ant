@@ -12,6 +12,9 @@ public class DeliverOrderExt extends DeliverOrder {
     private String[] statusList;
     private BigDecimal distance;
     private Integer shopPayAmount;
+    private String balanceLogType;
+    private String shopPayWay;
+
 
     private List<DeliverOrderItem> deliverOrderItemList;
     private List<DeliverOrderShopItem> deliverOrderShopItemList;
@@ -62,5 +65,21 @@ public class DeliverOrderExt extends DeliverOrder {
 
     public void setShopPayAmount(Integer shopPayAmount) {
         this.shopPayAmount = shopPayAmount;
+    }
+
+    public String getBalanceLogType() {
+        return balanceLogType;
+    }
+
+    public void setBalanceLogType(String balanceLogType) {
+        this.balanceLogType = balanceLogType;
+    }
+
+    public String getShopPayWay() {
+        return shopPayWay;
+    }
+
+    public void setShopPayWay(String shopPayWay) {
+        this.shopPayWay = shopPayWay;
     }
 }

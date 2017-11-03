@@ -61,8 +61,8 @@
                 title : '所绑门店',
                 width : 50 ,
 				formatter : function (value,row,index) {
-                    if (value != null) {
-					return '<a onclick="viewShop('+ value +')" >' + row.shopId + '</a>';
+                    if (value != null){
+					return '<a onclick="viewShop('+ value +')" >' + value + '</a>';
                     }
                 }
             	}, {

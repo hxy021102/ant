@@ -228,10 +228,10 @@ public class MbSupplierStockInController extends BaseController {
         mbSupplierStockInItem.setSupplierStockInId(id);
         List<MbSupplierStockInItem> mbSupplierStockInItemList = mbSupplierStockInItemService.query(mbSupplierStockInItem);
         for (MbSupplierStockInItem m : mbSupplierStockInItemList) {
-            MbItem mbItem = mbItemService.get(m.getItemId());
+            MbItem mbItem = mbItemService.getFromCache(m.getItemId());
             m.setCode(mbItem.getCode());
             m.setQuantityUnitName(mbItem.getQuantityUnitName());
-            MbItemCategory mbItemCategory = mbItemCategoryService.get(mbItem.getCategoryId());
+            MbItemCategory mbItemCategory = mbItemCategoryService.getFromCache(mbItem.getCategoryId());
             m.setCategoryName(mbItemCategory.getName());
             m.setProductName(mbItem.getName());
         }

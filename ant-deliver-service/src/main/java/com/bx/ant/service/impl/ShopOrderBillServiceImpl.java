@@ -109,13 +109,13 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 	}
 
 	@Override
-	public Long add(ShopOrderBill shopOrderBill) {
+	public void add(ShopOrderBill shopOrderBill) {
 		TshopOrderBill t = new TshopOrderBill();
 		BeanUtils.copyProperties(shopOrderBill, t);
 		//t.setId(jb.absx.UUID.uuid());
 		t.setIsdeleted(false);
 		shopOrderBillDao.save(t);
-		return t.getId();
+		shopOrderBill.setId(t.getId());
 	}
 
 	@Override
@@ -169,16 +169,16 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 	}
 
 	@Override
-	public Json addShopOrderBillAndShopPay(ShopOrderBillQuery shopOrderBillQuery) {
+	public void addShopOrderBillAndShopPay(ShopOrderBillQuery shopOrderBillQuery) {
 		ShopOrderBill shopOrderBill = new ShopOrderBill();
 		DeliverOrderShopPayQuery shopPayQuery = new DeliverOrderShopPayQuery();
 		shopPayQuery.setDeliverOrderIds(shopOrderBillQuery.getDeliverOrderIds());
 		List<DeliverOrderShopPay> orderShopPays = deliverOrderShopPayService.query(shopPayQuery);
-		Json j = new Json();
 		if (CollectionUtils.isEmpty(orderShopPays)) {
 			BeanUtils.copyProperties(shopOrderBillQuery, shopOrderBill);
 			shopOrderBill.setStatus("BAS01");
-			Long shopOrderBillId = add(shopOrderBill);
+			add(shopOrderBill);
+			shopOrderBillQuery.setId(shopOrderBill.getId());
 			DeliverOrderQuery deliverOrderQuery = new DeliverOrderQuery();
 			deliverOrderQuery.setStartDate(shopOrderBill.getStartDate());
 			deliverOrderQuery.setEndDate(shopOrderBill.getEndDate());
@@ -188,7 +188,7 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 			if (CollectionUtils.isNotEmpty(deliverOrders)) {
 				for (DeliverOrder deliverOrder : deliverOrders) {
 					DeliverOrderShopPay orderShopPay = new DeliverOrderShopPay();
-					DeliverOrderShop orderShop =new DeliverOrderShop();
+					DeliverOrderShop orderShop = new DeliverOrderShop();
 					orderShop.setDeliverOrderId(deliverOrder.getId());
 					orderShop.setShopId(shopOrderBill.getShopId());
 					DeliverOrderShop deliverOrderShop = deliverOrderShopService.query(orderShop).get(0);
@@ -198,17 +198,21 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 					orderShopPay.setShopId(shopOrderBill.getShopId());
 					orderShopPay.setDeliverOrderId(deliverOrder.getId());
 					orderShopPay.setStatus("SPS02");
-					orderShopPay.setShopOrderBillId(shopOrderBillId);
+					orderShopPay.setShopOrderBillId(shopOrderBillQuery.getId());
+					orderShopPay.setDeliverOrderShopId(deliverOrderShop.getId());
 					deliverOrderShopPayService.add(orderShopPay);
 				}
 			}
-			j.setSuccess(true);
-			j.setMsg("创建门店账单成功！");
-			return j;
-		} else {
-			j.setSuccess(false);
-			j.setMsg("创建失败，有订单已经被创建！");
-			return j;
+		}
+	}
+
+	@Override
+	public void addAndPayShopOrderBillAndShopPay(ShopOrderBillQuery shopOrderBillQuery) {
+		addShopOrderBillAndShopPay(shopOrderBillQuery);
+		if(!F.empty(shopOrderBillQuery.getId())) {
+			shopOrderBillQuery.setStatus("BAS02");
+			shopOrderBillQuery.setRemark("到期自动结算");
+			edit(shopOrderBillQuery);
 		}
 	}
 
@@ -255,33 +259,13 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 		deliverOrderShopPay.setShopOrderBillId(shopOrderBill.getId());
 		List<DeliverOrderShopPay> deliverOrderShopPays =deliverOrderShopPayService.query(deliverOrderShopPay);
 		if(CollectionUtils.isNotEmpty(deliverOrderShopPays)){
-			MbBalance mbBalance = mbBalanceService.addOrGetMbBalanceDelivery(shopOrderBill.getShopId());
-			for(DeliverOrderShopPay orderShopPay :deliverOrderShopPays){
-				//修改门店支付状态
- 				orderShopPay.setStatus("SPS04");
-				orderShopPay.setPayWay(shopOrderBill.getPayWay());
-				deliverOrderShopPayService.edit(orderShopPay);
-				//修改订单状态
-				DeliverOrder deliverOrder =deliverOrderService.get(orderShopPay.getDeliverOrderId());
-				deliverOrder.setStatus("DOS40");
-				deliverOrder.setDeliveryStatus(DeliverOrderServiceI.DELIVER_STATUS_USER_CHECK);
-				deliverOrder.setShopPayStatus(DeliverOrderServiceI.SHOP_PAY_STATUS_SUCCESS);
-				deliverOrderService.editAndAddLog(deliverOrder, DeliverOrderLogServiceI.TYPE_COMPLETE_DELIVER_ORDER, "运单已完成");
-				//修改运单门店状态
-				DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
-				deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_ACCEPTED);
-				deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
-				deliverOrderShopService.editStatus(deliverOrderShop,DeliverOrderShopServiceI.STATUS_COMPLETE);
-				//修改门店账单余额、
-				if(mbBalance!=null){
-					MbBalanceLog mbBalanceLog = new MbBalanceLog();
-					mbBalanceLog.setBalanceId(mbBalance.getId());
-					mbBalanceLog.setRefType("BT061");
-					mbBalanceLog.setRefId(orderShopPay.getId()+"");
-					mbBalanceLog.setRemark("门店手动账单结算");
-					mbBalanceLog.setAmount(shopOrderBill.getAmount());
-					mbBalanceLogService.addAndUpdateBalance(mbBalanceLog);
-				}
+			for(DeliverOrderShopPay orderShopPay : deliverOrderShopPays){
+				DeliverOrderExt orderExt = new DeliverOrderExt();
+				orderExt.setId(orderShopPay.getDeliverOrderId());
+				orderExt.setShopId(shopOrderBill.getShopId());
+				orderExt.setBalanceLogType("BT061");
+				orderExt.setStatus(DeliverOrderServiceI.STATUS_CLOSED);
+				deliverOrderService.transform(orderExt);
 			}
 		}
 	}
