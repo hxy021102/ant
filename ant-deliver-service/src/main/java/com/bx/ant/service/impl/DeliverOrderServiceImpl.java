@@ -521,31 +521,48 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	}
 
 	@Override
-	public void addOrderBill(List<DeliverOrder> list,Integer supplierId,Date startTime,Date endTime) {
-		Integer amount = 0;//订单总金额
-		for(DeliverOrder d : list) {
-			if(d.getAmount() !=null) {
-				amount += d.getAmount();
-			}
+	public List<DeliverOrderPay> addOrderBill(List<DeliverOrder> list,Integer supplierId,Date startTime,Date endTime) {
+		//先判断数据库是否已经存在这些账单
+		Long[] deliverOrderIds = new Long[list.size()];
+		String[] deliverOrderPayStatus = {"DPS02","DPS03"};//状态是待审核  以及审核完成已结算的订单
+		for (int i = 0; i < list.size(); i++) {
+			deliverOrderIds[i] = list.get(i).getId();
 		}
-		//创建账单
-		SupplierOrderBill supplierOrderBill = new SupplierOrderBill();
-		supplierOrderBill.setSupplierId(supplierId);
-		supplierOrderBill.setStatus("BAS01");//待审核状态
-		supplierOrderBill.setAmount(amount);
-		supplierOrderBill.setStartDate(startTime);
-		supplierOrderBill.setEndDate(endTime);
-		supplierOrderBill.setPayWay(list.get(0).getPayWay());
-		supplierOrderBillService.add(supplierOrderBill);
-		//生成订单对账单明细
-		for(DeliverOrder d : list) {
-			DeliverOrderPay deliverOrderPay = new DeliverOrderPay();
-			deliverOrderPay.setDeliverOrderId(d.getId());
-			deliverOrderPay.setSupplierOrderBillId(supplierOrderBill.getId().intValue());
-			deliverOrderPay.setSupplierId(supplierId);
-			deliverOrderPay.setAmount(d.getAmount());
-			deliverOrderPay.setStatus("SPS02");//结算待审核状态
-			deliverOrderPayService.add(deliverOrderPay);
+		DeliverOrderPay orderPay = new DeliverOrderPay();
+		orderPay.setDeliverOrderIds(deliverOrderIds);
+		orderPay.setDeliverOrderPayStatus(deliverOrderPayStatus);
+		List<DeliverOrderPay> l = deliverOrderPayService.query(orderPay);
+		if (CollectionUtils.isEmpty(l)) {
+			Integer amount = 0;//订单总金额
+			for (DeliverOrder d : list) {
+				if (d.getAmount() != null) {
+					amount += d.getAmount();
+				}
+			}
+			//创建账单
+			SupplierOrderBill supplierOrderBill = new SupplierOrderBill();
+			supplierOrderBill.setSupplierId(supplierId);
+			supplierOrderBill.setStatus("BAS01");//待审核状态
+			supplierOrderBill.setAmount(amount);
+			supplierOrderBill.setStartDate(startTime);
+			supplierOrderBill.setEndDate(endTime);
+			supplierOrderBill.setPayWay(list.get(0).getPayWay());
+			supplierOrderBillService.add(supplierOrderBill);
+			//生成订单对账单明细
+			for (DeliverOrder d : list) {
+				DeliverOrderPay deliverOrderPay = new DeliverOrderPay();
+				deliverOrderPay.setDeliverOrderId(d.getId());
+				deliverOrderPay.setSupplierOrderBillId(supplierOrderBill.getId().intValue());
+				deliverOrderPay.setSupplierId(supplierId);
+				deliverOrderPay.setAmount(d.getAmount());
+				deliverOrderPay.setStatus("DPS03");//结算待审核状态
+				deliverOrderPayService.add(deliverOrderPay);
+				d.setPayStatus("DPS03");//待审核
+				edit(d);
+			}
+			return null;
+		}else {
+			return l;
 		}
 	}
 //	@Override

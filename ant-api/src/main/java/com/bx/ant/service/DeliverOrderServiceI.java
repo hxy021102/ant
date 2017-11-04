@@ -212,7 +212,7 @@ public interface DeliverOrderServiceI {
 	 * @param list
 	 * @param supplierId
 	 */
-	void addOrderBill(List<DeliverOrder> list, Integer supplierId, Date startTime, Date endTime);
+	List<DeliverOrderPay> addOrderBill(List<DeliverOrder> list, Integer supplierId, Date startTime, Date endTime);
 
 	/**
 	 * 更新r门店新订单计数

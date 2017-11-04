@@ -197,7 +197,10 @@
                                 parent.$.messager.alert('提示', result.msg, 'info');
                                 dataGrid.datagrid('clearChecked');
                                 dataGrid.datagrid('reload');
-                            }
+                            }else {
+                                parent.$.messager.alert('提示', result.msg, 'info');
+                                dataGrid.datagrid('reload');
+							}
                             parent.$.messager.progress('close');
                         },"JSON");
                     }
