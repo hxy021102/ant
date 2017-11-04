@@ -196,7 +196,7 @@ public class TshopDeliverApply implements java.io.Serializable,IEntity{
 	public void setMaxDeliveryDistance(BigDecimal maxDeliveryDistance) {
 		this.maxDeliveryDistance = maxDeliveryDistance;
 	}
-	@Column(name = "sms_remind", unique = false, nullable = false, insertable = true, updatable = true, length = 0)
+	@Column(name = "sms_remind", unique = false, nullable = true, insertable = true, updatable = true, length = 0)
 	public Boolean getSmsRemind() {
 		return smsRemind;
 	}
@@ -204,7 +204,7 @@ public class TshopDeliverApply implements java.io.Serializable,IEntity{
 	public void setSmsRemind(Boolean smsRemind) {
 		this.smsRemind = smsRemind;
 	}
-	@Column(name = "upload_required", unique = false, nullable = false, insertable = true, updatable = true, length = 0)
+	@Column(name = "upload_required", unique = false, nullable = true, insertable = true, updatable = true, length = 0)
 	public Boolean getUploadRequired() {
 		return uploadRequired;
 	}

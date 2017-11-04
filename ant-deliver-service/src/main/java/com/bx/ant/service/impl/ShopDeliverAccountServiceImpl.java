@@ -8,6 +8,7 @@ import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 import com.bx.ant.pageModel.ShopDeliverAccount;
 import com.mobian.util.MyBeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -145,7 +146,7 @@ public class ShopDeliverAccountServiceImpl extends BaseServiceImpl<ShopDeliverAc
 	public boolean checkUserName(String userName) {
 		if (!F.empty(userName)) {
 			List<TshopDeliverAccount> l = shopDeliverAccountDao.find("from TshopDeliverAccount t where t.isdeleted = 0 and t.userName = '" + userName + "'", 1, 1);
-			if (l != null || l.size() < 1) {
+			if (CollectionUtils.isEmpty(l)) {
 				return false;
 			}
 		}
