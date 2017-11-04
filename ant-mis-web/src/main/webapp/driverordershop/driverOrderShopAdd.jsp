@@ -65,7 +65,13 @@
 					<td>
 						<input class="span2" name="driverOrderShopBillId" type="text"/>
 					</td>							
-				</tr>	
+				</tr>
+				<tr>
+					<%--<th>门店运单ID</th>--%>
+					<%--<td>--%>
+						<%--<input class="span2" name="deliverOrderShopId" type="text" />--%>
+					<%--</td>--%>
+				</tr>
 			</table>		
 		</form>
 	</div>

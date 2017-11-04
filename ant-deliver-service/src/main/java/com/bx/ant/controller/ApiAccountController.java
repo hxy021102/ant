@@ -258,7 +258,9 @@ public class ApiAccountController extends BaseController {
                 if (CollectionUtils.isNotEmpty(deliverOrderShopList)) {
                     todayQuantity = deliverOrderShopList.size();
                     for (DeliverOrderShop o : deliverOrderShopList) {
-                        todayAmount += o.getAmount();
+                        if (DeliverOrderShopServiceI.STATUS_COMPLETE.equals(o.getStatus())) {
+                            todayAmount += o.getAmount();
+                        }
                     }
                 }
 

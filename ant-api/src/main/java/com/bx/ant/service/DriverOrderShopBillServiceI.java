@@ -1,6 +1,7 @@
 package com.bx.ant.service;
 
 import com.bx.ant.pageModel.DriverOrderShopBill;
+import com.bx.ant.pageModel.DriverOrderShopBillView;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
@@ -52,4 +53,7 @@ public interface DriverOrderShopBillServiceI {
 	 */
 	public void delete(Integer id);
 
+    DriverOrderShopBillView getView(Integer id);
+
+    DataGrid dataGridView(DriverOrderShopBill driverOrderShopBill, PageHelper pageHelper);
 }

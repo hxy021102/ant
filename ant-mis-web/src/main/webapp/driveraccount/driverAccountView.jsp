@@ -1,94 +1,84 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="com.bx.ant.model.TdriverAccount" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <script type="text/javascript">
-	$(function() {
-		parent.$.messager.progress('close');		
-	});
+    $(function () {
+        parent.$.messager.progress('close');
+    });
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
-	<div data-options="region:'center',border:false">
-		<table class="table table-hover table-condensed">
-				<tr>	
-					<th><%=TdriverAccount.ALIAS_TENANT_ID%></th>	
-					<td>
-						${driverAccount.tenantId}							
-					</td>							
-					<th><%=TdriverAccount.ALIAS_ADDTIME%></th>	
-					<td>
-						${driverAccount.addtime}							
-					</td>							
-				</tr>		
-				<tr>	
-					<th><%=TdriverAccount.ALIAS_UPDATETIME%></th>	
-					<td>
-						${driverAccount.updatetime}							
-					</td>							
-					<th><%=TdriverAccount.ALIAS_ISDELETED%></th>	
-					<td>
-						${driverAccount.isdeleted}							
-					</td>							
-				</tr>		
-				<tr>	
-					<th><%=TdriverAccount.ALIAS_USER_NAME%></th>	
-					<td>
-						${driverAccount.userName}							
-					</td>							
-					<th><%=TdriverAccount.ALIAS_PASSWORD%></th>	
-					<td>
-						${driverAccount.password}							
-					</td>							
-				</tr>		
-				<tr>	
-					<th><%=TdriverAccount.ALIAS_NICK_NAME%></th>	
-					<td>
-						${driverAccount.nickName}							
-					</td>							
-					<th><%=TdriverAccount.ALIAS_ICON%></th>	
-					<td>
-						${driverAccount.icon}							
-					</td>							
-				</tr>		
-				<tr>	
-					<th><%=TdriverAccount.ALIAS_SEX%></th>	
-					<td>
-						${driverAccount.sex}							
-					</td>							
-					<th><%=TdriverAccount.ALIAS_REF_ID%></th>	
-					<td>
-						${driverAccount.refId}							
-					</td>							
-				</tr>		
-				<tr>	
-					<th><%=TdriverAccount.ALIAS_REF_TYPE%></th>	
-					<td>
-						${driverAccount.refType}							
-					</td>							
-					<th><%=TdriverAccount.ALIAS_CONACT_PHONE%></th>	
-					<td>
-						${driverAccount.conactPhone}							
-					</td>							
-				</tr>		
-				<tr>	
-					<th><%=TdriverAccount.ALIAS_TYPE%></th>	
-					<td>
-						${driverAccount.type}							
-					</td>							
-					<th><%=TdriverAccount.ALIAS_HANDLE_STATUS%></th>	
-					<td>
-						${driverAccount.handleStatus}							
-					</td>							
-				</tr>		
-				<tr>	
-					<th><%=TdriverAccount.ALIAS_HANDLE_LOGIN_ID%></th>	
-					<td>
-						${driverAccount.handleLoginId}							
-					</td>							
-					<th><%=TdriverAccount.ALIAS_HANDLE_REMARK%></th>	
-					<td>
-						${driverAccount.handleRemark}							
-					</td>							
-				</tr>		
-		</table>
-	</div>
+    <div data-options="region:'center',border:false">
+        <table class="table table-hover table-condensed">
+            <tr>
+                <th>添加时间</th>
+                <td>
+                    ${driverAccount.addtime}
+                </td>
+                <th>更新时间</th>
+                <td>
+                    ${driverAccount.updatetime}
+                </td>
+            </tr>
+            <tr>
+                <th>用户名</th>
+                <td>
+                    ${driverAccount.userName}
+                </td>
+
+                <th>昵称</th>
+                <td>
+                    ${driverAccount.nickName}
+                </td>
+            </tr>
+            <tr>
+                <th>图标</th>
+                <td>
+                    ${driverAccount.icon}
+                </td>
+
+                <th>性别</th>
+                <td>
+                    ${driverAccount.sexName}
+                </td>
+            </tr>
+            <tr>
+                <th>refId</th>
+                <td>
+                    ${driverAccount.refId}
+                </td>
+
+                <th>refType</th>
+                <td>
+                    ${driverAccount.refType}
+                </td>
+            </tr>
+            <tr>
+                <th>联系电话</th>
+                <td>
+                    ${driverAccount.conactPhone}
+                </td>
+
+                <th>骑手类型</th>
+                <td>
+                    ${driverAccount.typeName}
+                </td>
+            </tr>
+            <tr>
+                <th>审核状态</th>
+                <td>
+                    ${driverAccount.handleStatusName}
+                </td>
+
+                <th>审核人</th>
+                <td>
+                    ${driverAccount.handleLoginName}
+                </td>
+            </tr>
+            <tr>
+                <th>处理意见</th>
+                <td>
+                    ${driverAccount.handleRemark}
+                </td>
+            </tr>
+        </table>
+    </div>
 </div>

@@ -61,7 +61,7 @@
 				title : '昵称',
 				width : 50		
 				}, {
-				field : 'sex',
+				field : 'sexName',
 				title : '性别',
 				width : 50		
 				},{
@@ -69,11 +69,11 @@
 				title : '',
 				width : 50		
 				}, {
-				field : 'type',
+				field : 'typeName',
 				title : '类型',
 				width : 50		
 				}, {
-				field : 'handleStatus',
+				field : 'handleStatusName',
 				title : '审核状态',
 				width : 50		
 				}, {

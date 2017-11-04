@@ -1,6 +1,7 @@
 package com.bx.ant.service;
 
 import com.bx.ant.pageModel.DriverOrderShop;
+import com.bx.ant.pageModel.DriverOrderShopView;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
@@ -35,7 +36,7 @@ public interface DriverOrderShopServiceI {
 	 * @param id
 	 * @return
 	 */
-	public DriverOrderShop get(Integer id);
+	public DriverOrderShop get(Long id);
 
 	/**
 	 * 修改DriverOrderShop
@@ -49,6 +50,9 @@ public interface DriverOrderShopServiceI {
 	 * 
 	 * @param id
 	 */
-	public void delete(Integer id);
+	public void delete(Long id);
 
+    DriverOrderShopView getView(Long id);
+
+	DataGrid dataGridView(DriverOrderShop driverOrderShop, PageHelper pageHelper);
 }

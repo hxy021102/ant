@@ -9,11 +9,15 @@ import java.util.Map;
 import com.bx.ant.dao.DriverAccountDaoI;
 import com.bx.ant.model.TdriverAccount;
 import com.bx.ant.pageModel.DriverAccount;
+import com.bx.ant.pageModel.DriverAccountView;
 import com.bx.ant.service.DriverAccountServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.User;
+import com.mobian.service.UserServiceI;
 import com.mobian.util.MyBeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +27,9 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 
 	@Autowired
 	private DriverAccountDaoI driverAccountDao;
+
+	@Autowired
+	private UserServiceI userService;
 
 	@Override
 	public DataGrid dataGrid(DriverAccount driverAccount, PageHelper ph) {
@@ -142,4 +149,41 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 		//driverAccountDao.delete(driverAccountDao.get(TdriverAccount.class, id));
 	}
 
+	@Override
+	public DriverAccountView getView(Integer id) {
+		DriverAccount driverAccount = get(id);
+		DriverAccountView driverAccountView = new DriverAccountView();
+		if (driverAccount != null) {
+			BeanUtils.copyProperties(driverAccount, driverAccountView);
+			fillUserInfo(driverAccountView);
+		}
+		return driverAccountView;
+	}
+
+	@Override
+	public DataGrid dataGridView(DriverAccount driverAccount, PageHelper pageHelper) {
+		DataGrid dataGrid = new DataGrid();
+		List<DriverAccount> driverAccounts = dataGrid(driverAccount, pageHelper).getRows();
+		List<DriverAccountView> ol = new ArrayList<DriverAccountView>();
+		if (CollectionUtils.isNotEmpty(driverAccounts)) {
+			int size = driverAccounts.size();
+			for (int i = 0 ; i < size; i++) {
+				DriverAccountView o = new DriverAccountView();
+				BeanUtils.copyProperties(driverAccounts.get(i), o);
+				fillUserInfo(o);
+				ol.add(o);
+			}
+			dataGrid.setRows(ol);
+		}
+		return dataGrid;
+	}
+
+	protected void fillUserInfo(DriverAccountView driverAccountView) {
+		if (!F.empty(driverAccountView.getHandleLoginId())){
+			User user  = userService.getFromCache(driverAccountView.getHandleLoginId());
+			if (user != null) {
+				driverAccountView.setHandleLoginName(user.getName());
+			}
+		}
+	}
 }

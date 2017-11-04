@@ -65,7 +65,7 @@ public class TdriverOrderShopBill implements java.io.Serializable,IEntity{
 	//@Length(max=512)
 	private String handleRemark;
 	//
-	private Integer handleLoginId;
+	private String handleLoginId;
 	//
 	private Integer amount;
 	//
@@ -169,12 +169,12 @@ public class TdriverOrderShopBill implements java.io.Serializable,IEntity{
 		this.handleRemark = handleRemark;
 	}
 	
-	@Column(name = "handle_login_id", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
-	public Integer getHandleLoginId() {
+	@Column(name = "handle_login_id", unique = false, nullable = true, insertable = true, updatable = true, length = 32)
+	public String getHandleLoginId() {
 		return this.handleLoginId;
 	}
 	
-	public void setHandleLoginId(Integer handleLoginId) {
+	public void setHandleLoginId(String handleLoginId) {
 		this.handleLoginId = handleLoginId;
 	}
 	

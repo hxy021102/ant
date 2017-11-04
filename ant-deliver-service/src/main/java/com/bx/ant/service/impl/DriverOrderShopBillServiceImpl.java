@@ -3,11 +3,15 @@ package com.bx.ant.service.impl;
 import com.bx.ant.dao.DriverOrderShopBillDaoI;
 import com.bx.ant.model.TdriverOrderShopBill;
 import com.bx.ant.pageModel.DriverOrderShopBill;
+import com.bx.ant.pageModel.DriverOrderShopBillView;
 import com.bx.ant.service.DriverOrderShopBillServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.User;
+import com.mobian.service.UserServiceI;
 import com.mobian.util.MyBeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +28,9 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 
 	@Autowired
 	private DriverOrderShopBillDaoI driverOrderShopBillDao;
+
+	@Autowired
+	private UserServiceI userService;
 
 	@Override
 	public DataGrid dataGrid(DriverOrderShopBill driverOrderShopBill, PageHelper ph) {
@@ -122,5 +129,40 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 		driverOrderShopBillDao.executeHql("update TdriverOrderShopBill t set t.isdeleted = 1 where t.id = :id",params);
 		//driverOrderShopBillDao.delete(driverOrderShopBillDao.get(TdriverOrderShopBill.class, id));
 	}
+	@Override
+	public DriverOrderShopBillView getView(Integer id) {
+		DriverOrderShopBill driverOrderShopBill = get(id);
+		DriverOrderShopBillView driverOrderShopBillView = new DriverOrderShopBillView();
+		if (driverOrderShopBill != null) {
+			BeanUtils.copyProperties(driverOrderShopBill, driverOrderShopBillView);
+			fillUserInfo(driverOrderShopBillView);
+		}
+		return driverOrderShopBillView;
+	}
 
+	@Override
+	public DataGrid dataGridView(DriverOrderShopBill driverOrderShopBill, PageHelper pageHelper) {
+		DataGrid dataGrid = new DataGrid();
+		List<DriverOrderShopBill> driverOrderShopBills = dataGrid(driverOrderShopBill, pageHelper).getRows();
+		List<DriverOrderShopBillView> ol = new ArrayList<DriverOrderShopBillView>();
+		if (CollectionUtils.isNotEmpty(driverOrderShopBills)) {
+			int size = driverOrderShopBills.size();
+			for (int i = 0 ; i < size; i++) {
+				DriverOrderShopBillView o = new DriverOrderShopBillView();
+				BeanUtils.copyProperties(driverOrderShopBills.get(i), o);
+				ol.add(o);
+			}
+			dataGrid.setRows(ol);
+		}
+		return dataGrid;
+	}
+
+	protected void fillUserInfo(DriverOrderShopBillView driverOrderShopBillView) {
+		if (!F.empty(driverOrderShopBillView.getHandleLoginId())){
+			User user  = userService.getFromCache(driverOrderShopBillView.getHandleLoginId());
+			if (user != null) {
+				driverOrderShopBillView.setHandleLoginName(user.getName());
+			}
+		}
+	}
 }

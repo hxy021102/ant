@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="com.bx.ant.model.TdriverOrderShop" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script type="text/javascript">
 	$(function() {
@@ -9,52 +8,42 @@
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false">
 		<table class="table table-hover table-condensed">
-				<tr>	
-					<th><%=TdriverOrderShop.ALIAS_TENANT_ID%></th>	
-					<td>
-						${driverOrderShop.tenantId}							
-					</td>							
-					<th><%=TdriverOrderShop.ALIAS_ADDTIME%></th>	
+				<tr>
+					<th>添加时间</th>
 					<td>
 						${driverOrderShop.addtime}							
-					</td>							
-				</tr>		
-				<tr>	
-					<th><%=TdriverOrderShop.ALIAS_UPDATETIME%></th>	
+					</td>
+					<th>更新时间</th>
 					<td>
 						${driverOrderShop.updatetime}							
-					</td>							
-					<th><%=TdriverOrderShop.ALIAS_ISDELETED%></th>	
-					<td>
-						${driverOrderShop.isdeleted}							
-					</td>							
+					</td>
 				</tr>		
-				<tr>	
-					<th><%=TdriverOrderShop.ALIAS_DELIVER_ORDER_SHOP_ID%></th>	
+				<tr>
+					<th>门店订单</th>
 					<td>
 						${driverOrderShop.deliverOrderShopId}							
-					</td>							
-					<th><%=TdriverOrderShop.ALIAS_SHOP_ID%></th>	
+					</td>
+					<th>门店Id</th>
 					<td>
 						${driverOrderShop.shopId}							
 					</td>							
 				</tr>		
-				<tr>	
-					<th><%=TdriverOrderShop.ALIAS_STATUS%></th>	
+				<tr>
+					<th>订单状态</th>
 					<td>
-						${driverOrderShop.status}							
-					</td>							
-					<th><%=TdriverOrderShop.ALIAS_AMOUNT%></th>	
+						${driverOrderShop.statusName}
+					</td>
+					<th>配送费</th>
 					<td>
 						${driverOrderShop.amount}							
 					</td>							
 				</tr>		
-				<tr>	
-					<th><%=TdriverOrderShop.ALIAS_PAY_STATUS%></th>	
+				<tr>
+					<th>支付状态</th>
 					<td>
-						${driverOrderShop.payStatus}							
-					</td>							
-					<th><%=TdriverOrderShop.ALIAS_DRIVER_ORDER_SHOP_BILL_ID%></th>	
+						${driverOrderShop.payStatusName}
+					</td>
+					<th>账单</th>
 					<td>
 						${driverOrderShop.driverOrderShopBillId}							
 					</td>							

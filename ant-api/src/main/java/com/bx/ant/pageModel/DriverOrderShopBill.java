@@ -16,7 +16,7 @@ public class DriverOrderShopBill implements java.io.Serializable {
 	private Integer shopId;
 	private String handleStatus;
 	private String handleRemark;
-	private Integer handleLoginId;
+	private String handleLoginId;
 	private Integer amount;
 	private Date startDate;			
 	private Date endDate;			
@@ -89,11 +89,11 @@ public class DriverOrderShopBill implements java.io.Serializable {
 	public String getHandleRemark() {
 		return this.handleRemark;
 	}
-	public void setHandleLoginId(Integer handleLoginId) {
+	public void setHandleLoginId(String handleLoginId) {
 		this.handleLoginId = handleLoginId;
 	}
 	
-	public Integer getHandleLoginId() {
+	public String getHandleLoginId() {
 		return this.handleLoginId;
 	}
 	public void setAmount(Integer amount) {

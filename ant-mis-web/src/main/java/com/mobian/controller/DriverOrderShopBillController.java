@@ -54,7 +54,7 @@ public class DriverOrderShopBillController extends BaseController {
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(DriverOrderShopBill driverOrderShopBill, PageHelper ph) {
-		return driverOrderShopBillService.dataGrid(driverOrderShopBill, ph);
+		return driverOrderShopBillService.dataGridView(driverOrderShopBill, ph);
 	}
 	/**
 	 * 获取DriverOrderShopBill数据表格excel
@@ -110,7 +110,7 @@ public class DriverOrderShopBillController extends BaseController {
 	 */
 	@RequestMapping("/view")
 	public String view(HttpServletRequest request, Integer id) {
-		DriverOrderShopBill driverOrderShopBill = driverOrderShopBillService.get(id);
+		DriverOrderShopBill driverOrderShopBill = driverOrderShopBillService.getView(id);
 		request.setAttribute("driverOrderShopBill", driverOrderShopBill);
 		return "/driverordershopbill/driverOrderShopBillView";
 	}

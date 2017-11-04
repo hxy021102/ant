@@ -9,14 +9,18 @@ import java.util.Map;
 import com.bx.ant.dao.DriverOrderShopDaoI;
 import com.bx.ant.model.TdriverOrderShop;
 import com.bx.ant.pageModel.DriverOrderShop;
+import com.bx.ant.pageModel.DriverOrderShopView;
 import com.bx.ant.service.DriverOrderShopServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.util.MyBeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.criteria.CriteriaBuilder;
 
 @Service
 public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop> implements DriverOrderShopServiceI {
@@ -93,7 +97,7 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 	}
 
 	@Override
-	public DriverOrderShop get(Integer id) {
+	public DriverOrderShop get(Long id) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
 		TdriverOrderShop t = driverOrderShopDao.get("from TdriverOrderShop t  where t.id = :id", params);
@@ -111,11 +115,41 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 	}
 
 	@Override
-	public void delete(Integer id) {
+	public void delete(Long id) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
 		driverOrderShopDao.executeHql("update TdriverOrderShop t set t.isdeleted = 1 where t.id = :id",params);
 		//driverOrderShopDao.delete(driverOrderShopDao.get(TdriverOrderShop.class, id));
 	}
 
+	@Override
+	public DriverOrderShopView getView(Long id) {
+		DriverOrderShop driverOrderShop = get(id);
+		DriverOrderShopView driverOrderShopView = new DriverOrderShopView();
+		if (driverOrderShop != null) {
+			BeanUtils.copyProperties(driverOrderShop, driverOrderShopView);
+		}
+		return driverOrderShopView;
+	}
+
+	@Override
+	public DataGrid dataGridView(DriverOrderShop driverOrderShop, PageHelper pageHelper) {
+		DataGrid dataGrid = new DataGrid();
+		List<DriverOrderShop> driverOrderShops = dataGrid(driverOrderShop, pageHelper).getRows();
+		List<DriverOrderShopView> ol = new ArrayList<DriverOrderShopView>();
+		if (CollectionUtils.isNotEmpty(driverOrderShops)) {
+			int size = driverOrderShops.size();
+			for (int i = 0 ; i < size; i++) {
+				DriverOrderShopView o = new DriverOrderShopView();
+				BeanUtils.copyProperties(driverOrderShops.get(i), o);
+				ol.add(o);
+			}
+			dataGrid.setRows(ol);
+		}
+		return dataGrid;
+	}
+
+	protected void fillUserInfo(DriverOrderShopView driverAccountView) {
+
+	}
 }

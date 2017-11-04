@@ -1,6 +1,7 @@
 package com.bx.ant.service;
 
 import com.bx.ant.pageModel.DriverAccount;
+import com.bx.ant.pageModel.DriverAccountView;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
@@ -51,4 +52,7 @@ public interface DriverAccountServiceI {
 	 */
 	public void delete(Integer id);
 
+    DriverAccountView getView(Integer id);
+
+	DataGrid dataGridView(DriverAccount driverAccount, PageHelper pageHelper);
 }

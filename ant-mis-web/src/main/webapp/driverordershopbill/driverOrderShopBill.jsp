@@ -57,7 +57,7 @@
                 title:'骑手名',
 				width : 50
 				}, {
-				field : 'handleStatus',
+				field : 'handleStatusName',
 				title :'审核状态',
 				width : 50
 				},{
@@ -77,7 +77,7 @@
 				title : '结束时间',
 				width : 50
 				}, {
-				field : 'payWay',
+				field : 'payWayName',
 				title : '支付方式',
 				width : 50
 			}, {

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 import com.bx.ant.pageModel.DriverAccount;
+import com.bx.ant.pageModel.DriverAccountView;
 import com.bx.ant.service.DriverAccountServiceI;
 import com.mobian.controller.BaseController;
 import com.mobian.pageModel.Colum;
@@ -55,7 +56,7 @@ public class DriverAccountController extends BaseController {
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(DriverAccount driverAccount, PageHelper ph) {
-		return driverAccountService.dataGrid(driverAccount, ph);
+		return driverAccountService.dataGridView(driverAccount, ph);
 	}
 	/**
 	 * 获取DriverAccount数据表格excel
@@ -111,8 +112,8 @@ public class DriverAccountController extends BaseController {
 	 */
 	@RequestMapping("/view")
 	public String view(HttpServletRequest request, Integer id) {
-		DriverAccount driverAccount = driverAccountService.get(id);
-		request.setAttribute("driverAccount", driverAccount);
+		DriverAccountView driverAccountView = driverAccountService.getView(id);
+		request.setAttribute("driverAccount", driverAccountView);
 		return "/driveraccount/driverAccountView";
 	}
 

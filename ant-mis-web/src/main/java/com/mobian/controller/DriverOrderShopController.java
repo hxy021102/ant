@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bx.ant.pageModel.DriverOrderShop;
+import com.bx.ant.pageModel.DriverOrderShopView;
 import com.bx.ant.service.DriverOrderShopServiceI;
 import com.mobian.pageModel.Colum;
 import com.mobian.pageModel.DataGrid;
@@ -53,7 +54,7 @@ public class DriverOrderShopController extends BaseController {
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(DriverOrderShop driverOrderShop, PageHelper ph) {
-		return driverOrderShopService.dataGrid(driverOrderShop, ph);
+		return driverOrderShopService.dataGridView(driverOrderShop, ph);
 	}
 	/**
 	 * 获取DriverOrderShop数据表格excel
@@ -108,9 +109,9 @@ public class DriverOrderShopController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/view")
-	public String view(HttpServletRequest request, Integer id) {
-		DriverOrderShop driverOrderShop = driverOrderShopService.get(id);
-		request.setAttribute("driverOrderShop", driverOrderShop);
+	public String view(HttpServletRequest request, Long id) {
+		DriverOrderShopView driverOrderShopView = driverOrderShopService.getView(id);
+		request.setAttribute("driverOrderShop", driverOrderShopView);
 		return "/driverordershop/driverOrderShopView";
 	}
 
@@ -120,7 +121,7 @@ public class DriverOrderShopController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/editPage")
-	public String editPage(HttpServletRequest request, Integer id) {
+	public String editPage(HttpServletRequest request, Long id) {
 		DriverOrderShop driverOrderShop = driverOrderShopService.get(id);
 		request.setAttribute("driverOrderShop", driverOrderShop);
 		return "/driverordershop/driverOrderShopEdit";
@@ -150,7 +151,7 @@ public class DriverOrderShopController extends BaseController {
 	 */
 	@RequestMapping("/delete")
 	@ResponseBody
-	public Json delete(Integer id) {
+	public Json delete(Long id) {
 		Json j = new Json();
 		driverOrderShopService.delete(id);
 		j.setMsg("删除成功！");
