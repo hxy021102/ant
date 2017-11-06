@@ -166,11 +166,18 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                     }
                     if(!F.empty(mbShop.getContactPhone()) && smsRemind) {
                         MNSTemplate template = new MNSTemplate();
-                        template.setTemplateCode("SMS_105685061");
                         Map<String, String> params = new HashMap<String, String>();
-                        params.put("orderId", "(" + deliverOrder.getId() + ")");
-                        params.put("address", deliverOrder.getDeliveryAddress());
-                        params.put("time", ConvertNameUtil.getString("DSV100", "10") + "分钟");
+                        if(DeliverOrderServiceI.DELIVER_TYPE_AUTO.equals(shopDeliverApply.getDeliveryType())) {
+                            template.setTemplateCode("SMS_109405064");
+                            params.put("orderId", "(" + deliverOrder.getId() + ")");
+                            params.put("address", deliverOrder.getDeliveryAddress());
+                        } else {
+                            template.setTemplateCode("SMS_105685061");
+                            params.put("orderId", "(" + deliverOrder.getId() + ")");
+                            params.put("address", deliverOrder.getDeliveryAddress());
+                            params.put("time", ConvertNameUtil.getString("DSV100", "10") + "分钟");
+                        }
+
                         template.setParams(params);
                         MNSUtil.sendMns(mbShop.getContactPhone(), template);
                     }
