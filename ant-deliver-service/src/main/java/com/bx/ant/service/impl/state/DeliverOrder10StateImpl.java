@@ -97,8 +97,6 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
         //4. 编辑订单并添加修改记录
         deliverOrder.setStatus(prefix + getStateName());
 
-        deliverOrderService.editAndAddLog(deliverOrder, DeliverOrderLogServiceI.TYPE_ASSIGN_DELIVER_ORDER, "系统自动分配订单");
-
         // 有赞商城订单，对接有赞api-卖家确认发货
         Supplier supplier = supplierService.get(deliverOrder.getSupplierId());
         if(ConvertNameUtil.getString(YouzanUtil.APPKEY).equals(supplier.getAppKey())) {
