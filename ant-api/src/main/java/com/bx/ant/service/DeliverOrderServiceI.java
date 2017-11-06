@@ -47,6 +47,10 @@ public interface DeliverOrderServiceI {
 	String PAY_WAY_WECHAT = "DPW02"; //微信
 	String PAY_WAY_TRANSFER = "DPW03"; //汇款
 
+	// 派单类型
+	String DELIVER_TYPE_HAND = "DAT01"; // 手动接单
+	String DELIVER_TYPE_AUTO = "DAT02"; // 自动接单
+
 	//派单结算时间差
 	Long TIME_DIF_SHOP_PAY_SETTLED = new Long(1 * 1 * 1 * 60 * 1000) ;
 

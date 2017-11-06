@@ -90,9 +90,9 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
         //2.3 编辑deliverOrderShop中金额amount字段
         deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItemList, deliverOrderShop);
 
-        //3. 对门店新订单进行计数
-        deliverOrderService.addAllocationOrderRedis(deliverOrder.getShopId());
-
+        //3. 对门店新订单进行计数:非自动接单
+        if(!DeliverOrderServiceI.DELIVER_TYPE_AUTO.equals(deliverOrder.getDeliveryType()))
+            deliverOrderService.addAllocationOrderRedis(deliverOrder.getShopId());
 
         //4. 编辑订单并添加修改记录
         deliverOrder.setStatus(prefix + getStateName());
