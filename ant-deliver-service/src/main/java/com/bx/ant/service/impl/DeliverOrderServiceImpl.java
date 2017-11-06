@@ -875,4 +875,13 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		}
 		return dataGrid;
 	}
+
+	@Override
+	public Integer editOrderStatus(DeliverOrder deliverorder) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("payStatus", deliverorder.getPayStatus());
+		params.put("id", deliverorder.getId());
+		int result = deliverOrderDao.executeHql("update TdeliverOrder t set t.payStatus = :payStatus where t.id = :id  and  t.payStatus <>'DPS02'", params);
+		return result ;
+	}
 }

@@ -43,10 +43,7 @@ public class SupplierOrderBillController extends BaseController {
 	private SupplierOrderBillServiceI supplierOrderBillService;
 	@Resource
 	private SupplierServiceI supplierService;
-	@Resource
-	private DeliverOrderPayServiceI deliverOrderPayService;
-	@Resource
-	private DeliverOrderServiceI deliverOrderService;
+
 
 
 	/**
@@ -182,28 +179,17 @@ public class SupplierOrderBillController extends BaseController {
 	@ResponseBody
 	public Json editStatus(SupplierOrderBill supplierOrderBill, Boolean isAgree) {
 		Json j = new Json();
-        if(isAgree) {
-			supplierOrderBill.setStatus("BAS02");//审核通过
-		}else {
-			supplierOrderBill.setStatus("BAS03");//审核拒绝
+		try {
+		Integer result = supplierOrderBillService.editBillStatus(supplierOrderBill,isAgree);
+		 if (result > 0) {
+			 j.setSuccess(true);
+			 j.setMsg("审核完成!");
+		 }
+		}catch (Exception e){
+			j.setSuccess(false);
+			j.setMsg("重复审核!");
+			e.printStackTrace();
 		}
-        supplierOrderBillService.edit(supplierOrderBill);
-       	List<DeliverOrderPay> list = deliverOrderPayService.getBySupplierOrderBillId(supplierOrderBill.getId().intValue());
-        for(DeliverOrderPay d : list) {
-			DeliverOrder deliverOrder = deliverOrderService.get(d.getDeliverOrderId());
-        	if(isAgree) {
-				d.setStatus("DPS02");//已结算
-				deliverOrder.setPayStatus("DPS02");//修改订单状态为已结算
-			}else {
-				d.setStatus("DPS04");//审核拒绝
-				deliverOrder.setPayStatus("DPS01");//订单变成未结算
-			}
-			d.setPayWay(supplierOrderBill.getPayWay());
-			deliverOrderPayService.edit(d);
-			deliverOrderService.edit(deliverOrder);
-		}
-		j.setSuccess(true);
-		j.setMsg("审核完成");
 		return  j;
 	}
 

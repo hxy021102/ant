@@ -5,6 +5,7 @@ import com.bx.ant.pageModel.*;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Date;
 import java.util.List;
 
@@ -272,4 +273,6 @@ public interface DeliverOrderServiceI {
 	 * @return
 	 */
 	DataGrid dataGridOutTimeDeliverOrder(DeliverOrderQuery deliverOrderQuery,PageHelper ph);
+
+	Integer editOrderStatus(DeliverOrder deliverorder);
 }
