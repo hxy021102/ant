@@ -12,12 +12,15 @@ public class DriverOrderShop implements java.io.Serializable {
 	private Date addtime;			
 	private Date updatetime;			
 	private Boolean isdeleted;
-	private Long deliverOrderShopId;
+	private  Integer deliverOrderShopId;
 	private Integer shopId;
 	private String status;
 	private Integer amount;
 	private String payStatus;
 	private Long driverOrderShopBillId;
+	private Integer driverAccountId;
+	private String remark;
+
 
 	
 
@@ -58,11 +61,11 @@ public class DriverOrderShop implements java.io.Serializable {
 	public Boolean getIsdeleted() {
 		return this.isdeleted;
 	}
-	public void setDeliverOrderShopId(Long deliverOrderShopId) {
+	public void setDeliverOrderShopId(Integer deliverOrderShopId) {
 		this.deliverOrderShopId = deliverOrderShopId;
 	}
 	
-	public Long getDeliverOrderShopId() {
+	public Integer getDeliverOrderShopId() {
 		return this.deliverOrderShopId;
 	}
 	public void setShopId(Integer shopId) {
@@ -101,4 +104,19 @@ public class DriverOrderShop implements java.io.Serializable {
 		return this.driverOrderShopBillId;
 	}
 
+	public Integer getDriverAccountId() {
+		return driverAccountId;
+	}
+
+	public void setDriverAccountId(Integer driverAccountId) {
+		this.driverAccountId = driverAccountId;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 }

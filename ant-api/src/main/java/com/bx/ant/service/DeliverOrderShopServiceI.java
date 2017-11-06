@@ -2,6 +2,7 @@ package com.bx.ant.service;
 
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.DeliverOrderShop;
+import com.bx.ant.pageModel.DeliverOrderShopView;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
@@ -102,4 +103,6 @@ public interface DeliverOrderShopServiceI {
 	 * 自动拒绝所有超时订单
 	 */
 	void checkTimeOutOrder();
+
+    DeliverOrderShopView getView(Integer id);
 }

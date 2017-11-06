@@ -2,6 +2,7 @@ package com.bx.ant.service.impl;
 
 import com.bx.ant.pageModel.*;
 import com.bx.ant.service.DeliverOrderServiceI;
+import com.bx.ant.service.DeliverOrderShopItemServiceI;
 import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderShopDaoI;
 import com.bx.ant.model.TdeliverOrderShop;
@@ -32,6 +33,9 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 
 	@Autowired
 	private DeliverOrderServiceI deliverOrderService;
+
+	@Autowired
+	private DeliverOrderShopItemServiceI deliverOrderShopItemSerivce;
 
 	@Override
 	public DataGrid dataGrid(DeliverOrderShop deliverOrderShop, PageHelper ph) {
@@ -229,6 +233,20 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		}
 	}
 
+	@Override
+	public DeliverOrderShopView getView(Integer id) {
+		DeliverOrderShop deliverOrderShop = get(id);
+		DeliverOrderShopView deliverOrderShopView = new DeliverOrderShopView();
+		BeanUtils.copyProperties(deliverOrderShop, deliverOrderShopView);
+		fillShopItemInfo(deliverOrderShopView);
+		return deliverOrderShopView;
+	}
 
+	protected  void fillShopItemInfo(DeliverOrderShopView deliverOrderShopView) {
+		DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
+		deliverOrderShopItem.setDeliverOrderShopId(deliverOrderShopView.getId());
+		List<DeliverOrderShopItem> deliverOrderShopItems = deliverOrderShopItemSerivce.dataGridWithName(deliverOrderShopItem, new PageHelper()).getRows();
+		deliverOrderShopView.setDeliverOrderShopItemList(deliverOrderShopItems);
+	}
 
 }

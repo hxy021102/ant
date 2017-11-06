@@ -121,6 +121,7 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 		//t.setId(jb.absx.UUID.uuid());
 		t.setIsdeleted(false);
 		driverAccountDao.save(t);
+		driverAccount.setId(t.getId());
 	}
 
 	@Override
@@ -185,5 +186,18 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 				driverAccountView.setHandleLoginName(user.getName());
 			}
 		}
+	}
+	@Override
+	public DriverAccount getByRef(String refId, String refType) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("refId", refId);
+		params.put("refType", refType);
+		TdriverAccount t = driverAccountDao.get("from TDriverAccount t  where t.isdeleted = 0 and t.refId = :refId and t.refType = :refType", params);
+		if(t != null) {
+			DriverAccount o = new DriverAccount();
+			BeanUtils.copyProperties(t, o);
+			return o;
+		}
+		return null;
 	}
 }

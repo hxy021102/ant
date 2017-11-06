@@ -1,5 +1,6 @@
 package com.mobian.service.impl;
 
+import com.bx.ant.pageModel.MbBalanceLogDriver;
 import com.mobian.absx.F;
 import com.mobian.dao.MbBalanceDaoI;
 import com.mobian.dao.MbBalanceLogDaoI;
@@ -271,6 +272,21 @@ public class MbBalanceLogServiceImpl extends BaseServiceImpl<MbBalanceLog> imple
 		}
 		return dataGrid;
 	}
+
+	@Override
+	public DataGrid updateDriverBalanceLogDataGrid(MbBalanceLog mbBalanceLog, PageHelper pageHelper) {
+		DataGrid dataGrid = new DataGrid();
+		if (mbBalanceLog instanceof MbBalanceLogDriver) {
+			MbBalanceLogDriver balanceLogDriver = (MbBalanceLogDriver) mbBalanceLog;
+			if (!F.empty(balanceLogDriver.getAccountId())) {
+				MbBalance mbBalance = mbBalanceService.addOrGetDriverBalance(balanceLogDriver.getAccountId());
+				mbBalanceLog.setBalanceId(mbBalance.getId());
+				dataGrid = dataGrid(mbBalanceLog, pageHelper);
+			}
+		}
+		return dataGrid;
+	}
+
 
 	@Override
 	public DataGrid dataGridBalanceLogDownload(MbBalanceLog mbBalanceLog, PageHelper ph) {

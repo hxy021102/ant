@@ -52,7 +52,7 @@ public class TdriverOrderShop implements java.io.Serializable,IEntity{
 	//@NotNull 
 	private Boolean isdeleted;
 	//
-	private Long deliverOrderShopId;
+	private Integer deliverOrderShopId;
 	//
 	private Integer shopId;
 	//@Length(max=10)
@@ -63,6 +63,11 @@ public class TdriverOrderShop implements java.io.Serializable,IEntity{
 	private String payStatus;
 	//
 	private Long driverOrderShopBillId;
+
+	//
+	private Integer driverAccountId;
+
+	private String remark;
 	//columns END
 
 
@@ -123,11 +128,11 @@ public class TdriverOrderShop implements java.io.Serializable,IEntity{
 	}
 	
 	@Column(name = "deliver_order_shop_id", unique = false, nullable = true, insertable = true, updatable = true, length = 19)
-	public Long getDeliverOrderShopId() {
+	public Integer getDeliverOrderShopId() {
 		return this.deliverOrderShopId;
 	}
 	
-	public void setDeliverOrderShopId(Long deliverOrderShopId) {
+	public void setDeliverOrderShopId(Integer deliverOrderShopId) {
 		this.deliverOrderShopId = deliverOrderShopId;
 	}
 	
@@ -174,6 +179,23 @@ public class TdriverOrderShop implements java.io.Serializable,IEntity{
 	
 	public void setDriverOrderShopBillId(Long driverOrderShopBillId) {
 		this.driverOrderShopBillId = driverOrderShopBillId;
+	}
+	@Column(name = "driver_account_id", unique = false, nullable = true, insertable = true, updatable = true, length = 11)
+	public Integer getDriverAccountId() {
+		return driverAccountId;
+	}
+
+	public void setDriverAccountId(Integer driverAccountId) {
+		this.driverAccountId = driverAccountId;
+	}
+
+	@Column(name = "remark", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 	
 	

@@ -8,18 +8,25 @@ import java.util.Map;
 
 import com.bx.ant.dao.DriverOrderShopDaoI;
 import com.bx.ant.model.TdriverOrderShop;
+import com.bx.ant.pageModel.DeliverOrderShop;
+import com.bx.ant.pageModel.DeliverOrderShopView;
 import com.bx.ant.pageModel.DriverOrderShop;
 import com.bx.ant.pageModel.DriverOrderShopView;
+import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.bx.ant.service.DriverOrderShopServiceI;
+import com.bx.ant.service.DriverOrderShopState;
 import com.mobian.absx.F;
+import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.util.MyBeanUtils;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import javax.persistence.criteria.CriteriaBuilder;
 
 @Service
@@ -27,6 +34,12 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 
 	@Autowired
 	private DriverOrderShopDaoI driverOrderShopDao;
+
+	@Resource
+	private Map<String, DriverOrderShopState> driverOrderShopStateFactory ;
+
+	@Resource
+	private DeliverOrderShopServiceI deliverOrderShopService;
 
 	@Override
 	public DataGrid dataGrid(DriverOrderShop driverOrderShop, PageHelper ph) {
@@ -82,7 +95,22 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 			if (!F.empty(driverOrderShop.getDriverOrderShopBillId())) {
 				whereHql += " and t.driverOrderShopBillId = :driverOrderShopBillId";
 				params.put("driverOrderShopBillId", driverOrderShop.getDriverOrderShopBillId());
-			}		
+			}
+			if (!F.empty(driverOrderShop.getDriverAccountId())) {
+				whereHql += " and t.driverAccountId = :driverAccountId";
+				params.put("driverAccountId", driverOrderShop.getDriverAccountId());
+			}
+			if (driverOrderShop instanceof DriverOrderShopView) {
+				DriverOrderShopView driverOrderShopView = (DriverOrderShopView) driverOrderShop;
+				if (driverOrderShopView.getUpdatetimeBegin() != null) {
+					whereHql += " and t.updatetimeBegin >= :updatetimeBegin";
+					params.put("updatetimeBegin", driverOrderShopView.getUpdatetimeBegin());
+				}
+				if (driverOrderShopView.getUpdatetimeEnd() != null) {
+					whereHql += " and t.updatetimeEnd <= :updatetimeEnd";
+					params.put("updatetimeEnd", driverOrderShopView.getUpdatetimeEnd());
+				}
+			}
 		}	
 		return whereHql;
 	}
@@ -142,6 +170,7 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 			for (int i = 0 ; i < size; i++) {
 				DriverOrderShopView o = new DriverOrderShopView();
 				BeanUtils.copyProperties(driverOrderShops.get(i), o);
+				fillDeliverOrderShopInfo(o);
 				ol.add(o);
 			}
 			dataGrid.setRows(ol);
@@ -151,5 +180,37 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 
 	protected void fillUserInfo(DriverOrderShopView driverAccountView) {
 
+	}
+
+	protected void fillDeliverOrderShopInfo(DriverOrderShopView driverOrderShopView) {
+		if (!F.empty(driverOrderShopView.getDeliverOrderShopId())) {
+			DeliverOrderShopView deliverOrderShopView = deliverOrderShopService.getView(driverOrderShopView.getDeliverOrderShopId());
+			if (deliverOrderShopView != null) {
+				driverOrderShopView.setDeliverOrderShop(deliverOrderShopView);
+			}
+		}
+	}
+
+	@Override
+	public DriverOrderShopState getCurrentState(Long driverOrderShopId) {
+		DriverOrderShop currentDriverOrderShop = get(driverOrderShopId);
+		DriverOrderShopState.driverOrderShop.set(currentDriverOrderShop);
+		String driverOrderShopStatus = currentDriverOrderShop.getStatus();
+		DriverOrderShopState driverOrderShopState = driverOrderShopStateFactory.get("driverOrderShop" + currentDriverOrderShop.getStatus().substring(4) + "StateImpl");
+		return driverOrderShopState;
+	}
+	@Override
+	public void transform(DriverOrderShop driverOrderShop) {
+		DriverOrderShopState driverOrderShopState;
+		if (F.empty(driverOrderShop.getId())) {
+			driverOrderShopState = driverOrderShopStateFactory.get("driverOrderShop01State");
+			driverOrderShopState.handle(driverOrderShop);
+		}else {
+			driverOrderShopState = getCurrentState(driverOrderShop.getId());
+			if (driverOrderShopState.next(driverOrderShop) == null) {
+				throw new ServiceException("订单状态异常或已变更,请刷新页面重试 !");
+			}
+			driverOrderShopState.next(driverOrderShop).handle(driverOrderShop);
+		}
 	}
 }

@@ -12,6 +12,11 @@ import com.mobian.pageModel.PageHelper;
  */
 public interface DriverAccountServiceI {
 
+	String HANDLE_STATUS_ADUIT = "DAHS01";
+	String HANDLE_STATUS_AGREE = "DAHS02";
+	String HANDLE_STATUS_REFUSE = "DAHS03";
+
+
 	/**
 	 * 获取DriverAccount数据表格
 	 * 
@@ -52,7 +57,26 @@ public interface DriverAccountServiceI {
 	 */
 	public void delete(Integer id);
 
+	/**
+	 * 获取DriverAccountView
+	 * @param id
+	 * @return
+	 */
     DriverAccountView getView(Integer id);
 
+	/**
+	 * 获取DataGrid.DriverAccountView
+	 * @param driverAccount
+	 * @param pageHelper
+	 * @return
+	 */
 	DataGrid dataGridView(DriverAccount driverAccount, PageHelper pageHelper);
+
+	/**
+	 * 通过ReId获取DriverAccount
+	 * @param refId
+	 * @param refType
+	 * @return
+	 */
+    DriverAccount getByRef(String refId, String refType);
 }

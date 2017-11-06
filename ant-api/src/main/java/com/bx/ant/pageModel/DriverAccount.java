@@ -24,6 +24,7 @@ public class DriverAccount implements java.io.Serializable {
 	private String handleStatus;
 	private String handleLoginId;
 	private String handleRemark;
+	private Boolean online;
 
 	
 
@@ -149,4 +150,11 @@ public class DriverAccount implements java.io.Serializable {
 		return this.handleRemark;
 	}
 
+	public Boolean getOnline() {
+		return online;
+	}
+
+	public void setOnline(Boolean online) {
+		this.online = online;
+	}
 }

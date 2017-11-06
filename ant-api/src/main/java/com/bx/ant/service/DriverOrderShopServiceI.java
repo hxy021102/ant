@@ -12,6 +12,18 @@ import com.mobian.pageModel.PageHelper;
  */
 public interface DriverOrderShopServiceI {
 
+	//状态
+	String STATUS_ADUITTING = "DDSS01";//待分配
+	String STATUS_ACCEPTED = "DDSS05"; //已接单
+	String STATUS_DELVIERING = "DDSS10"; //派送中
+	String STATUS_DELIVERED= "DDSS20"; //已送达
+	String STATUS_SETTLEED = "DDSS30"; //已结算
+
+	//支付状态
+	String PAY_STATUS_NOT_PAY = "DDPS01";
+	String PAY_STATUS_PAID = "DDPS02";
+
+
 	/**
 	 * 获取DriverOrderShop数据表格
 	 * 
@@ -52,7 +64,22 @@ public interface DriverOrderShopServiceI {
 	 */
 	public void delete(Long id);
 
+	/**
+	 * DriverOrderShopView
+	 * @param id
+	 * @return
+	 */
     DriverOrderShopView getView(Long id);
 
+	/**
+	 * dataGrid.DriverOrderShopView
+	 * @param driverOrderShop
+	 * @param pageHelper
+	 * @return
+	 */
 	DataGrid dataGridView(DriverOrderShop driverOrderShop, PageHelper pageHelper);
+
+    DriverOrderShopState getCurrentState(Long driverOrderShopId);
+
+	void transform(DriverOrderShop driverOrderShop);
 }

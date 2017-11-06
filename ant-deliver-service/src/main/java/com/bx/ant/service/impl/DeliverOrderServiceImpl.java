@@ -754,7 +754,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		return updateAllocationOrderRedis(shopId, 1);
 	}
 
-	@Override
+//	@Override
 	public Integer reduseAllocationOrderRedis(Integer shopId) {
 		return updateAllocationOrderRedis(shopId, -1);
 	}

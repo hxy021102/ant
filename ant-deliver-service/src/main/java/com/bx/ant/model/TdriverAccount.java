@@ -81,6 +81,8 @@ public class TdriverAccount implements java.io.Serializable,IEntity{
 	private String handleLoginId;
 	//@Length(max=512)
 	private String handleRemark;
+
+	private Boolean online;
 	//columns END
 
 
@@ -246,6 +248,15 @@ public class TdriverAccount implements java.io.Serializable,IEntity{
 	
 	public void setHandleRemark(String handleRemark) {
 		this.handleRemark = handleRemark;
+	}
+
+	@Column(name = "online", unique = false, nullable = false, insertable = true, updatable = true, length = 0)
+	public Boolean getOnline() {
+		return online;
+	}
+
+	public void setOnline(Boolean online) {
+		this.online = online;
 	}
 	
 	

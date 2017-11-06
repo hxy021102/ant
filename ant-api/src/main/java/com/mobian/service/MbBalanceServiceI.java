@@ -139,4 +139,6 @@ public interface MbBalanceServiceI {
 	 * @param balanceTarget
 	 */
 	void transform(Integer amount, MbBalance balanceSource, MbBalance balanceTarget);
+
+    MbBalance addOrGetDriverBalance(Integer driverAccountId);
 }

@@ -24,6 +24,8 @@ public class DeliverOrderShop implements java.io.Serializable {
 
 
 
+
+
 	public void setId(Long value) {
 		this.id = value;
 	}
