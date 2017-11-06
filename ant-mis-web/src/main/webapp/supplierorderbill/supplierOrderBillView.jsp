@@ -22,8 +22,8 @@
                     parent.$.modalDialog.handler.dialog('close');
                 } else {
                     parent.$.messager.alert('错误', result.msg, 'error');
-                    parent.$.messager.progress('close');
                 }
+                parent.$.messager.progress('close');
             }
         });
         $('.money_input').each(function(){

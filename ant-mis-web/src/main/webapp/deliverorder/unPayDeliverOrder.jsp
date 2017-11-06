@@ -195,9 +195,8 @@
                         $.post('${pageContext.request.contextPath}/deliverOrderController/addOrderBill',{supplierId: rows[0].supplierId,unpayDeliverOrders: JSON.stringify(rows),startTime:$('#startDate').val(),endTime:$('#endDate').val()},function (result) {
                             if(result.success) {
                                 parent.$.messager.alert('提示', result.msg, 'info');
-                                dataGrid.datagrid('reload');
                                 dataGrid.datagrid('clearChecked');
-
+                                dataGrid.datagrid('reload');
                             }else {
                                 parent.$.messager.alert('提示', result.msg, 'info');
                                 dataGrid.datagrid('reload');
