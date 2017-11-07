@@ -862,7 +862,8 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			Long[] ids = new Long[deliverOrderShopList.size()];
 			int i = 0;
 			for (DeliverOrderShop orderShop : deliverOrderShopList) {
-				Date outDate = DateUtil.addHourToDate(orderShop.getAddtime(), Integer.valueOf(ConvertNameUtil.getString("DSV700", "2")));
+			//	Date outDate = DateUtil.addHourToDate(orderShop.getAddtime(), Integer.valueOf(ConvertNameUtil.getString("DSV700", "2")));
+				Date outDate = DateUtil.addMinuteToDate(orderShop.getAddtime(), Integer.valueOf(ConvertNameUtil.getString("DSV700", "2")));
 				if (new Date().getTime() > outDate.getTime()) {
 					ids[i++] = orderShop.getDeliverOrderId();
 				}

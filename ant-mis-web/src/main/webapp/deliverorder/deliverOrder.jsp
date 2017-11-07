@@ -436,7 +436,7 @@
         if(index == 1) {
             options.url += '?time=30';
         }else if(index == 2){
-            options.url +='?status="notDriver"';
+            options.url +='?status=notDriver';
         }
         options.queryParams = $.serializeObject($('#searchForm'));
         selectDatagrid.datagrid(options);
