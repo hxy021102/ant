@@ -128,8 +128,5 @@ public interface DeliverOrderShopServiceI {
 
 	List<DeliverOrderShop> queryTodayOrdersByShopId(Integer shopId);
 
-    DeliverOrderShopView getView(Integer id);
-
     DeliverOrderShopView getView(Long id);
-	List<DeliverOrderShop> queryTodayOrdersByShopId(Integer shopId);
 }

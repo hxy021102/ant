@@ -254,14 +254,6 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 	}
 
 	@Override
-	public DeliverOrderShopView getView(Long id) {
-		DeliverOrderShop deliverOrderShop = get(id);
-		DeliverOrderShopView deliverOrderShopView = new DeliverOrderShopView();
-		BeanUtils.copyProperties(deliverOrderShop, deliverOrderShopView);
-		fillShopItemInfo(deliverOrderShopView);
-		return deliverOrderShopView;
-	}
-	@Override
 	public DataGrid dataGridShopArtificialPay(DeliverOrderShop deliverOrderShop, PageHelper ph) {
 		DataGrid dataGrid = dataGrid(deliverOrderShop, ph);
 		List<DeliverOrderShop> deliverOrderShops = dataGrid.getRows();
@@ -286,7 +278,7 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		return dataGrid;
 	}
 	@Override
-	public DeliverOrderShopView getView(Integer id) {
+	public DeliverOrderShopView getView(Long id) {
 		DeliverOrderShop deliverOrderShop = get(id);
 		DeliverOrderShopView deliverOrderShopView = new DeliverOrderShopView();
 		BeanUtils.copyProperties(deliverOrderShop, deliverOrderShopView);
@@ -408,12 +400,6 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		PageHelper ph = new PageHelper();
 		ph.setHiddenTotal(true);
 		return dataGrid(deliverOrderShop, ph).getRows();
-	}
-	protected  void fillShopItemInfo(DeliverOrderShopView deliverOrderShopView) {
-		DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
-		deliverOrderShopItem.setDeliverOrderShopId(deliverOrderShopView.getId());
-		List<DeliverOrderShopItem> deliverOrderShopItems = deliverOrderShopItemSerivce.dataGridWithName(deliverOrderShopItem, new PageHelper()).getRows();
-		deliverOrderShopView.setDeliverOrderShopItemList(deliverOrderShopItems);
 	}
 
 
