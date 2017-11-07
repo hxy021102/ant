@@ -68,9 +68,9 @@
 
          function examineFun(id) {
              parent.$.modalDialog({
-                 title : '审核派单',
+                 title : '审核并结算账单',
                  width : 780,
-                 height : 300,
+                 height : 260,
                  href : '${pageContext.request.contextPath}/shopOrderBillController/examinePage?id=' + ${shopOrderBill.id},
                  buttons: [{
                      text: '通过',
@@ -124,10 +124,7 @@
 				<td>
 					${shopOrderBill.id}
 					    <c:if test="${fn:contains(sessionInfo.resourceList, '/shopOrderBillController/examinePage') and shopOrderBill.status=='BAS01' }">
-							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="examineFun();">审核</a>
-						</c:if>
-						<c:if test="${fn:contains(sessionInfo.resourceList, '/shopOrderBillController/examinePage') and shopOrderBill.status=='BAS02' and ( shopOrderBill.payWay==null or shopOrderBill.payWay=='')}">
-							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="payShopBill();">支付</a>
+							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="examineFun();">审核并支付</a>
 						</c:if>
 				</td>
 				<th>创建时间</th>

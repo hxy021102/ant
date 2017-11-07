@@ -50,5 +50,9 @@ public interface SupplierOrderBillServiceI {
 	 * @param id
 	 */
 	public void delete(Long id);
+	/**
+	 * 审核账单
+	 */
+	Integer editBillStatus(SupplierOrderBill supplierOrderBill, Boolean isAgree);
 
 }

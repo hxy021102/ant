@@ -50,7 +50,6 @@ public class ApiDeliverOrderController extends BaseController {
         Json json = new Json();
 
         //获取shopId
-        //TODO 测试时设置shop ID值,若真正使用从token中获取
         TokenWrap token = getTokenWrap(request);
         Integer shopId = token.getShopId();
         deliverOrder.setShopId(shopId);
@@ -66,37 +65,6 @@ public class ApiDeliverOrderController extends BaseController {
         return json;
     }
 
-    @RequestMapping("/add")
-    @ResponseBody
-    public Json add()
-    {
-        return null;
-    }
-//    /**
-//     * 获取门店新订单审核列表DataGrid
-//     * @param request
-//     * @param pageHelper
-//     * @return
-//     */
-//    @RequestMapping("/viewAuditDataGrid")
-//    @ResponseBody
-//    public Json viewAuditList(HttpServletRequest request, PageHelper pageHelper){
-//        Json json = new Json();
-//
-//        //获取shopId
-//        //TODO 测试时设置shop ID值,若真正使用从token中获取
-////        TokenWrap token = getTokenWrap(request);
-////        Integer shopId = token.getShopId();
-//        Integer shopId = 1332;
-//        DeliverOrder deliverOrder =  new DeliverOrder();
-//        deliverOrder.setShopId(shopId);
-//        deliverOrder.setStatus(deliverOrderService.STATUS_PAY_SUCCESS);
-//        json.setMsg("u know");
-//        json.setObj(deliverOrderService.dataGridExt(deliverOrder, pageHelper));
-//        json.setSuccess(true);
-//        return json;
-//    }
-
     /**
      *  查看已接单
       * @param request
@@ -109,7 +77,6 @@ public class ApiDeliverOrderController extends BaseController {
         Json json = new Json();
 
         //获取shopId
-        //TODO 测试时设置shop ID值,若真正使用从token中获取
         TokenWrap token = getTokenWrap(request);
         Integer shopId = token.getShopId();
         DeliverOrder deliverOrder =  new DeliverOrder();
@@ -180,7 +147,6 @@ public class ApiDeliverOrderController extends BaseController {
         Json json = new Json();
 
         //获取shopId
-        //TODO 测试时设置shop ID值,若真正使用从token中获取
         TokenWrap token = getTokenWrap(request);
         Integer shopId = token.getShopId();
         DeliverOrder deliverOrder =  new DeliverOrder();
@@ -204,7 +170,6 @@ public class ApiDeliverOrderController extends BaseController {
         Json json = new Json();
 
         //获取shopId
-        //TODO 测试时设置shop ID值,若真正使用从token中获取
         TokenWrap token = getTokenWrap(request);
         Integer shopId = token.getShopId();
         DeliverOrder deliverOrder =  new DeliverOrder();
@@ -222,7 +187,6 @@ public class ApiDeliverOrderController extends BaseController {
         Json json = new Json();
 
         //获取shopId
-        //TODO 测试时设置shop ID值,若真正使用从token中获取
         TokenWrap token = getTokenWrap(request);
         Integer shopId = token.getShopId();
         DeliverOrder deliverOrder =  new DeliverOrder();
@@ -246,7 +210,6 @@ public class ApiDeliverOrderController extends BaseController {
         Json json = new Json();
 
         //获取shopId
-        //TODO 测试时设置shop ID值,若真正使用从token中获取
         TokenWrap token = getTokenWrap(request);
         Integer shopId = token.getShopId();
 
@@ -267,7 +230,6 @@ public class ApiDeliverOrderController extends BaseController {
         Json json = new Json();
 
         //获取shopId
-        //TODO 测试时设置shop ID值,若真正使用从token中获取
         TokenWrap token = getTokenWrap(request);
         Integer shopId = token.getShopId();
 
@@ -297,7 +259,6 @@ public class ApiDeliverOrderController extends BaseController {
         Json json = new Json();
 
         //获取shopId
-        //TODO 测试时设置shop ID值,若真正使用从token中获取
         TokenWrap token = getTokenWrap(request);
         Integer shopId = token.getShopId();
 
@@ -318,7 +279,6 @@ public class ApiDeliverOrderController extends BaseController {
         Json json = new Json();
 
         //获取shopId
-        //TODO 测试时设置shop ID值,若真正使用从token中获取
         TokenWrap token = getTokenWrap(request);
         Integer shopId = token.getShopId();
 
@@ -361,7 +321,6 @@ public class ApiDeliverOrderController extends BaseController {
         Json json = new Json();
 
         //获取shopId
-        //TODO 测试时设置shop ID值,若真正使用从token中获取
         TokenWrap token = getTokenWrap(request);
         Integer shopId = token.getShopId();
 
@@ -404,4 +363,42 @@ public class ApiDeliverOrderController extends BaseController {
         json.setObj(deliverOrderService.clearAllocationOrderRedis(shopId));
         return json;
     }
+
+    /**
+     * 今日订单列表
+     * @param request
+     * @return
+     */
+    @RequestMapping("/todayOrders")
+    @ResponseBody
+    public Json todayOrders(HttpServletRequest request) {
+        Json json = new Json();
+
+        //获取shopId
+        TokenWrap token = getTokenWrap(request);
+        Integer shopId = token.getShopId();
+
+        List<DeliverOrder> ol = new ArrayList<DeliverOrder>();
+
+        List<DeliverOrderShop> orderShops = deliverOrderShopService.queryTodayOrdersByShopId(shopId);
+        if (CollectionUtils.isNotEmpty(orderShops)) {
+            Collections.sort(orderShops, new Comparator<DeliverOrderShop>() {
+                @Override
+                public int compare(DeliverOrderShop d1, DeliverOrderShop d2) {
+                    return  d2.getUpdatetime().compareTo(d1.getUpdatetime());
+                }
+            });
+            //通过deliverOrderShop获取deliverOrder
+            for (DeliverOrderShop deliverOrderShop : orderShops) {
+                if (!F.empty(deliverOrderShop.getDeliverOrderId())) {
+                    ol.add(deliverOrderService.getDeliverOrderExt(deliverOrderShop));
+                }
+            }
+        }
+        json.setMsg("u know");
+        json.setObj(ol);
+        json.setSuccess(true);
+        return json;
+    }
+
 }

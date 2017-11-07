@@ -169,12 +169,12 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 	}
 
 	@Override
-	public Boolean addShopOrderBillAndShopPay(ShopOrderBillQuery shopOrderBillQuery) {
+	public String addShopOrderBillAndShopPay(ShopOrderBillQuery shopOrderBillQuery) {
 		ShopOrderBill shopOrderBill = new ShopOrderBill();
 		DeliverOrderShopPayQuery shopPayQuery = new DeliverOrderShopPayQuery();
 		shopPayQuery.setDeliverOrderIds(shopOrderBillQuery.getDeliverOrderIds());
-		String[] statusArray = {"SPS01","SPS02","SPS04"};
- 		shopPayQuery.setStatusArray(statusArray);
+		String[] statusArray = {"SPS01", "SPS02", "SPS04"};
+		shopPayQuery.setStatusArray(statusArray);
 		List<DeliverOrderShopPay> orderShopPays = deliverOrderShopPayService.query(shopPayQuery);
 		if (CollectionUtils.isEmpty(orderShopPays)) {
 			BeanUtils.copyProperties(shopOrderBillQuery, shopOrderBill);
@@ -186,28 +186,27 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 			deliverOrderQuery.setEndDate(shopOrderBill.getEndDate());
 			deliverOrderQuery.setShopId(shopOrderBill.getShopId());
 			deliverOrderQuery.setStatus("DOS30");
-			List<DeliverOrder> deliverOrders = shopOrderBillQuery.getDeliverOrderList();
-			if (CollectionUtils.isNotEmpty(deliverOrders)) {
-				for (DeliverOrder deliverOrder : deliverOrders) {
+			List<DeliverOrderShop> deliverOrderShops = shopOrderBillQuery.getDeliverOrderShopList();
+			if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
+				for (DeliverOrderShop deliverOrderShop : deliverOrderShops) {
 					DeliverOrderShopPay orderShopPay = new DeliverOrderShopPay();
-					DeliverOrderShop orderShop = new DeliverOrderShop();
-					orderShop.setDeliverOrderId(deliverOrder.getId());
-					orderShop.setShopId(shopOrderBill.getShopId());
-					DeliverOrderShop deliverOrderShop = deliverOrderShopService.query(orderShop).get(0);
-					if (deliverOrderShop != null) {
-						orderShopPay.setAmount(deliverOrderShop.getAmount());
-					}
+					orderShopPay.setAmount(deliverOrderShop.getAmount());
 					orderShopPay.setShopId(shopOrderBill.getShopId());
-					orderShopPay.setDeliverOrderId(deliverOrder.getId());
-					orderShopPay.setStatus("SPS02");
+					orderShopPay.setDeliverOrderId(deliverOrderShop.getDeliverOrderId());
+					orderShopPay.setStatus("SPS01");
 					orderShopPay.setShopOrderBillId(shopOrderBill.getId());
 					orderShopPay.setDeliverOrderShopId(deliverOrderShop.getId());
 					deliverOrderShopPayService.add(orderShopPay);
 				}
 			}
-			return true;
-		} else
-			return false;
+			return null;
+		} else {
+			String result="订单ID:";
+			for(DeliverOrderShopPay deliverOrderShopPay:orderShopPays){
+				result+=deliverOrderShopPay.getDeliverOrderId().toString()+"  ";
+			}
+			return result;
+		}
 	}
 
 	@Override
@@ -241,11 +240,21 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 		edit(shopOrderBill);
 		DeliverOrderShopPay deliverOrderShopPay = new DeliverOrderShopPay();
 		deliverOrderShopPay.setShopOrderBillId(shopOrderBill.getId());
+		deliverOrderShopPay.setStatus("SPS01");
 		List<DeliverOrderShopPay> deliverOrderShopPays = deliverOrderShopPayService.query(deliverOrderShopPay);
 		if(CollectionUtils.isNotEmpty(deliverOrderShopPays)) {
 			for (DeliverOrderShopPay orderShopPay : deliverOrderShopPays) {
 				if("BAS02".equals(shopOrderBill.getStatus())){
-					orderShopPay.setStatus("SPS01");
+					orderShopPay.setStatus("SPS04");
+					orderShopPay.setPayWay("DPW01");
+					//审核通过 进行支付
+					DeliverOrderExt orderExt = new DeliverOrderExt();
+					orderExt.setId(orderShopPay.getDeliverOrderId());
+					orderExt.setShopId(shopOrderBill.getShopId());
+					orderExt.setBalanceLogType("BT061");
+					orderExt.setPayWay(shopOrderBill.getPayWay());
+					orderExt.setStatus(DeliverOrderServiceI.STATUS_CLOSED);
+					deliverOrderService.transform(orderExt);
 				}else {
 					orderShopPay.setStatus("SPS03");
 				}
@@ -257,7 +266,7 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 
 	@Override
 	public void editDeliverOrderStatusAndShopBalance(ShopOrderBill shopOrderBill) {
-		edit(shopOrderBill);
+		/*edit(shopOrderBill);
 		DeliverOrderShopPay deliverOrderShopPay = new DeliverOrderShopPay();
 		deliverOrderShopPay.setStatus("SPS01");
 		deliverOrderShopPay.setShopOrderBillId(shopOrderBill.getId());
@@ -272,7 +281,7 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 				orderExt.setStatus(DeliverOrderServiceI.STATUS_CLOSED);
 				deliverOrderService.transform(orderExt);
 			}
-		}
+		}*/
 	}
 
 }

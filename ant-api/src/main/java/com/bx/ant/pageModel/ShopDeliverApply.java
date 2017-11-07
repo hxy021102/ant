@@ -31,6 +31,8 @@ public class ShopDeliverApply implements java.io.Serializable {
 	private Boolean uploadRequired; //上传回单
 	private String  deliveryType; //派单类型
 
+	private Double distance; // 运单和门店之间的距离
+
 	public void setId(Integer value) {
 		this.id = value;
 	}
@@ -157,5 +159,13 @@ public class ShopDeliverApply implements java.io.Serializable {
 
 	public void setDeliveryType(String deliveryType) {
 		this.deliveryType = deliveryType;
+	}
+
+	public Double getDistance() {
+		return distance;
+	}
+
+	public void setDistance(Double distance) {
+		this.distance = distance;
 	}
 }

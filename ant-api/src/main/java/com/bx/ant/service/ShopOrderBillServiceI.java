@@ -65,7 +65,7 @@ public interface ShopOrderBillServiceI {
 	/**
 	 * 创建并结算门店结算对账单和运单门店结算明细
 	 */
-	Boolean addShopOrderBillAndShopPay(ShopOrderBillQuery shopOrderBillQuery);
+	String addShopOrderBillAndShopPay(ShopOrderBillQuery shopOrderBillQuery);
 
 	/**
 	 * 创建并结算门店结算对账单和运单门店结算明细

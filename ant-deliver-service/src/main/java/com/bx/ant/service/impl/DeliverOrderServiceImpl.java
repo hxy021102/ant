@@ -79,6 +79,8 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 
 	@Autowired
 	private ShopOrderBillServiceI shopOrderBillService;
+	@Autowired
+	private ShopItemServiceI shopItemService;
 
 
 	@Override
@@ -189,10 +191,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 				}
 				if (orderQuery.getTime() != null && orderQuery.getTime() != 0) {
 					if(F.empty(orderQuery.getStatus())) {
-						whereHql += "  and t.status='DOS01' or t.status = 'DOS15'";
-					}else{
-						whereHql += " and t.status <= :status ";
-						params.put("status", orderQuery.getStatus());
+						whereHql += " and (t.status='DOS01' or t.status = 'DOS15')";
 					}
 				}
 			}
@@ -275,28 +274,32 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	 */
 	protected void fillDeliverOrderShopInfo(DeliverOrderExt deliverOrderExt) {
 		DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
-		if (!F.empty(deliverOrderExt.getShopId())) {
+		if (!F.empty(deliverOrderExt.getOrderShopId())) {
+			DeliverOrderShop orderShop =deliverOrderShopService.get(deliverOrderExt.getOrderShopId());
+			deliverOrderExt.setDistance(orderShop.getDistance());
+			deliverOrderExt.setAmount(orderShop.getAmount());
+		} else if (!F.empty(deliverOrderExt.getShopId())) {
 			deliverOrderShop.setShopId(deliverOrderExt.getShopId());
 			deliverOrderShop.setDeliverOrderId(deliverOrderExt.getId());
-				if (STATUS_SHOP_ALLOCATION.equals(deliverOrderExt.getStatus())) {
-					deliverOrderShop.setStatus("DSS01");
+			if (STATUS_SHOP_ALLOCATION.equals(deliverOrderExt.getStatus())) {
+				deliverOrderShop.setStatus("DSS01");
 
-					List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(deliverOrderShop);
-					if (CollectionUtils.isNotEmpty(deliverOrderShops) ) {
-						deliverOrderShop = deliverOrderShops.get(0);
-						deliverOrderExt.setDistance(deliverOrderShop.getDistance());
-						deliverOrderExt.setAmount(deliverOrderShop.getAmount());
-						Date now = new Date();
-						deliverOrderExt.setMillisecond(Integer.valueOf(ConvertNameUtil.getString("DSV100", "10"))*60*1000 - now.getTime() + deliverOrderShop.getUpdatetime().getTime());
-					}
-				}else {
-						deliverOrderShop.setStatus("DSS04,DSS02");
-						List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(deliverOrderShop);
-						if (CollectionUtils.isNotEmpty(deliverOrderShops) ) {
-							deliverOrderShop = deliverOrderShops.get(0);
-							deliverOrderExt.setDistance(deliverOrderShop.getDistance());
-							deliverOrderExt.setAmount(deliverOrderShop.getAmount());
-						}
+				List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(deliverOrderShop);
+				if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
+					deliverOrderShop = deliverOrderShops.get(0);
+					deliverOrderExt.setDistance(deliverOrderShop.getDistance());
+					deliverOrderExt.setAmount(deliverOrderShop.getAmount());
+					Date now = new Date();
+					deliverOrderExt.setMillisecond(Integer.valueOf(ConvertNameUtil.getString("DSV100", "10")) * 60 * 1000 - now.getTime() + deliverOrderShop.getUpdatetime().getTime());
+				}
+			} else {
+				deliverOrderShop.setStatus("DSS04,DSS02,DSS06");
+				List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(deliverOrderShop);
+				if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
+					deliverOrderShop = deliverOrderShops.get(0);
+					deliverOrderExt.setDistance(deliverOrderShop.getDistance());
+					deliverOrderExt.setAmount(deliverOrderShop.getAmount());
+				}
 			}
 
 		}
@@ -401,7 +404,9 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		DeliverOrderExt deliverOrderExt = new DeliverOrderExt() ;
 		if (deliverOrder != null) {
 			BeanUtils.copyProperties(deliverOrder, deliverOrderExt);
-    		deliverOrderExt.setOrderShopId(deliverOrderShop.getId());
+			if (DeliverOrderShopServiceI.STATUS_REFUSED.equals(deliverOrderShop.getStatus())){
+				deliverOrderExt.setOrderShopId(deliverOrderShop.getId());
+			}
 			fillInfo(deliverOrderExt);
 		}
 		return deliverOrderExt;
@@ -415,19 +420,23 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			for (DeliverOrder o : l ) {
 				DeliverOrderExt ox = new DeliverOrderExt();
 				BeanUtils.copyProperties(o, ox);
-				DeliverOrderShopQuery orderShopQuery = new DeliverOrderShopQuery();
-				String[] statusArray={"DSS01", "DSS02","DSS04","DSS05"};
-				orderShopQuery.setStatusList(statusArray);
-				orderShopQuery.setDeliverOrderId(o.getId());
-				DeliverOrderShop deliverOrderShop = deliverOrderShopService.query(orderShopQuery).get(0);
-				ox.setOrderShopId(deliverOrderShop.getId());
-				fillDeliverOrderShopItemInfo(ox);
-				fillDeliverOrderShopInfo(ox);
+				fillIShopInfo(ox);
 				ol.add(ox);
 			}
 		}
 		dg.setRows(ol);
 		return dg;
+	}
+	protected void fillIShopInfo(DeliverOrderExt ox){
+		DeliverOrderShopQuery orderShopQuery = new DeliverOrderShopQuery();
+		String[] statusArray={"DSS01", "DSS02","DSS04","DSS05","DSS06"};
+		orderShopQuery.setStatusList(statusArray);
+		orderShopQuery.setDeliverOrderId(ox.getId());
+		DeliverOrderShop deliverOrderShop = deliverOrderShopService.query(orderShopQuery).get(0);
+		ox.setOrderShopId(deliverOrderShop.getId());
+		fillDeliverOrderShopItemInfo(ox);
+		ox.setOrderShopId(null);
+		fillDeliverOrderShopInfo(ox);
 	}
 
 	@Override
@@ -471,6 +480,10 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 				for (DeliverOrder order : deliverOrders) {
 					DeliverOrderQuery deliverOrderQuery = new DeliverOrderQuery();
 					BeanUtils.copyProperties(order, deliverOrderQuery);
+					if(!F.empty(deliverOrderQuery.getShopId())) {
+						MbShop mbShop =mbShopService.getFromCache(deliverOrderQuery.getShopId());
+						deliverOrderQuery.setShopName(mbShop.getName());
+					}
 					deliverOrderQuery.setSupplierName(supplierMap.get(order.getSupplierId()));
 					deliverOrderQuery.setStatusName(order.getStatus());
 					deliverOrderQuery.setShopPayStatusName(order.getShopPayStatus());
@@ -521,31 +534,48 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	}
 
 	@Override
-	public void addOrderBill(List<DeliverOrder> list,Integer supplierId,Date startTime,Date endTime) {
-		Integer amount = 0;//订单总金额
-		for(DeliverOrder d : list) {
-			if(d.getAmount() !=null) {
-				amount += d.getAmount();
-			}
+	public List<DeliverOrderPay> addOrderBill(List<DeliverOrder> list,Integer supplierId,Date startTime,Date endTime) {
+		//先判断数据库是否已经存在这些账单
+		Long[] deliverOrderIds = new Long[list.size()];
+		String[] deliverOrderPayStatus = {"DPS02","DPS03"};//状态是待审核  以及审核完成已结算的订单
+		for (int i = 0; i < list.size(); i++) {
+			deliverOrderIds[i] = list.get(i).getId();
 		}
-		//创建账单
-		SupplierOrderBill supplierOrderBill = new SupplierOrderBill();
-		supplierOrderBill.setSupplierId(supplierId);
-		supplierOrderBill.setStatus("BAS01");//待审核状态
-		supplierOrderBill.setAmount(amount);
-		supplierOrderBill.setStartDate(startTime);
-		supplierOrderBill.setEndDate(endTime);
-		supplierOrderBill.setPayWay(list.get(0).getPayWay());
-		supplierOrderBillService.add(supplierOrderBill);
-		//生成订单对账单明细
-		for(DeliverOrder d : list) {
-			DeliverOrderPay deliverOrderPay = new DeliverOrderPay();
-			deliverOrderPay.setDeliverOrderId(d.getId());
-			deliverOrderPay.setSupplierOrderBillId(supplierOrderBill.getId().intValue());
-			deliverOrderPay.setSupplierId(supplierId);
-			deliverOrderPay.setAmount(d.getAmount());
-			deliverOrderPay.setStatus("SPS02");//结算待审核状态
-			deliverOrderPayService.add(deliverOrderPay);
+		DeliverOrderPay orderPay = new DeliverOrderPay();
+		orderPay.setDeliverOrderIds(deliverOrderIds);
+		orderPay.setDeliverOrderPayStatus(deliverOrderPayStatus);
+		List<DeliverOrderPay> l = deliverOrderPayService.query(orderPay);
+		if (CollectionUtils.isEmpty(l)) {
+			Integer amount = 0;//订单总金额
+			for (DeliverOrder d : list) {
+				if (d.getAmount() != null) {
+					amount += d.getAmount();
+				}
+			}
+			//创建账单
+			SupplierOrderBill supplierOrderBill = new SupplierOrderBill();
+			supplierOrderBill.setSupplierId(supplierId);
+			supplierOrderBill.setStatus("BAS01");//待审核状态
+			supplierOrderBill.setAmount(amount);
+			supplierOrderBill.setStartDate(startTime);
+			supplierOrderBill.setEndDate(endTime);
+			supplierOrderBill.setPayWay(list.get(0).getPayWay());
+			supplierOrderBillService.add(supplierOrderBill);
+			//生成订单对账单明细
+			for (DeliverOrder d : list) {
+				DeliverOrderPay deliverOrderPay = new DeliverOrderPay();
+				deliverOrderPay.setDeliverOrderId(d.getId());
+				deliverOrderPay.setSupplierOrderBillId(supplierOrderBill.getId().intValue());
+				deliverOrderPay.setSupplierId(supplierId);
+				deliverOrderPay.setAmount(d.getAmount());
+				deliverOrderPay.setStatus("DPS03");//结算待审核状态
+				deliverOrderPayService.add(deliverOrderPay);
+				d.setPayStatus("DPS03");//待审核
+				edit(d);
+			}
+			return null;
+		}else {
+			return l;
 		}
 	}
 //	@Override
@@ -558,77 +588,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 //
 //		}
 //	}
-	@Override
-	public void settleShopPay() {
-		//1. 找到所有超时订单
-		DeliverOrderQuery deliverOrder = new DeliverOrderQuery();
-		deliverOrder.setDeliveryStatus(DELIVER_STATUS_DELIVERED);
-		deliverOrder.setPayStatus(PAY_STATUS_AUDIT);
-		deliverOrder.setShopPayStatus(SHOP_PAY_STATUS_NOT_PAY);
-		deliverOrder.setStatus(STATUS_DELIVERY_COMPLETE);
-		Date now = new Date();
-		deliverOrder.setEndDate(new Date(now.getTime() - TIME_DIF_SHOP_PAY_SETTLED));
-		PageHelper ph = new PageHelper();
-		List<DeliverOrder> deliverOrderList = dataGridExt(deliverOrder, ph).getRows();
 
-		//2. 根据shopId进行分类:一个shop对应一个账单
-		Map<Integer,ShopOrderBillQuery> deliverOrderMap = new HashMap<Integer, ShopOrderBillQuery>();
-		int listSize = deliverOrderList.size();
-		for (int i = 0;i<listSize;i++) {
-			DeliverOrder order = deliverOrderList.get(i);
-			ShopOrderBillQuery shopOrderBillQuery;
-			//2.1初始化一个账单
-			if (!deliverOrderMap.containsKey(order.getShopId())) {
-				shopOrderBillQuery = new ShopOrderBillQuery();
-
-				List<DeliverOrder> deliverOrders = new ArrayList<DeliverOrder>();
-				deliverOrders.add(order);
-
-				Long[] deliverOrderIds = {order.getId()};
-				shopOrderBillQuery.setAmount(order.getAmount());
-				shopOrderBillQuery.setShopId(order.getShopId());
-				shopOrderBillQuery.setDeliverOrderIds(deliverOrderIds);
-				shopOrderBillQuery.setDeliverOrderList(deliverOrders);
-				shopOrderBillQuery.setPayWay("DPW01");
-
-
-			//2.2 填充账单
-			} else {
-				shopOrderBillQuery = deliverOrderMap.get(order.getShopId());
-
-				//2.2.1 添加deliverOrderIds
-				int arrayLen = shopOrderBillQuery.getDeliverOrderIds().length;
-				Long[] deliverOrderIds = new Long[arrayLen + 1];
-				System.arraycopy(shopOrderBillQuery.getDeliverOrderIds(),0,deliverOrderIds,0, arrayLen);
-				deliverOrderIds[arrayLen] = order.getId();
-				shopOrderBillQuery.setDeliverOrderIds(deliverOrderIds);
-
-
-				//2.2.2 计算金额并填充信息
-				shopOrderBillQuery.setAmount(order.getAmount() + shopOrderBillQuery.getAmount());
-				shopOrderBillQuery.setDeliverOrderIds(deliverOrderIds);
-				shopOrderBillQuery.getDeliverOrderList().add(order);
-			}
-			deliverOrderMap.put(order.getShopId(), shopOrderBillQuery);
-		}
-
-		//3. 对账单进行添加并进行结算
-		for (Map.Entry entry : deliverOrderMap.entrySet()) {
-			ShopOrderBillQuery shopOrderBillQuery = (ShopOrderBillQuery) entry.getValue();
-			shopOrderBillService.addAndPayShopOrderBillAndShopPay(shopOrderBillQuery);
-			List<DeliverOrder> orderList = shopOrderBillQuery.getDeliverOrderList();
-			int size = orderList.size();
-			for (int i = 0;i<size;i++) {
-				DeliverOrder order = orderList.get(i);
-				DeliverOrderExt orderExt = new DeliverOrderExt();
-				orderExt.setId(order.getId());
-				orderExt.setShopId(order.getShopId());
-				orderExt.setBalanceLogType("BT060");
-				orderExt.setStatus(STATUS_CLOSED);
-				transform(orderExt);
-			}
-		}
-	}
 	@Override
 	public void addAndItems(DeliverOrder deliverOrder, String itemListStr) {
 		List<SupplierItemRelationView> items = JSONObject.parseArray(itemListStr, SupplierItemRelationView.class);
@@ -667,10 +627,10 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		edit(order);
 	}
 
-	@Override
-	public DataGrid dataGridShopArtificialPay(DeliverOrder deliverOrder, PageHelper ph) {
+	/*@Override
+	public DataGrid dataGridShopArtificialPay(DeliverOrderShop deliverOrderShop, PageHelper ph) {
 		DataGrid dataGrid = dataGrid(deliverOrder, ph);
-		List<DeliverOrder> deliverOrders = dataGrid.getRows();
+		 List<DeliverOrder> deliverOrders = dataGrid.getRows();
 		if (CollectionUtils.isNotEmpty(deliverOrders)) {
 			List<DeliverOrderQuery> deliverOrderQueries = new ArrayList<DeliverOrderQuery>();
 			for (DeliverOrder order : deliverOrders) {
@@ -698,7 +658,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			return dg;
 		}
 		return dataGrid;
-	}
+	}*/
 
 	@Override
 	public List<DeliverOrder> query(DeliverOrder deliverOrder) {
@@ -826,15 +786,35 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 
 
 	@Override
-	public void handleAssignDeliverOrder(DeliverOrder deliverOrder) {
-		DeliverOrder order = get(deliverOrder.getId());
-		MbShop mbShop = mbShopService.getFromCache(deliverOrder.getShopId());
-		double distance = GeoUtil.getDistance(order.getLongitude().doubleValue(), order.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
-		deliverOrder.setShopDistance(distance);
-		deliverOrder.setSupplierId(order.getSupplierId());
-		deliverOrder.setStatus("DOS10");
-		deliverOrder.setDeliverOrderLogType(DeliverOrderLogServiceI.TYPE_ASSIGN_SHOP_DELIVER_ORDER);
-		transform(deliverOrder);
+	public Boolean handleAssignDeliverOrder(DeliverOrder deliverOrder) {
+		DeliverOrderItem deliverOrderItem = new DeliverOrderItem();
+		deliverOrderItem.setDeliverOrderId(deliverOrder.getId());
+		List<DeliverOrderItem> deliverOrderItems = deliverOrderItemService.list(deliverOrderItem);
+		Boolean result=true;
+		if (CollectionUtils.isNotEmpty(deliverOrderItems)) {
+			for (DeliverOrderItem orderItem : deliverOrderItems) {
+				ShopItem shopItem = new ShopItem();
+				shopItem.setItemId(orderItem.getItemId());
+				shopItem.setShopId(deliverOrder.getShopId());
+				List<ShopItem> shopItemList = shopItemService.query(shopItem);
+				if (CollectionUtils.isEmpty(shopItemList) || shopItemList.get(0).getQuantity() < orderItem.getQuantity()) {
+					result = false;
+					break;
+				}
+			}
+		}
+		if(result) {
+			DeliverOrder order = get(deliverOrder.getId());
+			MbShop mbShop = mbShopService.getFromCache(deliverOrder.getShopId());
+			double distance = GeoUtil.getDistance(order.getLongitude().doubleValue(), order.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
+			deliverOrder.setShopDistance(distance);
+			deliverOrder.setSupplierId(order.getSupplierId());
+			deliverOrder.setStatus("DOS10");
+			deliverOrder.setDeliverOrderLogType(DeliverOrderLogServiceI.TYPE_ASSIGN_SHOP_DELIVER_ORDER);
+			transform(deliverOrder);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -857,5 +837,14 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			return dg;
 		}
 		return dataGrid;
+	}
+
+	@Override
+	public Integer editOrderStatus(DeliverOrder deliverorder) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("payStatus", deliverorder.getPayStatus());
+		params.put("id", deliverorder.getId());
+		int result = deliverOrderDao.executeHql("update TdeliverOrder t set t.payStatus = :payStatus where t.id = :id  and  t.payStatus <>'DPS02'", params);
+		return result ;
 	}
 }

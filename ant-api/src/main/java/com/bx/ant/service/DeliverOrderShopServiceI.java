@@ -19,6 +19,7 @@ public interface DeliverOrderShopServiceI {
 	String STATUS_REFUSED = "DSS03"; //拒绝
 	String STATUS_COMPLETE = "DSS04"; //正常完成
 	String STATUS_INACTIVE = "DSS05"; //失效
+	String STAUS_SERVICE = "DSS06";  //已送达
 
 	Long TIME_OUT_TO_ACCEPT = new Long(10 * 60 * 1000);
 
@@ -53,7 +54,7 @@ public interface DeliverOrderShopServiceI {
 	 * @param id
 	 * @return
 	 */
-	public DeliverOrderShop get(Integer id);
+	public DeliverOrderShop get(Long id);
 
 	/**
 	 * 修改DeliverOrderShop
@@ -86,10 +87,10 @@ public interface DeliverOrderShopServiceI {
 	/**
 	 * 通过deliverOrderShop 找到订单并修改订单为status状态
 	 * @param deliverOrderShop
-	 * @param status
+	 * @param orderShopEdit
 	 * @return
 	 */
-	DeliverOrderShop editStatus(DeliverOrderShop deliverOrderShop, String status);
+	DeliverOrderShop editStatus(DeliverOrderShop deliverOrderShop, DeliverOrderShop orderShopEdit);
 
 	/**
 	 * 获取DeliverOrderShop集合对象及对应信息名字
@@ -103,6 +104,29 @@ public interface DeliverOrderShopServiceI {
 	 * 自动拒绝所有超时订单
 	 */
 	void checkTimeOutOrder();
+
+	/**
+	 *获取需要支付给门店的订单
+	 * @param deliverOrderShop
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridShopArtificialPay(DeliverOrderShop deliverOrderShop,PageHelper ph);
+
+	/**
+	 * 自动跟门店结算账单
+	 */
+	void settleShopPay();
+
+	/**
+	 * 修改门店订单的状态
+	 * @param status
+	 * @param deliverOrderShop
+	 * @param shopPayStatus
+	 */
+	DeliverOrderShop editStatusByHql(DeliverOrderShop deliverOrderShop,String status,String shopPayStatus);
+
+	List<DeliverOrderShop> queryTodayOrdersByShopId(Integer shopId);
 
     DeliverOrderShopView getView(Integer id);
 }

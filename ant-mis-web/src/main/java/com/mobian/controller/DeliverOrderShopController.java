@@ -109,7 +109,7 @@ public class DeliverOrderShopController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/view")
-	public String view(HttpServletRequest request, Integer id) {
+	public String view(HttpServletRequest request, Long id) {
 		DeliverOrderShop deliverOrderShop = deliverOrderShopService.get(id);
 		request.setAttribute("deliverOrderShop", deliverOrderShop);
 		return "/deliverordershop/deliverOrderShopView";
@@ -121,7 +121,7 @@ public class DeliverOrderShopController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/editPage")
-	public String editPage(HttpServletRequest request, Integer id) {
+	public String editPage(HttpServletRequest request, Long id) {
 		DeliverOrderShop deliverOrderShop = deliverOrderShopService.get(id);
 		request.setAttribute("deliverOrderShop", deliverOrderShop);
 		return "/deliverordershop/deliverOrderShopEdit";
