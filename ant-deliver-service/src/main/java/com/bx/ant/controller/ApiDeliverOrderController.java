@@ -382,6 +382,12 @@ public class ApiDeliverOrderController extends BaseController {
 
         List<DeliverOrderShop> orderShops = deliverOrderShopService.queryTodayOrdersByShopId(shopId);
         if (CollectionUtils.isNotEmpty(orderShops)) {
+            Collections.sort(orderShops, new Comparator<DeliverOrderShop>() {
+                @Override
+                public int compare(DeliverOrderShop d1, DeliverOrderShop d2) {
+                    return  d2.getUpdatetime().compareTo(d1.getUpdatetime());
+                }
+            });
             //通过deliverOrderShop获取deliverOrder
             for (DeliverOrderShop deliverOrderShop : orderShops) {
                 if (!F.empty(deliverOrderShop.getDeliverOrderId())) {
