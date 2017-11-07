@@ -254,7 +254,7 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 	}
 
 	@Override
-	public DeliverOrderShopView getView(Integer id) {
+	public DeliverOrderShopView getView(Long id) {
 		DeliverOrderShop deliverOrderShop = get(id);
 		DeliverOrderShopView deliverOrderShopView = new DeliverOrderShopView();
 		BeanUtils.copyProperties(deliverOrderShop, deliverOrderShopView);
@@ -375,5 +375,6 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 			return orderShop;
 		}
 	}
+
 
 }

@@ -5,6 +5,8 @@ import com.bx.ant.pageModel.DriverAccountView;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
+import java.util.List;
+
 /**
  * 
  * @author John
@@ -79,4 +81,6 @@ public interface DriverAccountServiceI {
 	 * @return
 	 */
     DriverAccount getByRef(String refId, String refType);
+
+    List<DriverAccount> getAvilableAndWorkDriver();
 }

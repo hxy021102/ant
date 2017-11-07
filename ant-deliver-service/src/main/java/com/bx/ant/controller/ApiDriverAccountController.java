@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
  * 用户相关接口
  */
 @Controller
-@RequestMapping("/api/deliver/driveraccount")
+@RequestMapping("/api/driver/account")
 public class ApiDriverAccountController extends BaseController {
 
     @Resource
@@ -74,7 +74,7 @@ public class ApiDriverAccountController extends BaseController {
     public Json login(String code){
         Json j = new Json();
         try {
-            JSONObject jsonObject = JSONObject.parseObject(HttpUtil.httpsRequest(WeixinUtil.getJscode2sessionUrl(code), "get", null));
+            JSONObject jsonObject = JSONObject.parseObject(HttpUtil.httpsRequest(WeixinUtil.getJscode2sessionUrlByDriver(code), "get", null));
             if (jsonObject != null && jsonObject.containsKey("openid")) {
                 DriverAccount account = driverAccountService.getByRef(jsonObject.getString("openid"), "wx");
                 if(account != null) {

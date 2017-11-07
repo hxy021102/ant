@@ -1,16 +1,15 @@
 package com.bx.ant.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 import com.bx.ant.dao.DriverAccountDaoI;
 import com.bx.ant.model.TdriverAccount;
 import com.bx.ant.pageModel.DriverAccount;
 import com.bx.ant.pageModel.DriverAccountView;
+import com.bx.ant.pageModel.DriverOrderShop;
 import com.bx.ant.service.DriverAccountServiceI;
+import com.bx.ant.service.DriverOrderShopServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
@@ -30,6 +29,9 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 
 	@Autowired
 	private UserServiceI userService;
+
+	@Autowired
+	private DriverOrderShopServiceI driverOrderShopService;
 
 	@Override
 	public DataGrid dataGrid(DriverAccount driverAccount, PageHelper ph) {
@@ -200,4 +202,38 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 		}
 		return null;
 	}
+
+	@Override
+	public List<DriverAccount> getAvilableAndWorkDriver() {
+		List<DriverAccount> ol = new ArrayList<DriverAccount>();
+		//查询上线的骑手
+		DriverAccount driverAccount = new DriverAccount();
+		driverAccount.setHandleStatus(DriverAccountServiceI.HANDLE_STATUS_AGREE);
+		driverAccount.setOnline(true);
+		List<DriverAccount> driverAccounts = dataGrid(driverAccount, new PageHelper()).getRows();
+		if (CollectionUtils.isEmpty(driverAccounts)) {
+			return ol;
+		}
+
+		DriverOrderShop driverOrderShop = new DriverOrderShop();
+		driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_DELVIERING + DriverOrderShopServiceI.STATUS_ACCEPTED);
+		List<DriverOrderShop> driverOrderShops = driverOrderShopService.dataGrid(driverOrderShop, new PageHelper()).getRows();
+		Set<Integer> accountIdSet = new HashSet<Integer>();
+		for (DriverOrderShop d : driverOrderShops) {
+			accountIdSet.add(d.getDriverAccountId());
+		}
+
+		if (CollectionUtils.isNotEmpty(accountIdSet)) {
+			for (DriverAccount a : driverAccounts) {
+				if (!accountIdSet.contains(a.getId())) {
+					ol.add(a);
+				}
+			}
+		}else {
+			ol = driverAccounts;
+		}
+		return ol;
+	}
+
+
 }

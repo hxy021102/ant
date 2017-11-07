@@ -127,5 +127,5 @@ public interface DeliverOrderShopServiceI {
 	DeliverOrderShop editStatusByHql(DeliverOrderShop deliverOrderShop,String status,String shopPayStatus);
 
 
-    DeliverOrderShopView getView(Integer id);
+    DeliverOrderShopView getView(Long id);
 }
