@@ -9,6 +9,7 @@ import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.MbShopServiceI;
+import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.GeoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +70,7 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
             }
 
             //4. 计算最短距离
-
+//            double maxDistance = Double.valueOf(ConvertNameUtil.getString("DSV"))
         }
 
     }
