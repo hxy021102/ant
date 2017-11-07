@@ -194,6 +194,10 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 						whereHql += " and (t.status='DOS01' or t.status = 'DOS15')";
 					}
 				}
+				if (orderQuery.getIds() != null && orderQuery.getIds().length > 0) {
+					whereHql += " and t.id in (:ids) ";
+					params.put("ids", orderQuery.getIds());
+				}
 			}
 		}
 //			if (deliverOrder.getAddtimeBegin() != null) {
@@ -847,4 +851,28 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		int result = deliverOrderDao.executeHql("update TdeliverOrder t set t.payStatus = :payStatus where t.id = :id  and  t.payStatus <>'DPS02'", params);
 		return result ;
 	}
+
+	@Override
+	public DataGrid dataGridNotDriverDeliverOrder(DeliverOrderQuery deliverOrderQuery, PageHelper ph) {
+		DeliverOrderShopQuery deliverOrderShopQuery = new DeliverOrderShopQuery();
+		String[] statusArray = {"DSS02"};
+		deliverOrderShopQuery.setStatusList(statusArray);
+		List<DeliverOrderShop> deliverOrderShopList = deliverOrderShopService.query(deliverOrderShopQuery);
+		if (CollectionUtils.isNotEmpty(deliverOrderShopList)) {
+			Long[] ids = new Long[deliverOrderShopList.size()];
+			int i = 0;
+			for (DeliverOrderShop orderShop : deliverOrderShopList) {
+				Date outDate = DateUtil.addHourToDate(orderShop.getAddtime(), Integer.valueOf(ConvertNameUtil.getString("DSV700", "2")));
+				if (new Date().getTime() > outDate.getTime()) {
+					ids[i++] = orderShop.getDeliverOrderId();
+				}
+			}
+			deliverOrderQuery.setStatus(null);
+			deliverOrderQuery.setIds(ids);
+			DataGrid dataGrid = dataGridWithName(deliverOrderQuery, ph);
+			return dataGrid;
+		}
+		return new DataGrid();
+	}
+
 }
