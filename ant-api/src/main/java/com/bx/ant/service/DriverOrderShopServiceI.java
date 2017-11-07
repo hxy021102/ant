@@ -13,7 +13,8 @@ import com.mobian.pageModel.PageHelper;
 public interface DriverOrderShopServiceI {
 
 	//状态
-	String STATUS_ADUITTING = "DDSS01";//待分配
+	String STATUS_STANDBY = "DDSS01";//待分配
+	String STATUS_ADUITTING = "DDSS03";//分配中
 	String STATUS_ACCEPTED = "DDSS05"; //已接单
 	String STATUS_DELVIERING = "DDSS10"; //派送中
 	String STATUS_DELIVERED= "DDSS20"; //已送达

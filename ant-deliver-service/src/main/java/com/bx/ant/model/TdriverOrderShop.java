@@ -52,7 +52,7 @@ public class TdriverOrderShop implements java.io.Serializable,IEntity{
 	//@NotNull 
 	private Boolean isdeleted;
 	//
-	private Integer deliverOrderShopId;
+	private Long deliverOrderShopId;
 	//
 	private Integer shopId;
 	//@Length(max=10)
@@ -128,11 +128,11 @@ public class TdriverOrderShop implements java.io.Serializable,IEntity{
 	}
 	
 	@Column(name = "deliver_order_shop_id", unique = false, nullable = true, insertable = true, updatable = true, length = 19)
-	public Integer getDeliverOrderShopId() {
+	public Long getDeliverOrderShopId() {
 		return this.deliverOrderShopId;
 	}
 	
-	public void setDeliverOrderShopId(Integer deliverOrderShopId) {
+	public void setDeliverOrderShopId(Long deliverOrderShopId) {
 		this.deliverOrderShopId = deliverOrderShopId;
 	}
 	

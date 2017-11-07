@@ -254,6 +254,14 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 	}
 
 	@Override
+	public DeliverOrderShopView getView(Long id) {
+		DeliverOrderShop deliverOrderShop = get(id);
+		DeliverOrderShopView deliverOrderShopView = new DeliverOrderShopView();
+		BeanUtils.copyProperties(deliverOrderShop, deliverOrderShopView);
+		fillShopItemInfo(deliverOrderShopView);
+		return deliverOrderShopView;
+	}
+	@Override
 	public DataGrid dataGridShopArtificialPay(DeliverOrderShop deliverOrderShop, PageHelper ph) {
 		DataGrid dataGrid = dataGrid(deliverOrderShop, ph);
 		List<DeliverOrderShop> deliverOrderShops = dataGrid.getRows();
@@ -286,6 +294,12 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		return deliverOrderShopView;
 	}
 
+	protected  void fillShopItemInfo(DeliverOrderShopView deliverOrderShopView) {
+		DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
+		deliverOrderShopItem.setDeliverOrderShopId(deliverOrderShopView.getId());
+		List<DeliverOrderShopItem> deliverOrderShopItems = deliverOrderShopItemSerivce.dataGridWithName(deliverOrderShopItem, new PageHelper()).getRows();
+		deliverOrderShopView.setDeliverOrderShopItemList(deliverOrderShopItems);
+	}
 	@Override
 	public void settleShopPay() {
 		//1. 找到所有超时门店订单
@@ -401,5 +415,6 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		List<DeliverOrderShopItem> deliverOrderShopItems = deliverOrderShopItemSerivce.dataGridWithName(deliverOrderShopItem, new PageHelper()).getRows();
 		deliverOrderShopView.setDeliverOrderShopItemList(deliverOrderShopItems);
 	}
+
 
 }
