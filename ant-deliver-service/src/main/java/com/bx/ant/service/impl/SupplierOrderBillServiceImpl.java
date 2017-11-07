@@ -7,12 +7,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderPay;
 import com.bx.ant.pageModel.Supplier;
+import com.bx.ant.service.DeliverOrderPayServiceI;
+import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.SupplierServiceI;
 import com.mobian.absx.F;
 import com.bx.ant.dao.SupplierOrderBillDaoI;
 import com.bx.ant.model.TsupplierOrderBill;
 import com.bx.ant.pageModel.SupplierOrderBill;
+import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 import com.bx.ant.service.SupplierOrderBillServiceI;
@@ -31,6 +36,10 @@ public class SupplierOrderBillServiceImpl extends BaseServiceImpl<SupplierOrderB
 	private SupplierOrderBillDaoI supplierOrderBillDao;
 	@Resource
 	private SupplierServiceI supplierService;
+	@Resource
+	private DeliverOrderPayServiceI deliverOrderPayService;
+	@Resource
+	private DeliverOrderServiceI deliverOrderService;
 
 	@Override
 	public DataGrid dataGrid(SupplierOrderBill supplierOrderBill, PageHelper ph) {
@@ -135,4 +144,37 @@ public class SupplierOrderBillServiceImpl extends BaseServiceImpl<SupplierOrderB
 		//supplierOrderBillDao.delete(supplierOrderBillDao.get(TsupplierOrderBill.class, id));
 	}
 
+	@Override
+	public Integer editBillStatus(SupplierOrderBill supplierOrderBill, Boolean isAgree) {
+		Integer result = 0;
+		if(isAgree) {
+			supplierOrderBill.setStatus("BAS02");//审核通过
+		}else {
+			supplierOrderBill.setStatus("BAS03");//审核拒绝
+		}
+		edit(supplierOrderBill);
+		List<DeliverOrderPay> list = deliverOrderPayService.getBySupplierOrderBillId(supplierOrderBill.getId().intValue());
+		for(DeliverOrderPay d : list) {
+			DeliverOrder deliverOrder = deliverOrderService.get(d.getDeliverOrderId());
+			if(isAgree) {
+				d.setStatus("DPS02");//已结算
+				deliverOrder.setPayStatus("DPS02");//修改订单状态为已结算
+			}else {
+				d.setStatus("DPS04");//审核拒绝
+				deliverOrder.setPayStatus("DPS01");//订单变成未结算
+			}
+			d.setPayWay(supplierOrderBill.getPayWay());
+			deliverOrderPayService.edit(d);
+			try {
+				result = deliverOrderService.editOrderStatus(deliverOrder);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+			if (result <= 0 ) {
+                throw  new ServiceException("修改账单状态失败！");
+			}
+
+		}
+		return result;
+	}
 }

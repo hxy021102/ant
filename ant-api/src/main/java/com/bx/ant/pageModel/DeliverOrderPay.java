@@ -21,6 +21,9 @@ public class DeliverOrderPay implements java.io.Serializable {
 	private String payWay;
 	private String payWayName;
 	private Integer supplierOrderBillId;
+	private Long[] deliverOrderIds;
+	private String[] deliverOrderPayStatus;
+
 
 
 	
@@ -113,5 +116,21 @@ public class DeliverOrderPay implements java.io.Serializable {
 
 	public void setPayWayName(String payWayName) {
 		this.payWayName = payWayName;
+	}
+
+	public Long[] getDeliverOrderIds() {
+		return deliverOrderIds;
+	}
+
+	public void setDeliverOrderIds(Long[] deliverOrderIds) {
+		this.deliverOrderIds = deliverOrderIds;
+	}
+
+	public String[] getDeliverOrderPayStatus() {
+		return deliverOrderPayStatus;
+	}
+
+	public void setDeliverOrderPayStatus(String[] deliverOrderPayStatus) {
+		this.deliverOrderPayStatus = deliverOrderPayStatus;
 	}
 }

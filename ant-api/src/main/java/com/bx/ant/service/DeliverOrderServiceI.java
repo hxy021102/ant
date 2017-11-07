@@ -5,6 +5,7 @@ import com.bx.ant.pageModel.*;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Date;
 import java.util.List;
 
@@ -212,7 +213,7 @@ public interface DeliverOrderServiceI {
 	 * @param list
 	 * @param supplierId
 	 */
-	void addOrderBill(List<DeliverOrder> list, Integer supplierId, Date startTime, Date endTime);
+	List<DeliverOrderPay> addOrderBill(List<DeliverOrder> list, Integer supplierId, Date startTime, Date endTime);
 
 	/**
 	 * 更新r门店新订单计数
@@ -272,4 +273,6 @@ public interface DeliverOrderServiceI {
 	 * @return
 	 */
 	DataGrid dataGridOutTimeDeliverOrder(DeliverOrderQuery deliverOrderQuery,PageHelper ph);
+
+	Integer editOrderStatus(DeliverOrder deliverorder);
 }
