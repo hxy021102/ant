@@ -94,7 +94,7 @@ public class DeliverOrderController extends BaseController {
         if(deliverOrderQuery.getTime()!=null&&deliverOrderQuery.getTime()!=0){
 			deliverOrderQuery.setTime(Integer.valueOf(ConvertNameUtil.getString("DSV500", "30")));
 			return deliverOrderService.dataGridOutTimeDeliverOrder(deliverOrderQuery, ph);
-		}else if("notDriver".equals(deliverOrderQuery.getStatus())){
+		}else if("notDriver,".equals(deliverOrderQuery.getStatus())){
         	return deliverOrderService.dataGridNotDriverDeliverOrder(deliverOrderQuery,ph);
 		}else
 			return deliverOrderService.dataGridWithName(deliverOrderQuery, ph);
