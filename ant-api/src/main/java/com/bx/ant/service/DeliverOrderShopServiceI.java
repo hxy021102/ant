@@ -125,4 +125,5 @@ public interface DeliverOrderShopServiceI {
 	 */
 	DeliverOrderShop editStatusByHql(DeliverOrderShop deliverOrderShop,String status,String shopPayStatus);
 
+	List<DeliverOrderShop> queryTodayOrdersByShopId(Integer shopId);
 }
