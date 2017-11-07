@@ -234,6 +234,15 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 		}
 		return ol;
 	}
-
+	@Override
+	public boolean checkUserName(String userName) {
+		if (!F.empty(userName)) {
+			List<TdriverAccount> l = driverAccountDao.find("from TdriverAccount t where t.isdeleted = 0 and t.userName = '" + userName + "'", 1, 1);
+			if (CollectionUtils.isEmpty(l)) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 }
