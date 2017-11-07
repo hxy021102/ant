@@ -54,4 +54,12 @@ public interface DeliverOrderPayServiceI {
 	public void delete(Integer id);
 
 	List<DeliverOrderPay> getBySupplierOrderBillId(Integer id);
+
+	/**
+	 * 通过条件查找
+	 * @param deliverOrderPay
+	 *
+	 * @return
+	 */
+	List<DeliverOrderPay> query(DeliverOrderPay deliverOrderPay);
 }

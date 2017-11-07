@@ -9,7 +9,6 @@
         $('#form').form({
             url: '${pageContext.request.contextPath}/supplierOrderBillController/editStatus',
             onSubmit: function () {
-
                 parent.$.messager.progress({
                     title: '提示',
                     text: '数据处理中，请稍后....'
@@ -24,6 +23,7 @@
                 } else {
                     parent.$.messager.alert('错误', result.msg, 'error');
                 }
+                parent.$.messager.progress('close');
             }
         });
         $('.money_input').each(function(){
@@ -55,10 +55,6 @@
                 }, {
                     field : 'deliverOrderId',
                     title : '运单Id',
-                    width : 50
-                }, {
-                    field : 'supplierOrderBillId',
-                    title : '账单Id',
                     width : 50
                 }, {
                     field : 'statusName',

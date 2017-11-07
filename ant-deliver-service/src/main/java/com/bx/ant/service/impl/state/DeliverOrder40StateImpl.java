@@ -57,9 +57,16 @@ public class DeliverOrder40StateImpl implements DeliverOrderState {
 
         //修改运单门店状态
         DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
-        deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_ACCEPTED);
+        deliverOrderShop.setStatus(DeliverOrderShopServiceI.STAUS_SERVICE);
         deliverOrderShop.setDeliverOrderId(orderNew.getId());
-        deliverOrderShop = deliverOrderShopService.editStatus(deliverOrderShop,DeliverOrderShopServiceI.STATUS_COMPLETE);
+        deliverOrderShop.setShopPayStatus("SPS01");
+        DeliverOrderShop orderShopEdit = new DeliverOrderShop();
+        orderShopEdit.setStatus(DeliverOrderShopServiceI.STATUS_COMPLETE);
+        orderShopEdit.setShopPayStatus("SPS04");
+      //deliverOrderShop = deliverOrderShopService.editStatus(deliverOrderShop,orderShopEdit);
+        deliverOrderShop=deliverOrderShopService.editStatusByHql(deliverOrderShop,orderShopEdit.getStatus(),orderShopEdit.getShopPayStatus());
+
+
 
         //门店结算
         //TODO 只做了给门店运费账增加,未做其他地方减少,要保持一致性,必须完成这一点

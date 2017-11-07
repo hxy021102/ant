@@ -65,7 +65,7 @@
 			columns : [ [ {
 				field : 'id',
 				title : '运单ID',
-				width : 30,
+				width : 20,
                 formatter : function (value, row, index) {
                     return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
                 }
@@ -79,8 +79,8 @@
                 width : 50
                 }, {
                 field : 'supplierOrderId',
-                title : '供应商订单ID',
-                width : 50
+                title : '订单ID',
+                width : 20
 				},{
 				field : 'supplierId',
 				title : '供应商ID',
@@ -88,12 +88,16 @@
 				}, {
                 field : 'supplierName',
                 title : '供应商名称',
-                width : 80
+                width : 65
+                }, {
+                field : 'shopName',
+                title : '门店名称',
+                width : 65
                 }, {
 				field : 'amount',
 				title : '总金额',
 				align:"right",
-				width : 30	,
+				width : 25	,
                 formatter: function (value) {
                     if (value == null)
                         return "";
@@ -102,11 +106,11 @@
 				}, {
 				field : 'statusName',
 				title : '订单状态',
-				width : 35
+				width : 30
 				}, {
 				field : 'deliveryStatusName',
 				title : '配送状态',
-				width : 40
+				width : 30
 				},{
                 field : 'contactPeople',
                 title : '收货人',
@@ -118,11 +122,11 @@
                 }, {
 				field : 'shopPayStatusName',
 				title : '门店结算',
-				width : 35
+				width : 30
 				}, {
                 field : 'payStatusName',
                 title : '供应商结算',
-                width : 35
+                width : 30
             }] ],
 			toolbar : '#toolbar',
 			onLoadSuccess : function() {
@@ -153,7 +157,7 @@
                 columns : [ [ {
                     field : 'id',
                     title : '运单ID',
-                    width : 30,
+                    width : 20,
                     formatter : function (value, row, index) {
                         return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
                     }
@@ -167,8 +171,8 @@
                     width : 50
                 }, {
                     field : 'supplierOrderId',
-                    title : '供应商订单ID',
-                    width : 50
+                    title : '订单ID',
+                    width : 20
                 },{
                     field : 'supplierId',
                     title : '供应商ID',
@@ -176,12 +180,16 @@
                 }, {
                     field : 'supplierName',
                     title : '供应商名称',
-                    width : 80
+                    width : 65
+                }, {
+                    field : 'shopName',
+                    title : '门店名称',
+                    width : 65
                 }, {
                     field : 'amount',
                     title : '总金额',
                     align:"right",
-                    width : 30	,
+                    width : 25	,
                     formatter: function (value) {
                         if (value == null)
                             return "";
@@ -190,11 +198,11 @@
                 }, {
                     field : 'statusName',
                     title : '订单状态',
-                    width : 35
+                    width : 30
                 }, {
                     field : 'deliveryStatusName',
                     title : '配送状态',
-                    width : 40
+                    width : 30
                 },{
                     field : 'contactPeople',
                     title : '收货人',
@@ -206,11 +214,11 @@
                 }, {
                     field : 'shopPayStatusName',
                     title : '门店结算',
-                    width : 35
+                    width : 30
                 }, {
                     field : 'payStatusName',
                     title : '供应商结算',
-                    width : 35
+                    width : 30
                 }] ],
                 toolbar : '#toolbar',
                 onLoadSuccess : function() {
@@ -364,6 +372,10 @@
 						<td>
 							<jb:select dataType="DOS" name="status"></jb:select>
 						</td>
+						<th>门店名称</th>
+						<td>
+							<jb:selectGrid dataType="shopId" name="shopId" value="${shopId}"></jb:selectGrid>
+						</td>
 					</tr>
 					<tr>
 						<th>门店结算</th>
@@ -374,8 +386,8 @@
 						<td >
 							<jb:select dataType="DDS" name="deliveryStatus"></jb:select>
 						</td>
-						<th>订单时间</th>
-						<td>
+						<th >订单时间</th>
+						<td colspan="3">
 							<input type="text" class="span2 easyui-validatebox" data-options="required:false" onclick="WdatePicker({dateFmt:'<%=TmbSupplierOrderItem.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'endDate\',{M:-1});}',maxDate:'#F{$dp.$D(\'endDate\',{d:-1});}'})" id="startDate" name="startDate"/>
 							至	<input type="text" class="span2 easyui-validatebox" data-options="required:false" onclick="WdatePicker({dateFmt:'<%=TmbSupplierOrderItem.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'startDate\',{d:1});}',maxDate:'#F{$dp.$D(\'startDate\',{M:1});}'})" id="endDate" name="endDate"/>
 						</td>
