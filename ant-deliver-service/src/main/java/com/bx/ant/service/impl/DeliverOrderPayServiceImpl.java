@@ -9,6 +9,7 @@ import com.bx.ant.pageModel.DeliverOrderPay;
 import com.mobian.pageModel.PageHelper;
 import com.bx.ant.service.DeliverOrderPayServiceI;
 import com.mobian.util.MyBeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -79,6 +80,14 @@ public class DeliverOrderPayServiceImpl extends BaseServiceImpl<DeliverOrderPay>
 				whereHql += " and t.supplierOrderBillId = :supplierOrderBillId";
 				params.put("supplierOrderBillId",deliverOrderPay.getSupplierOrderBillId());
 			}
+			if (deliverOrderPay.getDeliverOrderIds() !=null && deliverOrderPay.getDeliverOrderIds().length > 0) {
+				whereHql += " and t.deliverOrderId in (:alist)";
+				params.put("alist", deliverOrderPay.getDeliverOrderIds());
+			}
+			if (deliverOrderPay.getDeliverOrderPayStatus() !=null && deliverOrderPay.getDeliverOrderPayStatus().length > 0) {
+				whereHql += " and t.status in (:slist)";
+				params.put("slist",deliverOrderPay.getDeliverOrderPayStatus());
+			}
 		}	
 		return whereHql;
 	}
@@ -130,5 +139,22 @@ public class DeliverOrderPayServiceImpl extends BaseServiceImpl<DeliverOrderPay>
 	 		l.add(d);
 		}
 		return l;
+	}
+
+	@Override
+	public List<DeliverOrderPay> query(DeliverOrderPay deliverOrderPay) {
+		List<DeliverOrderPay> ol = new ArrayList<DeliverOrderPay>();
+		String hql = " from TdeliverOrderPay t ";
+		Map<String, Object> params = new HashMap<String, Object>();
+		String where = whereHql(deliverOrderPay, params);
+		List<TdeliverOrderPay> l = deliverOrderPayDao.find(hql + where, params);
+		if (CollectionUtils.isNotEmpty(l)) {
+			for (TdeliverOrderPay t : l) {
+				DeliverOrderPay s = new DeliverOrderPay();
+				BeanUtils.copyProperties(t, s);
+				ol.add(s);
+			}
+		}
+		return ol;
 	}
 }

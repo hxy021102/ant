@@ -32,6 +32,7 @@
             pageSize : 10,
             pageList : [ 10, 20, 30, 40, 50 ],
             sortOrder : 'desc',
+            sortName:'updatetime',
             checkOnSelect : false,
             selectOnCheck : false,
             nowrap : false,

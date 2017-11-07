@@ -1,10 +1,12 @@
 package com.mobian.controller;
 
-import com.bx.ant.pageModel.DeliverOrderQuery;
+import com.bx.ant.pageModel.DeliverOrderShop;
 import com.bx.ant.pageModel.ShopOrderBill;
 import com.bx.ant.pageModel.ShopOrderBillQuery;
 import com.bx.ant.service.DeliverOrderServiceI;
+import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.bx.ant.service.ShopOrderBillServiceI;
+import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
@@ -34,6 +36,8 @@ public class DeliverShopArtificialPayController extends BaseController {
 
 	@Resource
 	private ShopOrderBillServiceI shopOrderBillService;
+	@Resource
+	private DeliverOrderShopServiceI deliverOrderShopService;
 
 	/**
 	 * 跳转到DeliverOrder管理页面
@@ -53,10 +57,11 @@ public class DeliverShopArtificialPayController extends BaseController {
 	 */
 	@RequestMapping("/dataGrid")
 	@ResponseBody
-	public DataGrid dataGrid(DeliverOrderQuery deliverOrderQuery, PageHelper ph) {
+	public DataGrid dataGrid(DeliverOrderShop deliverOrderShop, PageHelper ph) {
 		//已配送完成,等待用户确认状态
-		deliverOrderQuery.setStatus("DOS30");
-		return deliverOrderService.dataGridShopArtificialPay(deliverOrderQuery, ph);
+		deliverOrderShop.setStatus("DSS06");
+		deliverOrderShop.setShopPayStatus("SPS01");
+		return deliverOrderShopService.dataGridShopArtificialPay(deliverOrderShop, ph);
 	}
 
 	/**
@@ -68,13 +73,13 @@ public class DeliverShopArtificialPayController extends BaseController {
 	@ResponseBody
 	public Json addShopOrderBill(@RequestBody ShopOrderBillQuery shopOrderBillQuery) {
 		Json j = new Json();
-		Boolean result=shopOrderBillService.addShopOrderBillAndShopPay(shopOrderBillQuery);
-		if(result) {
+		String result=shopOrderBillService.addShopOrderBillAndShopPay(shopOrderBillQuery);
+		if(F.empty(result)) {
 			j.setSuccess(true);
 			j.setMsg("创建门店账单成功！");
 		}else {
 			j.setSuccess(false);
-			j.setMsg("失败，运单不能重复创建！");
+			j.setMsg("失败,"+result+" 已经被创建！");
 		}
 		return j;
 	}

@@ -5,6 +5,7 @@ import com.bx.ant.pageModel.*;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Date;
 import java.util.List;
 
@@ -186,19 +187,11 @@ public interface DeliverOrderServiceI {
 	 */
 	DeliverOrderQuery getDeliverOrderView(Long id );
 
-	void settleShopPay();
 
     void addAndItems(DeliverOrder deliverOrder, String itemListStr);
 
     void addAndItems(DeliverOrder deliverOrder, List<SupplierItemRelationView> items);
 
-    /**
-	 *获取需要支付给门店的订单
-	 * @param deliverOrder
-	 * @param ph
-	 * @return
-	 */
-	DataGrid dataGridShopArtificialPay(DeliverOrder deliverOrder,PageHelper ph);
 
 	/**
 	 * 查询DeliverOrder集合列表
@@ -212,7 +205,7 @@ public interface DeliverOrderServiceI {
 	 * @param list
 	 * @param supplierId
 	 */
-	void addOrderBill(List<DeliverOrder> list, Integer supplierId, Date startTime, Date endTime);
+	List<DeliverOrderPay> addOrderBill(List<DeliverOrder> list, Integer supplierId, Date startTime, Date endTime);
 
 	/**
 	 * 更新r门店新订单计数
@@ -263,7 +256,7 @@ public interface DeliverOrderServiceI {
 	 * 处理指派后的订单
 	 * @param deliverOrder
 	 */
-	void handleAssignDeliverOrder(DeliverOrder deliverOrder);
+	Boolean handleAssignDeliverOrder(DeliverOrder deliverOrder);
 
 	/**
 	 * 获取超时的未处理的订单
@@ -272,4 +265,6 @@ public interface DeliverOrderServiceI {
 	 * @return
 	 */
 	DataGrid dataGridOutTimeDeliverOrder(DeliverOrderQuery deliverOrderQuery,PageHelper ph);
+
+	Integer editOrderStatus(DeliverOrder deliverorder);
 }

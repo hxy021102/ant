@@ -56,7 +56,9 @@ public class DeliverOrder15StateImpl implements DeliverOrderState {
         DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
         deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_AUDITING);
         deliverOrderShop.setDeliverOrderId(orderNew.getId());
-        deliverOrderShopService.editStatus(deliverOrderShop,DeliverOrderShopServiceI.STATUS_REFUSED);
+        DeliverOrderShop orderShopEdit = new DeliverOrderShop();
+        orderShopEdit.setStatus(DeliverOrderShopServiceI.STATUS_REFUSED);
+        deliverOrderShopService.editStatus(deliverOrderShop,orderShopEdit);
 
         //返还门店商品库存
         shopItemService.refundByDeliverOrder(deliverOrder);

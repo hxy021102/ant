@@ -61,7 +61,7 @@ public class TdeliverOrderShop implements java.io.Serializable,IEntity{
 
 	private BigDecimal distance;
 	//columns END
-
+    private String shopPayStatus;
 
 		public TdeliverOrderShop(){
 		}
@@ -164,6 +164,14 @@ public class TdeliverOrderShop implements java.io.Serializable,IEntity{
 		this.distance = distance;
 	}
 
+	@Column(name = "shop_pay_status", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public String getShopPayStatus() {
+		return shopPayStatus;
+	}
+
+	public void setShopPayStatus(String shopPayStatus) {
+		this.shopPayStatus = shopPayStatus;
+	}
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

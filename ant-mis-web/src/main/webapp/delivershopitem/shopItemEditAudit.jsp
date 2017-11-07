@@ -49,10 +49,11 @@
         });
 	});
     function computerPrice() {
-        var inPrice = parseInt($("#inPrice").val());
-        var freight = parseInt($("#freight").val());
+        var inPrice = parseFloat($("#inPrice").val());
+        var freight = parseFloat($("#freight").val());
+        var totalPrice=(inPrice*100+freight*100)/100;
         if (!isNaN(inPrice) && !isNaN(freight)) {
-            $("#price").val(inPrice + freight);
+            $("#price").val(totalPrice);
         }
     }
 </script>

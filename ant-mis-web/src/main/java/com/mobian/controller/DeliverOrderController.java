@@ -2,6 +2,7 @@ package com.mobian.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderPay;
 import com.bx.ant.pageModel.DeliverOrderQuery;
 import com.bx.ant.pageModel.Supplier;
 import com.bx.ant.service.DeliverOrderItemServiceI;
@@ -297,13 +298,18 @@ public class DeliverOrderController extends BaseController {
 		Json j = new Json();
 		JSONArray jsonArray = JSONArray.fromObject(unpayDeliverOrders);
 	   	List<DeliverOrder> list = (List<DeliverOrder>) jsonArray.toCollection(jsonArray,DeliverOrder.class);
-	   	deliverOrderService.addOrderBill(list,supplierId,startTime,endTime);
-	   	for(DeliverOrder d : list) {
-	   		d.setPayStatus("DPS03");//结算中
-			deliverOrderService.edit(d);
+	   	List<DeliverOrderPay> d = deliverOrderService.addOrderBill(list,supplierId,startTime,endTime);
+	   	if (CollectionUtils.isEmpty(d)) {
+			j.setMsg("创建账单成功！");
+			j.setSuccess(true);
+		}else {
+	   		String msg = "";
+	   		for (DeliverOrderPay pay : d) {
+	   			msg += pay.getDeliverOrderId().toString()+",";
+			}
+			j.setMsg("运单号" + msg +"已创建过账单！请勿重复创建！");
 		}
-	   	j.setMsg("创建账单成功！");
-	   	j.setSuccess(true);
+
 	   	return  j;
 	}
 
@@ -369,9 +375,14 @@ public class DeliverOrderController extends BaseController {
 	@ResponseBody
 	public Json assignOrderShop(DeliverOrder deliverOrder) {
 		Json j = new Json();
-	 	deliverOrderService.handleAssignDeliverOrder(deliverOrder);
-		j.setSuccess(true);
-		j.setMsg("指派成功！");
+	 	Boolean result=deliverOrderService.handleAssignDeliverOrder(deliverOrder);
+	 	if(result) {
+			j.setSuccess(true);
+			j.setMsg("指派成功！");
+		}else{
+			j.setSuccess(false);
+			j.setMsg("指派失败，门店商品不足！");
+		}
 		return j;
 	}
 }
