@@ -156,7 +156,7 @@ public class ApiDriverAccountController extends BaseController {
                 j.setMsg("验证码不能为空！");
                 return j;
             }
-            String oldCode = (String) redisUtil.getString(Key.build(Namespace.DELVIER_ORDER_NEW_ASSIGNMENT_COUNT, userName));
+            String oldCode = (String) redisUtil.getString(Key.build(Namespace.DRIVER_LOGIN_VALIDATE_CODE, userName));
             if(F.empty(oldCode)) {
                 j.setMsg("验证码已过期！");
                 return j;
@@ -326,6 +326,31 @@ public class ApiDriverAccountController extends BaseController {
         return j;
     }
 
+    /**
+     * 更新位置
+     * @param longitude
+     * @param latitude
+     * @param request
+     * @return
+     */
+    @RequestMapping("/updateLocation")
+    @ResponseBody
+    public Json updateLocation(String longitude, String latitude, HttpServletRequest request) {
+        Json json = new Json();
+
+        TokenWrap tokenWrap = getTokenWrap(request);
+        Integer accountId = Integer.parseInt(tokenWrap.getUid());
+        if (!F.empty(latitude) && !F.empty(longitude)) {
+            redisUtil.set(Key.build(Namespace.DRIVER_REALTIME_LOCATION, accountId.toString()),
+                    longitude + "," + latitude, Integer.parseInt(ConvertNameUtil.getString("DDSV100", "10")), TimeUnit.SECONDS);
+            json.setMsg("YJNH");
+            json.setSuccess(true);
+        }else {
+            json.setMsg("无法获取位置信息");
+            json.setSuccess(false);
+        }
+        return json;
+    }
 //    /**
 //     * 绑定门店申请
 //     * @param shopDeliverApply

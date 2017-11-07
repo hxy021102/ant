@@ -23,5 +23,6 @@ public interface Namespace {
     String ORDERLOG_MESSAGE="order_log_message";
     String MB_SHOP_CACHE = "mb_shop_cache";
     String DELVIER_ORDER_NEW_ASSIGNMENT_COUNT = "new_delvier_order_assignment_count";
-    String DRIVER_LOGIN_VALIDATE_CODE = "shop_login_validate_code";
+    String DRIVER_LOGIN_VALIDATE_CODE = "driver_login_validate_code";
+    String DRIVER_REALTIME_LOCATION = "driver_realtime_location";
 }

@@ -58,7 +58,7 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
         //2. 获取骑手
         List<DriverAccount> driverAccounts = driverAccountService.getAvilableAndWorkDriver();
 
-        //3. 数字地址
+        //3. 门店数字地址
         MbShop shop = mbShopService.getFromCache(driverOrderShop.getDeliverOrderShop().getShopId());
         if (shop == null) throw new ServiceException("信息不全driverOrderShop.getDeliverOrderShop().getShopId()无法获取门店");
         if ((shop.getLongitude() == null || shop.getLatitude() == null)
@@ -68,10 +68,12 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
                 shop.setLongitude(point[0]);
                 shop.setLatitude(point[1]);
             }
-
-            //4. 计算最短距离
-//            double maxDistance = Double.valueOf(ConvertNameUtil.getString("DSV"))
         }
+        //4. 计算最短距离
+        double maxDistance = Double.valueOf(ConvertNameUtil.getString("DDSV001", "5000"));;
+
+        //5. 分单
+
 
     }
 }
