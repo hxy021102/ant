@@ -685,6 +685,10 @@ public class MbOrderController extends BaseController {
 			mbBalance.setAmount(mbBalance.getAmount() - amount);
 			request.setAttribute("mbBalance", mbBalance);
 		}
+		if(!F.empty(mbOrder.getDeliveryWarehouseId())){
+			MbWarehouse mbWarehouse = mbWarehouseService.getFromCache(mbOrder.getDeliveryWarehouseId());
+			request.setAttribute("mbWarehouseName", mbWarehouse.getName());
+		}
 
 		request.setAttribute("mbOrder", mbOrder);
 		request.setAttribute("mbOrderItemList", mbOrderItemList);
