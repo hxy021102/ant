@@ -20,6 +20,7 @@ public class DeliverOrderShop implements java.io.Serializable {
 	private BigDecimal distance;
 	private Date updatetimeBegin;
 	private Date updatetimeEnd;
+	private String shopPayStatus;
 
 
 
@@ -112,5 +113,13 @@ public class DeliverOrderShop implements java.io.Serializable {
 
 	public void setDistance(BigDecimal distance) {
 		this.distance = distance;
+	}
+
+	public String getShopPayStatus() {
+		return shopPayStatus;
+	}
+
+	public void setShopPayStatus(String shopPayStatus) {
+		this.shopPayStatus = shopPayStatus;
 	}
 }

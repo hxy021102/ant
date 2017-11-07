@@ -31,7 +31,7 @@ public class DeliverOrderTaskService {
     }
 
     public void settleShopPay(){
-        deliverOrderService.settleShopPay();
+        deliverOrderShopService.settleShopPay();
     }
 
     public void checkTimeOutOrder(){
