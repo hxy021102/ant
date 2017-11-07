@@ -271,4 +271,12 @@ public interface DeliverOrderServiceI {
 	DataGrid dataGridOutTimeDeliverOrder(DeliverOrderQuery deliverOrderQuery,PageHelper ph);
 
 	Integer editOrderStatus(DeliverOrder deliverorder);
+
+	/**
+	 * 获取超时未配送的订单
+	 * @param deliverOrderQuery
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridNotDriverDeliverOrder(DeliverOrderQuery deliverOrderQuery,PageHelper ph);
 }

@@ -32,6 +32,10 @@
                 invoke: function () {
                     gridMap.handle(this, loadDataGridOverTimeOrder);
                 }, grid: null
+            }, 2: {
+                invoke: function () {
+                    gridMap.handle(this, loadDataGridNotDriver);
+                }, grid: null
             }
         };
         $('#deliverOrder_list_tabs').tabs({
@@ -228,6 +232,94 @@
             });
 		}
 
+    function loadDataGridNotDriver() {
+        return  $('#dataGridNotDriver').datagrid({
+            //  url : '${pageContext.request.contextPath}/deliverOrderController/dataGrid?id',
+            fit : true,
+            fitColumns : true,
+            border : false,
+            pagination : true,
+            idField : 'id',
+            pageSize : 10,
+            pageList : [ 10, 20, 30, 40, 50 ],
+            sortOrder : 'desc',
+            sortName:'updatetime',
+            sortable:true,
+            checkOnSelect : false,
+            selectOnCheck : false,
+            nowrap : false,
+            striped : true,
+            rownumbers : true,
+            singleSelect : true,
+            columns : [ [ {
+                field : 'id',
+                title : '运单ID',
+                width : 30,
+                formatter : function (value, row, index) {
+                    return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
+                }
+            },  {
+                field : 'addtime',
+                title : '创建时间',
+                width : 50
+            },{
+                field : 'updatetime',
+                title : '修改时间',
+                width : 50
+            }, {
+                field : 'supplierOrderId',
+                title : '供应商订单ID',
+                width : 50
+            },{
+                field : 'supplierId',
+                title : '供应商ID',
+                width : 30
+            }, {
+                field : 'supplierName',
+                title : '供应商名称',
+                width : 80
+            }, {
+                field : 'amount',
+                title : '总金额',
+                align:"right",
+                width : 30	,
+                formatter: function (value) {
+                    if (value == null)
+                        return "";
+                    return $.formatMoney(value);
+                }
+            }, {
+                field : 'statusName',
+                title : '订单状态',
+                width : 35
+            }, {
+                field : 'deliveryStatusName',
+                title : '配送状态',
+                width : 40
+            },{
+                field : 'contactPeople',
+                title : '收货人',
+                width : 30
+            }, {
+                field : 'deliveryRequireTime',
+                title : '要求送达时间',
+                width : 50
+            }, {
+                field : 'shopPayStatusName',
+                title : '门店结算',
+                width : 35
+            }, {
+                field : 'payStatusName',
+                title : '供应商结算',
+                width : 35
+            }] ],
+            toolbar : '#toolbar',
+            onLoadSuccess : function() {
+                $('#searchForm table').show();
+                parent.$.messager.progress('close');
+            }
+        });
+    }
 
 	function deleteFun(id) {
 		if (id == undefined) {
@@ -343,6 +435,8 @@
         var index = $('#deliverOrder_list_tabs').tabs('getTabIndex',tab);
         if(index == 1) {
             options.url += '?time=30';
+        }else if(index == 2){
+            options.url +='?status="notDriver"';
         }
         options.queryParams = $.serializeObject($('#searchForm'));
         selectDatagrid.datagrid(options);
@@ -402,6 +496,9 @@
 				</div>
 				<div title="超时未分配运单">
 					<table id="dataGridOverTimeOrder"></table>
+				</div>
+				<div title="超时未配送运单">
+					<table id="dataGridNotDriver"></table>
 				</div>
 		     </div>
 		</div>

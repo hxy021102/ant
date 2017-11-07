@@ -280,7 +280,7 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		DeliverOrderShopQuery deliverOrderShop = new DeliverOrderShopQuery();
 		deliverOrderShop.setShopPayStatus("SPS01");
 		deliverOrderShop.setStatus(DeliverOrderShopServiceI.STAUS_SERVICE);
-	 	Date endDate= DateUtil.addDayToDate(new Date(),-Integer.valueOf(ConvertNameUtil.getString("DVS600", "7")));
+	 	Date endDate= DateUtil.addDayToDate(new Date(),-Integer.valueOf(ConvertNameUtil.getString("DSV600", "7")));
 		deliverOrderShop.setEndDate(endDate);
 		PageHelper ph = new PageHelper();
 		List<DeliverOrderShop> deliverOrderShopList = dataGrid(deliverOrderShop, ph).getRows();

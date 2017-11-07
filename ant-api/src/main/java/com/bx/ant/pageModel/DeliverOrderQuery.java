@@ -20,6 +20,7 @@ public class DeliverOrderQuery extends DeliverOrder {
     private String createDate;
     private String requiredDate;
     private Integer time;
+    private Long[] ids;
 
     public String getStatusName() {
         return ConvertNameUtil.getString(this.statusName);
@@ -115,5 +116,13 @@ public class DeliverOrderQuery extends DeliverOrder {
 
     public void setTime(Integer time) {
         this.time = time;
+    }
+
+    public Long[] getIds() {
+        return ids;
+    }
+
+    public void setIds(Long[] ids) {
+        this.ids = ids;
     }
 }
