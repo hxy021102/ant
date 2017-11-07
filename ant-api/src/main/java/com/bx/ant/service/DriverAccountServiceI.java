@@ -83,4 +83,6 @@ public interface DriverAccountServiceI {
     DriverAccount getByRef(String refId, String refType);
 
     List<DriverAccount> getAvilableAndWorkDriver();
+
+    boolean checkUserName(String userName);
 }

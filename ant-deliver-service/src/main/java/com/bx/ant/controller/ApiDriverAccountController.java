@@ -48,9 +48,6 @@ public class ApiDriverAccountController extends BaseController {
     private MbShopServiceI mbShopService;
 
     @Resource
-    private ShopDeliverAccountServiceI shopDeliverAccountService;
-
-    @Resource
     private TokenServiceI tokenService;
 
     @Resource
@@ -169,7 +166,7 @@ public class ApiDriverAccountController extends BaseController {
                 return j;
             }
             // 验证手机号码是否已绑定
-            if(shopDeliverAccountService.checkUserName(userName)) {
+            if(driverAccountService.checkUserName(userName)) {
                 j.setMsg("手机号码已绑定！");
                 return j;
             }
