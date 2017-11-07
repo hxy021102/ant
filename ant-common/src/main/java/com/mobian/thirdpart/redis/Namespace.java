@@ -25,4 +25,5 @@ public interface Namespace {
     String DELVIER_ORDER_NEW_ASSIGNMENT_COUNT = "new_delvier_order_assignment_count";
     String DRIVER_LOGIN_VALIDATE_CODE = "driver_login_validate_code";
     String DRIVER_REALTIME_LOCATION = "driver_realtime_location";
+    String DRIVER_ORDER_SHOP_CACHE  = "drvier_order_shop_cache";
 }

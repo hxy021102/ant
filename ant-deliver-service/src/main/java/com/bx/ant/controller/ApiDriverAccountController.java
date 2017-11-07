@@ -248,6 +248,7 @@ public class ApiDriverAccountController extends BaseController {
                 obj.put("account", account);
                 obj.put("todayAmount", todayAmount);
                 obj.put("todayQuantity", todayQuantity);
+                obj.put("handleStatus", account.getHandleStatus());
 
 
                 j.setSuccess(true);

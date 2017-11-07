@@ -9,6 +9,9 @@ import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.MbShopServiceI;
+import com.mobian.thirdpart.redis.Key;
+import com.mobian.thirdpart.redis.Namespace;
+import com.mobian.thirdpart.redis.RedisUtil;
 import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.GeoUtil;
 import org.slf4j.Logger;
@@ -18,7 +21,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by w9777 on 2017/11/6.
@@ -35,6 +40,9 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
 
     @Resource
     private MbShopServiceI mbShopService;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Override
     public void orderAllocation() {
@@ -72,7 +80,23 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
         //4. 计算最短距离
         double maxDistance = Double.valueOf(ConvertNameUtil.getString("DDSV001", "5000"));;
 
-        //5. 分单
+        //5. 筛选出符合条件的骑手
+        for (DriverAccount account : driverAccounts) {
+            String titude = (String) redisUtil.getString(Key.build(Namespace.DRIVER_REALTIME_LOCATION, account.getId().toString()));
+
+            Double driverLongtitude = Double.parseDouble(titude.split(",")[0]);
+            Double driverLatitude = Double.parseDouble(titude.split(",")[1]);
+
+            double distance = GeoUtil.getDistance(driverLongtitude, driverLatitude,
+                    shop.getLongitude().doubleValue(), shop.getLatitude().doubleValue());
+            if (distance < maxDistance) {
+                Calendar today = Calendar.getInstance();
+                String todayStr = today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH)
+                        + "-" + today.get(Calendar.DAY_OF_MONTH);
+                redisUtil.setList(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, account.getId().toString() + ":" + todayStr),
+                        driverOrderShop.getId().toString());
+            }
+        }
 
 
     }
