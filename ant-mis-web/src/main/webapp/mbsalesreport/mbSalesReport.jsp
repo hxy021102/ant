@@ -179,7 +179,8 @@
                             <option value=""></option>
                             <option value="OD20">已发货</option>
                             <option value="OD35,OD30">已签收</option>
-                            <option value="OD40">未付款</option>
+                            <option value="OD40">已完成</option>
+                            <option value="OD41">未付款</option>
                         </select>
                     </td>
                     <th>发货仓库</th>

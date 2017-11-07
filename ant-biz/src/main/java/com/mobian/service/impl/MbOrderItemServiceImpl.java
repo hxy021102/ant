@@ -292,9 +292,15 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 			mbOrder.setShopId(mbSalesReport.getShopId());
 			mbOrder.setShopIds(shopIds);
 		}
-		if ("OD40".equals(mbSalesReport.getOrderStatus())) {
+		if ("OD41".equals(mbSalesReport.getOrderStatus())) {
 			mbOrder.setPayStatus("PS01");
+			mbOrder.setStatus("OD40");
 		}
+
+		if (F.empty(mbSalesReport.getOrderStatus())) {
+			mbOrder.setStatus("OD20,OD35,OD30,OD40");
+		}
+
 		String split = "_";
 		//先找到所有符合条件的订单
 		List<MbOrder> mbOrders = mbOrderService.query(mbOrder);
@@ -363,12 +369,10 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 						salesReport.setBackMoney(0);
 					}
 					salesReport.setBackMoney(salesReport.getBackMoney() + rf.getQuantity() * price);
-
 					if (costPrice != null) {
 						salesReport.setTotalCost(salesReport.getTotalCost() - rf.getQuantity() * costPrice);
 					}
 				}
-
 			}
 
 		}
@@ -381,28 +385,24 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 		Set<Integer> keys = map.keySet();
 		for (Integer key : keys) {
 			MbItem mbItem = mbItemService.getFromCache(key);
-			MbSalesReport salesReport = new MbSalesReport();
+			MbSalesReport salesReport = map.get(key);
 			salesReport.setItemId(key);
 			salesReport.setItemCode(mbItem.getCode());
 			salesReport.setItemName(mbItem.getName());
-			salesReport.setQuantity(map.get(key).getQuantity());
-			salesReport.setBackQuantity(map.get(key).getBackQuantity());
-			salesReport.setTotalCost(map.get(key).getTotalCost());
-			if (!F.empty(map.get(key).getBackQuantity())) {
-				salesReport.setSalesQuantity(salesReport.getQuantity() - map.get(key).getBackQuantity());
+			if (!F.empty(salesReport.getBackQuantity())) {
+				salesReport.setSalesQuantity(salesReport.getQuantity() - salesReport.getBackQuantity());
 				backTotal += salesReport.getBackQuantity();
 			} else {
 				salesReport.setSalesQuantity(salesReport.getQuantity());
 			}
 
-
-			if(F.empty(salesReport.getBackMoney())){
-				salesReport.setTotalPrice(map.get(key).getTotalPrice());
-			}else {
-				salesReport.setTotalPrice(map.get(key).getTotalPrice() - salesReport.getBackMoney());
+			if (F.empty(salesReport.getBackMoney())) {
+				salesReport.setTotalPrice(salesReport.getTotalPrice());
+			} else {
+				salesReport.setTotalPrice(salesReport.getTotalPrice() - salesReport.getBackMoney());
 			}
 
-			if(!F.empty(salesReport.getSalesQuantity())) {
+			if (!F.empty(salesReport.getSalesQuantity())) {
 				salesReport.setAvgPrice(salesReport.getTotalPrice() / salesReport.getSalesQuantity());
 				salesReport.setAvgCost(salesReport.getTotalCost() / salesReport.getSalesQuantity());
 			}
@@ -412,8 +412,8 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 			total += salesReport.getQuantity();
 			salesTotal += salesReport.getSalesQuantity();
 			totalPrice += salesReport.getTotalPrice();
-			if (!F.empty(map.get(key).getTotalCost()))
-				totalCost += map.get(key).getTotalCost();
+			if (!F.empty(salesReport.getTotalCost()))
+				totalCost += salesReport.getTotalCost();
 		}
 		//将销售明细按照数量高低来排序
 		Collections.sort(ol, new Comparator<MbSalesReport>() {
