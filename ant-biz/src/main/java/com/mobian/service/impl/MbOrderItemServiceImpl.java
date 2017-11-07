@@ -363,6 +363,10 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 						salesReport.setBackMoney(0);
 					}
 					salesReport.setBackMoney(salesReport.getBackMoney() + rf.getQuantity() * price);
+
+					if (!F.empty(salesReport.getTotalPrice())) {
+						salesReport.setTotalPrice(salesReport.getTotalPrice() - salesReport.getBackMoney());
+					}
 					if (costPrice != null) {
 						salesReport.setTotalCost(salesReport.getTotalCost() - rf.getQuantity() * costPrice);
 					}
@@ -393,11 +397,13 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 			} else {
 				salesReport.setSalesQuantity(salesReport.getQuantity());
 			}
-			if (!F.empty(map.get(key).getBackMoney())) {
-				salesReport.setTotalPrice(map.get(key).getTotalPrice() - map.get(key).getBackMoney());
-			} else {
-				salesReport.setTotalPrice(map.get(key).getTotalPrice());
-			}
+
+			salesReport.setTotalPrice(map.get(key).getTotalPrice());
+
+			salesReport.setAvgPrice(salesReport.getTotalPrice() / salesReport.getSalesQuantity());
+			salesReport.setAvgCost(salesReport.getTotalCost() / salesReport.getSalesQuantity());
+			salesReport.setProfit(salesReport.getTotalPrice() - salesReport.getTotalCost());
+
 			ol.add(salesReport);
 			total += salesReport.getQuantity();
 			salesTotal += salesReport.getSalesQuantity();
@@ -420,6 +426,9 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 			mbsalesReport.setQuantity(total);
 			mbsalesReport.setBackQuantity(backTotal);
 			mbsalesReport.setTotalCost(totalCost);
+			mbsalesReport.setAvgPrice(mbsalesReport.getTotalPrice() / mbsalesReport.getSalesQuantity());
+			mbsalesReport.setAvgCost(mbsalesReport.getTotalCost() / mbsalesReport.getSalesQuantity());
+			mbsalesReport.setProfit(mbsalesReport.getTotalPrice() - mbsalesReport.getTotalCost());
 			//ol.add(mbsalesReport);
 			dataGrid.setFooter(Arrays.asList(mbsalesReport));
 		}
