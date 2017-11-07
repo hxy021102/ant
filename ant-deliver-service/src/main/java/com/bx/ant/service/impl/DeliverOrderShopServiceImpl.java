@@ -157,7 +157,7 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 	public void delete(Integer id) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
-		deliverOrderShopDao.executeHql("update TdeliverOrderShop t set t.isdeleted = 1 where t.id = :id",params);
+		deliverOrderShopDao.executeHql("update TdeliverOrderShop t set t.isdeleted = 1 where t.id = :id", params);
 		//deliverOrderShopDao.delete(deliverOrderShopDao.get(TdeliverOrderShop.class, id));
 	}
 
@@ -376,5 +376,30 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		}
 	}
 
+	@Override
+	public List<DeliverOrderShop> queryTodayOrdersByShopId(Integer shopId) {
+
+		//获取当天结束与开始
+		Calendar todayC = Calendar.getInstance();
+		todayC.set(Calendar.HOUR_OF_DAY,0);
+		todayC.set(Calendar.MINUTE,0);
+		todayC.set(Calendar.SECOND,0);
+		Date todayStart = todayC.getTime();
+		todayC.set(Calendar.HOUR_OF_DAY,23);
+		todayC.set(Calendar.MINUTE,59);
+		todayC.set(Calendar.SECOND,59);
+		Date todayEnd = todayC.getTime();
+
+		DeliverOrderShopQuery deliverOrderShop = new DeliverOrderShopQuery();
+		deliverOrderShop.setShopId(shopId);
+		String[] statusList = {DeliverOrderShopServiceI.STATUS_ACCEPTED,DeliverOrderShopServiceI.STATUS_COMPLETE,DeliverOrderShopServiceI.STAUS_SERVICE};
+		deliverOrderShop.setStatusList(statusList);
+		deliverOrderShop.setUpdatetimeBegin(todayStart);
+		deliverOrderShop.setUpdatetimeEnd(todayEnd);
+
+		PageHelper ph = new PageHelper();
+		ph.setHiddenTotal(true);
+		return dataGrid(deliverOrderShop, ph).getRows();
+	}
 
 }

@@ -104,16 +104,20 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
         // TODO 查询门店最大配送距离
         double maxDistance = Double.valueOf(ConvertNameUtil.getString("DSV200", "5000"));
 
-        List<MbShop> includeShop = new ArrayList<MbShop>();
+        List<ShopDeliverApply> includeShop = new ArrayList<ShopDeliverApply>();
         // 过滤满足距离的门店
         for (ShopDeliverApply shopDeliverApply : shopDeliverApplyList) {
             MbShop mbShop = shopDeliverApply.getMbShop();
             if (excludeShop.contains(mbShop.getId())) continue;
             double distance = GeoUtil.getDistance(deliverOrder.getLongitude().doubleValue(), deliverOrder.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
+
+            if(shopDeliverApply.getMaxDeliveryDistance() != null) {
+                maxDistance = shopDeliverApply.getMaxDeliveryDistance().doubleValue();
+            }
             if(distance > maxDistance) continue;
 
-            mbShop.setDistance(distance);
-            includeShop.add(mbShop);
+            shopDeliverApply.setDistance(distance);
+            includeShop.add(shopDeliverApply);
 
 //            if (distance < minDistance || minDistance == 0) {
 //                minMbShop = mbShop;
@@ -125,15 +129,15 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
 
         if(CollectionUtils.isNotEmpty(includeShop)) {
             // 排序距离优先
-            Collections.sort(includeShop, new Comparator<MbShop>() {
-                public int compare(MbShop arg0, MbShop arg1) {
+            Collections.sort(includeShop, new Comparator<ShopDeliverApply>() {
+                public int compare(ShopDeliverApply arg0, ShopDeliverApply arg1) {
                     return arg0.getDistance().compareTo(arg1.getDistance());
                 }
             });
 
             //5、计算分单价格
-            for(MbShop mbShop : includeShop) {
-
+            for(ShopDeliverApply shopDeliverApply : includeShop) {
+                MbShop mbShop = shopDeliverApply.getMbShop();
                 DefaultTransactionDefinition def = new DefaultTransactionDefinition();
 
                 def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);// 事物隔离级别，开启新事务
@@ -142,20 +146,38 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
 
                 try{
                     if(tokenService.getTokenByShopId(mbShop.getId()) == null) throw new ServiceException("门店不在线，token已失效");
+                    deliverOrder.setDeliveryType(shopDeliverApply.getDeliveryType());
                     deliverOrder.setShopId(mbShop.getId());
-                    deliverOrder.setShopDistance(mbShop.getDistance());
+                    deliverOrder.setShopDistance(shopDeliverApply.getDistance());
                     deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_ALLOCATION);
                     deliverOrderService.transform(deliverOrder);
+
+                    // 自动接单
+                    if(DeliverOrderServiceI.DELIVER_TYPE_AUTO.equals(shopDeliverApply.getDeliveryType())) {
+                        deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_ACCEPT);
+                        deliverOrderService.transform(deliverOrder);
+                    }
                     transactionManager.commit(status);
 
                     // 发送短信通知
-                    if(!F.empty(mbShop.getContactPhone()) && Integer.valueOf(ConvertNameUtil.getString("DSV101", "1")) == 1) {
+                    boolean smsRemind = Integer.valueOf(ConvertNameUtil.getString("DSV101", "0")) == 1 ? true : false;
+                    if(shopDeliverApply.getSmsRemind() != null) {
+                        smsRemind = shopDeliverApply.getSmsRemind();
+                    }
+                    if(!F.empty(mbShop.getContactPhone()) && smsRemind) {
                         MNSTemplate template = new MNSTemplate();
-                        template.setTemplateCode("SMS_105685061");
                         Map<String, String> params = new HashMap<String, String>();
-                        params.put("orderId", "(" + deliverOrder.getId() + ")");
-                        params.put("address", deliverOrder.getDeliveryAddress());
-                        params.put("time", ConvertNameUtil.getString("DSV100", "10") + "分钟");
+                        if(DeliverOrderServiceI.DELIVER_TYPE_AUTO.equals(shopDeliverApply.getDeliveryType())) {
+                            template.setTemplateCode("SMS_109405064");
+                            params.put("orderId", "(" + deliverOrder.getId() + ")");
+                            params.put("address", deliverOrder.getDeliveryAddress());
+                        } else {
+                            template.setTemplateCode("SMS_105685061");
+                            params.put("orderId", "(" + deliverOrder.getId() + ")");
+                            params.put("address", deliverOrder.getDeliveryAddress());
+                            params.put("time", ConvertNameUtil.getString("DSV100", "10") + "分钟");
+                        }
+
                         template.setParams(params);
                         MNSUtil.sendMns(mbShop.getContactPhone(), template);
                     }
