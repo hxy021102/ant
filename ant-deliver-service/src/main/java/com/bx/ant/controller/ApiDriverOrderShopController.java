@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
  * 用户相关接口
  */
 @Controller
-@RequestMapping("/api/deliver/deliverOrder")
+@RequestMapping("/api/driver/driverOrderShop")
 public class ApiDriverOrderShopController extends BaseController {
     public static final String ORDER_COMPLETE = "orderComplete";
 

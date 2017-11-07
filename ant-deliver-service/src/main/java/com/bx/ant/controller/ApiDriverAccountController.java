@@ -108,7 +108,7 @@ public class ApiDriverAccountController extends BaseController {
                 j.setMsg("手机号码格式不正确！");
                 return j;
             }
-            String oldCode = (String) redisUtil.getString(Key.build(Namespace.SHOP_LOGIN_VALIDATE_CODE, mobile));
+            String oldCode = (String) redisUtil.getString(Key.build(Namespace.DRIVER_LOGIN_VALIDATE_CODE, mobile));
             if(!F.empty(oldCode)) {
                 j.setMsg("访问过于频繁，请秒后重试！");
                 return j;

@@ -37,35 +37,14 @@ import java.util.concurrent.TimeUnit;
  * 用户相关接口
  */
 @Controller
-@RequestMapping("/api/deliver/deliverBalance")
+@RequestMapping("/api/driver/driverBalance")
 public class ApiDriverBalanceController extends BaseController {
-
-    @Resource
-    private MbShopServiceI mbShopService;
-
-    @Autowired
-    private DeliverOrderServiceI deliverOrderService;
 
     @Autowired
     private MbBalanceServiceI mbBalanceService;
 
     @Autowired
     private MbBalanceLogServiceI mbBalanceLogService;
-
-    @Autowired
-    private DeliverOrderShopPayServiceI deliverOrderPayShopService;
-
-    @Resource
-    private RedisUtil redisUtil;
-
-    @Resource
-    private ShopDeliverAccountServiceI shopDeliverAccountService;
-
-    @Resource
-    private ShopDeliverApplyServiceI shopDeliverApplyService;
-
-    @Resource
-    private MbWithdrawLogServiceI mbWithdrawLogService;
 
     @Resource
     private DriverOrderShopServiceI driverOrderPShopService;
@@ -76,7 +55,7 @@ public class ApiDriverBalanceController extends BaseController {
      * @param  balanceLog
      * @return
      */
-    @RequestMapping("/viewDeliverBanlanceLogDetial")
+    @RequestMapping("/viewDriverBanlanceLogDetial")
     @ResponseBody
     public Json viewBanlanceLogDetial(MbBalanceLog balanceLog) {
 
@@ -97,9 +76,9 @@ public class ApiDriverBalanceController extends BaseController {
      * @param pageHelper
      * @return
      */
-    @RequestMapping("/viewDeliverBanlanceLogDataGrid")
+    @RequestMapping("/viewDriverBanlanceLogDataGrid")
     @ResponseBody
-    public Json viewDeliverBanlanceLogDataGrid(String date,PageHelper pageHelper, HttpServletRequest request) {
+    public Json viewDriverBanlanceLogDataGrid(String date,PageHelper pageHelper, HttpServletRequest request) {
         Json j = new Json();
         DataGrid dataGrid;
         MbBalanceLog mbBalanceLog = new MbBalanceLog();
@@ -156,7 +135,7 @@ public class ApiDriverBalanceController extends BaseController {
 
         Map<String, Object> objectMap = new HashMap<String, Object>();
         if (!F.empty(accountId)) {
-            objectMap.put("deliverBalance", mbBalanceService.addOrGetDriverBalance(accountId));
+            objectMap.put("driverBalance", mbBalanceService.addOrGetDriverBalance(accountId));
             j.setObj(objectMap);
             j.setMsg("u know");
             j.setSuccess(true);
