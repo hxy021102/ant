@@ -77,24 +77,30 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
                 shop.setLatitude(point[1]);
             }
         }
-        //4. 计算最短距离
+        //4. 距离
         double maxDistance = Double.valueOf(ConvertNameUtil.getString("DDSV001", "5000"));;
 
         //5. 筛选出符合条件的骑手
         for (DriverAccount account : driverAccounts) {
             String titude = (String) redisUtil.getString(Key.build(Namespace.DRIVER_REALTIME_LOCATION, account.getId().toString()));
 
+            //无坐标信息则不分单
+            if (F.empty(titude)) continue;
+
             Double driverLongtitude = Double.parseDouble(titude.split(",")[0]);
             Double driverLatitude = Double.parseDouble(titude.split(",")[1]);
 
             double distance = GeoUtil.getDistance(driverLongtitude, driverLatitude,
                     shop.getLongitude().doubleValue(), shop.getLatitude().doubleValue());
+            //6. 分配订单
             if (distance < maxDistance) {
                 Calendar today = Calendar.getInstance();
                 String todayStr = today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH)
                         + "-" + today.get(Calendar.DAY_OF_MONTH);
                 redisUtil.setList(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, account.getId().toString() + ":" + todayStr),
                         driverOrderShop.getId().toString());
+                redisUtil.expire(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, account.getId().toString() + ":" + todayStr),
+                        Integer.parseInt(ConvertNameUtil.getString("DDSV101","100")), TimeUnit.SECONDS);
             }
         }
 
