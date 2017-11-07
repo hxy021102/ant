@@ -364,9 +364,6 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 					}
 					salesReport.setBackMoney(salesReport.getBackMoney() + rf.getQuantity() * price);
 
-					if (!F.empty(salesReport.getTotalPrice())) {
-						salesReport.setTotalPrice(salesReport.getTotalPrice() - salesReport.getBackMoney());
-					}
 					if (costPrice != null) {
 						salesReport.setTotalCost(salesReport.getTotalCost() - rf.getQuantity() * costPrice);
 					}
@@ -398,7 +395,12 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 				salesReport.setSalesQuantity(salesReport.getQuantity());
 			}
 
-			salesReport.setTotalPrice(map.get(key).getTotalPrice());
+
+			if(F.empty(salesReport.getBackMoney())){
+				salesReport.setTotalPrice(map.get(key).getTotalPrice());
+			}else {
+				salesReport.setTotalPrice(map.get(key).getTotalPrice() - salesReport.getBackMoney());
+			}
 
 			if(!F.empty(salesReport.getSalesQuantity())) {
 				salesReport.setAvgPrice(salesReport.getTotalPrice() / salesReport.getSalesQuantity());
