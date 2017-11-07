@@ -33,6 +33,11 @@
                 field : 'ck',
                 checkbox:true,
                 width : 30
+            },{
+                field : 'deliverOrderId',
+                title : '运单ID',
+                width : 30,
+				hidden:true,
             }, {
                 field : 'id',
                 title : '订单ID',
@@ -50,12 +55,8 @@
                 title : '状态',
                 width : 50
             },{
-                field : 'deliveryStatusName',
-                title : '配送状态',
-                width : 50
-            },{
                 field : 'shopPayStatusName',
-                title : '门店结算状态',
+                title : '门店结算',
                 width : 50
             },{
                 field : 'amount',
@@ -84,11 +85,11 @@
         var deliverOrderIds = new Array(rows.length);
         for (var i = 0; i < rows.length; i++) {
             totalAmount += rows[i].amount;
-            deliverOrderIds[i] = rows[i].id;
+            deliverOrderIds[i] = rows[i].deliverOrderId;
         }
         shopOrderBillQuery.deliverOrderIds=deliverOrderIds;
         shopOrderBillQuery.amount=totalAmount;
-        shopOrderBillQuery.deliverOrderList=rows;
+        shopOrderBillQuery.deliverOrderShopList=rows;
          parent.$.messager.confirm("询问","总金额："+$.formatMoney(totalAmount) +"<br/>起始时间："+shopOrderBillQuery.startDate+"<br/>结束时间:"+shopOrderBillQuery.endDate+"<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>是否确认创建账单?</strong>",function (result) {
            if(result)  {
         $.ajax({

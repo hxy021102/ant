@@ -649,7 +649,7 @@
                 id = rows[0].id;
             }
             parent.$.modalDialog({
-                title : '审核派单',
+                title : '商品审核',
                 width : 780,
                 height : 300,
                 href : '${pageContext.request.contextPath}/shopItemController/examinePage?id=' + id,
