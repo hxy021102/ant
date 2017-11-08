@@ -71,18 +71,15 @@
                     width : 50,
                     align:"right",
                     formatter:function(value,row){
-                        if(row.backMoney){
-                            value = value - row.backMoney;
-                        }
                         return $.formatMoney(value);
                     }
                 }, {
-                    field : 'totalPrice1',
+                    field : 'avgPrice',
                     title : '销售单价',
                     width : 50,
                     align:"right",
                     formatter:function(value,row){
-                        return $.formatMoney(parseInt(row.totalPrice/row.salesQuantity));
+                        return $.formatMoney(value);
                     }
                 }, {
                     field : 'totalCost',
@@ -93,20 +90,20 @@
                         return $.formatMoney(value);
                     }
                 }, {
-                    field : 'totalCost2',
+                    field : 'avgCost',
                     title : '成本单价',
                     width : 50,
                     align:"right",
                     formatter:function(value,row){
-                        return $.formatMoney(parseInt(row.totalCost/row.salesQuantity));
+                        return $.formatMoney(value);
                     }
                 }, {
-                    field : 'totalCost1',
+                    field : 'profit',
                     title : '毛利',
                     width : 50,
                     align:"right",
                     formatter:function(value,row){
-                        return $.formatMoney(parseInt(row.totalPrice-row.totalCost));
+                        return $.formatMoney(value);
                     }
                 } ] ],
                 toolbar : '#toolbar',
@@ -182,7 +179,8 @@
                             <option value=""></option>
                             <option value="OD20">已发货</option>
                             <option value="OD35,OD30">已签收</option>
-                            <option value="OD40">未付款</option>
+                            <option value="OD40">已完成</option>
+                            <option value="OD41">未付款</option>
                         </select>
                     </td>
                     <th>发货仓库</th>

@@ -23,6 +23,15 @@ public class MbSalesReport implements java.io.Serializable{
     //退回商品金额
     private Integer backMoney;
 
+    //平均销售价格
+    private Integer avgPrice;
+
+    //平均成本
+    private Integer avgCost;
+
+    //毛利
+    private Integer profit;
+
     /**
      * 进货成本
      */
@@ -164,5 +173,29 @@ public class MbSalesReport implements java.io.Serializable{
 
     public void setShopId(Integer shopId) {
         this.shopId = shopId;
+    }
+
+    public Integer getAvgPrice() {
+        return avgPrice;
+    }
+
+    public void setAvgPrice(Integer avgPrice) {
+        this.avgPrice = avgPrice;
+    }
+
+    public Integer getAvgCost() {
+        return avgCost;
+    }
+
+    public void setAvgCost(Integer avgCost) {
+        this.avgCost = avgCost;
+    }
+
+    public Integer getProfit() {
+        return profit;
+    }
+
+    public void setProfit(Integer profit) {
+        this.profit = profit;
     }
 }

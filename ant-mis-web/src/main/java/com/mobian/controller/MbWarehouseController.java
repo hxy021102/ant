@@ -188,11 +188,12 @@ public class MbWarehouseController extends BaseController {
 		List<MbWarehouse> rows = diveRegionList.getRows();
 		if (!CollectionUtils.isEmpty(rows)) {
 			for (MbWarehouse d : rows) {
-				Tree tree = new Tree();
+				ItemTree tree = new ItemTree();
 				tree.setId(d.getId() + "");
 				tree.setPid(d.getRegionId() + "");
 				tree.setText(d.getName());
 				tree.setParentName(d.getRegionPath());
+				tree.setCode(d.getCode());
 				lt.add(tree);
 			}
 		}
