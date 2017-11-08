@@ -16,6 +16,11 @@
             $.canDelete = true;
         </script>
     </c:if>
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/shopItemController/delete')}">
+        <script type="text/javascript">
+            $.canDeleteShopItem = true;
+        </script>
+    </c:if>
     <c:if test="${fn:contains(sessionInfo.resourceList, '/mbShopInvoiceController/view')}">
         <script type="text/javascript">
             $.canView = true;
@@ -554,6 +559,7 @@
                 striped : true,
                 rownumbers : true,
                 singleSelect : true,
+                toolbar:'#shopItemToolbar',
                 columns : [ [{
                     field : 'id',
                     title : '编号',
@@ -631,6 +637,9 @@
                         str += '&nbsp;';
                         if ($.examineShopItem && row.status == "SIS01" && row.online == false) {
                             str += $.formatString('<img onclick="examineFun(\'{0}\');" src="{1}" title="审核"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/joystick.png');
+                        }str += '&nbsp;';
+                        if ($.canDeleteShopItem) {
+                            str += $.formatString('<img onclick="deleteShopItemFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/cancel.png');
                         }
                         return str;
                     }
@@ -810,6 +819,23 @@
                 }]
             });
         }
+
+        function addShopItemFun(id) {
+            parent.$.modalDialog({
+                title: '添加数据',
+                width: 780,
+                height: 500,
+                href: '${pageContext.request.contextPath}/shopItemController/addPage?shopId=' + id,
+                buttons: [{
+                    text: '添加',
+                    handler: function () {
+                        parent.$.modalDialog.openner_dataGrid = deliverShopItemDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                        var f = parent.$.modalDialog.handler.find('#form');
+                        f.submit();
+                    }
+                }]
+            });
+        }
         function addShopCouponsFun(shopId) {
             parent.$.modalDialog({
                 title: '添加券',
@@ -839,6 +865,26 @@
                 $('#showAllShopCouponsButton').html('显示所有券票');
                 $('#showAllShopCouponsButton').attr('data-options',"plain:true,iconCls:'find'");
             }
+        }
+
+        function deleteShopItemFun(id){
+            parent.$.messager.confirm('询问', '您是否要删除当前数据？', function (b) {
+                if (b) {
+                    parent.$.messager.progress({
+                        title: '提示',
+                        text: '数据处理中，请稍后....'
+                    });
+                    $.post('${pageContext.request.contextPath}/shopItemController/delete', {
+                        id: id
+                    }, function (result) {
+                        if (result.success) {
+                            parent.$.messager.alert('提示', result.msg, 'info');
+                            deliverShopItemDataGrid.datagrid('reload');
+                        }
+                        parent.$.messager.progress('close');
+                    }, 'JSON');
+                }
+            });
         }
         function deleteFun(id) {
             if (id == undefined) {
@@ -1196,6 +1242,12 @@
 <div id="toolbar">
     <c:if test="${fn:contains(sessionInfo.resourceList, '/mbShopInvoiceController/addPage')}">
         <a onclick="addFun(' + ${mbShopExt.id}+ ');" href="javascript:void(0);" class="easyui-linkbutton"
+           data-options="plain:true,iconCls:'pencil_add'">添加</a>
+    </c:if>
+</div>
+<div id="shopItemToolbar">
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/shopItemController/addPage')}">
+        <a onclick="addShopItemFun(' + ${mbShopExt.id}+ ');" href="javascript:void(0);" class="easyui-linkbutton"
            data-options="plain:true,iconCls:'pencil_add'">添加</a>
     </c:if>
 </div>
