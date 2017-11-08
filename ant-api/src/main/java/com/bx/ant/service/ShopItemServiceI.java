@@ -24,14 +24,14 @@ public interface ShopItemServiceI {
 	 *            分页帮助类
 	 * @return
 	 */
-	public DataGrid dataGrid(ShopItem shopItem, PageHelper ph);
+	DataGrid dataGrid(ShopItem shopItem, PageHelper ph);
 
 	/**
 	 * 添加ShopItem
 	 * 
 	 * @param shopItem
 	 */
-	public void add(ShopItem shopItem);
+	void add(ShopItem shopItem);
 
 	/**
 	 * 获得ShopItem对象
@@ -39,21 +39,21 @@ public interface ShopItemServiceI {
 	 * @param id
 	 * @return
 	 */
-	public ShopItem get(Integer id);
+	ShopItem get(Integer id);
 
 	/**
 	 * 修改ShopItem
 	 * 
 	 * @param shopItem
 	 */
-	public void edit(ShopItem shopItem);
+	void edit(ShopItem shopItem);
 
 	/**
 	 * 删除ShopItem
 	 * 
 	 * @param id
 	 */
-	public void delete(Integer id);
+	void delete(Integer id);
 
 	/**
 	 * 通过门店Id和商品Id和上架状态获取门店商品
@@ -160,7 +160,8 @@ public interface ShopItemServiceI {
 	 * deliverOrder必须包含:id,shopId属性
 	 * @param deliverOrder
 	 */
-	void refundByDeliverOrder(DeliverOrder deliverOrder);
+	void updateForRefundByDeliverOrder(DeliverOrder deliverOrder);
 
-    void updateQunatity(ShopItem shopItem);
+
+    void updateQuantity(ShopItem shopItem);
 }
