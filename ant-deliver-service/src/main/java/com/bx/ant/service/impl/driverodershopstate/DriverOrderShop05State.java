@@ -1,6 +1,7 @@
 package com.bx.ant.service.impl.driverodershopstate;
 
 import com.bx.ant.pageModel.DriverOrderShop;
+import com.bx.ant.service.DriverOrderShopAllocationServiceI;
 import com.bx.ant.service.DriverOrderShopServiceI;
 import com.bx.ant.service.DriverOrderShopState;
 import com.bx.ant.service.impl.DeliverOrderServiceImpl;
@@ -25,6 +26,9 @@ public class DriverOrderShop05State implements DriverOrderShopState {
     @Resource
     private DriverOrderShopServiceI driverOrderShopSerivce;
 
+    @Autowired
+    private DriverOrderShopAllocationServiceI driverOrderShopAllocationService;
+
 
     @Override
     public String getStateName() {
@@ -33,6 +37,7 @@ public class DriverOrderShop05State implements DriverOrderShopState {
 
     @Override
     public void handle(DriverOrderShop driverOrderShop) {
+        //1. 绑定骑手并编辑状态
         if (F.empty(driverOrderShop.getDriverAccountId())) {
             throw new ServiceException("DriverOrderShopState05状态缺少必要数据:driverOrderShop.driverAccountId");
         }
@@ -40,6 +45,11 @@ public class DriverOrderShop05State implements DriverOrderShopState {
         orderShop.setStatus(prefix + getStateName());
         orderShop.setDriverAccountId(driverOrderShop.getDriverAccountId());
         driverOrderShopSerivce.edit(orderShop);
+
+        //2. 删除redis中所有订单记录
+       driverOrderShopAllocationService.clearOrderAllocation(driverOrderShop.getId());
+
+
     }
 
     @Override

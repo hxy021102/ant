@@ -103,11 +103,11 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 			if (driverOrderShop instanceof DriverOrderShopView) {
 				DriverOrderShopView driverOrderShopView = (DriverOrderShopView) driverOrderShop;
 				if (driverOrderShopView.getUpdatetimeBegin() != null) {
-					whereHql += " and t.updatetimeBegin >= :updatetimeBegin";
+					whereHql += " and t.updatetime >= :updatetimeBegin";
 					params.put("updatetimeBegin", driverOrderShopView.getUpdatetimeBegin());
 				}
 				if (driverOrderShopView.getUpdatetimeEnd() != null) {
-					whereHql += " and t.updatetimeEnd <= :updatetimeEnd";
+					whereHql += " and t.updatetime <= :updatetimeEnd";
 					params.put("updatetimeEnd", driverOrderShopView.getUpdatetimeEnd());
 				}
 			}

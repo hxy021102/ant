@@ -86,7 +86,6 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                 deliverOrder.setLongitude(point[0]);
                 deliverOrder.setLatitude(point[1]);
             }
-
         }
         //4、计算最近距离点
 //        MbShop minMbShop = null;

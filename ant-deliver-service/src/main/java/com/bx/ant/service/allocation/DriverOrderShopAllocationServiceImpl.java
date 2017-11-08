@@ -1,4 +1,4 @@
-package com.bx.ant.service.impl;
+package com.bx.ant.service.allocation;
 
 import com.bx.ant.pageModel.DriverAccount;
 import com.bx.ant.pageModel.DriverOrderShop;
@@ -14,6 +14,7 @@ import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.thirdpart.redis.RedisUtil;
 import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.GeoUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +63,25 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
         }
     }
 
+    @Override
+    public Integer clearOrderAllocation(Long driverOrderShopId) {
+        Integer count = new Integer(0);
+        //1. 获取骑手
+        List<DriverAccount> driverAccounts = driverAccountService.getAvilableAndWorkDriver();
+
+        //2. 删除对应的driverOrderShopId
+       if (CollectionUtils.isNotEmpty(driverAccounts)) {
+           Calendar today = Calendar.getInstance();
+           String todayStr = today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH)
+                   + "-" + today.get(Calendar.DAY_OF_MONTH);
+           for (DriverAccount account : driverAccounts) {
+              boolean b = redisUtil.removeZSet(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, account.getId().toString() + ":" + todayStr), driverOrderShopId);
+              if (b) count++;
+           }
+       }
+        return count;
+    }
+
     protected void allocationDriverOrder(DriverOrderShopView driverOrderShop) {
         //2. 获取骑手
         List<DriverAccount> driverAccounts = driverAccountService.getAvilableAndWorkDriver();
@@ -97,13 +117,12 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
                 Calendar today = Calendar.getInstance();
                 String todayStr = today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH)
                         + "-" + today.get(Calendar.DAY_OF_MONTH);
-                redisUtil.setList(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, account.getId().toString() + ":" + todayStr),
+                redisUtil.addSet(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, account.getId().toString() + ":" + todayStr),
                         driverOrderShop.getId().toString());
                 redisUtil.expire(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, account.getId().toString() + ":" + todayStr),
                         Integer.parseInt(ConvertNameUtil.getString("DDSV101","100")), TimeUnit.SECONDS);
             }
         }
-
-
     }
+
 }
