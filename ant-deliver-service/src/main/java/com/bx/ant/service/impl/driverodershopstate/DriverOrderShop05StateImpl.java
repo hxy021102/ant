@@ -4,23 +4,21 @@ import com.bx.ant.pageModel.DriverOrderShop;
 import com.bx.ant.service.DriverOrderShopAllocationServiceI;
 import com.bx.ant.service.DriverOrderShopServiceI;
 import com.bx.ant.service.DriverOrderShopState;
-import com.bx.ant.service.impl.DeliverOrderServiceImpl;
 import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.sql.rowset.serial.SerialException;
 
 /**
  * 接单
  * Created by w9777 on 2017/11/6.
  */
-@Service(value = "driverOrderShop05State")
-public class DriverOrderShop05State implements DriverOrderShopState {
+@Service(value = "driverOrderShop05StateImpl")
+public class DriverOrderShop05StateImpl implements DriverOrderShopState {
 
-    @Resource(name = "driverOrderShop10State")
+    @Resource(name = "driverOrderShop10StateImpl")
     private DriverOrderShopState driverOrderShopState10;
 
     @Resource
@@ -42,12 +40,14 @@ public class DriverOrderShop05State implements DriverOrderShopState {
             throw new ServiceException("DriverOrderShopState05状态缺少必要数据:driverOrderShop.driverAccountId");
         }
         DriverOrderShop orderShop = new DriverOrderShop();
+        orderShop.setId(driverOrderShop.getId());
         orderShop.setStatus(prefix + getStateName());
         orderShop.setDriverAccountId(driverOrderShop.getDriverAccountId());
         driverOrderShopSerivce.edit(orderShop);
 
         //2. 删除redis中所有订单记录
-       driverOrderShopAllocationService.clearOrderAllocation(driverOrderShop.getId());
+
+       driverOrderShopAllocationService.editClearOrderAllocation(driverOrderShop.getId());
 
 
     }

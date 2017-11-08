@@ -339,8 +339,13 @@ public class ApiDriverAccountController extends BaseController {
     public Json updateLocation(String longitude, String latitude, HttpServletRequest request) {
         Json json = new Json();
 
-        TokenWrap tokenWrap = getTokenWrap(request);
-        Integer accountId = Integer.parseInt(tokenWrap.getUid());
+        //TODO 正式使用需更更改为
+//        TokenWrap tokenWrap = getTokenWrap(request);
+//        String accountId = tokenWrap.getUid();
+        String accountId = "2";
+        longitude = "121.553894";
+        latitude = "31.190966";
+
         if (!F.empty(latitude) && !F.empty(longitude)) {
             redisUtil.set(Key.build(Namespace.DRIVER_REALTIME_LOCATION, accountId.toString()),
                     longitude + "," + latitude, Integer.parseInt(ConvertNameUtil.getString("DDSV100", "10")), TimeUnit.SECONDS);

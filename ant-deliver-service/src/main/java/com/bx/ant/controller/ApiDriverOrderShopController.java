@@ -73,18 +73,17 @@ public class ApiDriverOrderShopController extends BaseController {
         //TODO 需修改为正常
 //        TokenWrap token = getTokenWrap(request);
 //        String accountId = token.getUid();
-        String accountId = "1";
+        String accountId = "2";
         Calendar today = Calendar.getInstance();
-        String todayStr = today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-" + today.get(Calendar.DAY_OF_MONTH);
+        String todayStr = today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-"
+                + today.get(Calendar.DAY_OF_MONTH);
 
-//        Set<String> orderIdSet = redisUtil.getAllSet(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, accountId + ":" +  todayStr));
-        Set<String> orderIdSet = new HashSet<String>();
-        orderIdSet.add("1");
-        orderIdSet.add("2");
+        Set<String> orderIdSet = redisUtil.getAllSet(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE,
+                accountId + ":" +  todayStr));
         if (CollectionUtils.isNotEmpty(orderIdSet)) {
             for (String orderId : orderIdSet) {
                 DriverOrderShop o = driverOrderShopService.getView(Long.parseLong(orderId));
-                if (o != null) {
+                if (o != null && DriverOrderShopServiceI.STATUS_STANDBY.equals(o.getStatus())) {
                     ol.add(o);
                 }
             }
@@ -190,7 +189,7 @@ public class ApiDriverOrderShopController extends BaseController {
         json.setObj(path);
         return json;
     }
-//
+
 //    /**
 //     * 新订单数量
 //     * @param request

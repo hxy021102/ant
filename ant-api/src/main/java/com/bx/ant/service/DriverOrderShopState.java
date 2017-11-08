@@ -7,7 +7,7 @@ import com.bx.ant.pageModel.DriverOrderShop;
  */
 public interface DriverOrderShopState {
     ThreadLocal<DriverOrderShop> driverOrderShop = new ThreadLocal();
-    String prefix = "DDOS";
+    String prefix = "DDSS";
 
     String getStateName();
 

@@ -23,7 +23,7 @@ public class DriverOrderShopView extends DriverOrderShop {
     }
 
     public String getPayStatusName() {
-        return ConvertNameUtil.getString(super.getStatus());
+        return ConvertNameUtil.getString(super.getPayStatus());
     }
 
     public void setPayStatusName(String payStatusName) {

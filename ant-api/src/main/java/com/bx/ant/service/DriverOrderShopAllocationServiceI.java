@@ -15,5 +15,5 @@ public interface DriverOrderShopAllocationServiceI {
      * @param driverOrderShopId
      * @return 删除次数
      */
-    Integer clearOrderAllocation(Long driverOrderShopId);
+    Integer editClearOrderAllocation(Long driverOrderShopId);
 }

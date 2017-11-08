@@ -11,10 +11,10 @@ import javax.annotation.Resource;
  * 派送/发货
  * Created by w9777 on 2017/11/6.
  */
-@Service(value = "driverOrderShop10State")
-public class DriverOrderShop10State implements DriverOrderShopState {
+@Service(value = "driverOrderShop10StateImpl")
+public class DriverOrderShop10StateImpl implements DriverOrderShopState {
 
-    @Resource(name = "driverOrderShop20State")
+    @Resource(name = "driverOrderShop20StateImpl")
     private DriverOrderShopState driverOrderShopState20;
 
     @Resource
@@ -29,6 +29,7 @@ public class DriverOrderShop10State implements DriverOrderShopState {
     @Override
     public void handle(DriverOrderShop driverOrderShop) {
         DriverOrderShop orderShop = new DriverOrderShop();
+        orderShop.setId(driverOrderShop.getId());
         orderShop.setStatus(prefix + getStateName());
         driverOrderShopSerivce.edit(orderShop);
     }

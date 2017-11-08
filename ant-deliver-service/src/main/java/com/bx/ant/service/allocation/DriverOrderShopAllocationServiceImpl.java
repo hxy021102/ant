@@ -64,7 +64,7 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
     }
 
     @Override
-    public Integer clearOrderAllocation(Long driverOrderShopId) {
+    public Integer editClearOrderAllocation(Long driverOrderShopId) {
         Integer count = new Integer(0);
         //1. 获取骑手
         List<DriverAccount> driverAccounts = driverAccountService.getAvilableAndWorkDriver();
@@ -75,7 +75,8 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
            String todayStr = today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH)
                    + "-" + today.get(Calendar.DAY_OF_MONTH);
            for (DriverAccount account : driverAccounts) {
-              boolean b = redisUtil.removeZSet(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, account.getId().toString() + ":" + todayStr), driverOrderShopId);
+              boolean b = redisUtil.removeZSet(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, account.getId().toString()
+                      + ":" + todayStr), driverOrderShopId.toString());
               if (b) count++;
            }
        }
@@ -120,7 +121,7 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
                 redisUtil.addSet(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, account.getId().toString() + ":" + todayStr),
                         driverOrderShop.getId().toString());
                 redisUtil.expire(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, account.getId().toString() + ":" + todayStr),
-                        Integer.parseInt(ConvertNameUtil.getString("DDSV101","100")), TimeUnit.SECONDS);
+                        Integer.parseInt(ConvertNameUtil.getString("DDSV101","10")), TimeUnit.SECONDS);
                 logger.debug(String.format("订单:%1s分发给:%2s成功" ,driverOrderShop.getDeliverOrderShopId(), account.getId()));
             }
         }

@@ -283,6 +283,7 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		DeliverOrderShopView deliverOrderShopView = new DeliverOrderShopView();
 		BeanUtils.copyProperties(deliverOrderShop, deliverOrderShopView);
 		fillShopItemInfo(deliverOrderShopView);
+//		fillDeliverOrderInfo(deliverOrderShopView);
 		return deliverOrderShopView;
 	}
 
@@ -292,6 +293,11 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		List<DeliverOrderShopItem> deliverOrderShopItems = deliverOrderShopItemSerivce.dataGridWithName(deliverOrderShopItem, new PageHelper()).getRows();
 		deliverOrderShopView.setDeliverOrderShopItemList(deliverOrderShopItems);
 	}
+//
+//	protected void fillDeliverOrderInfo(DriverOrderShopView driverOrderShopView) {
+//
+//	}
+
 	@Override
 	public void settleShopPay() {
 		//1. 找到所有超时门店订单
