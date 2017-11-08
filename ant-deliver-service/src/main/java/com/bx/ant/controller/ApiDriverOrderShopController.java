@@ -6,6 +6,7 @@ import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DriverOrderShopServiceI;
 import com.mobian.absx.F;
+import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.thirdpart.redis.Key;
@@ -32,10 +33,6 @@ import java.util.*;
 public class ApiDriverOrderShopController extends BaseController {
     public static final String ORDER_COMPLETE = "orderComplete";
 
-
-    @Autowired
-    private DeliverOrderServiceI deliverOrderService;
-
     @Autowired
     private DriverOrderShopServiceI driverOrderShopService;
 
@@ -48,9 +45,11 @@ public class ApiDriverOrderShopController extends BaseController {
         Json json = new Json();
 
         //获取accountId
-        TokenWrap token = getTokenWrap(request);
-        String accountId = token.getUid();
-        driverOrderShop.setDriverAccountId(Integer.parseInt(accountId));
+// TODO 正式使用将使用uid
+//        TokenWrap token = getTokenWrap(request);
+//        Integer accountId  = Integer.parseInt(token.getUid());
+        Integer accountId = 2;
+        driverOrderShop.setDriverAccountId(accountId);
 
         if (F.empty(pageHelper.getSort())) {
             pageHelper.setSort("updatetime");
@@ -67,6 +66,7 @@ public class ApiDriverOrderShopController extends BaseController {
     @ResponseBody
     public Json getAuditOrder(HttpServletRequest request) {
         Json json = new Json();
+        DataGrid dataGrid = new DataGrid();
         List<DriverOrderShop> ol = new ArrayList<DriverOrderShop>();
 
         //获取accountId
@@ -88,10 +88,12 @@ public class ApiDriverOrderShopController extends BaseController {
                     ol.add(o);
                 }
             }
+            dataGrid.setRows(ol);
         }
+
         json.setSuccess(true);
         json.setMsg("OK");
-        json.setObj(ol);
+        json.setObj(dataGrid);
         return json;
     }
 
@@ -105,9 +107,10 @@ public class ApiDriverOrderShopController extends BaseController {
     @ResponseBody
     public Json takeOrder(HttpServletRequest request, Long id){
         Json json = new Json();
-
-        TokenWrap token = getTokenWrap(request);
-        Integer accountId  = Integer.parseInt(token.getUid());
+// TODO 正式使用将使用uid
+//        TokenWrap token = getTokenWrap(request);
+//        Integer accountId  = Integer.parseInt(token.getUid());
+        Integer accountId = 2;
         DriverOrderShop driverOrderShop = new DriverOrderShop();
         driverOrderShop.setId(id);
         driverOrderShop.setDriverAccountId(accountId);
@@ -131,8 +134,10 @@ public class ApiDriverOrderShopController extends BaseController {
     public Json sendOutOrder(HttpServletRequest request, Long id){
         Json json = new Json();
 
-        TokenWrap token = getTokenWrap(request);
-        Integer accountId  = Integer.parseInt(token.getUid());
+// TODO 正式使用将使用uid
+//        TokenWrap token = getTokenWrap(request);
+//        Integer accountId  = Integer.parseInt(token.getUid());
+        Integer accountId = 2;
         DriverOrderShop driverOrderShop = new DriverOrderShop();
         driverOrderShop.setId(id);
         driverOrderShop.setDriverAccountId(accountId);
@@ -154,8 +159,10 @@ public class ApiDriverOrderShopController extends BaseController {
     public Json completeOrder(HttpServletRequest request, Long id ){
         Json json = new Json();
 
-        TokenWrap token = getTokenWrap(request);
-        Integer accountId  = Integer.parseInt(token.getUid());
+// TODO 正式使用将使用uid
+//        TokenWrap token = getTokenWrap(request);
+//        Integer accountId  = Integer.parseInt(token.getUid());
+        Integer accountId = 2;
         DriverOrderShop driverOrderShop = new DriverOrderShop();
         driverOrderShop.setId(id);
         driverOrderShop.setDriverAccountId(accountId);
