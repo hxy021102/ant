@@ -39,11 +39,11 @@
 				<tr>
 					<th>门店运单</th>
 					<td>
-						<input class="span2" name="deliverOrderShopId" type="text"/>
+						<input class="span2" name="deliverOrderShopId" type="number"/>
 					</td>							
 					<th>门店</th>
 					<td>
-						<input class="span2" name="shopId" type="text"/>
+						<input class="span2" name="shopId" type="number"/>
 					</td>							
 				</tr>	
 				<tr>	
@@ -63,7 +63,7 @@
 					</td>							
 					<th>支付账单</th>
 					<td>
-						<input class="span2" name="driverOrderShopBillId" type="text"/>
+						<input class="span2" name="driverOrderShopBillId" type="number"/>
 					</td>							
 				</tr>
 				<tr>

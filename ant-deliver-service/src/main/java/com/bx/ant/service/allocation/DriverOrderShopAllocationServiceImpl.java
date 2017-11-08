@@ -87,7 +87,7 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
         List<DriverAccount> driverAccounts = driverAccountService.getAvilableAndWorkDriver();
 
         //3. 门店数字地址
-        MbShop shop = mbShopService.getFromCache(driverOrderShop.getDeliverOrderShop().getShopId());
+        MbShop shop = mbShopService.getFromCache(driverOrderShop.getShopId());
         if (shop == null) throw new ServiceException("信息不全driverOrderShop.getDeliverOrderShop().getShopId()无法获取门店");
         if ((shop.getLongitude() == null || shop.getLatitude() == null)
                 && !F.empty(shop.getAddress())) {
@@ -104,7 +104,7 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
         for (DriverAccount account : driverAccounts) {
             String titude = (String) redisUtil.getString(Key.build(Namespace.DRIVER_REALTIME_LOCATION, account.getId().toString()));
 
-            //无坐标信息则不分单
+            //5.1 无坐标信息则不分单
             if (F.empty(titude)) continue;
 
             Double driverLongtitude = Double.parseDouble(titude.split(",")[0]);
@@ -121,8 +121,8 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
                         driverOrderShop.getId().toString());
                 redisUtil.expire(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, account.getId().toString() + ":" + todayStr),
                         Integer.parseInt(ConvertNameUtil.getString("DDSV101","100")), TimeUnit.SECONDS);
+                logger.debug(String.format("订单:%1s分发给:%2s成功" ,driverOrderShop.getDeliverOrderShopId(), account.getId()));
             }
         }
     }
-
 }

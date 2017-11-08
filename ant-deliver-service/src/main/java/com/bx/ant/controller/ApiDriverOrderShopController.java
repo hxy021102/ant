@@ -8,6 +8,10 @@ import com.bx.ant.service.DriverOrderShopServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
+import com.mobian.thirdpart.redis.Key;
+import com.mobian.thirdpart.redis.Namespace;
+import com.mobian.thirdpart.redis.RedisUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 /**
  * Created by  wanxp 2017/9/22.
@@ -34,13 +39,15 @@ public class ApiDriverOrderShopController extends BaseController {
     @Autowired
     private DriverOrderShopServiceI driverOrderShopService;
 
+    @Autowired
+    private RedisUtil redisUtil;
+
     @RequestMapping("/dataGrid")
     @ResponseBody
     public Json dataGrid(DriverOrderShop driverOrderShop, HttpServletRequest request, PageHelper pageHelper) {
         Json json = new Json();
 
-        //获取shopId
-        //TODO 测试时设置shop ID值,若真正使用从token中获取
+        //获取accountId
         TokenWrap token = getTokenWrap(request);
         String accountId = token.getUid();
         driverOrderShop.setDriverAccountId(Integer.parseInt(accountId));
@@ -53,6 +60,38 @@ public class ApiDriverOrderShopController extends BaseController {
         json.setMsg("u know");
         json.setObj(driverOrderShopService.dataGridView(driverOrderShop, pageHelper));
         json.setSuccess(true);
+        return json;
+    }
+
+    @RequestMapping("/viewAuditOrder")
+    @ResponseBody
+    public Json getAuditOrder(HttpServletRequest request) {
+        Json json = new Json();
+        List<DriverOrderShop> ol = new ArrayList<DriverOrderShop>();
+
+        //获取accountId
+        //TODO 需修改为正常
+        TokenWrap token = getTokenWrap(request);
+        String accountId = token.getUid();
+//        String accountId = "3";
+        Calendar today = Calendar.getInstance();
+        String todayStr = today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-" + today.get(Calendar.DAY_OF_MONTH);
+
+//        Set<String> orderIdSet = redisUtil.getAllSet(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, accountId + ":" +  todayStr));
+        Set<String> orderIdSet = new HashSet<String>();
+        orderIdSet.add("1");
+        orderIdSet.add("2");
+        if (CollectionUtils.isNotEmpty(orderIdSet)) {
+            for (String orderId : orderIdSet) {
+                DriverOrderShop o = driverOrderShopService.getView(Long.parseLong(orderId));
+                if (o != null) {
+                    ol.add(o);
+                }
+            }
+        }
+        json.setSuccess(true);
+        json.setMsg("OK");
+        json.setObj(ol);
         return json;
     }
 
