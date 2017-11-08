@@ -8,6 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html>
 <head lang="en">
@@ -107,9 +108,9 @@
         </tr>
         <tr>
             <td align="left" width="15%">&nbsp;&nbsp;&nbsp;订单时间：</td>
-            <td width="35%">${mbOrder.addtime}</td>
-            <td align="left" width="15%">配送员：</td>
-            <td width="35%"></td>
+            <td width="35%"><fmt:formatDate value="${mbOrder.addtime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+            <td align="left" width="15%">发货仓：</td>
+            <td width="35%">${mbWarehouseName}</td>
         </tr>
         <tr>
             <td align="left" width="15%">&nbsp;&nbsp;&nbsp;订单编号：</td>

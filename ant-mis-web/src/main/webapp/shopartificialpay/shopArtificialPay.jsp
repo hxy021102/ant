@@ -109,8 +109,10 @@
                 parent.$.messager.progress('close');
                 if(result.success) {
                     parent.$.messager.alert('提示', result.msg);
+                    location.reload()
                 }else{
                     parent.$.messager.alert('错误', result.msg);
+                    location.reload()
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
