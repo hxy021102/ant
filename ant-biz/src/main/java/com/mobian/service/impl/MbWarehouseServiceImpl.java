@@ -70,11 +70,11 @@ public class MbWarehouseServiceImpl extends BaseServiceImpl<MbWarehouse> impleme
 			if (!F.empty(mbWarehouse.getCode())) {
 				whereHql += " and t.code = :code";
 				params.put("code", mbWarehouse.getCode());
-			}		
+			}
 
 			if (!F.empty(mbWarehouse.getName())) {
 				whereHql += " and t.name LIKE :name";
-				params.put("name", mbWarehouse.getName() + "%");
+				params.put("name", "%" + mbWarehouse.getName() + "%");
 			}
 			if (!F.empty(mbWarehouse.getRegionId())) {
 				whereHql += " and t.regionId = :regionId";

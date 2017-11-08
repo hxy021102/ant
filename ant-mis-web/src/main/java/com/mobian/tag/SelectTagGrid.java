@@ -59,7 +59,6 @@ public class SelectTagGrid extends TagSupport {
     @Override
     public int doStartTag() throws JspException {
         JspWriter out = pageContext.getOut();
-        DiveRegionServiceI diveRegionService = BeanUtil.getBean(DiveRegionServiceI.class);
         try {
             String _disabled = "false";
             if (!F.empty(disabled)) {
@@ -282,7 +281,8 @@ public class SelectTagGrid extends TagSupport {
             sb.append("]]");
         } else if ("warehouseId".equals(dataType)) {
             sb.append("		columns: [[");
-            sb.append("{field:'id',title:'ID',width:100},");
+            sb.append("{field:'id',title:'ID',width:30},");
+            sb.append("{field:'code',title:'代码',width:70},");
             sb.append("{field:'text',title:'名称',width:180},");
             sb.append("{field:'parentName',title:'区县',width:180}");
             sb.append("]]");
