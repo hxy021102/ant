@@ -28,7 +28,7 @@ import java.util.*;
  * 用户相关接口
  */
 @Controller
-@RequestMapping("/api/driver/driverOrderShop")
+@RequestMapping("/api/driver/orderShop")
 public class ApiDriverOrderShopController extends BaseController {
     public static final String ORDER_COMPLETE = "orderComplete";
 
@@ -71,9 +71,9 @@ public class ApiDriverOrderShopController extends BaseController {
 
         //获取accountId
         //TODO 需修改为正常
-        TokenWrap token = getTokenWrap(request);
-        String accountId = token.getUid();
-//        String accountId = "3";
+//        TokenWrap token = getTokenWrap(request);
+//        String accountId = token.getUid();
+        String accountId = "1";
         Calendar today = Calendar.getInstance();
         String todayStr = today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-" + today.get(Calendar.DAY_OF_MONTH);
 

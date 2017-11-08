@@ -156,6 +156,7 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 		DriverOrderShopView driverOrderShopView = new DriverOrderShopView();
 		if (driverOrderShop != null) {
 			BeanUtils.copyProperties(driverOrderShop, driverOrderShopView);
+			fillDeliverOrderShopInfo(driverOrderShopView);
 		}
 		return driverOrderShopView;
 	}
