@@ -56,7 +56,10 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
         int size = driverOrderShops.size();
         for (int i = 0;i < size;i++) {
             try{
-                allocationDriverOrder(driverOrderShops.get(0));
+                DriverOrderShopView driverOrderShopView = driverOrderShops.get(0);
+                allocationDriverOrder(driverOrderShopView);
+                driverOrderShopView.setStatus(DriverOrderShopServiceI.STATUS_ALLOCATION);
+                driverOrderShopService.transform(driverOrderShopView);
             }catch(Exception e){
                 logger.error("分单失败", e);
             }

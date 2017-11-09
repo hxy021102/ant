@@ -283,20 +283,38 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		DeliverOrderShopView deliverOrderShopView = new DeliverOrderShopView();
 		BeanUtils.copyProperties(deliverOrderShop, deliverOrderShopView);
 		fillShopItemInfo(deliverOrderShopView);
-//		fillDeliverOrderInfo(deliverOrderShopView);
+		fillDeliverOrderInfo(deliverOrderShopView);
 		return deliverOrderShopView;
 	}
 
+	/**
+	 * 填充商品信息
+	 * @param deliverOrderShopView
+	 */
 	protected  void fillShopItemInfo(DeliverOrderShopView deliverOrderShopView) {
 		DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
 		deliverOrderShopItem.setDeliverOrderShopId(deliverOrderShopView.getId());
 		List<DeliverOrderShopItem> deliverOrderShopItems = deliverOrderShopItemSerivce.dataGridWithName(deliverOrderShopItem, new PageHelper()).getRows();
 		deliverOrderShopView.setDeliverOrderShopItemList(deliverOrderShopItems);
 	}
-//
-//	protected void fillDeliverOrderInfo(DriverOrderShopView driverOrderShopView) {
-//
-//	}
+
+	/**
+	 * 填充order信息
+	 * @param deliverOrderShopView
+	 */
+	protected void fillDeliverOrderInfo(DeliverOrderShopView deliverOrderShopView) {
+		if (!F.empty(deliverOrderShopView.getDeliverOrderId())) {
+			DeliverOrder deliverOrder = deliverOrderService.get(deliverOrderShopView.getDeliverOrderId());
+			if (deliverOrder != null) {
+				deliverOrderShopView.setContactPeople(deliverOrder.getContactPeople());
+				deliverOrderShopView.setContactPhone(deliverOrder.getContactPhone());
+				deliverOrderShopView.setDeliverAddress(deliverOrder.getDeliveryAddress());
+				deliverOrderShopView.setDeliverRequireTime(deliverOrder.getDeliveryRequireTime());
+				deliverOrderShopView.setLongitude(deliverOrder.getLongitude());
+				deliverOrderShopView.setLatitude(deliverOrder.getLatitude());
+			}
+		}
+	}
 
 	@Override
 	public void settleShopPay() {

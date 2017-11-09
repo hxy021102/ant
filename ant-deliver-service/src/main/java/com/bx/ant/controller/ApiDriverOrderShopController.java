@@ -78,12 +78,15 @@ public class ApiDriverOrderShopController extends BaseController {
         String todayStr = today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-"
                 + today.get(Calendar.DAY_OF_MONTH);
 
-        Set<String> orderIdSet = redisUtil.getAllSet(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE,
-                accountId + ":" +  todayStr));
+//        Set<String> orderIdSet = redisUtil.getAllSet(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE,
+//                accountId + ":" +  todayStr));
+        Set<String> orderIdSet = new HashSet<String>();
+        orderIdSet.add("1");
+        orderIdSet.add("2");
         if (CollectionUtils.isNotEmpty(orderIdSet)) {
             for (String orderId : orderIdSet) {
                 DriverOrderShop o = driverOrderShopService.getView(Long.parseLong(orderId));
-                if (o != null && DriverOrderShopServiceI.STATUS_STANDBY.equals(o.getStatus())) {
+                if (o != null && DriverOrderShopServiceI.STATUS_ALLOCATION.equals(o.getStatus())) {
                     ol.add(o);
                 }
             }
