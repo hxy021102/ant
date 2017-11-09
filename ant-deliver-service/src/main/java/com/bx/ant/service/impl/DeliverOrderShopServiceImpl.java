@@ -2,6 +2,7 @@ package com.bx.ant.service.impl;
 
 import com.bx.ant.pageModel.*;
 import com.bx.ant.service.DeliverOrderServiceI;
+import com.bx.ant.service.DeliverOrderShopPayServiceI;
 import com.bx.ant.service.ShopOrderBillServiceI;
 import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderShopDaoI;
@@ -36,6 +37,8 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 	private DeliverOrderServiceI deliverOrderService;
 	@Resource
 	private ShopOrderBillServiceI shopOrderBillService;
+	@Resource
+	private DeliverOrderShopPayServiceI deliverOrderShopPayService;
 
 	@Override
 	public DataGrid dataGrid(DeliverOrderShop deliverOrderShop, PageHelper ph) {
@@ -63,7 +66,11 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 			if (!F.empty(deliverOrderShop.getTenantId())) {
 				whereHql += " and t.tenantId = :tenantId";
 				params.put("tenantId", deliverOrderShop.getTenantId());
-			}		
+			}
+			if (deliverOrderShop.getIds() != null && deliverOrderShop.getIds().length > 0) {
+				whereHql += " and t.id not in(:ids)";
+				params.put("ids", deliverOrderShop.getIds());
+			}
 			if (!F.empty(deliverOrderShop.getIsdeleted())) {
 				whereHql += " and t.isdeleted = :isdeleted";
 				params.put("isdeleted", deliverOrderShop.getIsdeleted());
@@ -80,8 +87,9 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 				whereHql += " and t.status in(:status)";
 				if (deliverOrderShop.getStatus().split(",") != null && deliverOrderShop.getStatus().split(",").length > 0) {
 					params.put("status", deliverOrderShop.getStatus().split(","));
-				} else {
-					params.put("status", deliverOrderShop.getStatus());
+					if (params.get("status") == null || " ".equals(params.get("status"))) {
+						params.put("status", deliverOrderShop.getStatus());
+					}
 				}
 			}		
 			if (!F.empty(deliverOrderShop.getAmount())) {
@@ -251,6 +259,17 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 
 	@Override
 	public DataGrid dataGridShopArtificialPay(DeliverOrderShop deliverOrderShop, PageHelper ph) {
+		DeliverOrderShopPay deliverOrderShopPay = new DeliverOrderShopPay();
+		deliverOrderShopPay.setStatus("SPS01");
+		List<DeliverOrderShopPay> deliverOrderShopPays=deliverOrderShopPayService.query(deliverOrderShopPay);
+		if(CollectionUtils.isNotEmpty(deliverOrderShopPays)){
+			Long[] deliverOrderShopIds=new Long[deliverOrderShopPays.size()];
+			int i=0;
+			for(DeliverOrderShopPay shopPay:deliverOrderShopPays){
+				deliverOrderShopIds[i++]=shopPay.getDeliverOrderShopId();
+			}
+ 		  deliverOrderShop.setIds(deliverOrderShopIds);
+		}
 		DataGrid dataGrid = dataGrid(deliverOrderShop, ph);
 		List<DeliverOrderShop> deliverOrderShops = dataGrid.getRows();
 		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {

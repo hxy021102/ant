@@ -36,6 +36,7 @@
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;">
 		<form id="form" method="post">
 			<input class="span2" name="id" type="hidden" readonly value="${id}"/>
+			<input class="span2" name="orderShopId" type="hidden" readonly value="${orderShopId}"/>
 			<table class="table table-hover table-condensed">
 				<tr>
 					<th>门店</th>

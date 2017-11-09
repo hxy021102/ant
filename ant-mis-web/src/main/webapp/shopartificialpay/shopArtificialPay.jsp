@@ -37,7 +37,6 @@
                 field : 'deliverOrderId',
                 title : '运单ID',
                 width : 30,
-				hidden:true,
             }, {
                 field : 'id',
                 title : '订单ID',
@@ -109,10 +108,12 @@
                 parent.$.messager.progress('close');
                 if(result.success) {
                     parent.$.messager.alert('提示', result.msg);
-                    location.reload()
+                    //location.reload()
+                    dataGrid.datagrid("reload");
                 }else{
                     parent.$.messager.alert('错误', result.msg);
-                    location.reload()
+                  //  location.reload()
+                    dataGrid.datagrid("reload");
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {

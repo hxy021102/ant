@@ -52,10 +52,10 @@ public class ApiDeliverBalanceController extends BaseController {
     @Autowired
     private DeliverOrderServiceI deliverOrderService;
 
-    @Autowired
+    @Resource
     private MbBalanceServiceI mbBalanceService;
 
-    @Autowired
+    @Resource
     private MbBalanceLogServiceI mbBalanceLogService;
 
     @Autowired
@@ -99,7 +99,8 @@ public class ApiDeliverBalanceController extends BaseController {
             DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
             deliverOrderShop.setDeliverOrderId(deliverOrderShopPay.getDeliverOrderId());
             deliverOrderShop.setId(deliverOrderShopPay.getDeliverOrderShopId());
-            json.setObj(deliverOrderService.getDeliverOrderExt(deliverOrderShop));
+            deliverOrderShop.setStatus("DSS04");
+            json.setObj(deliverOrderService.getBanlanceLogDetial(deliverOrderShop));
         }
         json.setMsg("u know");
         json.setSuccess(true);

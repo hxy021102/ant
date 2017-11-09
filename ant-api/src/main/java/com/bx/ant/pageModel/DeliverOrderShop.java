@@ -21,7 +21,7 @@ public class DeliverOrderShop implements java.io.Serializable {
 	private Date updatetimeBegin;
 	private Date updatetimeEnd;
 	private String shopPayStatus;
-
+    private Long[] ids;
 
 
 
@@ -121,5 +121,13 @@ public class DeliverOrderShop implements java.io.Serializable {
 
 	public void setShopPayStatus(String shopPayStatus) {
 		this.shopPayStatus = shopPayStatus;
+	}
+
+	public Long[] getIds() {
+		return ids;
+	}
+
+	public void setIds(Long[] ids) {
+		this.ids = ids;
 	}
 }

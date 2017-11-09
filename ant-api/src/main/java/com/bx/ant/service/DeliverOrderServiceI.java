@@ -279,4 +279,12 @@ public interface DeliverOrderServiceI {
 	 * @return
 	 */
 	DataGrid dataGridNotDriverDeliverOrder(DeliverOrderQuery deliverOrderQuery,PageHelper ph);
+
+	/**
+	 * 小程序获取账单详情信息
+	 * @param deliverOrderShop
+	 * @return
+	 */
+	DeliverOrderExt getBanlanceLogDetial(DeliverOrderShop deliverOrderShop);
+
 }
