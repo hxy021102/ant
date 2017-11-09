@@ -417,4 +417,47 @@ public class ApiDeliverBalanceController extends BaseController {
         json.setMsg("查询数据成功");
         return json;
     }
+
+    /**
+     * 按月统计收入支出
+     * @param request
+     * @return
+     */
+    @RequestMapping("/totalBalanceByMonth")
+    @ResponseBody
+    public Json totalBalanceByMonth(HttpServletRequest request, String date) {
+        Json j = new Json();
+        try{
+            TokenWrap token = getTokenWrap(request);
+            if(!F.empty(token.getUid())) {
+                MbBalanceLog mbBalanceLog = new MbBalanceLog();
+                mbBalanceLog.setShopId(token.getShopId());
+                //默认时间为当月
+                if (date == null) {
+                    Calendar now = Calendar.getInstance();
+                    date = now.get(Calendar.YEAR) + "-" + (now.get(Calendar.MONTH) + 1) ;
+                }
+
+                //设定搜索时间为月初00:00:00至下月初00:00:00
+
+                Date timeStart = new SimpleDateFormat("yyyy-MM").parse(date);
+                mbBalanceLog.setUpdatetimeBegin(timeStart);
+                Calendar calendar = new GregorianCalendar();
+                calendar.setTime(timeStart);
+                calendar.add(Calendar.MONTH,1);
+                mbBalanceLog.setUpdatetimeEnd(calendar.getTime());
+                Map<String, Integer> totalBalance = mbBalanceLogService.totalBalanceByMonth(mbBalanceLog);
+
+                j.setSuccess(true);
+                j.setMsg("获取成功！");
+                j.setObj(totalBalance);
+            }
+
+        }catch(Exception e){
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
+            logger.error("按月统计收入支出接口异常", e);
+        }
+
+        return j;
+    }
 }

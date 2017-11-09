@@ -17,6 +17,11 @@ public interface Constants {
 	 * 全局异常提示
 	 */
 	public static String SYSTEM_GLOBAL_MESSAGE = "EX0001";
+
+	/**
+	 * 提现密码
+	 */
+	public static String CASH_PASSWORD = "SV201";
 	
 	/**
 	 * 短格式日期
