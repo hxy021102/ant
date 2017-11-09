@@ -66,6 +66,7 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
         }
     }
 
+
     @Override
     public Integer editClearOrderAllocation(Long driverOrderShopId) {
         Integer count = new Integer(0);
@@ -80,7 +81,10 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
            for (DriverAccount account : driverAccounts) {
               boolean b = redisUtil.removeZSet(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, account.getId().toString()
                       + ":" + todayStr), driverOrderShopId.toString());
-              if (b) count++;
+              if (b) {
+                  count++;
+                  driverOrderShopService.reduseAllocationOrderRedis(account.getId());
+              }
            }
        }
         return count;
@@ -125,6 +129,9 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
                         driverOrderShop.getId().toString());
                 redisUtil.expire(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, account.getId().toString() + ":" + todayStr),
                         Integer.parseInt(ConvertNameUtil.getString("DDSV101","10")), TimeUnit.SECONDS);
+
+                //增加骑手订单数量
+                driverOrderShopService.addAllocationOrderRedis(account.getId());
                 logger.debug(String.format("订单:%1s分发给:%2s成功" ,driverOrderShop.getDeliverOrderShopId(), account.getId()));
             }
         }

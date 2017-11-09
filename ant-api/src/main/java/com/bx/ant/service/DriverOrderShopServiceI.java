@@ -80,7 +80,37 @@ public interface DriverOrderShopServiceI {
 	 */
 	DataGrid dataGridView(DriverOrderShop driverOrderShop, PageHelper pageHelper);
 
+	/**
+	 * 获取现有状态机
+	 * @param driverOrderShopId
+	 * @return
+	 */
     DriverOrderShopState getCurrentState(Long driverOrderShopId);
 
+	/**
+	 * 状态机执行器
+	 * @param driverOrderShop
+	 */
 	void transform(DriverOrderShop driverOrderShop);
+
+	/**
+	 * 添加并返回新分配订单数量
+	 * @param accountId
+	 * @return
+	 */
+    Integer addAllocationOrderRedis(Integer accountId);
+
+	/**
+	 * 减少并返回新分配订单数量
+	 * @param accountId
+	 * @return
+	 */
+    Integer reduseAllocationOrderRedis(Integer accountId);
+
+	/**
+	 * 清除并返回新分配订单数量
+	 * @param accountId
+	 * @return
+	 */
+	Integer clearAllocationOrderRedis(Integer accountId);
 }

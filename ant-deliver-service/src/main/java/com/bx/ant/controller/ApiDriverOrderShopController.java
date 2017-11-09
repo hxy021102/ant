@@ -78,11 +78,11 @@ public class ApiDriverOrderShopController extends BaseController {
         String todayStr = today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-"
                 + today.get(Calendar.DAY_OF_MONTH);
 
-//        Set<String> orderIdSet = redisUtil.getAllSet(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE,
-//                accountId + ":" +  todayStr));
-        Set<String> orderIdSet = new HashSet<String>();
-        orderIdSet.add("1");
-        orderIdSet.add("2");
+        Set<String> orderIdSet = redisUtil.getAllSet(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE,
+                accountId + ":" +  todayStr));
+//        Set<String> orderIdSet = new HashSet<String>();
+//        orderIdSet.add("1");
+//        orderIdSet.add("2");
         if (CollectionUtils.isNotEmpty(orderIdSet)) {
             for (String orderId : orderIdSet) {
                 DriverOrderShop o = driverOrderShopService.getView(Long.parseLong(orderId));
@@ -193,22 +193,22 @@ public class ApiDriverOrderShopController extends BaseController {
         return json;
     }
 
-//    /**
-//     * 新订单数量
-//     * @param request
-//     * @return
-//     */
-//    @RequestMapping("/countNewAllocationOrder")
-//    @ResponseBody
-//    public  Json countNewAllocationOrder(HttpServletRequest request){
-//        Json json = new Json();
-//
-//        TokenWrap token = getTokenWrap(request);
-//        Integer accountId  = Integer.parseInt(token.getUid());
-//
-//        json.setObj(deliverOrderService.clearAllocationOrderRedis(accountId));
-//        json.setMsg("u know");
-//        json.setSuccess(true);
-//        return json;
-//    }
+    /**
+     * 新订单数量
+     * @param request
+     * @return
+     */
+    @RequestMapping("/countNewAllocationOrder")
+    @ResponseBody
+    public  Json countNewAllocationOrder(HttpServletRequest request){
+        Json json = new Json();
+
+        TokenWrap token = getTokenWrap(request);
+        Integer accountId  = Integer.parseInt(token.getUid());
+
+        json.setObj(driverOrderShopService.clearAllocationOrderRedis(accountId));
+        json.setMsg("u know");
+        json.setSuccess(true);
+        return json;
+    }
 }

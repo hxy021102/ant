@@ -401,4 +401,16 @@ public class ApiDeliverOrderController extends BaseController {
         return json;
     }
 
+    @RequestMapping("/deliverWay")
+    @ResponseBody
+    public Json allocationDriver(String devlierWay, HttpServletRequest request){
+        Json json = new Json();
+//        if (devlierWay.equals()) {
+//
+//        }
+        return json;
+
+    }
+
+
 }

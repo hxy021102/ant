@@ -26,4 +26,5 @@ public interface Namespace {
     String DRIVER_LOGIN_VALIDATE_CODE = "driver_login_validate_code";
     String DRIVER_REALTIME_LOCATION = "driver_realtime_location";
     String DRIVER_ORDER_SHOP_CACHE  = "drvier_order_shop_cache";
+    String DRIVER_ORDER_SHOP_NEW_ASSIGNMENT_COUNT = "driver_order_shop_new_assignment_count";
 }

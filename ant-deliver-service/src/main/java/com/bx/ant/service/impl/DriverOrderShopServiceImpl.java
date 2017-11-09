@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.bx.ant.dao.DriverOrderShopDaoI;
 import com.bx.ant.model.TdriverOrderShop;
 import com.bx.ant.pageModel.DeliverOrderShop;
@@ -19,6 +20,9 @@ import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
+import com.mobian.thirdpart.redis.Key;
+import com.mobian.thirdpart.redis.Namespace;
+import com.mobian.thirdpart.redis.RedisUtil;
 import com.mobian.util.MyBeanUtils;
 import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.apache.commons.collections.CollectionUtils;
@@ -40,6 +44,9 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 
 	@Resource
 	private DeliverOrderShopServiceI deliverOrderShopService;
+
+	@Resource
+	private RedisUtil redisUtil;
 
 	@Override
 	public DataGrid dataGrid(DriverOrderShop driverOrderShop, PageHelper ph) {
@@ -213,5 +220,50 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 			}
 			driverOrderShopState.next(driverOrderShop).handle(driverOrderShop);
 		}
+	}
+	protected Integer updateAllocationOrderRedis(Integer accountId, Integer quantity){
+		int count = 0;
+		String key = Key.build(Namespace.DRIVER_ORDER_SHOP_NEW_ASSIGNMENT_COUNT, accountId + "");
+		String value = (String) redisUtil.get(key);
+		if (!F.empty(value)) {
+			count =  Integer.parseInt(value);
+			switch (quantity) {
+				case 0:
+					redisUtil.delete(key);
+					return count;
+				case -1:
+					if ((count += quantity) <= 0) {
+						redisUtil.delete(key);
+						return 0;
+					}
+					break;
+				case 1:
+					count += quantity;
+					break;
+				default:
+					break;
+			}
+		} else {
+			count += quantity;
+		}
+		if (count  > 0){
+			redisUtil.set(key, JSONObject.toJSONString(count));
+		}
+		return count;
+	}
+
+	@Override
+	public Integer addAllocationOrderRedis(Integer accountId) {
+		return updateAllocationOrderRedis(accountId, 1);
+	}
+
+	@Override
+	public Integer reduseAllocationOrderRedis(Integer accountId) {
+		return updateAllocationOrderRedis(accountId, -1);
+	}
+
+	@Override
+	public Integer clearAllocationOrderRedis(Integer accountId) {
+		return updateAllocationOrderRedis(accountId, 0);
 	}
 }

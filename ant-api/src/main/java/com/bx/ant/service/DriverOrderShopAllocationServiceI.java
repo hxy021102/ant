@@ -6,12 +6,12 @@ package com.bx.ant.service;
 public interface DriverOrderShopAllocationServiceI {
 
     /**
-     * 分单函数
+     * 分单方法
      */
     void orderAllocation();
 
     /**
-     *  清除订单
+     *  清除订单以及对应的新订单条数
      * @param driverOrderShopId
      * @return 删除次数
      */
