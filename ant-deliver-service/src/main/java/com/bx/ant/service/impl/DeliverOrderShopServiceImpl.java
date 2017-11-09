@@ -299,7 +299,7 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 	protected  void fillShopItemInfo(DeliverOrderShopView deliverOrderShopView) {
 		DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
 		deliverOrderShopItem.setDeliverOrderShopId(deliverOrderShopView.getId());
-		List<DeliverOrderShopItem> deliverOrderShopItems = deliverOrderShopItemSerivce.dataGridWithName(deliverOrderShopItem, new PageHelper()).getRows();
+		List<DeliverOrderShopItem> deliverOrderShopItems = deliverOrderShopItemSerivce.list(deliverOrderShopItem);
 		deliverOrderShopView.setDeliverOrderShopItemList(deliverOrderShopItems);
 	}
 
