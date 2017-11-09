@@ -53,7 +53,8 @@ public class DeliverOrder20StateImpl implements DeliverOrderState {
         orderNew.setStatus(prefix + getStateName());
         orderNew.setDeliveryStatus(DeliverOrderServiceI.DELIVER_STATUS_STANDBY);
 //        orderNew.setShopPayStatus(DeliverOrderServiceI.SHOP_PAY_STATUS_NOT_PAY);
-        deliverOrderService.editAndAddLog(orderNew,deliverOrderLogService.TYPE_ACCEPT_DELIVER_ORDER, "运单被接" + (DeliverOrderServiceI.DELIVER_TYPE_AUTO.equals(deliverOrder.getDeliveryType()) ? "(自动)" : ""));
+        String type = DeliverOrderServiceI.DELIVER_TYPE_AUTO.equals(deliverOrder.getDeliveryType()) ? "(自动)" : (DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(deliverOrder.getDeliveryType()) ? "(强制)" : "(手动)");
+        deliverOrderService.editAndAddLog(orderNew,deliverOrderLogService.TYPE_ACCEPT_DELIVER_ORDER, "运单被接" + type);
 
         //修改门店运单状态
         DeliverOrderShop deliverOrderShop = new DeliverOrderShop();

@@ -22,7 +22,7 @@ public class DeliverOrderShop implements java.io.Serializable {
 	private Date updatetimeEnd;
 	private String shopPayStatus;
 
-
+	private String deliveryType; // 派单类型
 
 
 	public void setId(Long value) {
@@ -121,5 +121,13 @@ public class DeliverOrderShop implements java.io.Serializable {
 
 	public void setShopPayStatus(String shopPayStatus) {
 		this.shopPayStatus = shopPayStatus;
+	}
+
+	public String getDeliveryType() {
+		return deliveryType;
+	}
+
+	public void setDeliveryType(String deliveryType) {
+		this.deliveryType = deliveryType;
 	}
 }

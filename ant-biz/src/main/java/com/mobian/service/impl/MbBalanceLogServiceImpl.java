@@ -16,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -300,6 +301,33 @@ public class MbBalanceLogServiceImpl extends BaseServiceImpl<MbBalanceLog> imple
 			}
 		}
 		return new DataGrid();
+	}
+
+	@Override
+	public Map<String, Integer> totalBalanceByMonth(MbBalanceLog mbBalanceLog) {
+		Map<String, Integer> totalBalance = new HashMap<String, Integer>();
+		if (!F.empty(mbBalanceLog.getShopId())) {
+			MbBalance mbBalance = mbBalanceService.addOrGetMbBalanceDelivery(mbBalanceLog.getShopId());
+			String sql = "select sum(case when t.amount > 0 then t.amount end) income, "
+					+ " sum(case when t.amount < 0 then t.amount end) expenditure "
+					+ " from mb_balance_log t "
+					+ " where t.isdeleted = 0 and t.balance_id = :balanceId and t.updatetime >= :updatetimeBegin and t.updatetime <= :updatetimeEnd";
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("balanceId", mbBalance.getId());
+			params.put("updatetimeBegin", mbBalanceLog.getUpdatetimeBegin());
+			params.put("updatetimeEnd", mbBalanceLog.getUpdatetimeEnd());
+			List<Map> l = mbBalanceLogDao.findBySql2Map(sql, params);
+			if(CollectionUtils.isNotEmpty(l)) {
+				Map map = l.get(0);
+				if(map.get("income") == null) totalBalance.put("income", 0);
+				else totalBalance.put("income", ((BigDecimal)map.get("income")).intValue());
+
+				if(map.get("expenditure") == null) totalBalance.put("expenditure", 0);
+				else totalBalance.put("expenditure", ((BigDecimal)map.get("expenditure")).intValue());
+			}
+		}
+
+		return totalBalance;
 	}
 
 }
