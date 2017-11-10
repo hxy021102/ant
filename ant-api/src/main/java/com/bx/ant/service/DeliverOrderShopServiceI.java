@@ -13,7 +13,7 @@ import java.util.List;
  * 
  */
 public interface DeliverOrderShopServiceI {
-	String STATUS_AUDITING = "DSS01"; //等待审核
+	String STATUS_AUDITING = "DSS01"; //待处理
 	String STATUS_ACCEPTED = "DSS02"; //接受
 	String STATUS_REFUSED = "DSS03"; //拒绝
 	String STATUS_COMPLETE = "DSS04"; //正常完成

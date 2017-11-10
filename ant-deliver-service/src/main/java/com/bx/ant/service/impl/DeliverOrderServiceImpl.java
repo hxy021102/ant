@@ -296,7 +296,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 					deliverOrderExt.setDistance(deliverOrderShop.getDistance());
 					deliverOrderExt.setAmount(deliverOrderShop.getAmount());
 					Date now = new Date();
-					deliverOrderExt.setMillisecond(Integer.valueOf(ConvertNameUtil.getString("DSV100", "10")) * 60 * 1000 - now.getTime() + deliverOrderShop.getUpdatetime().getTime());
+					deliverOrderExt.setMillisecond(Integer.valueOf(ConvertNameUtil.getString("DSV100", "10")) * 60 * 1000 - now.getTime() + deliverOrderShop.getAddtime().getTime());
 				}
 			} else {
 				deliverOrderShop.setStatus("DSS04,DSS02,DSS06");
