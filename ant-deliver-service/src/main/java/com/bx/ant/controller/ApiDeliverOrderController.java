@@ -2,6 +2,7 @@ package com.bx.ant.controller;
 
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.DeliverOrderShop;
+import com.bx.ant.pageModel.DriverOrderShop;
 import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderShopServiceI;
@@ -403,11 +404,18 @@ public class ApiDeliverOrderController extends BaseController {
 
     @RequestMapping("/deliverWay")
     @ResponseBody
-    public Json allocationDriver(String devlierWay, HttpServletRequest request){
+    public Json deliverWay(DeliverOrderShop deliverOrderShop, String devlierWay, HttpServletRequest request){
         Json json = new Json();
-//        if (devlierWay.equals()) {
-//
-//        }
+
+        TokenWrap tokenWrap = getTokenWrap(request);
+        Integer shopId = tokenWrap.getShopId();
+
+        if ("driver".equals(devlierWay)) {
+            DriverOrderShop driverOrderShop = new DriverOrderShop();
+            driverOrderShop.setShopId(shopId);
+            driverOrderShop.setDeliverOrderShopId(deliverOrderShop.getId());
+
+        }
         return json;
 
     }
