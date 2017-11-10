@@ -201,7 +201,7 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 			}
 			return null;
 		} else {
-			String result="订单ID:";
+			String result="运单ID:";
 			for(DeliverOrderShopPay deliverOrderShopPay:orderShopPays){
 				result+=deliverOrderShopPay.getDeliverOrderId().toString()+"  ";
 			}

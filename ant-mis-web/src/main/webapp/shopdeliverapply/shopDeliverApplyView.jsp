@@ -31,18 +31,61 @@
 					<td>
 						${shopDeliverApplyQuery.shopName}
 					</td>
-				</tr>		
-				<tr>
-					<th>门店账号</th>
+				</tr>
+			    <tr>
+				<th>门店账号</th>
+				<td>
+					${shopDeliverApplyQuery.accountId}
+				</td>
+				<th>审核状态</th>
+				<td>
+					${shopDeliverApplyQuery.statusName}
+				</td>
+			    </tr>
+			    <tr>
+					<th>最大配送距离</th>
 					<td>
-						${shopDeliverApplyQuery.accountId}
+						<c:if test="${shopDeliverApplyQuery.maxDeliveryDistance != null}">
+							${shopDeliverApplyQuery.maxDeliveryDistance}米
+						</c:if>
 					</td>
-					<th>审核状态</th>
+					<th>是否短信通知</th>
 					<td>
-						${shopDeliverApplyQuery.statusName}
+						<c:if test="${shopDeliverApplyQuery.smsRemind == false}">
+							否
+						</c:if>
+						<c:if test="${shopDeliverApplyQuery.smsRemind == true}">
+							是
+						</c:if>
 					</td>
-				</tr>		
-				<tr>
+				</tr>
+		     	<tr>
+				<th>是否必须上传回单</th>
+				<td>
+					<c:if test="${shopDeliverApplyQuery.uploadRequired == false}">
+						否
+					</c:if>
+					<c:if test="${shopDeliverApplyQuery.uploadRequired == true}">
+						 是
+					</c:if>
+				</td>
+					<th>是否营业</th>
+					<td>
+						<c:if test="${shopDeliverApplyQuery.online == false}">
+							否
+						</c:if>
+						<c:if test="${shopDeliverApplyQuery.online == true}">
+							是
+						</c:if>
+					</td>
+			  </tr>
+			  <tr>
+				<th>派单类型</th>
+				<td colspan="3">
+					${shopDeliverApplyQuery.deliveryTypeName}
+				</td>
+			  </tr>
+			  <tr>
 					<th>结果</th>
 					<td colspan="3">
 						${shopDeliverApplyQuery.result}
