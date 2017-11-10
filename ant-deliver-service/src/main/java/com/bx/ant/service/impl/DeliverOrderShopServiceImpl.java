@@ -104,6 +104,16 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 				whereHql += " and t.updatetime < :updatetimeEnd";
 				params.put("updatetimeEnd",deliverOrderShop.getUpdatetimeEnd());
 			}
+
+			if (deliverOrderShop.getAddtimeBegin() != null) {
+				whereHql += " and t.addtime >= :addtimeBegin";
+				params.put("addtimeBegin",deliverOrderShop.getAddtimeBegin());
+			}
+			if (deliverOrderShop.getAddtimeEnd() != null) {
+				whereHql += " and t.addtime < :addtimeEnd";
+				params.put("addtimeEnd",deliverOrderShop.getAddtimeEnd());
+			}
+
 			if (!F.empty(deliverOrderShop.getShopPayStatus())) {
 				whereHql += " and t.shopPayStatus = :shopPayStatus";
 				params.put("shopPayStatus", deliverOrderShop.getShopPayStatus());
@@ -395,8 +405,8 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		deliverOrderShop.setShopId(shopId);
 		String[] statusList = {DeliverOrderShopServiceI.STATUS_ACCEPTED,DeliverOrderShopServiceI.STATUS_COMPLETE,DeliverOrderShopServiceI.STAUS_SERVICE};
 		deliverOrderShop.setStatusList(statusList);
-		deliverOrderShop.setUpdatetimeBegin(todayStart);
-		deliverOrderShop.setUpdatetimeEnd(todayEnd);
+		deliverOrderShop.setAddtimeBegin(todayStart);
+		deliverOrderShop.setAddtimeEnd(todayEnd);
 
 		PageHelper ph = new PageHelper();
 		ph.setHiddenTotal(true);

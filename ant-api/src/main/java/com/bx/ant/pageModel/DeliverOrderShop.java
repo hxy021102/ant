@@ -20,6 +20,11 @@ public class DeliverOrderShop implements java.io.Serializable {
 	private BigDecimal distance;
 	private Date updatetimeBegin;
 	private Date updatetimeEnd;
+
+	private Date addtimeBegin;
+	private Date addtimeEnd;
+
+
 	private String shopPayStatus;
     private Long[] ids;
 
@@ -138,5 +143,21 @@ public class DeliverOrderShop implements java.io.Serializable {
 
 	public void setDeliveryType(String deliveryType) {
 		this.deliveryType = deliveryType;
+	}
+
+	public Date getAddtimeBegin() {
+		return addtimeBegin;
+	}
+
+	public void setAddtimeBegin(Date addtimeBegin) {
+		this.addtimeBegin = addtimeBegin;
+	}
+
+	public Date getAddtimeEnd() {
+		return addtimeEnd;
+	}
+
+	public void setAddtimeEnd(Date addtimeEnd) {
+		this.addtimeEnd = addtimeEnd;
 	}
 }
