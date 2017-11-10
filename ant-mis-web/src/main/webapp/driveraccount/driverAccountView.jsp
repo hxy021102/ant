@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%>
 <script type="text/javascript">
     $(function () {
         parent.$.messager.progress('close');
@@ -11,11 +14,11 @@
             <tr>
                 <th>添加时间</th>
                 <td>
-                    ${driverAccount.addtime}
+                    <fmt:formatDate value="${driverAccount.addtime}" pattern="yyyy-MM-dd HH:mm:ss"/>
                 </td>
                 <th>更新时间</th>
                 <td>
-                    ${driverAccount.updatetime}
+                    <fmt:formatDate value="${driverAccount.updatetime}" pattern="yyyy-MM-dd HH:mm:ss"/>
                 </td>
             </tr>
             <tr>
@@ -23,30 +26,35 @@
                 <td>
                     ${driverAccount.userName}
                 </td>
-
+                <th>图标</th>
+                <td rowspan="3">
+                    <img src="${driverAccount.icon}" width="80px" height="80px"/>
+                </td>
+             </tr>
+             <tr>
                 <th>昵称</th>
                 <td>
                     ${driverAccount.nickName}
                 </td>
             </tr>
             <tr>
-                <th>图标</th>
-                <td>
-                    ${driverAccount.icon}
-                </td>
-
                 <th>性别</th>
                 <td>
-                    ${driverAccount.sexName}
+                    <c:if test="${driverAccount.sex == 1}">
+                        男
+                    </c:if>
+                    <c:if test="${driverAccount.sex == 0}">
+                        女
+                    </c:if>
                 </td>
             </tr>
             <tr>
-                <th>refId</th>
+                <th>第三方账号ID</th>
                 <td>
                     ${driverAccount.refId}
                 </td>
 
-                <th>refType</th>
+                <th>第三方类型</th>
                 <td>
                     ${driverAccount.refType}
                 </td>
@@ -74,8 +82,8 @@
                 </td>
             </tr>
             <tr>
-                <th>处理意见</th>
-                <td>
+                <th>审核意见</th>
+                <td colspan="3">
                     ${driverAccount.handleRemark}
                 </td>
             </tr>

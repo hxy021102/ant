@@ -36,50 +36,23 @@
 		<form id="form" method="post">		
 				<input type="hidden" name="id"/>
 			<table class="table table-hover table-condensed">
-				<tr>
-					<th>用户名</th>
-					<td>
-						<input class="span2" name="userName" type="text"/>
-					</td>							
-					<th>密码</th>
-					<td>
-						<input class="span2" name="password" type="text"/>
-					</td>							
-				</tr>	
 				<tr>	
-					<th>昵称</th>
+					<th>是否上线</th>
 					<td>
-						<input class="span2" name="nickName" type="text"/>
-					</td>							
-					<th>图标</th>
-					<td>
-						<input class="span2" name="icon" type="text"/>
-					</td>							
-				</tr>	
-				<tr>	
-					<th>性别</th>
-					<td>
-						<jb:select dataType="SX" name="sex"></jb:select>
-					</td>							
-					<th>RefId</th>
-					<td>
-						<input class="span2" name="refId" type="text"/>
-					</td>							
-				</tr>	
-				<tr>	
-					<th>RefType</th>
-					<td>
-						<jb:select dataType="RT" name="refType"></jb:select>
-					</td>							
-					<th>联系电话</th>
-					<td>
-						<input class="span2" name="conactPhone" type="text"/>
+						<select class="easyui-combobox" name="online" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+							<c:if test="${driverAccount.online == false}">
+								<option value="1">是</option>
+								<option value="0" selected="selected">否</option>
+							</c:if>
+							<c:if test="${driverAccount.online  == true}">
+								<option value="1" selected="selected">是</option>
+								<option value="0">否</option>
+							</c:if>
+						</select>
 					</td>
-				</tr>
-				<tr>
 					<th>类型</th>
 					<td>
-						<jb:select dataType="DATP" name="type"></jb:select>
+						<jb:select dataType="DATP" name="type" value="${driverAccount.typeName}"></jb:select>
 					</td>
 				</tr>	
 			</table>		

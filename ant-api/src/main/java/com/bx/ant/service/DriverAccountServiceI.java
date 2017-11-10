@@ -1,6 +1,7 @@
 package com.bx.ant.service;
 
 import com.bx.ant.pageModel.DriverAccount;
+import com.bx.ant.pageModel.DriverAccountQuery;
 import com.bx.ant.pageModel.DriverAccountView;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
@@ -68,11 +69,11 @@ public interface DriverAccountServiceI {
 
 	/**
 	 * 获取DataGrid.DriverAccountView
-	 * @param driverAccount
+	 * @param driverAccountQuery
 	 * @param pageHelper
 	 * @return
 	 */
-	DataGrid dataGridView(DriverAccount driverAccount, PageHelper pageHelper);
+	DataGrid dataGridView(DriverAccountQuery driverAccountQuery, PageHelper pageHelper);
 
 	/**
 	 * 通过ReId获取DriverAccount

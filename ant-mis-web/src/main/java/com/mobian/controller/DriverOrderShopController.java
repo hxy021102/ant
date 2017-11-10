@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -31,7 +32,7 @@ import com.alibaba.fastjson.JSON;
 @RequestMapping("/driverOrderShopController")
 public class DriverOrderShopController extends BaseController {
 
-	@Autowired
+	@Resource
 	private DriverOrderShopServiceI driverOrderShopService;
 
 

@@ -23,6 +23,11 @@
 		$.canView = true;
 	</script>
 </c:if>
+<c:if test="${fn:contains(sessionInfo.resourceList, '/driverAccountController/examinePage')}">
+	<script type="text/javascript">
+        $.canExamine= true;
+	</script>
+</c:if>
 <script type="text/javascript">
 	var dataGrid;
 	$(function() {
@@ -35,7 +40,7 @@
 			idField : 'id',
 			pageSize : 10,
 			pageList : [ 10, 20, 30, 40, 50 ],
-			sortName : 'id',
+			sortName : 'updatetime',
 			sortOrder : 'desc',
 			checkOnSelect : false,
 			selectOnCheck : false,
@@ -45,13 +50,17 @@
 			singleSelect : true,
 			columns : [ [ {
 				field : 'id',
-				title : '编号',
-				width : 150,
-				hidden : true
+				title : '账号ID',
+				width : 30,
+                formatter : function (value, row, index) {
+                    if ($.canView)
+                    return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
+                   return value;
+                }
 				},{
 				field : 'addtime',
 				title : '添加时间',
-				width : 70
+				width : 60
 				}, {
 				field : 'userName',
 				title : '用户名',
@@ -59,31 +68,44 @@
 				}, {
 				field : 'nickName',
 				title : '昵称',
-				width : 50		
-				}, {
-				field : 'sexName',
-				title : '性别',
-				width : 50		
+				width : 70
 				},{
 				field : 'conactPhone',
-				title : '',
+				title : '电话号码',
 				width : 50		
 				}, {
 				field : 'typeName',
 				title : '类型',
-				width : 50		
+				width : 30
 				}, {
+                field : 'online',
+                title : '是否在线',
+                width : 30,
+                formatter: function (value, row, index) {
+                    if (value == true)
+                        return "是";
+                    return "否"
+                }
+                },{
+                field : 'balanceAmount',
+                title : '金额',
+                width : 50,
+                formatter: function (value, row) {
+                    if(row.balanceAmount == undefined)return "";
+                    return '<a onclick="viewBalance(' + row.id + ')">' + $.formatMoney(row.balanceAmount) + '</a>';
+                }
+                }, {
 				field : 'handleStatusName',
 				title : '审核状态',
-				width : 50		
+				width : 30
 				}, {
 				field : 'handleLoginName',
 				title : '审核人',
-				width : 50		
+				width : 30
 				}, {
 				field : 'action',
 				title : '操作',
-				width : 100,
+				width : 70,
 				formatter : function(value, row, index) {
 					var str = '';
                     if ($.canEdit) {
@@ -94,8 +116,8 @@
                         str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/cancel.png');
                     }
                     str += '&nbsp;';
-                    if ($.canView) {
-                        str += $.formatString('<img onclick="viewFun(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/link.png');
+                    if ($.canExamine&&row.handleStatus=="DAHS01") {
+                        str += $.formatString('<img onclick="examineFun(\'{0}\');" src="{1}" title="审核"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/joystick.png');
                     }
 					return str;
 				}
@@ -110,6 +132,14 @@
 		});
 	});
 
+    function viewBalance(id) {
+        var href = '${pageContext.request.contextPath}/mbUserController/viewBalance?shopId=' + id;
+        parent.$("#index_tabs").tabs('add', {
+            title: '余额-' + id,
+            content: '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            closable: true
+        });
+    }
 	function deleteFun(id) {
 		if (id == undefined) {
 			var rows = dataGrid.datagrid('getSelections');
@@ -142,7 +172,7 @@
 		parent.$.modalDialog({
 			title : '编辑数据',
 			width : 780,
-			height : 500,
+			height : 200,
 			href : '${pageContext.request.contextPath}/driverAccountController/editPage?id=' + id,
 			buttons : [ {
 				text : '编辑',
@@ -163,9 +193,42 @@
 		parent.$.modalDialog({
 			title : '查看数据',
 			width : 780,
-			height : 500,
+			height : 400,
 			href : '${pageContext.request.contextPath}/driverAccountController/view?id=' + id
 		});
+	}
+
+    function examineFun(id) {
+        if (id == undefined) {
+            var rows = dataGrid.datagrid('getSelections');
+            id = rows[0].id;
+        }
+        parent.$.modalDialog({
+            title : '骑手账号审核',
+            width : 780,
+            height : 200,
+            href : '${pageContext.request.contextPath}/driverAccountController/examinePage?id=' + id,
+            buttons: [{
+                text: '通过',
+                handler: function () {
+                    parent.$.modalDialog.openner_dataGrid =  dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                    var f = parent.$.modalDialog.handler.find('#form');
+                    f.find("input[name=handleStatus]").val("DAHS02");
+                    f.submit();
+                }
+            },
+                {
+                    text: '拒绝',
+                    handler: function () {
+                        parent.$.modalDialog.openner_dataGrid =  dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                        var f = parent.$.modalDialog.handler.find('#form');
+                        f.find("input[name=handleStatus]").val("DAHS03");
+                        f.submit();
+
+                    }
+                }
+            ]
+        });
 	}
 
 	function addFun() {
@@ -215,12 +278,14 @@
 		<div data-options="region:'north',title:'查询条件',border:false" style="height: 120px; overflow: hidden;">
 			<form id="searchForm">
 				<table class="table table-hover table-condensed" style="display: none;">
-						<tr>	
-
-							<th>添加时间</th>
+						<tr>
+							<th>是否在线</th>
 							<td>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TmbUser.FORMAT_ADDTIME%>'})" id="addtimeBegin" name="addtimeBegin"/>至
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TmbUser.FORMAT_ADDTIME%>'})" id="addtimeEnd" name="addtimeEnd"/>
+								<select class="easyui-combobox" name="online" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+									<option value="" ></option>
+									<option value="1" >是</option>
+									<option value="0">否</option>
+								</select>
 							</td>
 							<th>用户名</th>
 							<td>
@@ -237,8 +302,13 @@
 											<jb:select dataType="DATP" name="type"></jb:select>	
 							</td>
 							<th>审核状态</th>
-							<td colspan="4">
+							<td>
 								<jb:select dataType="DAHS" name="handleStatus"></jb:select>
+							</td>
+							<th>添加时间</th>
+							<td>
+								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TmbUser.FORMAT_ADDTIME%>'})" id="addtimeBegin" name="addtimeBegin"/>至
+								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TmbUser.FORMAT_ADDTIME%>'})" id="addtimeEnd" name="addtimeEnd"/>
 							</td>
 						</tr>	
 				</table>
@@ -249,10 +319,11 @@
 		</div>
 	</div>
 	<div id="toolbar" style="display: none;">
-		<c:if test="${fn:contains(sessionInfo.resourceList, '/driverAccountController/addPage')}">
+		<%--<c:if test="${fn:contains(sessionInfo.resourceList, '/driverAccountController/addPage')}">
 			<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'pencil_add'">添加</a>
-		</c:if>
-		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">搜索</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
+		</c:if>--%>
+		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a>
+		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
 		<c:if test="${fn:contains(sessionInfo.resourceList, '/driverAccountController/download')}">
 			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_go',plain:true" onclick="downloadTable();">导出</a>		
 			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">

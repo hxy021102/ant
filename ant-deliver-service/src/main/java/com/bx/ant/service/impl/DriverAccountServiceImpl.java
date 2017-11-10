@@ -5,15 +5,15 @@ import java.util.*;
 
 import com.bx.ant.dao.DriverAccountDaoI;
 import com.bx.ant.model.TdriverAccount;
-import com.bx.ant.pageModel.DriverAccount;
-import com.bx.ant.pageModel.DriverAccountView;
-import com.bx.ant.pageModel.DriverOrderShop;
+import com.bx.ant.pageModel.*;
 import com.bx.ant.service.DriverAccountServiceI;
 import com.bx.ant.service.DriverOrderShopServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.MbBalance;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.pageModel.User;
+import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.UserServiceI;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -21,17 +21,19 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+
 @Service
 public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> implements DriverAccountServiceI {
 
 	@Autowired
 	private DriverAccountDaoI driverAccountDao;
-
-	@Autowired
+	@Resource
 	private UserServiceI userService;
-
 	@Autowired
 	private DriverOrderShopServiceI driverOrderShopService;
+	@Resource
+	private MbBalanceServiceI mbBalanceService;
 
 	@Override
 	public DataGrid dataGrid(DriverAccount driverAccount, PageHelper ph) {
@@ -108,10 +110,21 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 				whereHql += " and t.handleLoginId = :handleLoginId";
 				params.put("handleLoginId", driverAccount.getHandleLoginId());
 			}		
-			if (!F.empty(driverAccount.getHandleRemark())) {
-				whereHql += " and t.handleRemark = :handleRemark";
-				params.put("handleRemark", driverAccount.getHandleRemark());
-			}		
+			if (!F.empty(driverAccount.getOnline())) {
+				whereHql += " and t.online = :online";
+				params.put("online", driverAccount.getOnline());
+			}
+			if (driverAccount instanceof DriverAccountQuery) {
+				DriverAccountQuery accountQuery = (DriverAccountQuery) driverAccount;
+				if (accountQuery.getAddtimeBegin() != null) {
+					whereHql += " and t.addtime >= :startDate ";
+					params.put("startDate", accountQuery.getAddtimeBegin());
+				}
+				if (accountQuery.getAddtimeEnd() != null) {
+					whereHql += " and t.addtime <= :endDate ";
+					params.put("endDate", accountQuery.getAddtimeEnd());
+				}
+			}
 		}	
 		return whereHql;
 	}
@@ -164,15 +177,19 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 	}
 
 	@Override
-	public DataGrid dataGridView(DriverAccount driverAccount, PageHelper pageHelper) {
-		DataGrid dataGrid = new DataGrid();
-		List<DriverAccount> driverAccounts = dataGrid(driverAccount, pageHelper).getRows();
+	public DataGrid dataGridView(DriverAccountQuery driverAccount, PageHelper pageHelper) {
+		DataGrid dataGrid = dataGrid(driverAccount, pageHelper);
+		List<DriverAccount> driverAccounts = dataGrid.getRows();
 		List<DriverAccountView> ol = new ArrayList<DriverAccountView>();
 		if (CollectionUtils.isNotEmpty(driverAccounts)) {
 			int size = driverAccounts.size();
 			for (int i = 0 ; i < size; i++) {
 				DriverAccountView o = new DriverAccountView();
 				BeanUtils.copyProperties(driverAccounts.get(i), o);
+				MbBalance mbBalance = mbBalanceService.addOrGetMbBalance(o.getId(), 50, 0);
+				if (mbBalance != null) {
+					o.setBalanceAmount(mbBalance.getAmount());
+				}
 				fillUserInfo(o);
 				ol.add(o);
 			}

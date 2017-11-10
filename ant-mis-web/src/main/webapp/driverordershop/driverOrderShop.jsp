@@ -1,4 +1,4 @@
-﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+﻿ <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.mobian.model.TmbUser" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -58,7 +58,7 @@
 				width : 50
 				}, {
 				field : 'deliverOrderShopId',
-                title : '门店运单',
+                title : '门店运单ID',
 				width : 50
 				}, {
 				field : 'statusName',
@@ -67,7 +67,12 @@
 				}, {
 				field : 'amount',
                 title : '金额',
-				width : 50
+				width : 50,
+                formatter: function (value) {
+                    if (value == null)
+                        return "";
+                    return $.formatMoney(value);
+                }
 				}, {
 				field : 'payStatus',
                 title : '支付状态',
@@ -76,7 +81,7 @@
 				field : 'driverOrderShopBillId',
 				title : '支付账单ID',
 				width : 50
-			}, {
+			}, /*{
 				field : 'action',
 				title : '操作',
 				width : 100,
@@ -95,7 +100,7 @@
                     }
 					return str;
 				}
-			} ] ],
+			} */] ],
 			toolbar : '#toolbar',
 			onLoadSuccess : function() {
 				$('#searchForm table').show();
@@ -236,10 +241,11 @@
 		</div>
 	</div>
 	<div id="toolbar" style="display: none;">
-		<c:if test="${fn:contains(sessionInfo.resourceList, '/driverOrderShopController/addPage')}">
+		<%--<c:if test="${fn:contains(sessionInfo.resourceList, '/driverOrderShopController/addPage')}">
 			<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'pencil_add'">添加</a>
-		</c:if>
-		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">搜索</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
+		</c:if>--%>
+		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a>
+		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
 		<c:if test="${fn:contains(sessionInfo.resourceList, '/driverOrderShopController/download')}">
 			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_go',plain:true" onclick="downloadTable();">导出</a>		
 			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">

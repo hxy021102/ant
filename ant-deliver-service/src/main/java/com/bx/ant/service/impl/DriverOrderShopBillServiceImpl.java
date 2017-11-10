@@ -16,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +30,7 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 	@Autowired
 	private DriverOrderShopBillDaoI driverOrderShopBillDao;
 
-	@Autowired
+	@Resource
 	private UserServiceI userService;
 
 	@Override
@@ -150,6 +151,7 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 			for (int i = 0 ; i < size; i++) {
 				DriverOrderShopBillView o = new DriverOrderShopBillView();
 				BeanUtils.copyProperties(driverOrderShopBills.get(i), o);
+				fillUserInfo(o);
 				ol.add(o);
 			}
 			dataGrid.setRows(ol);

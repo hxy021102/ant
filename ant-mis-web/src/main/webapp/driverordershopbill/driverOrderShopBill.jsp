@@ -35,7 +35,7 @@
 			idField : 'id',
 			pageSize : 10,
 			pageList : [ 10, 20, 30, 40, 50 ],
-			sortName : 'id',
+			sortName : 'updatetime',
 			sortOrder : 'desc',
 			checkOnSelect : false,
 			selectOnCheck : false,
@@ -45,29 +45,25 @@
 			singleSelect : true,
 			columns : [ [ {
 				field : 'id',
-				title : '编号',
-				width : 150,
-				hidden : true
+				title : '账单ID',
+				width : 30,
 				}, {
 				field : 'addtime',
 				title :'添加时间',
 				width : 50
 				}, {
 				field : 'driverAccountName',
-                title:'骑手名',
+                title:'骑手账号ID',
 				width : 50
-				}, {
-				field : 'handleStatusName',
-				title :'审核状态',
-				width : 50
-				},{
-				field : 'handleLoginName',
-				title : '审核人',
-				width : 50
-				}, {
+				},  {
 				field : 'amount',
 				title :'账单金额',
-				width : 50
+				width : 50,
+                formatter: function (value) {
+                    if (value == null)
+                        return "";
+                    return $.formatMoney(value);
+                }
 				}, {
 				field : 'startDate',
 				title :'起始时间',
@@ -76,11 +72,19 @@
 				field : 'endDate',
 				title : '结束时间',
 				width : 50
-				}, {
+				},{
+                field : 'handleStatusName',
+                title :'审核状态',
+                width : 50
+                },{
+                field : 'handleLoginName',
+                title : '审核人',
+                width : 50
+                }, {
 				field : 'payWayName',
 				title : '支付方式',
 				width : 50
-			}, {
+			   },/* {
 				field : 'action',
 				title : '操作',
 				width : 100,
@@ -99,7 +103,7 @@
                     }
 					return str;
 				}
-			} ] ],
+			} */] ],
 			toolbar : '#toolbar',
 			onLoadSuccess : function() {
 				$('#searchForm table').show();
@@ -238,10 +242,11 @@
 		</div>
 	</div>
 	<div id="toolbar" style="display: none;">
-		<c:if test="${fn:contains(sessionInfo.resourceList, '/driverOrderShopBillController/addPage')}">
+		<%--<c:if test="${fn:contains(sessionInfo.resourceList, '/driverOrderShopBillController/addPage')}">
 			<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'pencil_add'">添加</a>
-		</c:if>
-		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">搜索</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
+		</c:if>--%>
+		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a>
+		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
 		<c:if test="${fn:contains(sessionInfo.resourceList, '/driverOrderShopBillController/download')}">
 			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_go',plain:true" onclick="downloadTable();">导出</a>		
 			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">

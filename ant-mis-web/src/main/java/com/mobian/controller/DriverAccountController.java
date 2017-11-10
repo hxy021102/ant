@@ -2,21 +2,20 @@ package com.mobian.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 
-import com.bx.ant.pageModel.DriverAccount;
-import com.bx.ant.pageModel.DriverAccountView;
+import com.bx.ant.pageModel.*;
 import com.bx.ant.service.DriverAccountServiceI;
-import com.mobian.controller.BaseController;
-import com.mobian.pageModel.Colum;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.Json;
-import com.mobian.pageModel.PageHelper;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.mobian.pageModel.*;
+import com.mobian.util.ConfigUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -33,7 +32,7 @@ import com.alibaba.fastjson.JSON;
 @RequestMapping("/driverAccountController")
 public class DriverAccountController extends BaseController {
 
-	@Autowired
+	@javax.annotation.Resource
 	private DriverAccountServiceI driverAccountService;
 
 
@@ -55,7 +54,7 @@ public class DriverAccountController extends BaseController {
 	 */
 	@RequestMapping("/dataGrid")
 	@ResponseBody
-	public DataGrid dataGrid(DriverAccount driverAccount, PageHelper ph) {
+	public DataGrid dataGrid(DriverAccountQuery driverAccount, PageHelper ph) {
 		return driverAccountService.dataGridView(driverAccount, ph);
 	}
 	/**
@@ -71,11 +70,32 @@ public class DriverAccountController extends BaseController {
 	 * @throws IOException 
 	 */
 	@RequestMapping("/download")
-	public void download(DriverAccount driverAccount, PageHelper ph,String downloadFields,HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException{
-		DataGrid dg = dataGrid(driverAccount,ph);		
+	public void download(DriverAccountQuery driverAccount, PageHelper ph,String downloadFields,HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException{
+		DataGrid dg = dataGrid(driverAccount,ph);
+		List<DriverAccountView> driverAccountViews = dg.getRows();
+		if (CollectionUtils.isNotEmpty(driverAccountViews)) {
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			for (DriverAccountView driverAccountView : driverAccountViews) {
+				String addDateStr= formatter.format(driverAccountView.getAddtime());
+				driverAccountView.setCreateDate(addDateStr);
+				driverAccountView.setOnlineName(driverAccountView.getOnline()==true?"是":"否");
+			}
+		}
 		downloadFields = downloadFields.replace("&quot;", "\"");
 		downloadFields = downloadFields.substring(1,downloadFields.length()-1);
 		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
+		if (CollectionUtils.isNotEmpty(colums)) {
+			for (Colum colum : colums) {
+				switch (colum.getField()) {
+					case "addtime":
+						colum.setField("createDate");
+						break;
+					case "online":
+						colum.setField("onlineName");
+						break;
+				}
+			}
+		}
 		downloadTable(colums, dg, response);
 	}
 	/**
@@ -125,7 +145,9 @@ public class DriverAccountController extends BaseController {
 	@RequestMapping("/editPage")
 	public String editPage(HttpServletRequest request, Integer id) {
 		DriverAccount driverAccount = driverAccountService.get(id);
-		request.setAttribute("driverAccount", driverAccount);
+		DriverAccountView driverAccountView =new DriverAccountView();
+		BeanUtils.copyProperties(driverAccount,driverAccountView);
+		request.setAttribute("driverAccount", driverAccountView);
 		return "/driveraccount/driverAccountEdit";
 	}
 
@@ -158,6 +180,37 @@ public class DriverAccountController extends BaseController {
 		driverAccountService.delete(id);
 		j.setMsg("删除成功！");
 		j.setSuccess(true);
+		return j;
+	}
+
+	/**
+	 * 跳转到DriverAccount审核页面
+	 * @param request
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/examinePage")
+	public String examinePage(HttpServletRequest request, Integer id) {
+		DriverAccount driverAccount = driverAccountService.get(id);
+		request.setAttribute("driverAccount", driverAccount);
+		return "/driveraccount/driverAccountExamine";
+	}
+
+	/**
+	 * 编辑审核状态
+	 * @param driverAccount
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/editState")
+	@ResponseBody
+	public Json editState(DriverAccount driverAccount, HttpSession session) {
+		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+		Json j = new Json();
+		driverAccount.setHandleLoginId(sessionInfo.getId());
+		driverAccountService.edit(driverAccount);
+		j.setSuccess(true);
+		j.setMsg("编辑成功！");
 		return j;
 	}
 

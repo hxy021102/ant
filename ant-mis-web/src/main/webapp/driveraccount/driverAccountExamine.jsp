@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="com.mobian.model.TmbSupplierOrder" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%> 
@@ -6,7 +7,7 @@
 	$(function() {
 		parent.$.messager.progress('close');
 		$('#form').form({
-			url : '${pageContext.request.contextPath}/driverAccountController/edit',
+			url : '${pageContext.request.contextPath}/driverAccountController/editState',
 			onSubmit : function() {
 				parent.$.messager.progress({
 					title : '提示',
@@ -35,24 +36,12 @@
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;">
 		<form id="form" method="post">
 				<input type="hidden" name="id" value = "${driverAccount.id}"/>
+			    <input type="hidden" name="handleStatus" value = ""/>
 			<table class="table table-hover table-condensed">
 				<tr>
-					<th>是否上线</th>
-					<td>
-						<select class="easyui-combobox" name="online" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
-							<c:if test="${driverAccount.online == false}">
-								<option value="1">是</option>
-								<option value="0" selected="selected">否</option>
-							</c:if>
-							<c:if test="${driverAccount.online  == true}">
-								<option value="1" selected="selected">是</option>
-								<option value="0">否</option>
-							</c:if>
-						</select>
-					</td>
-					<th>类型</th>
-					<td>
-						<jb:select dataType="DATP" name="type" value="${driverAccount.type}"></jb:select>
+					<th>审核意见</th>
+					<td colspan="2">
+						<textarea name="handleRemark" style="width: 97%" rows="3"    class="easyui-validatebox"    > </textarea>
 					</td>
 				</tr>
 			</table>				
