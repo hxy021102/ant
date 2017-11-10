@@ -23,6 +23,7 @@ public class DeliverOrderShop implements java.io.Serializable {
 	private String shopPayStatus;
     private Long[] ids;
 
+	private String deliveryType; // 派单类型
 
 
 	public void setId(Long value) {
@@ -129,5 +130,13 @@ public class DeliverOrderShop implements java.io.Serializable {
 
 	public void setIds(Long[] ids) {
 		this.ids = ids;
+	}
+
+	public String getDeliveryType() {
+		return deliveryType;
+	}
+
+	public void setDeliveryType(String deliveryType) {
+		this.deliveryType = deliveryType;
 	}
 }

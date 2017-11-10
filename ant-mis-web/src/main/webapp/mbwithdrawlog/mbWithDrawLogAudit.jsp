@@ -13,6 +13,23 @@
 					text : '数据处理中，请稍后....'
 				});
 				var isValid = $(this).form('validate');
+				var checkPwd = "", checkPwdInp = $('#checkPwdInp').val();
+				if(checkPwdInp != '') {
+					$.ajax({
+						type: "GET",
+						url: "${pageContext.request.contextPath}/userController/getPublicKey",
+						dataType: "json",
+						async : false,
+						success:function (data) {
+							if(data.success) {
+								var encrypt = new JSEncrypt();
+								encrypt.setPublicKey(data.obj);
+								checkPwd = encrypt.encrypt($('#checkPwdInp').val());
+							}
+						}
+					});
+				}
+				$('#checkPwd').val(checkPwd);
 				if (!isValid) {
 					parent.$.messager.progress('close');
 				}
@@ -42,6 +59,13 @@
 					<th>原因</th>
 					<td>
 						<textarea name="handleRemark"  class="easyui-validatebox" data-options="required:true"  style="width: 95%"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>校验密码<font color="red" id="msg">*</font></th>
+					<td colspan="3">
+						<input id="checkPwd" name="checkPwd" type="hidden" />
+						<input id="checkPwdInp" type="password" class="easyui-validatebox span2" data-options="required:true" maxlength="20"/>
 					</td>
 				</tr>
 			</table>
