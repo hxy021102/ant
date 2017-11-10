@@ -19,7 +19,11 @@ import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -39,6 +43,9 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 	private ShopOrderBillServiceI shopOrderBillService;
 	@Resource
 	private DeliverOrderShopPayServiceI deliverOrderShopPayService;
+
+	@Autowired
+	private HibernateTransactionManager transactionManager;
 
 	@Override
 	public DataGrid dataGrid(DeliverOrderShop deliverOrderShop, PageHelper ph) {
@@ -207,11 +214,11 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 	public DeliverOrderShop editStatus(DeliverOrderShop deliverOrderShop, DeliverOrderShop orderShopEdit) {
 		List<DeliverOrderShop> deliverOrderShops = query(deliverOrderShop);
 		DeliverOrderShop o = new DeliverOrderShop();
-		if (CollectionUtils.isNotEmpty(deliverOrderShops)  && deliverOrderShops.size() == 1) {
+		if (CollectionUtils.isNotEmpty(deliverOrderShops) && deliverOrderShops.size() == 1) {
 			//只对第一个结果进行处理
 			o = deliverOrderShops.get(0);
 			o.setStatus(orderShopEdit.getStatus());
-			if(!F.empty(orderShopEdit.getShopPayStatus())){
+			if (!F.empty(orderShopEdit.getShopPayStatus())) {
 				o.setShopPayStatus(orderShopEdit.getShopPayStatus());
 			}
 			edit(o);
@@ -251,17 +258,25 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		deliverOrderShop.setStatus(STATUS_AUDITING);
 		List<DeliverOrderShop> deliverOrderShops = dataGrid(deliverOrderShop, new PageHelper()).getRows();
 		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
-			Iterator<DeliverOrderShop> orderShopIterator = deliverOrderShops.iterator();
-			while (orderShopIterator.hasNext()) {
-				DeliverOrderShop orderShop = orderShopIterator.next();
+			for (DeliverOrderShop orderShop : deliverOrderShops) {
 				Date now = new Date();
-				if (now.getTime() - orderShop.getUpdatetime().getTime() > Integer.valueOf(ConvertNameUtil.getString("DSV100", "10"))*60*1000) {
+				if (now.getTime() - orderShop.getAddtime().getTime() > Integer.valueOf(ConvertNameUtil.getString("DSV100", "10")) * 60 * 1000) {
 					DeliverOrder deliverOrder = new DeliverOrder();
 					deliverOrder.setShopId(orderShop.getShopId());
 					deliverOrder.setId(orderShop.getDeliverOrderId());
 					deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_REFUSE);
 					deliverOrder.setRemark("超时未接单");
-					deliverOrderService.transform(deliverOrder);
+					DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+					def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);// 事物隔离级别，开启新事务
+					TransactionStatus status = transactionManager.getTransaction(def); // 获得事务状态
+					try {
+						deliverOrderService.transform(deliverOrder);
+						transactionManager.commit(status);
+					}catch (Exception e){
+						transactionManager.rollback(status);
+						e.printStackTrace();
+						continue;
+					}
 				}
 			}
 		}
