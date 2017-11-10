@@ -269,9 +269,8 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		//填充明细信息
 		DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
 		deliverOrderShopItem.setDeliverOrderShopId(deliverOrderExt.getOrderShopId());
-		deliverOrderShopItem.setDeliverOrderId(deliverOrderExt.getId());
-		deliverOrderShopItem.setShopId(deliverOrderExt.getShopId());
-
+		/*deliverOrderShopItem.setDeliverOrderId(deliverOrderExt.getId());
+		deliverOrderShopItem.setShopId(deliverOrderExt.getShopId());*/
 		List<DeliverOrderShopItem> deliverOrderShopItems = deliverOrderShopItemService.list(deliverOrderShopItem);
 		deliverOrderExt.setDeliverOrderShopItemList(deliverOrderShopItems);
 	}
@@ -371,6 +370,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 				//通过门店运单获取运单信息
 				DeliverOrderExt deliverOrder = new DeliverOrderExt();
 				BeanUtils.copyProperties(get(orderShop.getDeliverOrderId()), deliverOrder);
+				deliverOrder.setOrderShopId(orderShop.getId());
 				fillDeliverOrderShopItemInfo(deliverOrder);
 				if (deliverOrder != null) {
 					ol.add(deliverOrder);
@@ -381,6 +381,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	}
 
 	@Override
+	@Deprecated
 	public List<DeliverOrder> listOrderByShopIdAndOrderStatus(Integer shopId, String orderStatus) {
 		List<DeliverOrder> ol = new ArrayList<DeliverOrder>();
 		DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
@@ -411,9 +412,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		DeliverOrderExt deliverOrderExt = new DeliverOrderExt() ;
 		if (deliverOrder != null) {
 			BeanUtils.copyProperties(deliverOrder, deliverOrderExt);
-			if (DeliverOrderShopServiceI.STATUS_REFUSED.equals(deliverOrderShop.getStatus())){
-				deliverOrderExt.setOrderShopId(deliverOrderShop.getId());
-			}
+			deliverOrderExt.setOrderShopId(deliverOrderShop.getId());
 			fillInfo(deliverOrderExt);
 		}
 		return deliverOrderExt;
