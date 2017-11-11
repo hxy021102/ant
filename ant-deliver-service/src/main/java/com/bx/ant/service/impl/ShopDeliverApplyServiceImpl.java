@@ -183,7 +183,8 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 		ShopDeliverApply shopDeliverApply = new ShopDeliverApply();
 		PageHelper ph = new PageHelper();
 		ph.setHiddenTotal(true);
-		shopDeliverApply.setOnline(true);
+//		shopDeliverApply.setOnline(true);
+		shopDeliverApply.setFrozen(false); // 未冻结
 		shopDeliverApply.setStatus(DAS_02);
 		DataGrid dataGrid = dataGrid(shopDeliverApply, ph);
 		List<ShopDeliverApply> shopDeliverApplyList = dataGrid.getRows();
