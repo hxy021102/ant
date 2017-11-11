@@ -23,6 +23,7 @@ public class DeliverOrderQuery extends DeliverOrder {
     private Integer time;
     private Long[] ids;
     private List<String> image;
+    private String showTime;
 
 
     public String getStatusName() {
@@ -135,5 +136,13 @@ public class DeliverOrderQuery extends DeliverOrder {
 
     public void setImage(List<String> image) {
         this.image = image;
+    }
+
+    public String getShowTime() {
+        return showTime;
+    }
+
+    public void setShowTime(String showTime) {
+        this.showTime = showTime;
     }
 }

@@ -201,6 +201,7 @@
                  pageSize : 10,
                  pageList : [ 10, 20, 30, 40, 50 ],
                  sortOrder : 'desc',
+                 sortName:'updatetime',
                  checkOnSelect : false,
                  selectOnCheck : false,
                  nowrap : false,
@@ -360,8 +361,18 @@
 			<tr>
 				<th>供应商订单ID</th>
 				<td colspan="">${deliverOrder.supplierOrderId}</td>
-				<th></th><td></td>
-				<th>回单</th><%--imageArray--%>
+				<c:choose>
+					<c:when test="${deliverOrder.status=='notDriver'}">
+					<th>超时</th>
+					<td>
+						${deliverOrder.showTime}
+					</td>
+					</c:when>
+					<c:otherwise>
+					    <th></th><td></td>
+					</c:otherwise>
+				</c:choose>
+				<th>回单</th>
 				<c:forEach items="${deliverOrder.image}" var="image">
 					<td rowspan="2">
 					 <img src="${image}" width="80px" height="80px" />
