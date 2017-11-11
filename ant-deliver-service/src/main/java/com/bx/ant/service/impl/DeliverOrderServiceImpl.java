@@ -51,9 +51,6 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	private DeliverOrderItemServiceI deliverOrderItemService;
 
 	@Autowired
-	private DeliverOrderItemDaoI deliverOrderItemDao;
-
-	@Autowired
 	private DeliverOrderShopItemServiceI deliverOrderShopItemService;
 
 	@Autowired
@@ -74,11 +71,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 
 	@javax.annotation.Resource
 	private SupplierItemRelationServiceI supplierItemRelationService;
-	@Resource
-	private TokenServiceI tokenService;
 
-	@Autowired
-	private ShopOrderBillServiceI shopOrderBillService;
 	@Autowired
 	private ShopItemServiceI shopItemService;
 

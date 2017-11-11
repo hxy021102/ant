@@ -207,17 +207,23 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 		}
 	}
 	@Override
-	public DriverAccount getByRef(String refId, String refType) {
+	public DriverAccount getByRef(String refId, String refType, String handleStatus) {
 		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("handleStatus", handleStatus);
 		params.put("refId", refId);
 		params.put("refType", refType);
-		TdriverAccount t = driverAccountDao.get("from TDriverAccount t  where t.isdeleted = 0 and t.refId = :refId and t.refType = :refType", params);
+		TdriverAccount t = driverAccountDao.get("from TDriverAccount t  where t.isdeleted = 0 and t.refId = :refId and t.refType = :refType and t.handleStatus = :handleStatus", params);
 		if(t != null) {
 			DriverAccount o = new DriverAccount();
 			BeanUtils.copyProperties(t, o);
 			return o;
 		}
 		return null;
+	}
+
+	@Override
+	public DriverAccount getByRef(String refId, String refType) {
+		return getByRef(refId, refType, HANDLE_STATUS_AGREE);
 	}
 
 	@Override
