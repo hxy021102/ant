@@ -254,6 +254,7 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 					orderExt.setBalanceLogType("BT061");
 					orderExt.setPayWay(shopOrderBill.getPayWay());
 					orderExt.setStatus(DeliverOrderServiceI.STATUS_CLOSED);
+					orderExt.setOrderShopId(orderShopPay.getDeliverOrderShopId());
 					deliverOrderService.transform(orderExt);
 				}else {
 					orderShopPay.setStatus("SPS03");
