@@ -250,7 +250,7 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 					//审核通过 进行支付
 					DeliverOrderExt orderExt = new DeliverOrderExt();
 					orderExt.setId(orderShopPay.getDeliverOrderId());
-					orderExt.setShopId(shopOrderBill.getShopId());
+					orderExt.setShopId(orderShopPay.getShopId());
 					orderExt.setBalanceLogType("BT061");
 					orderExt.setPayWay(shopOrderBill.getPayWay());
 					orderExt.setStatus(DeliverOrderServiceI.STATUS_CLOSED);
