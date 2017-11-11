@@ -371,34 +371,31 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 			ShopOrderBillQuery shopOrderBillQuery = (ShopOrderBillQuery) entry.getValue();
 			shopOrderBillService.addAndPayShopOrderBillAndShopPay(shopOrderBillQuery);
 			List<DeliverOrderShop> orderShopList = shopOrderBillQuery.getDeliverOrderShopList();
-			int size = orderShopList.size();
-			for (int i = 0; i < size; i++) {
-				DeliverOrderShop order = orderShopList.get(i);
+			for (DeliverOrderShop orderShop : orderShopList) {
 				DeliverOrderExt orderExt = new DeliverOrderExt();
-				orderExt.setId(order.getDeliverOrderId());
-				orderExt.setShopId(order.getShopId());
+				orderExt.setId(orderShop.getDeliverOrderId());
+				orderExt.setShopId(orderShop.getShopId());
 				orderExt.setBalanceLogType("BT060");
-				orderExt.setStatus("DOS40");
+				orderExt.setPayWay(DeliverOrderServiceI.PAY_WAY_BALANCE);
+				orderExt.setStatus(DeliverOrderServiceI.STATUS_CLOSED);
+				orderExt.setOrderShopId(orderShop.getId());
 				deliverOrderService.transform(orderExt);
 			}
 		}
 	}
 
 	@Override
-	public DeliverOrderShop editStatusByHql(DeliverOrderShop deliverOrderShop, String status, String shopPayStatus) {
+	public void editStatusByHql(DeliverOrderShop deliverOrderShop, String status, String shopPayStatus) {
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("status",deliverOrderShop.getStatus());
-		params.put("shopPayStatus",deliverOrderShop.getShopPayStatus());
-		params.put("deliverOrderId",deliverOrderShop.getDeliverOrderId());
+		params.put("status", deliverOrderShop.getStatus());
+		params.put("shopPayStatus", deliverOrderShop.getShopPayStatus());
+		params.put("id", deliverOrderShop.getId());
 		params.put("newsStatus", status);
 		params.put("newsShopPayStatus", shopPayStatus);
-		DeliverOrderShop orderShop=query(deliverOrderShop).get(0);
-		int result=deliverOrderShopDao.executeHql("update TdeliverOrderShop t set t.status = :newsStatus , t.shopPayStatus = :newsShopPayStatus " +
-				"where t.status = :status and t.shopPayStatus = :shopPayStatus and t.deliverOrderId = :deliverOrderId", params);
+		int result = deliverOrderShopDao.executeHql("update TdeliverOrderShop t set t.status = :newsStatus , t.shopPayStatus = :newsShopPayStatus " +
+				"where t.status = :status and t.shopPayStatus = :shopPayStatus and t.id = :id", params);
 		if (result <= 0) {
 			throw new ServiceException("修改门店订单状态失败");
-		}else {
-			return orderShop;
 		}
 	}
 
