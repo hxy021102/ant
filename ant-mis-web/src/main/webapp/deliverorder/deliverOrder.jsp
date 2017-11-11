@@ -268,7 +268,7 @@
                 width : 50
             }, {
                 field : 'supplierOrderId',
-                title : '供应商订单ID',
+                title : '订单ID',
                 width : 50
             },{
                 field : 'supplierId',
@@ -436,7 +436,7 @@
         if(index == 1) {
             options.url += '?time=30';
         }else if(index == 2){
-            options.url +='?status="notDriver"';
+            options.url +='?status=notDriver';
         }
         options.queryParams = $.serializeObject($('#searchForm'));
         selectDatagrid.datagrid(options);
@@ -481,9 +481,13 @@
 							<jb:select dataType="DDS" name="deliveryStatus"></jb:select>
 						</td>
 						<th >订单时间</th>
-						<td colspan="3">
+						<td >
 							<input type="text" class="span2 easyui-validatebox" data-options="required:false" onclick="WdatePicker({dateFmt:'<%=TmbSupplierOrderItem.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'endDate\',{M:-1});}',maxDate:'#F{$dp.$D(\'endDate\',{d:-1});}'})" id="startDate" name="startDate"/>
 							至	<input type="text" class="span2 easyui-validatebox" data-options="required:false" onclick="WdatePicker({dateFmt:'<%=TmbSupplierOrderItem.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'startDate\',{d:1});}',maxDate:'#F{$dp.$D(\'startDate\',{M:1});}'})" id="endDate" name="endDate"/>
+						</td>
+						<th>订单ID</th>
+						<td >
+							<input type="text" name="supplierOrderId" maxlength="10" class="span2"/>
 						</td>
 					</tr>
 				</table>

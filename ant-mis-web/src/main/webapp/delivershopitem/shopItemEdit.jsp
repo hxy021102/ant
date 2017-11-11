@@ -76,6 +76,27 @@
 					</td>
 				</tr>
 				<tr>
+					<th>是否上架
+					</th>
+					<td>
+						<select class="easyui-combobox" name="online" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+						<c:if test="${shopItem.online == false}">
+							<option value="1">是</option>
+							<option value="0" selected="selected">否</option>
+						</c:if>
+						<c:if test="${shopItem.online == true}">
+							<option value="1" selected="selected">是</option>
+							<option value="0">否</option>
+						</c:if>
+						</select>
+					</td>
+					<th>库存
+					</th>
+					<td>
+						<input name="quantity" type="text" class=" span2"    value="${shopItem.quantity}"/>
+					</td>
+				</tr>
+				<tr>
 					<th>运费
 					</th>
 					<td>

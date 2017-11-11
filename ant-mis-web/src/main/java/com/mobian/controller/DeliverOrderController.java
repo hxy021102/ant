@@ -9,7 +9,6 @@ import com.bx.ant.service.DeliverOrderItemServiceI;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.SupplierItemRelationServiceI;
 import com.bx.ant.service.SupplierServiceI;
-import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
 import com.mobian.service.BasedataServiceI;
@@ -94,7 +93,7 @@ public class DeliverOrderController extends BaseController {
         if(deliverOrderQuery.getTime()!=null&&deliverOrderQuery.getTime()!=0){
 			deliverOrderQuery.setTime(Integer.valueOf(ConvertNameUtil.getString("DSV500", "30")));
 			return deliverOrderService.dataGridOutTimeDeliverOrder(deliverOrderQuery, ph);
-		}else if("notDriver".equals(deliverOrderQuery.getStatus())){
+		}else if("notDriver,".equals(deliverOrderQuery.getStatus())){
         	return deliverOrderService.dataGridNotDriverDeliverOrder(deliverOrderQuery,ph);
 		}else
 			return deliverOrderService.dataGridWithName(deliverOrderQuery, ph);
@@ -358,10 +357,11 @@ public class DeliverOrderController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/assignOrderShopPage")
-	public String assignOrderShopPage(HttpServletRequest request, Long id) {
+	public String assignOrderShopPage(HttpServletRequest request, Long id,Long orderShopId) {
 		DeliverOrder deliverOrder = deliverOrderService.get(id);
 	 	request.setAttribute("deliverOrder", JSON.toJSONString(deliverOrder));
 		request.setAttribute("id", id);
+		request.setAttribute("orderShopId", orderShopId);
 		return "/deliverorder/assignOrderShop";
 	}
 

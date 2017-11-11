@@ -231,8 +231,7 @@
                  }
              });
          }
-
-
+         var orderShopId;
          var gridMap = {};
          $(function() {
              gridMap = {
@@ -265,7 +264,15 @@
                      gridMap[index].invoke();
                  }
              });
+
              gridMap[0].invoke();
+             if (isNaN(${deliverOrder.orderShopId})) {
+                 orderShopId = 0;
+             } else {
+                 orderShopId =${deliverOrder.orderShopId};
+             }
+
+
          });
 
          //指派运单给门店
@@ -274,7 +281,7 @@
                  title : '指派门店',
                  width : 780,
                  height : 200,
-                 href : '${pageContext.request.contextPath}/deliverOrderController/assignOrderShopPage?id=' + ${deliverOrder.id},
+                 href : '${pageContext.request.contextPath}/deliverOrderController/assignOrderShopPage?id=' + ${deliverOrder.id}+'&orderShopId='+orderShopId,
                  buttons : [ {
                      text : '提交',
                      handler : function() {
@@ -286,17 +293,18 @@
                  } ]
              });
          }
+
 	 </script>
 </head>
 <body>
 <div class="easyui-layout" data-options="fit : true,border:false">
-	<div data-options="region:'north',title:'基本信息',border:false" style="height: 180px; overflow: hidden;">
+	<div data-options="region:'north',title:'基本信息',border:false" style="height: 270px; overflow: hidden;">
 		<table class="table">
 			<tr>
 				<th>运单ID</th>
 				<td>
 					${deliverOrder.id}
-					<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/assignOrderShopPage') and ( deliverOrder.status=='DOS01' or deliverOrder.status=='DOS15')}">
+					<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/assignOrderShopPage') and ( deliverOrder.status=='DOS01' or deliverOrder.status=='DOS15' or deliverOrder.status=='notDriver')}">
 						<a href="javascript:void(0);" class="easyui-linkbutton" onclick="assignOrderShop();">指派</a>
 					</c:if>
 				</td>
@@ -352,8 +360,23 @@
 			<tr>
 				<th>供应商订单ID</th>
 				<td colspan="">${deliverOrder.supplierOrderId}</td>
+				<th></th><td></td>
+				<th>回单</th><%--imageArray--%>
+				<c:forEach items="${deliverOrder.image}" var="image">
+					<td rowspan="2">
+					 <img src="${image}" width="80px" height="80px" />
+					</td>
+				</c:forEach>
+			</tr>
+			<tr>
+				<th>送达备注</th>
+				<td colspan="3">
+					${deliverOrder.completeRemark}
+				</td>
+			</tr>
+			<tr>
 				<th>备注</th>
-				<td colspan="6">
+				<td colspan="3">
 					${deliverOrder.remark}
 				</td>
 			</tr>

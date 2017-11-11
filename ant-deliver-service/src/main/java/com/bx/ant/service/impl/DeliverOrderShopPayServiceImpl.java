@@ -139,7 +139,9 @@ public class DeliverOrderShopPayServiceImpl extends BaseServiceImpl<DeliverOrder
 
 	@Override
 	public List<DeliverOrderShopPay> list(DeliverOrderShopPay deliverOrderShopPay) {
-		return dataGrid(deliverOrderShopPay, new PageHelper()).getRows();
+		PageHelper ph = new PageHelper();
+		ph.setHiddenTotal(true);
+		return dataGrid(deliverOrderShopPay, ph).getRows();
 	}
 
 	@Override
