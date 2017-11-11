@@ -20,6 +20,7 @@
     <dubbo:reference id="supplierService" interface="com.bx.ant.service.SupplierServiceI"/>
     <dubbo:reference id="supplierItemRelationService" interface="com.bx.ant.service.SupplierItemRelationServiceI"/>
     <dubbo:reference id="driverOrderShopAllocationService" interface="com.bx.ant.service.DriverOrderShopAllocationServiceI"/>
+    <dubbo:reference id="driverFreightRuleService" interface="com.bx.ant.service.DriverFreightRuleServiceI"/>
 
     <dubbo:reference id="deliverOrderShopService" interface="com.bx.ant.service.DeliverOrderShopServiceI"/>
     <dubbo:reference id="deliverOrderShopItemService" interface="com.bx.ant.service.DeliverOrderShopItemServiceI"/>

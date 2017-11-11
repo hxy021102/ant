@@ -414,7 +414,7 @@ public class ApiDeliverOrderController extends BaseController {
             DriverOrderShop driverOrderShop = new DriverOrderShop();
             driverOrderShop.setShopId(shopId);
             driverOrderShop.setDeliverOrderShopId(deliverOrderShop.getId());
-
+//            deliverOrderShop.setAmount(deliverOrderShop.getId());
         }
         return json;
 

@@ -75,7 +75,9 @@ public interface DriverAccountServiceI {
 	 */
 	DataGrid dataGridView(DriverAccountQuery driverAccountQuery, PageHelper pageHelper);
 
-	/**
+    DriverAccount getByRef(String refId, String refType, String handleStatus);
+
+    /**
 	 * 通过ReId获取DriverAccount
 	 * @param refId
 	 * @param refType
