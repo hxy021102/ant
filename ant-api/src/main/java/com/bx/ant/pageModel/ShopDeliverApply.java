@@ -19,6 +19,7 @@ public class ShopDeliverApply implements java.io.Serializable {
 	private Integer shopId;
 	private String deliveryWay;
 	private Boolean online;
+	private Boolean frozen;
 	private String result;
 	private String status;
 	private Integer accountId;
@@ -91,6 +92,15 @@ public class ShopDeliverApply implements java.io.Serializable {
 	public Boolean getOnline() {
 		return this.online;
 	}
+
+	public Boolean getFrozen() {
+		return frozen;
+	}
+
+	public void setFrozen(Boolean frozen) {
+		this.frozen = frozen;
+	}
+
 	public void setResult(String result) {
 		this.result = result;
 	}
