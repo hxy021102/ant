@@ -363,6 +363,11 @@ public class ApiDeliverOrderController extends BaseController {
         json.setObj(deliverOrderService.clearAllocationOrderRedis(shopId));
         return json;
     }
+    @RequestMapping("/getNewAllocationOrderQuantity")
+    @ResponseBody
+    public  Json countNewAllocationOrderUpdate(HttpServletRequest request) {
+        return countNewAllocationOrder(request);
+    }
 
     /**
      * 今日订单列表
@@ -399,6 +404,16 @@ public class ApiDeliverOrderController extends BaseController {
         json.setObj(ol);
         json.setSuccess(true);
         return json;
+    }
+    /**
+     * 今日订单列表
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getTodayOrders")
+    @ResponseBody
+    public Json todayOrdersUpdate(HttpServletRequest request) {
+        return todayOrders(request);
     }
 
 }

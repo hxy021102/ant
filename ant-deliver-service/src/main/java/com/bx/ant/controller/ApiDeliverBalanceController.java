@@ -74,15 +74,21 @@ public class ApiDeliverBalanceController extends BaseController {
     private MbWithdrawLogServiceI mbWithdrawLogService;
 
 
-    @RequestMapping("/viewDeliverBanlanceLogList")
+    @RequestMapping("/viewDeliverBnalanceLogList")
     @ResponseBody
-    public Json viewBanlanceLogList(MbBalanceLog mbBalanceLog){
+    public Json viewBalanceLogList(MbBalanceLog mbBalanceLog){
         Json json = new Json();
         json.setMsg("u know");
         json.setObj(mbBalanceLogService.list(mbBalanceLog));
         json.setSuccess(true);
         return json;
     }
+    @RequestMapping("/viewDeliverBalanceLogList")
+    @ResponseBody
+    public Json viewBalanceLogListUpdate(MbBalanceLog mbBalanceLog){
+        return viewBalanceLogList(mbBalanceLog);
+    }
+
 
     /**
      * 获取门店派单账号流水明细
@@ -214,7 +220,7 @@ public class ApiDeliverBalanceController extends BaseController {
      */
     @RequestMapping("/transformAmountDeliverToBalance")
     @ResponseBody
-    public Json transformAmountDeliverToBalance(HttpServletRequest request, Integer amount, String vcode) {
+    public Json updateAmountDeliverToBalance(HttpServletRequest request, Integer amount, String vcode) {
         Json j = new Json();
         TokenWrap tokenWrap = getTokenWrap(request);
         Integer shopId = tokenWrap.getShopId();
@@ -236,13 +242,25 @@ public class ApiDeliverBalanceController extends BaseController {
     }
 
     /**
+     * 派单账户余额转出采购账户余额
+     * @param request
+     * @return
+     */
+    @RequestMapping("/updateAmountDeliverToBalance")
+    @ResponseBody
+    public Json updateAmountDeliverToBalanceUpdate(HttpServletRequest request, Integer amount, String vcode) {
+        return updateAmountDeliverToBalance(request, amount, vcode);
+    }
+
+
+    /**
      * 采购账户余额转入派单账户余额
      * @param request
      * @return
      */
     @RequestMapping("/transformAmountBalanceToDeliver")
     @ResponseBody
-    public Json transformAmountBalanceToDeliver(HttpServletRequest request, Integer amount, String vcode) {
+    public Json updateAmountBalanceToDeliver(HttpServletRequest request, Integer amount, String vcode) {
         Json j = new Json();
         TokenWrap tokenWrap = getTokenWrap(request);
         Integer shopId = tokenWrap.getShopId();
@@ -262,6 +280,18 @@ public class ApiDeliverBalanceController extends BaseController {
         j.setSuccess(true);
         return j;
     }
+
+    /**
+     * 采购账户余额转入派单账户余额
+     * @param request
+     * @return
+     */
+    @RequestMapping("/updateAmountBalanceToDeliver")
+    @ResponseBody
+    public Json updateAmountBalanceToDeliverUpdate(HttpServletRequest request, Integer amount, String vcode) {
+        return updateAmountDeliverToBalance(request, amount, vcode);
+    }
+
 
     @ResponseBody
     @RequestMapping("/getVCode")
@@ -308,7 +338,7 @@ public class ApiDeliverBalanceController extends BaseController {
      */
     @ResponseBody
     @RequestMapping("/withdraw")
-    public Json test(HttpServletRequest request, MbWithdrawLog withdrawLog, String vcode){
+    public Json withdraw(HttpServletRequest request, MbWithdrawLog withdrawLog, String vcode) {
         Json json = new Json();
 
         //1. 单次限额1W
@@ -324,11 +354,11 @@ public class ApiDeliverBalanceController extends BaseController {
 
         // 短信验证
         String oldCode = (String) redisUtil.getString(Key.build(Namespace.SHOP_BALANCE_ROLL_VALIDATE_CODE, tokenWrap.getName()));
-        if(F.empty(oldCode)) {
+        if (F.empty(oldCode)) {
             json.setMsg("验证码已过期！");
             return json;
         }
-        if(!oldCode.equals(vcode)) {
+        if (!oldCode.equals(vcode)) {
             json.setMsg("验证码错误！");
             return json;
         }
@@ -336,7 +366,7 @@ public class ApiDeliverBalanceController extends BaseController {
         MbBalance balance = mbBalanceService.addOrGetMbBalanceDelivery(shopId);
 
         //1. 判断余额
-        if(F.empty(withdrawLog.getAmount()) || withdrawLog.getAmount() > balance.getAmount()) {
+        if (F.empty(withdrawLog.getAmount()) || withdrawLog.getAmount() > balance.getAmount()) {
             //throw new ServiceException("转账金额为空或余额不足");
             json.setSuccess(false);
             json.setMsg("转账金额为空或余额不足");
@@ -365,6 +395,18 @@ public class ApiDeliverBalanceController extends BaseController {
         json.setMsg("申请成功");
         json.setSuccess(true);
         return json;
+    }
+
+    /**
+     * 提现
+     * @param request
+     * @param
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/updateWithdraw")
+    public Json withdrawUpdate(HttpServletRequest request, MbWithdrawLog withdrawLog, String vcode){
+        return withdraw(request, withdrawLog, vcode);
     }
 
 
@@ -419,6 +461,12 @@ public class ApiDeliverBalanceController extends BaseController {
         return json;
     }
 
+    @RequestMapping("/getWithdrawDataGrid")
+    @ResponseBody
+    public Json dataGridWithdrawUpdate(HttpServletRequest request, PageHelper pageHelper, String date) {
+        return dataGridWithdraw(request, pageHelper, date);
+    }
+
     /**
      * 按月统计收入支出
      * @param request
@@ -460,5 +508,16 @@ public class ApiDeliverBalanceController extends BaseController {
         }
 
         return j;
+    }
+
+    /**
+     * 按月统计收入支出
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getTotalBalanceByMonth")
+    @ResponseBody
+    public Json totalBalanceByMonthUpdate(HttpServletRequest request, String date) {
+        return totalBalanceByMonth(request, date);
     }
 }
