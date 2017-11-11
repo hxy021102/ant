@@ -74,7 +74,7 @@ public class ApiDeliverBalanceController extends BaseController {
     private MbWithdrawLogServiceI mbWithdrawLogService;
 
 
-    @RequestMapping("/viewDeliverBnalanceLogList")
+    @RequestMapping("/viewDeliverBanlanceLogList")
     @ResponseBody
     public Json viewBalanceLogList(MbBalanceLog mbBalanceLog){
         Json json = new Json();
