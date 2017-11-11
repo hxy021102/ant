@@ -60,7 +60,7 @@
 				},{
 				field : 'addtime',
 				title : '添加时间',
-				width : 60
+				width : 50
 				}, {
 				field : 'userName',
 				title : '用户名',
@@ -89,7 +89,8 @@
                 },{
                 field : 'balanceAmount',
                 title : '金额',
-                width : 50,
+                width : 30,
+				align:"right",
                 formatter: function (value, row) {
                     if(row.balanceAmount == undefined)return "";
                     return '<a onclick="viewBalance(' + row.id + ')">' + $.formatMoney(row.balanceAmount) + '</a>';
@@ -105,7 +106,7 @@
 				}, {
 				field : 'action',
 				title : '操作',
-				width : 70,
+				width : 50,
 				formatter : function(value, row, index) {
 					var str = '';
                     if ($.canEdit) {
@@ -133,7 +134,7 @@
 	});
 
     function viewBalance(id) {
-        var href = '${pageContext.request.contextPath}/mbUserController/viewBalance?shopId=' + id;
+        var href = '${pageContext.request.contextPath}/mbUserController/viewBalance?driverAccountId=' + id;
         parent.$("#index_tabs").tabs('add', {
             title: '余额-' + id,
             content: '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',

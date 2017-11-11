@@ -86,4 +86,11 @@ public interface DriverAccountServiceI {
     List<DriverAccount> getAvilableAndWorkDriver();
 
     boolean checkUserName(String userName);
+
+	/**
+	 * 查询DriverAccount的集合
+	 * @param driverAccount
+	 * @return
+	 */
+	List<DriverAccount> query(DriverAccount driverAccount);
 }

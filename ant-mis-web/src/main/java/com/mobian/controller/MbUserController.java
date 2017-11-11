@@ -132,7 +132,7 @@ public class MbUserController extends BaseController {
 			mbBalance = mbBalanceService.queryByRealShopId(realShopId);
 			request.setAttribute("readOnly", true);
 		} else if(!F.empty(driverAccountId)){
-			mbBalance = mbBalanceService.queryByRealShopId(driverAccountId);
+			mbBalance =mbBalanceService.addOrGetMbBalance(driverAccountId,50,0);
 			request.setAttribute("readOnly", true);
 		} else{
 			mbBalance = mbBalanceService.queryByShopId(shopId);

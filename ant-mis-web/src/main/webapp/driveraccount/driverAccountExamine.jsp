@@ -39,6 +39,12 @@
 			    <input type="hidden" name="handleStatus" value = ""/>
 			<table class="table table-hover table-condensed">
 				<tr>
+				<th>类型</th>
+				<td>
+					<jb:select dataType="DATP" name="type" value="${driverAccount.type}"></jb:select>
+				</td
+				</tr>
+				<tr>
 					<th>审核意见</th>
 					<td colspan="2">
 						<textarea name="handleRemark" style="width: 97%" rows="3"    class="easyui-validatebox"    > </textarea>

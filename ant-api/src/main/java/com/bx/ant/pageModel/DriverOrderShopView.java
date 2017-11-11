@@ -10,9 +10,17 @@ import java.util.Date;
 public class DriverOrderShopView extends DriverOrderShop {
     private String statusName;
     private String payStatusName;
+    private Date addtimeBegin;
+    private Date addtimeEnd;
+    private DeliverOrderShop deliverOrderShop;
+    private String shopName;
+    private String userName;
     private Date updatetimeBegin;
     private Date updatetimeEnd;
-    private DeliverOrderShop deliverOrderShop;
+    private String createDate;
+    private String updateDate;
+    private Double amountElement;
+    private Long[] ids;
 
     public String getStatusName() {
         return ConvertNameUtil.getString(super.getStatus());
@@ -28,6 +36,46 @@ public class DriverOrderShopView extends DriverOrderShop {
 
     public void setPayStatusName(String payStatusName) {
         this.payStatusName = payStatusName;
+    }
+
+    public DeliverOrderShop getDeliverOrderShop() {
+        return deliverOrderShop;
+    }
+
+    public void setDeliverOrderShop(DeliverOrderShop deliverOrderShop) {
+        this.deliverOrderShop = deliverOrderShop;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public Date getAddtimeBegin() {
+        return addtimeBegin;
+    }
+
+    public void setAddtimeBegin(Date addtimeBegin) {
+        this.addtimeBegin = addtimeBegin;
+    }
+
+    public Date getAddtimeEnd() {
+        return addtimeEnd;
+    }
+
+    public void setAddtimeEnd(Date addtimeEnd) {
+        this.addtimeEnd = addtimeEnd;
     }
 
     public Date getUpdatetimeBegin() {
@@ -46,11 +94,35 @@ public class DriverOrderShopView extends DriverOrderShop {
         this.updatetimeEnd = updatetimeEnd;
     }
 
-    public DeliverOrderShop getDeliverOrderShop() {
-        return deliverOrderShop;
+    public String getCreateDate() {
+        return createDate;
     }
 
-    public void setDeliverOrderShop(DeliverOrderShop deliverOrderShop) {
-        this.deliverOrderShop = deliverOrderShop;
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+
+    public Double getAmountElement() {
+        return amountElement;
+    }
+
+    public void setAmountElement(Double amountElement) {
+        this.amountElement = amountElement;
+    }
+
+    public String getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(String updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    public Long[] getIds() {
+        return ids;
+    }
+
+    public void setIds(Long[] ids) {
+        this.ids = ids;
     }
 }

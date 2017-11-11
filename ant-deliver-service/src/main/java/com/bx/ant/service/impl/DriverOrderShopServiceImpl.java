@@ -9,29 +9,27 @@ import java.util.Map;
 import com.alibaba.fastjson.JSONObject;
 import com.bx.ant.dao.DriverOrderShopDaoI;
 import com.bx.ant.model.TdriverOrderShop;
-import com.bx.ant.pageModel.DeliverOrderShop;
-import com.bx.ant.pageModel.DeliverOrderShopView;
-import com.bx.ant.pageModel.DriverOrderShop;
-import com.bx.ant.pageModel.DriverOrderShopView;
+import com.bx.ant.pageModel.*;
 import com.bx.ant.service.DeliverOrderShopServiceI;
+import com.bx.ant.service.DriverAccountServiceI;
 import com.bx.ant.service.DriverOrderShopServiceI;
 import com.bx.ant.service.DriverOrderShopState;
 import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.PageHelper;
+import com.mobian.service.MbShopServiceI;
 import com.mobian.thirdpart.redis.Key;
 import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.thirdpart.redis.RedisUtil;
 import com.mobian.util.MyBeanUtils;
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.persistence.criteria.CriteriaBuilder;
 
 @Service
 public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop> implements DriverOrderShopServiceI {
@@ -47,6 +45,11 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 
 	@Resource
 	private RedisUtil redisUtil;
+
+	@Resource
+	private MbShopServiceI mbShopService;
+	@Resource
+	private DriverAccountServiceI driverAccountService;
 
 	@Override
 	public DataGrid dataGrid(DriverOrderShop driverOrderShop, PageHelper ph) {
@@ -109,13 +112,17 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 			}
 			if (driverOrderShop instanceof DriverOrderShopView) {
 				DriverOrderShopView driverOrderShopView = (DriverOrderShopView) driverOrderShop;
-				if (driverOrderShopView.getUpdatetimeBegin() != null) {
-					whereHql += " and t.updatetime >= :updatetimeBegin";
-					params.put("updatetimeBegin", driverOrderShopView.getUpdatetimeBegin());
+				if (driverOrderShopView.getAddtimeBegin() != null) {
+					whereHql += " and t.updatetime >= :addtimeBegin";
+					params.put("addtimeBegin", driverOrderShopView.getAddtimeBegin());
 				}
-				if (driverOrderShopView.getUpdatetimeEnd() != null) {
-					whereHql += " and t.updatetime <= :updatetimeEnd";
-					params.put("updatetimeEnd", driverOrderShopView.getUpdatetimeEnd());
+				if (driverOrderShopView.getAddtimeEnd() != null) {
+					whereHql += " and t.updatetime <= :addtimeEnd";
+					params.put("addtimeEnd", driverOrderShopView.getAddtimeEnd());
+				}
+				if (driverOrderShopView.getIds() != null && driverOrderShopView.getIds().length > 0) {
+					whereHql += " and t.id in(:ids)";
+					params.put("ids", driverOrderShopView.getIds());
 				}
 			}
 		}	
@@ -170,14 +177,18 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 
 	@Override
 	public DataGrid dataGridView(DriverOrderShop driverOrderShop, PageHelper pageHelper) {
-		DataGrid dataGrid = new DataGrid();
-		List<DriverOrderShop> driverOrderShops = dataGrid(driverOrderShop, pageHelper).getRows();
+		DataGrid dataGrid = dataGrid(driverOrderShop, pageHelper);
+		List<DriverOrderShop> driverOrderShops = dataGrid.getRows();
 		List<DriverOrderShopView> ol = new ArrayList<DriverOrderShopView>();
 		if (CollectionUtils.isNotEmpty(driverOrderShops)) {
 			int size = driverOrderShops.size();
 			for (int i = 0 ; i < size; i++) {
 				DriverOrderShopView o = new DriverOrderShopView();
 				BeanUtils.copyProperties(driverOrderShops.get(i), o);
+				MbShop mbShop =mbShopService.getFromCache(o.getShopId());
+				o.setShopName(mbShop.getName());
+				DriverAccount driverAccount=driverAccountService.get(o.getDriverAccountId());
+                o.setUserName(driverAccount.getUserName());
 				fillDeliverOrderShopInfo(o);
 				ol.add(o);
 			}
@@ -265,5 +276,22 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 	@Override
 	public Integer clearAllocationOrderRedis(Integer accountId) {
 		return updateAllocationOrderRedis(accountId, 0);
+	}
+
+	@Override
+	public List<DriverOrderShop> query(DriverOrderShop driverOrderShop) {
+			List<DriverOrderShop> ol = new ArrayList<DriverOrderShop>();
+			String hql = " from TdriverOrderShop t ";
+			Map<String, Object> params = new HashMap<String, Object>();
+			String where = whereHql(driverOrderShop, params);
+			List<TdriverOrderShop> l = driverOrderShopDao.find(hql + where, params);
+			if (CollectionUtils.isNotEmpty(l)) {
+				for (TdriverOrderShop t : l) {
+					DriverOrderShop o = new DriverOrderShop();
+					BeanUtils.copyProperties(t, o);
+					ol.add(o);
+				}
+			}
+			return ol;
 	}
 }

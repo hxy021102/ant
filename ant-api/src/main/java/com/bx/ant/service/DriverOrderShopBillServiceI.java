@@ -56,4 +56,11 @@ public interface DriverOrderShopBillServiceI {
     DriverOrderShopBillView getView(Integer id);
 
     DataGrid dataGridView(DriverOrderShopBill driverOrderShopBill, PageHelper pageHelper);
+
+	/**
+	 * 创建骑手账单和修改骑手运单状态
+	 * @param driverOrderShopBillView
+	 * @return
+	 */
+	String addDriverOrderShopBillandPay(DriverOrderShopBillView driverOrderShopBillView);
 }

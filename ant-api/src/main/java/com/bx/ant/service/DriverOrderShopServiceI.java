@@ -5,6 +5,8 @@ import com.bx.ant.pageModel.DriverOrderShopView;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
+import java.util.List;
+
 /**
  * 
  * @author John
@@ -23,6 +25,7 @@ public interface DriverOrderShopServiceI {
 	//支付状态
 	String PAY_STATUS_NOT_PAY = "DDPS01";
 	String PAY_STATUS_PAID = "DDPS02";
+	String PAY_STSTUS_WAITE_AUDIT="DDPS03";
 
 
 	/**
@@ -113,4 +116,11 @@ public interface DriverOrderShopServiceI {
 	 * @return
 	 */
 	Integer clearAllocationOrderRedis(Integer accountId);
+
+	/**
+	 * 获取DriverOrderShop的集合列表
+	 * @param driverOrderShop
+	 * @return
+	 */
+	List<DriverOrderShop> query(DriverOrderShop driverOrderShop);
 }

@@ -2,9 +2,10 @@ package com.bx.ant.service.impl;
 
 import com.bx.ant.dao.DriverOrderShopBillDaoI;
 import com.bx.ant.model.TdriverOrderShopBill;
-import com.bx.ant.pageModel.DriverOrderShopBill;
-import com.bx.ant.pageModel.DriverOrderShopBillView;
+import com.bx.ant.pageModel.*;
+import com.bx.ant.service.DriverAccountServiceI;
 import com.bx.ant.service.DriverOrderShopBillServiceI;
+import com.bx.ant.service.DriverOrderShopServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
@@ -29,9 +30,12 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 
 	@Autowired
 	private DriverOrderShopBillDaoI driverOrderShopBillDao;
-
 	@Resource
 	private UserServiceI userService;
+	@Resource
+	private DriverOrderShopServiceI driverOrderShopService;
+	@Resource
+	private DriverAccountServiceI driverAccountService;
 
 	@Override
 	public DataGrid dataGrid(DriverOrderShopBill driverOrderShopBill, PageHelper ph) {
@@ -167,4 +171,42 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 			}
 		}
 	}
+
+	@Override
+	public String addDriverOrderShopBillandPay(DriverOrderShopBillView driverOrderShopBillView) {
+        DriverOrderShopView driverOrderShopView=new DriverOrderShopView();
+		//判断骑手运单是否重复
+		driverOrderShopView.setIds(driverOrderShopBillView.getOrderShopIds());
+		driverOrderShopView.setPayStatus(driverOrderShopService.PAY_STSTUS_WAITE_AUDIT);
+ 		List<DriverOrderShop> driverOrderShopList=driverOrderShopService.query(driverOrderShopView);
+		if(CollectionUtils.isEmpty(driverOrderShopList)){
+			//创建账单
+			DriverAccount driverAccount=new DriverAccount();
+			driverAccount.setUserName(driverOrderShopBillView.getUserName());
+ 			List<DriverAccount> driverAccountList=driverAccountService.query(driverAccount);
+ 			if(CollectionUtils.isNotEmpty(driverAccountList)){
+ 				driverOrderShopBillView.setDriverAccountId(driverAccountList.get(0).getId());
+			}
+			driverOrderShopBillView.setStartDate(driverOrderShopBillView.getAddtimeBegin());
+ 			driverOrderShopBillView.setEndDate(driverOrderShopBillView.getAddtimeEnd());
+			add(driverOrderShopBillView);
+            //修改运单为审核状态
+			DriverOrderShopView orderShopView=new DriverOrderShopView();
+			//判断骑手运单是否重复
+			orderShopView.setIds(driverOrderShopBillView.getOrderShopIds());
+			List<DriverOrderShop> driverOrderShops=driverOrderShopService.query(orderShopView);
+			for(DriverOrderShop driverOrderShop:driverOrderShops){
+                driverOrderShop.setPayStatus(driverOrderShopService.PAY_STSTUS_WAITE_AUDIT);
+                driverOrderShopService.edit(driverOrderShop);
+			}
+		}else{
+			/* (DeliverOrderShop  orderShop :driverOrderShopList){
+
+			} */
+		}
+
+
+		return null;
+	}
+
 }

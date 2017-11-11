@@ -9,15 +9,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bx.ant.pageModel.DriverOrderShopBill;
+import com.bx.ant.pageModel.DriverOrderShopBillView;
 import com.bx.ant.service.DriverOrderShopBillServiceI;
-import com.mobian.controller.BaseController;
 import com.mobian.pageModel.Colum;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
@@ -157,6 +158,26 @@ public class DriverOrderShopBillController extends BaseController {
 		driverOrderShopBillService.delete(id);
 		j.setMsg("删除成功！");
 		j.setSuccess(true);
+		return j;
+	}
+
+	/**
+	 * 创建骑手结算账单
+	 * @param driverOrderShopBillView
+	 * @return
+	 */
+	@RequestMapping(value="/addDriverOrderBill", method = RequestMethod.POST)
+	@ResponseBody
+	public Json addDriverOrderBill(@RequestBody DriverOrderShopBillView driverOrderShopBillView) {
+		Json j = new Json();
+		//String result=driverOrderShopBillService.addShopOrderBillAndShopPay(shopOrderBillQuery);
+		/*if(F.empty(result)) {
+			j.setSuccess(true);
+			j.setMsg("创建骑手账单成功！");
+		}else {
+			j.setSuccess(false);
+			j.setMsg("失败,"+result+" 已经被创建！");
+		}*/
 		return j;
 	}
 

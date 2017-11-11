@@ -186,7 +186,7 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 			for (int i = 0 ; i < size; i++) {
 				DriverAccountView o = new DriverAccountView();
 				BeanUtils.copyProperties(driverAccounts.get(i), o);
-				MbBalance mbBalance = mbBalanceService.addOrGetMbBalance(o.getId(), 50, 0);
+				MbBalance mbBalance = mbBalanceService.addOrGetMbBalance(o.getId(),50,0);
 				if (mbBalance != null) {
 					o.setBalanceAmount(mbBalance.getAmount());
 				}
@@ -260,6 +260,23 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public List<DriverAccount> query(DriverAccount driverAccount) {
+		List<DriverAccount> ol = new ArrayList<DriverAccount>();
+		String hql = " from TdriverAccount t ";
+		Map<String, Object> params = new HashMap<String, Object>();
+		String where = whereHql(driverAccount, params);
+		List<TdriverAccount> l = driverAccountDao.find(hql + where, params);
+		if (CollectionUtils.isNotEmpty(l)) {
+			for (TdriverAccount t : l) {
+				DriverAccount o = new DriverAccount();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		return ol;
 	}
 
 }
