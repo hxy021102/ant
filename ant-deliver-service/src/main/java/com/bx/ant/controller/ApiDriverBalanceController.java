@@ -40,10 +40,10 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/api/driver/driverBalance")
 public class ApiDriverBalanceController extends BaseController {
 
-    @Autowired
+    @Resource
     private MbBalanceServiceI mbBalanceService;
 
-    @Autowired
+    @Resource
     private MbBalanceLogServiceI mbBalanceLogService;
 
     @Resource

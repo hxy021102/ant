@@ -88,6 +88,8 @@ public class TdeliverOrder implements java.io.Serializable,IEntity{
 	private String contactPeople;
 	//@Length(max=512)
 	private String remark;
+
+	private Integer weight;
 	//columns END
 
 	private String supplierOrderId;
@@ -325,6 +327,15 @@ public class TdeliverOrder implements java.io.Serializable,IEntity{
 
 	public void setCompleteRemark(String completeRemark) {
 		this.completeRemark = completeRemark;
+	}
+
+	@Column(name = "weight", unique = false, nullable = true, insertable = true, updatable = true, scale = 11)
+	public Integer getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Integer weight) {
+		this.weight = weight;
 	}
 
 	/*

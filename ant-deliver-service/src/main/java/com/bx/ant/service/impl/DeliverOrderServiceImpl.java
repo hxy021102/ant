@@ -596,6 +596,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	@Override
 	public void addAndItems(DeliverOrder deliverOrder, List<SupplierItemRelationView> items){
 		int amount = 0 ;
+		int weight = 0 ;
 		transform(deliverOrder);
 		for (SupplierItemRelationView item : items) {
 			DeliverOrderItem orderItem = new DeliverOrderItem();
@@ -607,16 +608,20 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			supplierItemRelation.setSupplierId(deliverOrder.getSupplierId());
 			supplierItemRelation.setItemId(item.getItemId());
 			supplierItemRelation.setOnline(true);
-			List<SupplierItemRelation> supplierItemRelations = supplierItemRelationService.dataGrid(supplierItemRelation, new PageHelper()).getRows();
-			if (CollectionUtils.isNotEmpty(supplierItemRelations)) {
-				supplierItemRelation = supplierItemRelations.get(0);
-				amount += supplierItemRelation.getPrice() * item.getQuantity();
+			PageHelper ph = new PageHelper();
+			ph.setHiddenTotal(true);
+			List<SupplierItemRelationView> supplierItemRelationViews = supplierItemRelationService.dataGridView(supplierItemRelation, ph).getRows();
+			if (CollectionUtils.isNotEmpty(supplierItemRelationViews)) {
+				SupplierItemRelationView supplierItemRelationView = supplierItemRelationViews.get(0);
+				amount += supplierItemRelationView.getPrice() * item.getQuantity();
+				weight += supplierItemRelationView.getWeight() * item.getQuantity();
 			}
 			deliverOrderItemService.addAndFill(orderItem,deliverOrder);
 		}
 		DeliverOrder order = new DeliverOrder();
 		order.setId(deliverOrder.getId());
 		order.setAmount(amount);
+		order.setWeight(weight);
 		edit(order);
 	}
 

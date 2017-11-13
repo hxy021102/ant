@@ -34,8 +34,10 @@ public class DeliverOrder implements java.io.Serializable {
 	private String completeImages;
 	private String completeRemark;
     private String deliverOrderLogType;
+	private Integer weight;
 
 	private String deliveryType; // 派单类型
+
 	
 
 	public void setId(Long value) {
@@ -237,5 +239,13 @@ public class DeliverOrder implements java.io.Serializable {
 
 	public void setDeliveryType(String deliveryType) {
 		this.deliveryType = deliveryType;
+	}
+
+	public Integer getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Integer weight) {
+		this.weight = weight;
 	}
 }

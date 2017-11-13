@@ -5,6 +5,7 @@ package com.bx.ant.pageModel;
  */
 public class SupplierItemRelationView extends SupplierItemRelation{
     private Integer quantity;
+    private Integer weight;
 
     public Integer getQuantity() {
         return quantity;
@@ -12,5 +13,13 @@ public class SupplierItemRelationView extends SupplierItemRelation{
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public Integer getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Integer weight) {
+        this.weight = weight;
     }
 }

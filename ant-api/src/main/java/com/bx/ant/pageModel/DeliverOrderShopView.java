@@ -1,5 +1,7 @@
 package com.bx.ant.pageModel;
 
+import com.mobian.pageModel.MbShop;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -17,6 +19,7 @@ public class DeliverOrderShopView extends DeliverOrderShop {
     private BigDecimal latitude;
     private String deliverAddress;
     private Date deliverRequireTime;
+    private MbShop shop;
 
 
     public DeliverOrder getDelvierOrder() {
@@ -81,5 +84,13 @@ public class DeliverOrderShopView extends DeliverOrderShop {
 
     public void setDeliverRequireTime(Date deliverRequireTime) {
         this.deliverRequireTime = deliverRequireTime;
+    }
+
+    public MbShop getShop() {
+        return shop;
+    }
+
+    public void setShop(MbShop shop) {
+        this.shop = shop;
     }
 }

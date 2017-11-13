@@ -198,7 +198,7 @@ public class ApiDriverOrderShopController extends BaseController {
      * @param request
      * @return
      */
-    @RequestMapping("/countNewAllocationOrder")
+    @RequestMapping("/updateCountNewAllocationOrder")
     @ResponseBody
     public  Json countNewAllocationOrder(HttpServletRequest request){
         Json json = new Json();

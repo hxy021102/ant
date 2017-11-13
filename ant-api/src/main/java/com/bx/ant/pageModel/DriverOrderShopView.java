@@ -1,5 +1,6 @@
 package com.bx.ant.pageModel;
 
+import com.mobian.pageModel.MbShop;
 import com.mobian.util.ConvertNameUtil;
 
 import java.util.Date;
@@ -12,7 +13,6 @@ public class DriverOrderShopView extends DriverOrderShop {
     private String payStatusName;
     private Date addtimeBegin;
     private Date addtimeEnd;
-    private DeliverOrderShop deliverOrderShop;
     private String shopName;
     private String userName;
     private Date updatetimeBegin;
@@ -21,6 +21,8 @@ public class DriverOrderShopView extends DriverOrderShop {
     private String updateDate;
     private Double amountElement;
     private Long[] ids;
+    private DeliverOrderShop deliverOrderShop;
+    private MbShop shop;
 
     public String getStatusName() {
         return ConvertNameUtil.getString(super.getStatus());
@@ -124,5 +126,13 @@ public class DriverOrderShopView extends DriverOrderShop {
 
     public void setIds(Long[] ids) {
         this.ids = ids;
+    }
+
+    public MbShop getShop() {
+        return shop;
+    }
+
+    public void setShop(MbShop shop) {
+        this.shop = shop;
     }
 }

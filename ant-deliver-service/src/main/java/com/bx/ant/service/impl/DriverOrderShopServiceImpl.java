@@ -11,7 +11,6 @@ import com.bx.ant.dao.DriverOrderShopDaoI;
 import com.bx.ant.model.TdriverOrderShop;
 import com.bx.ant.pageModel.*;
 import com.bx.ant.service.DeliverOrderShopServiceI;
-import com.bx.ant.service.DriverAccountServiceI;
 import com.bx.ant.service.DriverOrderShopServiceI;
 import com.bx.ant.service.DriverOrderShopState;
 import com.mobian.absx.F;
@@ -48,8 +47,6 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 
 	@Resource
 	private MbShopServiceI mbShopService;
-	@Resource
-	private DriverAccountServiceI driverAccountService;
 
 	@Override
 	public DataGrid dataGrid(DriverOrderShop driverOrderShop, PageHelper ph) {
@@ -171,6 +168,7 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 		if (driverOrderShop != null) {
 			BeanUtils.copyProperties(driverOrderShop, driverOrderShopView);
 			fillDeliverOrderShopInfo(driverOrderShopView);
+			fillShopInfo(driverOrderShopView);
 		}
 		return driverOrderShopView;
 	}
@@ -181,20 +179,23 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 		List<DriverOrderShop> driverOrderShops = dataGrid.getRows();
 		List<DriverOrderShopView> ol = new ArrayList<DriverOrderShopView>();
 		if (CollectionUtils.isNotEmpty(driverOrderShops)) {
-			int size = driverOrderShops.size();
-			for (int i = 0 ; i < size; i++) {
+			for (DriverOrderShop d : driverOrderShops){
 				DriverOrderShopView o = new DriverOrderShopView();
-				BeanUtils.copyProperties(driverOrderShops.get(i), o);
-				MbShop mbShop =mbShopService.getFromCache(o.getShopId());
-				o.setShopName(mbShop.getName());
-				DriverAccount driverAccount=driverAccountService.get(o.getDriverAccountId());
-                o.setUserName(driverAccount.getUserName());
+				BeanUtils.copyProperties(d, o);
 				fillDeliverOrderShopInfo(o);
+				fillShopInfo(o);
 				ol.add(o);
 			}
 			dataGrid.setRows(ol);
 		}
 		return dataGrid;
+	}
+
+	protected void fillShopInfo(DriverOrderShopView view){
+		if (!F.empty(view.getShopId())) {
+			MbShop shop = mbShopService.getFromCache(view.getShopId());
+			view.setShop(shop);
+		}
 	}
 
 	protected void fillUserInfo(DriverOrderShopView driverAccountView) {
