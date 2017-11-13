@@ -237,6 +237,10 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 
 	@Override
 	public void editBillStatusAndPayStatus(ShopOrderBill shopOrderBill) {
+		//审核通过才设置支付方式 否则没有支付方式
+		if ("BAS02".equals(shopOrderBill.getStatus())) {
+			shopOrderBill.setPayWay("DPW01");
+		}
 		edit(shopOrderBill);
 		DeliverOrderShopPay deliverOrderShopPay = new DeliverOrderShopPay();
 		deliverOrderShopPay.setShopOrderBillId(shopOrderBill.getId());
