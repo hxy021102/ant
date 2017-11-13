@@ -212,7 +212,7 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 		params.put("handleStatus", handleStatus);
 		params.put("refId", refId);
 		params.put("refType", refType);
-		TdriverAccount t = driverAccountDao.get("from TDriverAccount t  where t.isdeleted = 0 and t.refId = :refId and t.refType = :refType and t.handleStatus = :handleStatus", params);
+		TdriverAccount t = driverAccountDao.get("from TdriverAccount t  where t.isdeleted = 0 and t.refId = :refId and t.refType = :refType and t.handleStatus = :handleStatus", params);
 		if(t != null) {
 			DriverAccount o = new DriverAccount();
 			BeanUtils.copyProperties(t, o);
