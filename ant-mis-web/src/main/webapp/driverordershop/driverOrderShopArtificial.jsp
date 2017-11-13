@@ -43,11 +43,14 @@
 			striped : true,
 			rownumbers : true,
 			singleSelect : true,
-			columns : [ [ {
+			columns : [ [  {
+                field : 'ck',
+                checkbox:true,
+                width : 30
+                }, {
 				field : 'id',
-				title : '编号',
-				width : 150,
-				hidden : true
+				title : '骑手运单ID',
+				width : 50,
 				},  {
 				field : 'addtime',
                 title : '添加时间',
@@ -96,11 +99,7 @@
 				field : 'payStatusName',
                 title : '支付状态',
 				width : 30
-				}, {
-				field : 'driverOrderShopBillId',
-				title : '支付账单ID',
-				width : 30
-			},] ],
+				} ] ],
 			toolbar : '#toolbar',
 			onLoadSuccess : function() {
 				$('#searchForm table').show();
@@ -160,7 +159,7 @@
             driverOrderShopBillView.orderShopIds=orderShopIds;
             driverOrderShopBillView.amount=totalAmount;
             driverOrderShopBillView.deliverOrderShopList=rows;
-            parent.$.messager.confirm("询问","总金额："+$.formatMoney(totalAmount) +"<br/>起始时间："+driverOrderShopBillView.startDate+"<br/>结束时间:"+driverOrderShopBillView.endDate+"<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>是否确认创建账单?</strong>",function (result) {
+            parent.$.messager.confirm("询问","总金额："+$.formatMoney(totalAmount) +"<br/>起始时间："+driverOrderShopBillView.addtimeBegin+"<br/>结束时间:"+driverOrderShopBillView.addtimeEnd+"<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>是否确认创建账单?</strong>",function (result) {
                 if(result)  {
                     $.ajax({
                         url:  '${pageContext.request.contextPath}/driverOrderShopBillController/addDriverOrderBill',
@@ -179,8 +178,12 @@
                             parent.$.messager.progress('close');
                             if(result.success) {
                                 parent.$.messager.alert('提示', result.msg);
+                                dataGrid.datagrid('clearChecked');
+                                dataGrid.datagrid('reload');
                             }else{
                                 parent.$.messager.alert('错误', result.msg);
+                                dataGrid.datagrid('clearChecked');
+                                dataGrid.datagrid('reload');
                             }
                         },
                         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -222,12 +225,12 @@
 					    <tr>
 							<th>骑手账号</th>
 							<td>
-								<input type="text" name="userName" maxlength="15" class="span2"/>
+								<input type="text" name="userName" maxlength="15" class="span2 easyui-validatebox" data-options="required:true"/>
 							</td>
 						    <th>添加时间</th>
 						    <td>
-							 <input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TmbUser.FORMAT_ADDTIME%>'})" id="addtimeBegin" name="addtimeBegin"/>至
-							 <input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TmbUser.FORMAT_ADDTIME%>'})" id="addtimeEnd" name="addtimeEnd"/>
+							 <input type="text"  class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'<%=TmbUser.FORMAT_ADDTIME%>'})" id="addtimeBegin" name="addtimeBegin"/>至
+							 <input type="text"  class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'<%=TmbUser.FORMAT_ADDTIME%>'})" id="addtimeEnd" name="addtimeEnd"/>
 						    </td>
 						</tr>
 				</table>
@@ -238,9 +241,11 @@
 		</div>
 	</div>
 	<div id="toolbar" style="display: none;">
-		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a>
+		<c:if test="${fn:contains(sessionInfo.resourceList, '/driverOrderShopController/dataGridArtificial')}">
+			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a>
+		</c:if>
 		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
-		<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverShopArtificialPayController/addShopOrderBillPage')}">
+		<c:if test="${fn:contains(sessionInfo.resourceList, '/driverOrderShopBillController/addDriverOrderBill')}">
 			<a onclick="addDriverOrderBill();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'pencil_add'">创建账单</a>
 		</c:if>
 	</div>	

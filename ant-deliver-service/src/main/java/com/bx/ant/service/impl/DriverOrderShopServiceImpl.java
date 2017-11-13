@@ -11,6 +11,7 @@ import com.bx.ant.dao.DriverOrderShopDaoI;
 import com.bx.ant.model.TdriverOrderShop;
 import com.bx.ant.pageModel.*;
 import com.bx.ant.service.DeliverOrderShopServiceI;
+import com.bx.ant.service.DriverAccountServiceI;
 import com.bx.ant.service.DriverOrderShopServiceI;
 import com.bx.ant.service.DriverOrderShopState;
 import com.mobian.absx.F;
@@ -47,6 +48,9 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 
 	@Resource
 	private MbShopServiceI mbShopService;
+
+	@Resource
+	private DriverAccountServiceI driverAccountService;
 
 	@Override
 	public DataGrid dataGrid(DriverOrderShop driverOrderShop, PageHelper ph) {
@@ -184,6 +188,7 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 				BeanUtils.copyProperties(d, o);
 				fillDeliverOrderShopInfo(o);
 				fillShopInfo(o);
+				fillDriverAccountInfo(o);
 				ol.add(o);
 			}
 			dataGrid.setRows(ol);
@@ -195,6 +200,7 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 		if (!F.empty(view.getShopId())) {
 			MbShop shop = mbShopService.getFromCache(view.getShopId());
 			view.setShop(shop);
+			view.setShopName(shop.getName());
 		}
 	}
 
@@ -294,5 +300,37 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 				}
 			}
 			return ol;
+	}
+
+	@Override
+	public void editStatusByHql(Long id,String handleStatus ) {
+		Map<String,Object> params =new HashMap<String,Object>();
+		params.put("id",id);
+		params.put("status",STATUS_DELIVERED);
+		params.put("payStatus",PAY_STSTUS_WAITE_AUDIT);
+		params.put("refusePayStatus",PAY_STATUS_NOT_PAY);
+		int result=0;
+		if("DHS02".equals(handleStatus)) {
+			params.put("newsStatus",STATUS_SETTLEED);
+			params.put("newsPayStatus",PAY_STATUS_PAID);
+			//审核通过，则将运单状态变成已结算且支付状态变成已支付
+			result = driverOrderShopDao.executeHql("update TdriverOrderShop t set t.status = :newsStatus , t.payStatus = :newsPayStatus " +
+					"where t.status = :status and t.payStatus = :payStatus and t.id = :id", params);
+		}else{
+			//审核拒绝，则将运单支付状态变为待支付
+			result = driverOrderShopDao.executeHql("update TdriverOrderShop t set t.payStatus = :refusePayStatus " +
+					"where t.status = :status and t.payStatus = :payStatus and t.id = :id", params);
+		}
+		if (result <= 0) {
+			throw new ServiceException("修改门店订单状态失败");
+		}
+	}
+
+	@Override
+	public void fillDriverAccountInfo(DriverOrderShopView driverOrderShopView) {
+		DriverAccount driverAccount = driverAccountService.get(driverOrderShopView.getDriverAccountId());
+		if (driverAccount != null) {
+			driverOrderShopView.setUserName(driverAccount.getUserName());
+		}
 	}
 }

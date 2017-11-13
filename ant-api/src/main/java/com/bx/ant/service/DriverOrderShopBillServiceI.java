@@ -37,7 +37,7 @@ public interface DriverOrderShopBillServiceI {
 	 * @param id
 	 * @return
 	 */
-	public DriverOrderShopBill get(Integer id);
+	public DriverOrderShopBill get(Long id);
 
 	/**
 	 * 修改DriverOrderShopBill
@@ -51,9 +51,9 @@ public interface DriverOrderShopBillServiceI {
 	 * 
 	 * @param id
 	 */
-	public void delete(Integer id);
+	public void delete(Long id);
 
-    DriverOrderShopBillView getView(Integer id);
+    DriverOrderShopBillView getView(Long id);
 
     DataGrid dataGridView(DriverOrderShopBill driverOrderShopBill, PageHelper pageHelper);
 
@@ -63,4 +63,9 @@ public interface DriverOrderShopBillServiceI {
 	 * @return
 	 */
 	String addDriverOrderShopBillandPay(DriverOrderShopBillView driverOrderShopBillView);
+
+	/**
+	 * 骑手账单审核通过过后进行支付操作，改变账单状态和运单状态，以及修改骑手余额和添加余额日志
+	 */
+	public void editDriverShopBillAndOrderPay(DriverOrderShopBill driverOrderShopBill);
 }

@@ -218,6 +218,15 @@ public class DriverOrderShopController extends BaseController {
 	@RequestMapping("/dataGridArtificial")
 	@ResponseBody
 	public DataGrid dataGridArtificial(DriverOrderShopView driverOrderShopView, PageHelper ph) {
+		if(!F.empty(driverOrderShopView.getUserName())){
+			DriverAccount driverAccount =new DriverAccount();
+			driverAccount.setUserName(driverOrderShopView.getUserName());
+			List<DriverAccount> driverAccountList=driverAccountService.query(driverAccount);
+			if(CollectionUtils.isNotEmpty(driverAccountList)){
+				driverOrderShopView.setDriverAccountId(driverAccountList.get(0).getId());
+			}
+		}
+		//已送达且未支付的
 		driverOrderShopView.setStatus("DDSS20");
 		driverOrderShopView.setPayStatus("DDPS01");
 		return driverOrderShopService.dataGridView(driverOrderShopView, ph);

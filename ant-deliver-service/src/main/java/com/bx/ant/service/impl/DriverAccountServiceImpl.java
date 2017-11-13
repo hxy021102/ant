@@ -186,7 +186,7 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 			for (int i = 0 ; i < size; i++) {
 				DriverAccountView o = new DriverAccountView();
 				BeanUtils.copyProperties(driverAccounts.get(i), o);
-				MbBalance mbBalance = mbBalanceService.addOrGetMbBalance(o.getId(),50,0);
+				MbBalance mbBalance = mbBalanceService.addOrGetDriverBalance(o.getId());
 				if (mbBalance != null) {
 					o.setBalanceAmount(mbBalance.getAmount());
 				}

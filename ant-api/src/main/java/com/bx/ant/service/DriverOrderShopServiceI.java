@@ -123,4 +123,17 @@ public interface DriverOrderShopServiceI {
 	 * @return
 	 */
 	List<DriverOrderShop> query(DriverOrderShop driverOrderShop);
+
+	/**
+	 * 修改骑手运单状态
+	 * @param id
+	 * @return
+	 */
+	void editStatusByHql(Long id,String handleStatus);
+
+	/**
+	 *填充骑手信息
+	 * @param driverOrderShopView
+	 */
+	void fillDriverAccountInfo(DriverOrderShopView driverOrderShopView);
 }

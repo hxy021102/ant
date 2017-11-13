@@ -23,6 +23,11 @@
 		$.canView = true;
 	</script>
 </c:if>
+<c:if test="${fn:contains(sessionInfo.resourceList, '/driverAccountController/view')}">
+	<script type="text/javascript">
+		$.canViewAccount = true;
+	</script>
+</c:if>
 <script type="text/javascript">
 	var dataGrid;
 	$(function() {
@@ -47,14 +52,23 @@
 				field : 'id',
 				title : '账单ID',
 				width : 30,
+                formatter : function (value, row) {
+                    if ($.canView)
+                    return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
+                }
 				}, {
 				field : 'addtime',
 				title :'添加时间',
 				width : 50
 				}, {
-				field : 'driverAccountName',
-                title:'骑手账号ID',
-				width : 50
+				field : 'userName',
+                title:'骑手账号',
+				width : 50,
+                formatter : function (value, row) {
+                    if ($.canViewAccount)
+                        return '<a onclick="viewAccount(' + row.driverAccountId + ')">' + row.userName + '</a>';
+                    return value;
+                }
 				},  {
 				field : 'amount',
 				title :'账单金额',
@@ -76,34 +90,7 @@
                 field : 'handleStatusName',
                 title :'审核状态',
                 width : 50
-                },{
-                field : 'handleLoginName',
-                title : '审核人',
-                width : 50
-                }, {
-				field : 'payWayName',
-				title : '支付方式',
-				width : 50
-			   },/* {
-				field : 'action',
-				title : '操作',
-				width : 100,
-				formatter : function(value, row, index) {
-					var str = '';
-                    if ($.canEdit) {
-                        str += $.formatString('<img onclick="editFun(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/pencil.png');
-                    }
-                    str += '&nbsp;';
-                    if ($.canDelete) {
-                        str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/cancel.png');
-                    }
-                    str += '&nbsp;';
-                    if ($.canView) {
-                        str += $.formatString('<img onclick="viewFun(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/link.png');
-                    }
-					return str;
-				}
-			} */] ],
+                } ] ],
 			toolbar : '#toolbar',
 			onLoadSuccess : function() {
 				$('#searchForm table').show();
@@ -160,19 +147,29 @@
 	}
 
 	function viewFun(id) {
-		if (id == undefined) {
-			var rows = dataGrid.datagrid('getSelections');
-			id = rows[0].id;
-		}
-		parent.$.modalDialog({
-			title : '查看数据',
-			width : 780,
-			height : 500,
-			href : '${pageContext.request.contextPath}/driverOrderShopBillController/view?id=' + id
-		});
+        var href = '${pageContext.request.contextPath}/driverOrderShopBillController/view?id=' + id;
+        parent.$("#index_tabs").tabs('add', {
+            title : '账单详情-' + id,
+            content : '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            closable : true
+        });
 	}
 
-	function addFun() {
+    function viewAccount(id) {
+        if (id == undefined) {
+            var rows = dataGrid.datagrid('getSelections');
+            id = rows[0].id;
+        }
+        parent.$.modalDialog({
+            title : '查看数据',
+            width : 780,
+            height : 400,
+            href : '${pageContext.request.contextPath}/driverAccountController/view?id=' + id
+        });
+    }
+
+
+    function addFun() {
 		parent.$.modalDialog({
 			title : '添加数据',
 			width : 780,

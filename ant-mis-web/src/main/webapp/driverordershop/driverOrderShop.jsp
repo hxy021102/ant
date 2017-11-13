@@ -106,11 +106,7 @@
 				field : 'payStatusName',
                 title : '支付状态',
 				width : 30
-				}, {
-				field : 'driverOrderShopBillId',
-				title : '支付账单ID',
-				width : 30
-			},] ],
+				}] ],
 			toolbar : '#toolbar',
 			onLoadSuccess : function() {
 				$('#searchForm table').show();
