@@ -309,14 +309,13 @@ public class ApiDriverAccountController extends BaseController {
         Json j = new Json();
         try{
             TokenWrap token = tokenService.getToken(request);
+//            Integer accountId = Integer.parseInt(token.getUid());
+            Integer accountId = 2;
             if(!F.empty(token.getUid())) {
-                DriverAccount driverAccount = driverAccountService.get(Integer.valueOf(token.getUid()));
-                if(driverAccount != null) {
-                    apply.setId(driverAccount.getId());
-                    driverAccountService.edit(apply);
-                    j.setSuccess(true);
-                    j.setMsg("切换成功！");
-                }
+                apply.setId(accountId);
+                driverAccountService.edit(apply);
+                j.setSuccess(true);
+                j.setMsg("切换成功！");
             }
 
         }catch(Exception e){
@@ -357,70 +356,6 @@ public class ApiDriverAccountController extends BaseController {
         }
         return json;
     }
-//    /**
-//     * 绑定门店申请
-//     * @param shopDeliverApply
-//     * @param request
-//     * @return
-//     */
-//    @RequestMapping("/addShopApply")
-//    @ResponseBody
-//    public Json addShopApply(ShopDeliverApply shopDeliverApply, HttpServletRequest request){
-//        Json j = new Json();
-//        try{
-//            TokenWrap token = tokenService.getToken(request);
-//            if(!F.empty(token.getUid())) {
-//                ShopDeliverApply exist = shopDeliverApplyService.getByAccountId(Integer.valueOf(token.getUid()));
-//                if(exist == null) {
-//                    shopDeliverApply.setAccountId(Integer.valueOf(token.getUid()));
-//                    shopDeliverApplyService.add(shopDeliverApply);
-//                }
-//
-//                j.setSuccess(true);
-//                j.setMsg("申请成功！");
-//            }
-//
-//        }catch(Exception e){
-//            j.setMsg(ConvertNameUtil.getString(EX_0001));
-//            logger.error("绑定门店申请接口异常", e);
-//        }
-//
-//        return j;
-//    }
-
-
-//    /**
-//     * 获取用户绑定门店
-//     * @param request
-//     * @return
-//     */
-//    @RequestMapping("/getShopApply")
-//    @ResponseBody
-//    public Json getShopApply(HttpServletRequest request){
-//        Json j = new Json();
-//        try{
-//            TokenWrap token = tokenService.getToken(request);
-//            if(!F.empty(token.getUid())) {
-//                ShopDeliverApply shopDeliverApply = shopDeliverApplyService.getByAccountId(Integer.valueOf(token.getUid()));
-//                if(shopDeliverApply != null) {
-//                    shopDeliverApply.setMbShop(mbShopService.getFromCache(shopDeliverApply.getShopId()));
-//                    if("DAS02".equals(shopDeliverApply.getStatus())) {
-//                        token.setShopId(shopDeliverApply.getShopId());
-//                        tokenService.setToken(token);
-//                    }
-//                }
-//                j.setSuccess(true);
-//                j.setMsg("获取成功！");
-//                j.setObj(shopDeliverApply);
-//            }
-//
-//        }catch(Exception e){
-//            j.setMsg(ConvertNameUtil.getString(EX_0001));
-//            logger.error("获取用户绑定门店接口异常", e);
-//        }
-//
-//        return j;
-//    }
 
     @RequestMapping("/test")
     @ResponseBody

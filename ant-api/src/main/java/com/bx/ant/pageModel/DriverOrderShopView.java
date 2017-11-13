@@ -23,6 +23,7 @@ public class DriverOrderShopView extends DriverOrderShop {
     private Long[] ids;
     private DeliverOrderShop deliverOrderShop;
     private MbShop shop;
+    private Integer shopDistance;
 
     public String getStatusName() {
         return ConvertNameUtil.getString(super.getStatus());
@@ -134,5 +135,13 @@ public class DriverOrderShopView extends DriverOrderShop {
 
     public void setShop(MbShop shop) {
         this.shop = shop;
+    }
+
+    public Integer getShopDistance() {
+        return shopDistance;
+    }
+
+    public void setShopDistance(Integer shopDistance) {
+        this.shopDistance = shopDistance;
     }
 }

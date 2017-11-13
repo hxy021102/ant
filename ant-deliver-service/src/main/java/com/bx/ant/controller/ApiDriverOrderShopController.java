@@ -2,6 +2,7 @@ package com.bx.ant.controller;
 
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.DriverOrderShop;
+import com.bx.ant.pageModel.DriverOrderShopView;
 import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DriverOrderShopServiceI;
@@ -12,6 +13,7 @@ import com.mobian.pageModel.PageHelper;
 import com.mobian.thirdpart.redis.Key;
 import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.thirdpart.redis.RedisUtil;
+import com.mobian.util.GeoUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -84,9 +86,22 @@ public class ApiDriverOrderShopController extends BaseController {
 //        orderIdSet.add("1");
 //        orderIdSet.add("2");
         if (CollectionUtils.isNotEmpty(orderIdSet)) {
+            String  location= (String) redisUtil.getString(Key.build(Namespace.DRIVER_REALTIME_LOCATION,accountId));
+            Double longitude = 0.0;
+            Double latitude = 0.0;
+            if (!F.empty(location)) {
+                longitude  = Double.valueOf(location.split(",")[0]);
+                latitude = Double.valueOf(location.split(",")[1]);
+            }
             for (String orderId : orderIdSet) {
-                DriverOrderShop o = driverOrderShopService.getView(Long.parseLong(orderId));
+                DriverOrderShopView o = driverOrderShopService.getView(Long.parseLong(orderId));
                 if (o != null && DriverOrderShopServiceI.STATUS_ALLOCATION.equals(o.getStatus())) {
+                    //设置骑手与门店的距离
+                    if (o.getShop().getLongitude() != null && o.getShop().getLatitude() != null) {
+                        Double distance = GeoUtil.getDistance(longitude, latitude, o.getShop().getLongitude().doubleValue(),
+                                o.getShop().getLatitude().doubleValue());
+                        o.setShopDistance(distance.intValue());
+                    }
                     ol.add(o);
                 }
             }

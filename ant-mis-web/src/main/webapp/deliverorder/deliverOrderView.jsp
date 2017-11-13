@@ -352,6 +352,8 @@
 			<tr>
 				<th>供应商订单ID</th>
 				<td colspan="">${deliverOrder.supplierOrderId}</td>
+				<th>商品总重</th>
+				<td>${deliverOrder.weight}克</td>
 				<th>备注</th>
 				<td colspan="6">
 					${deliverOrder.remark}
