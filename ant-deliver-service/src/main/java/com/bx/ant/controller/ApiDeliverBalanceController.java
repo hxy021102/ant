@@ -220,6 +220,17 @@ public class ApiDeliverBalanceController extends BaseController {
      */
     @RequestMapping("/transformAmountDeliverToBalance")
     @ResponseBody
+    public Json updateAmountDeliverToBalanceAbandon(HttpServletRequest request, Integer amount, String vcode) {
+        return updateAmountDeliverToBalance(request, amount, vcode);
+    }
+
+    /**
+     * 派单账户余额转出采购账户余额
+     * @param request
+     * @return
+     */
+    @RequestMapping("/updateAmountDeliverToBalance")
+    @ResponseBody
     public Json updateAmountDeliverToBalance(HttpServletRequest request, Integer amount, String vcode) {
         Json j = new Json();
         TokenWrap tokenWrap = getTokenWrap(request);
@@ -241,17 +252,6 @@ public class ApiDeliverBalanceController extends BaseController {
         return j;
     }
 
-    /**
-     * 派单账户余额转出采购账户余额
-     * @param request
-     * @return
-     */
-    @RequestMapping("/updateAmountDeliverToBalance")
-    @ResponseBody
-    public Json updateAmountDeliverToBalanceUpdate(HttpServletRequest request, Integer amount, String vcode) {
-        return updateAmountDeliverToBalance(request, amount, vcode);
-    }
-
 
     /**
      * 采购账户余额转入派单账户余额
@@ -259,6 +259,17 @@ public class ApiDeliverBalanceController extends BaseController {
      * @return
      */
     @RequestMapping("/transformAmountBalanceToDeliver")
+    @ResponseBody
+    public Json updateAmountBalanceToDeliverAbandon(HttpServletRequest request, Integer amount, String vcode) {
+        return updateAmountBalanceToDeliver(request, amount, vcode);
+    }
+
+    /**
+     * 采购账户余额转入派单账户余额
+     * @param request
+     * @return
+     */
+    @RequestMapping("/updateAmountBalanceToDeliver")
     @ResponseBody
     public Json updateAmountBalanceToDeliver(HttpServletRequest request, Integer amount, String vcode) {
         Json j = new Json();
@@ -279,17 +290,6 @@ public class ApiDeliverBalanceController extends BaseController {
         j.setMsg("u know");
         j.setSuccess(true);
         return j;
-    }
-
-    /**
-     * 采购账户余额转入派单账户余额
-     * @param request
-     * @return
-     */
-    @RequestMapping("/updateAmountBalanceToDeliver")
-    @ResponseBody
-    public Json updateAmountBalanceToDeliverUpdate(HttpServletRequest request, Integer amount, String vcode) {
-        return updateAmountDeliverToBalance(request, amount, vcode);
     }
 
 
@@ -339,6 +339,18 @@ public class ApiDeliverBalanceController extends BaseController {
     @ResponseBody
     @RequestMapping("/withdraw")
     public Json withdraw(HttpServletRequest request, MbWithdrawLog withdrawLog, String vcode) {
+        return updateWithdraw(request, withdrawLog, vcode);
+    }
+
+    /**
+     * 提现
+     * @param request
+     * @param
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/updateWithdraw")
+    public Json updateWithdraw(HttpServletRequest request, MbWithdrawLog withdrawLog, String vcode){
         Json json = new Json();
 
         //1. 单次限额1W
@@ -397,28 +409,22 @@ public class ApiDeliverBalanceController extends BaseController {
         return json;
     }
 
-    /**
-     * 提现
-     * @param request
-     * @param
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping("/updateWithdraw")
-    public Json withdrawUpdate(HttpServletRequest request, MbWithdrawLog withdrawLog, String vcode){
-        return withdraw(request, withdrawLog, vcode);
-    }
-
 
     @RequestMapping("/withdrawDataGrid")
     @ResponseBody
     public Json dataGridWithdraw(HttpServletRequest request, PageHelper pageHelper, String date) {
+        return getWithdrawDataGrid(request, pageHelper, date);
+    }
+
+    @RequestMapping("/getWithdrawDataGrid")
+    @ResponseBody
+    public Json getWithdrawDataGrid(HttpServletRequest request, PageHelper pageHelper, String date) {
         Json json = new Json();
         DataGrid dataGrid = new DataGrid();
 
         //通过门店ID找到申请者账户
-       TokenWrap tokenWrap = getTokenWrap(request);
-       Integer shopId = tokenWrap.getShopId();
+        TokenWrap tokenWrap = getTokenWrap(request);
+        Integer shopId = tokenWrap.getShopId();
 
         MbWithdrawLogView withdrawLogView = new MbWithdrawLogView();
 
@@ -459,12 +465,7 @@ public class ApiDeliverBalanceController extends BaseController {
         json.setSuccess(true);
         json.setMsg("查询数据成功");
         return json;
-    }
 
-    @RequestMapping("/getWithdrawDataGrid")
-    @ResponseBody
-    public Json dataGridWithdrawUpdate(HttpServletRequest request, PageHelper pageHelper, String date) {
-        return dataGridWithdraw(request, pageHelper, date);
     }
 
     /**
@@ -475,6 +476,18 @@ public class ApiDeliverBalanceController extends BaseController {
     @RequestMapping("/totalBalanceByMonth")
     @ResponseBody
     public Json totalBalanceByMonth(HttpServletRequest request, String date) {
+        return getTotalBalanceByMonth(request, date);
+    }
+
+    /**
+     * 按月统计收入支出
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getTotalBalanceByMonth")
+    @ResponseBody
+    public Json getTotalBalanceByMonth(HttpServletRequest request, String date) {
+
         Json j = new Json();
         try{
             TokenWrap token = getTokenWrap(request);
@@ -508,16 +521,5 @@ public class ApiDeliverBalanceController extends BaseController {
         }
 
         return j;
-    }
-
-    /**
-     * 按月统计收入支出
-     * @param request
-     * @return
-     */
-    @RequestMapping("/getTotalBalanceByMonth")
-    @ResponseBody
-    public Json totalBalanceByMonthUpdate(HttpServletRequest request, String date) {
-        return totalBalanceByMonth(request, date);
     }
 }

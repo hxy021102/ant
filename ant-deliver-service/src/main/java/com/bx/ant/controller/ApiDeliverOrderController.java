@@ -352,6 +352,11 @@ public class ApiDeliverOrderController extends BaseController {
     @RequestMapping("/countNewAllocationOrder")
     @ResponseBody
     public  Json countNewAllocationOrder(HttpServletRequest request){
+        return getNewAllocationOrderQuantity(request);
+    }
+    @RequestMapping("/getNewAllocationOrderQuantity")
+    @ResponseBody
+    public  Json getNewAllocationOrderQuantity(HttpServletRequest request) {
         Json json = new Json();
 
         //获取shopId
@@ -363,11 +368,7 @@ public class ApiDeliverOrderController extends BaseController {
         json.setObj(deliverOrderService.clearAllocationOrderRedis(shopId));
         return json;
     }
-    @RequestMapping("/getNewAllocationOrderQuantity")
-    @ResponseBody
-    public  Json countNewAllocationOrderUpdate(HttpServletRequest request) {
-        return countNewAllocationOrder(request);
-    }
+
 
     /**
      * 今日订单列表
@@ -377,6 +378,16 @@ public class ApiDeliverOrderController extends BaseController {
     @RequestMapping("/todayOrders")
     @ResponseBody
     public Json todayOrders(HttpServletRequest request) {
+        return getTodayOrders(request);
+    }
+    /**
+     * 今日订单列表
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getTodayOrders")
+    @ResponseBody
+    public Json getTodayOrders(HttpServletRequest request) {
         Json json = new Json();
 
         //获取shopId
@@ -404,16 +415,6 @@ public class ApiDeliverOrderController extends BaseController {
         json.setObj(ol);
         json.setSuccess(true);
         return json;
-    }
-    /**
-     * 今日订单列表
-     * @param request
-     * @return
-     */
-    @RequestMapping("/getTodayOrders")
-    @ResponseBody
-    public Json todayOrdersUpdate(HttpServletRequest request) {
-        return todayOrders(request);
     }
 
 }
