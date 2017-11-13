@@ -45,10 +45,6 @@ import java.util.concurrent.TimeUnit;
 @Controller
 @RequestMapping("/api/deliver/deliverBalance")
 public class ApiDeliverBalanceController extends BaseController {
-
-    @Resource
-    private MbShopServiceI mbShopService;
-
     @Autowired
     private DeliverOrderServiceI deliverOrderService;
 
@@ -73,20 +69,24 @@ public class ApiDeliverBalanceController extends BaseController {
     @Resource
     private MbWithdrawLogServiceI mbWithdrawLogService;
 
-
+    /**
+     * 查看余额列表
+     * @param mbBalanceLog
+     * @return
+     */
     @RequestMapping("/viewDeliverBanlanceLogList")
     @ResponseBody
     public Json viewBalanceLogList(MbBalanceLog mbBalanceLog){
+        return viewBalanceLogList(mbBalanceLog);
+    }
+    @RequestMapping("/viewDeliverBalanceLogList")
+    @ResponseBody
+    public Json viewDeliverBalanceLogList(MbBalanceLog mbBalanceLog){
         Json json = new Json();
         json.setMsg("u know");
         json.setObj(mbBalanceLogService.list(mbBalanceLog));
         json.setSuccess(true);
         return json;
-    }
-    @RequestMapping("/viewDeliverBalanceLogList")
-    @ResponseBody
-    public Json viewBalanceLogListUpdate(MbBalanceLog mbBalanceLog){
-        return viewBalanceLogList(mbBalanceLog);
     }
 
 
@@ -98,7 +98,19 @@ public class ApiDeliverBalanceController extends BaseController {
      */
     @RequestMapping("/viewDeliverBanlanceLogDetial")
     @ResponseBody
-    public Json viewBanlanceLogDetial(MbBalanceLog balanceLog) {
+    public Json viewBalanceLogDetialAbandon(MbBalanceLog balanceLog) {
+        return viewBalanceLogDetial(balanceLog);
+    }
+
+    /**
+     * 获取门店派单账号流水明细
+     * mbBalanceLog
+     * @param  balanceLog
+     * @return
+     */
+    @RequestMapping("/viewDeliverBalanceLogDetial")
+    @ResponseBody
+    public Json viewBalanceLogDetial(MbBalanceLog balanceLog) {
         Json json = new Json();
         if ("BT060".equals(balanceLog.getRefType()) ||"BT061".equals(balanceLog.getRefType()) ) {
             DeliverOrderShopPay deliverOrderShopPay = deliverOrderPayShopService.get(Long.parseLong(balanceLog.getRefId()));
@@ -121,7 +133,20 @@ public class ApiDeliverBalanceController extends BaseController {
      */
     @RequestMapping("/viewDeliverBanlanceLogDataGrid")
     @ResponseBody
-    public Json viewDeliverBanlanceLogDataGrid(String date,PageHelper pageHelper, HttpServletRequest request) {
+    public Json viewDeliverBalanceLogDataGridAbandon(String date,PageHelper pageHelper, HttpServletRequest request) {
+        return viewDeliverBalanceLogDataGrid(date, pageHelper, request);
+    }
+
+
+    /**
+     * 获取门店派单账号流水
+     * @param date
+     * @param pageHelper
+     * @return
+     */
+    @RequestMapping("/viewDeliverBalanceLogDataGrid")
+    @ResponseBody
+    public Json viewDeliverBalanceLogDataGrid(String date,PageHelper pageHelper, HttpServletRequest request) {
         Json j = new Json();
         DataGrid dataGrid;
         MbBalanceLog mbBalanceLog = new MbBalanceLog();
