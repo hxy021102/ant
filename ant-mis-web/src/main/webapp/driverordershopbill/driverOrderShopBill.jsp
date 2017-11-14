@@ -222,9 +222,9 @@
 								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TmbUser.FORMAT_ADDTIME%>'})" id="addtimeBegin" name="addtimeBegin"/>至
 								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TmbUser.FORMAT_ADDTIME%>'})" id="addtimeEnd" name="addtimeEnd"/>
 							</td>
-                            <th>骑手用户名</th>
+                            <th>骑手账号</th>
 							<td>
-								<input type="text" name="driverAccountId" maxlength="10" class="span2"/>
+								<input type="text" name="userName" maxlength="16" class="span2"/>
 							</td>
                             <th>审核状态</th>
 							<td>

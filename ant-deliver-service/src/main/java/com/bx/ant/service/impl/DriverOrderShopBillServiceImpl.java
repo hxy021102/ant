@@ -99,7 +99,18 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 			if (!F.empty(driverOrderShopBill.getPayWay())) {
 				whereHql += " and t.payWay = :payWay";
 				params.put("payWay", driverOrderShopBill.getPayWay());
-			}		
+			}
+			if (driverOrderShopBill instanceof DriverOrderShopBillView) {
+				DriverOrderShopBillView driverOrderShopBillView = (DriverOrderShopBillView) driverOrderShopBill;
+				if (driverOrderShopBillView.getAddtimeBegin() != null) {
+					whereHql += " and t.addtime >= :addtimeBegin";
+					params.put("addtimeBegin", driverOrderShopBillView.getAddtimeBegin());
+				}
+				if (driverOrderShopBillView.getAddtimeEnd() != null) {
+					whereHql += " and t.addtime <= :addtimeEnd";
+					params.put("addtimeEnd", driverOrderShopBillView.getAddtimeEnd());
+				}
+			}
 		}	
 		return whereHql;
 	}

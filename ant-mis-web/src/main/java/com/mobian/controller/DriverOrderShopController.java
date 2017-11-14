@@ -61,7 +61,7 @@ public class DriverOrderShopController extends BaseController {
 	public DataGrid dataGrid(DriverOrderShopView driverOrderShopView, PageHelper ph) {
 		if(!F.empty(driverOrderShopView.getUserName())){
 			DriverAccount driverAccount =new DriverAccount();
-			driverAccount.setUserName(driverOrderShopView.getUserName());
+			driverAccount.setUserName(driverOrderShopView.getUserName().trim());
 			List<DriverAccount> driverAccountList=driverAccountService.query(driverAccount);
 			if(CollectionUtils.isNotEmpty(driverAccountList)){
 				driverOrderShopView.setDriverAccountId(driverAccountList.get(0).getId());

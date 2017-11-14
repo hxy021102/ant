@@ -60,8 +60,16 @@ public class DriverOrderShopBillController extends BaseController {
 	 */
 	@RequestMapping("/dataGrid")
 	@ResponseBody
-	public DataGrid dataGrid(DriverOrderShopBill driverOrderShopBill, PageHelper ph) {
-		return driverOrderShopBillService.dataGridView(driverOrderShopBill, ph);
+	public DataGrid dataGrid(DriverOrderShopBillView driverOrderShopBillView, PageHelper ph) {
+		if (!F.empty(driverOrderShopBillView.getUserName())) {
+			DriverAccount driverAccount = new DriverAccount();
+			driverAccount.setUserName(driverOrderShopBillView.getUserName().trim());
+			List<DriverAccount> driverAccountList = driverAccountService.query(driverAccount);
+			if (CollectionUtils.isNotEmpty(driverAccountList)) {
+				driverOrderShopBillView.setDriverAccountId(driverAccountList.get(0).getId());
+			}
+		}
+		return driverOrderShopBillService.dataGridView(driverOrderShopBillView, ph);
 	}
 	/**
 	 * 获取DriverOrderShopBill数据表格excel
@@ -76,8 +84,8 @@ public class DriverOrderShopBillController extends BaseController {
 	 * @throws IOException 
 	 */
 	@RequestMapping("/download")
-	public void download(DriverOrderShopBill driverOrderShopBill, PageHelper ph,String downloadFields,HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException{
-		DataGrid dg = dataGrid(driverOrderShopBill,ph);
+	public void download(DriverOrderShopBillView driverOrderShopBillView, PageHelper ph,String downloadFields,HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException{
+		DataGrid dg = dataGrid(driverOrderShopBillView,ph);
 		DataGrid dataGrid = new DataGrid();
 		List<DriverOrderShopBill> driverOrderShopBills =dg.getRows();
 		if(CollectionUtils.isNotEmpty(driverOrderShopBills)){
