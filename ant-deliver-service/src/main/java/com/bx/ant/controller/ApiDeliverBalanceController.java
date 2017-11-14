@@ -89,17 +89,16 @@ public class ApiDeliverBalanceController extends BaseController {
         return json;
     }
 
-
     /**
-     * 获取门店派单账号流水明细
+     * 获取门店派单账号流水明细废弃
      * mbBalanceLog
      * @param  balanceLog
      * @return
      */
-    @RequestMapping("/viewDeliverBanlanceLogDetial")
+    @RequestMapping("/viewDeliverBalanceLogDetial")
     @ResponseBody
-    public Json viewBalanceLogDetialAbandon(MbBalanceLog balanceLog) {
-        return viewBalanceLogDetial(balanceLog);
+    public Json viewBalanceLogDetialAdandon(MbBalanceLog balanceLog) {
+        return viewBalanceLogDetail(balanceLog);
     }
 
     /**
@@ -108,9 +107,9 @@ public class ApiDeliverBalanceController extends BaseController {
      * @param  balanceLog
      * @return
      */
-    @RequestMapping("/viewDeliverBalanceLogDetial")
+    @RequestMapping("/viewDeliverBalanceLogDetail")
     @ResponseBody
-    public Json viewBalanceLogDetial(MbBalanceLog balanceLog) {
+    public Json viewBalanceLogDetail(MbBalanceLog balanceLog) {
         Json json = new Json();
         if ("BT060".equals(balanceLog.getRefType()) ||"BT061".equals(balanceLog.getRefType()) ) {
             DeliverOrderShopPay deliverOrderShopPay = deliverOrderPayShopService.get(Long.parseLong(balanceLog.getRefId()));
