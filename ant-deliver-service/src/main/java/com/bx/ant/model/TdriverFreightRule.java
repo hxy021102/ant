@@ -63,6 +63,8 @@ public class TdriverFreightRule implements java.io.Serializable,IEntity{
 	private java.lang.Integer freight;
 
 	private java.lang.String loginId;
+
+	private java.lang.String type;
 	//columns END
 
 
@@ -183,6 +185,15 @@ public class TdriverFreightRule implements java.io.Serializable,IEntity{
 
 	public void setLoginId(String loginId) {
 		this.loginId = loginId;
+	}
+
+	@Column(name = "type", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 	

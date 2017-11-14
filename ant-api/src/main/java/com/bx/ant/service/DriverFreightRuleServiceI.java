@@ -1,6 +1,7 @@
 package com.bx.ant.service;
 
 import com.bx.ant.pageModel.DriverFreightRule;
+import com.bx.ant.pageModel.DriverFreightRuleQuery;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
@@ -51,4 +52,7 @@ public interface DriverFreightRuleServiceI {
 	 */
 	public void delete(Integer id);
 
+	Integer getOrderAmount(Integer deliverOrderId, String type);
+
+	DriverFreightRule getDriverFreightRule(DriverFreightRuleQuery ruleQuery);
 }

@@ -19,6 +19,7 @@ public class DriverFreightRule implements java.io.Serializable {
 	private java.lang.Integer regionId;
 	private java.lang.Integer freight;
 	private java.lang.String loginId;
+	private java.lang.String type;
 
 	
 
@@ -108,5 +109,13 @@ public class DriverFreightRule implements java.io.Serializable {
 
 	public void setLoginId(String loginId) {
 		this.loginId = loginId;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 }

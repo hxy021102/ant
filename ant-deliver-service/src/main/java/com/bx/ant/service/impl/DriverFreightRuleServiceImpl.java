@@ -8,21 +8,29 @@ import java.util.Map;
 import com.bx.ant.dao.DriverFreightRuleDaoI;
 import com.bx.ant.model.TdriverFreightRule;
 import com.bx.ant.pageModel.DriverFreightRule;
+import com.bx.ant.pageModel.DriverFreightRuleQuery;
 import com.bx.ant.service.DriverFreightRuleServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
+import com.mobian.service.DiveRegionServiceI;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.mobian.util.MyBeanUtils;
+
+import javax.annotation.Resource;
 
 @Service
 public class DriverFreightRuleServiceImpl extends BaseServiceImpl<DriverFreightRule> implements DriverFreightRuleServiceI {
 
 	@Autowired
 	private DriverFreightRuleDaoI driverFreightRuleDao;
+
+	@Resource
+	private DiveRegionServiceI diveRegionService;
 
 	@Override
 	public DataGrid dataGrid(DriverFreightRule driverFreightRule, PageHelper ph) {
@@ -83,6 +91,17 @@ public class DriverFreightRuleServiceImpl extends BaseServiceImpl<DriverFreightR
 				whereHql += " and t.loginId = :loginId";
 				params.put("loginId", driverFreightRule.getLoginId());
 			}
+			if (driverFreightRule instanceof DriverFreightRuleQuery){
+				DriverFreightRuleQuery driverFreightRuleQuery = (DriverFreightRuleQuery) driverFreightRule;
+				if (!F.empty(driverFreightRuleQuery.getWeight())) {
+					whereHql += " and t.weightLower <= :weight and t.weightUpper > :weight";
+					params.put("weight", driverFreightRuleQuery.getWeight());
+				}
+				if (!F.empty(driverFreightRuleQuery.getWeight())) {
+					whereHql += " and t.distanceLower <= :distance and t.distanceUpper > :distance";
+					params.put("distance", driverFreightRuleQuery.getDistance());
+				}
+			}
 		}	
 		return whereHql;
 	}
@@ -120,5 +139,33 @@ public class DriverFreightRuleServiceImpl extends BaseServiceImpl<DriverFreightR
 		driverFreightRuleDao.executeHql("update TdriverFreightRule t set t.isdeleted = 1 where t.id = :id",params);
 		//driverFreightRuleDao.delete(driverFreightRuleDao.get(TdriverFreightRule.class, id));
 	}
+	@Override
+	public Integer getOrderAmount(Integer deliverOrderId, String type) {
+		Integer amount = null ;
 
+
+
+
+		return amount;
+	}
+
+	@Override
+	public DriverFreightRule getDriverFreightRule(DriverFreightRuleQuery ruleQuery) {
+		List<DriverFreightRule> ol = new ArrayList<DriverFreightRule>();
+	    if (!F.empty(ruleQuery.getWeight()) && !F.empty(ruleQuery.getDistance()) && !F.empty(ruleQuery.getRegionId())
+				&& !F.empty(ruleQuery.getType())) {
+			PageHelper ph = new PageHelper();
+			ph.setHiddenTotal(true);
+			DataGrid dataGrid = dataGrid(ruleQuery, ph);
+			List<DriverFreightRule> l = dataGrid.getRows();
+			if (CollectionUtils.isNotEmpty(l)) {
+			    for (DriverFreightRule d : l) {
+			    	if (diveRegionService.isParent(d.getLoginId().toString() ,ruleQuery.getRegionId().toString())){
+			    		ol.add(d);
+					}
+				}
+			}
+	    }
+	    return  null ;
+	}
 }

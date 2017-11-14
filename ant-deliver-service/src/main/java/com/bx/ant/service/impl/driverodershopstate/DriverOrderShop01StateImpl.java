@@ -3,6 +3,7 @@ package com.bx.ant.service.impl.driverodershopstate;
 import com.bx.ant.pageModel.DriverOrderShop;
 import com.bx.ant.service.DriverOrderShopServiceI;
 import com.bx.ant.service.DriverOrderShopState;
+import com.mobian.absx.F;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -28,8 +29,16 @@ public class DriverOrderShop01StateImpl implements DriverOrderShopState {
 
     @Override
     public void handle(DriverOrderShop driverOrderShop) {
+//        if ()
+        //状态和支付状态
         driverOrderShop.setStatus(prefix + getStateName());
         driverOrderShop.setPayStatus(DriverOrderShopServiceI.PAY_STATUS_NOT_PAY);
+
+        //计算金额
+        if (!F.empty(driverOrderShop.getDeliverOrderShopId())) {
+
+        }
+
         driverOrderShopSerivce.add(driverOrderShop);
     }
 

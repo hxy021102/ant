@@ -69,4 +69,11 @@ public interface DiveRegionServiceI {
 
 	List<DiveRegion> findAllByParams(DiveRegion diveRegion);
 
+	/**
+	 * 检测是否为父区域
+	 * @param parentRegionId
+	 * @param sonRegionId
+	 * @return
+	 */
+    Boolean isParent(String parentRegionId, String sonRegionId);
 }

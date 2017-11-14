@@ -1,5 +1,6 @@
 package com.bx.ant.controller;
 
+import com.aliyun.mns.model.TopicMessage;
 import com.bx.ant.pageModel.*;
 import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.*;
@@ -8,10 +9,14 @@ import com.mobian.pageModel.*;
 import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.MbWithdrawLogServiceI;
+import com.mobian.thirdpart.mns.MNSTemplate;
+import com.mobian.thirdpart.mns.MNSUtil;
 import com.mobian.thirdpart.redis.Key;
 import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.thirdpart.redis.RedisUtil;
+import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.HttpUtil;
+import com.mobian.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by wanxp 2017/9/22
@@ -148,6 +154,42 @@ public class ApiDriverBalanceController extends BaseController {
     }
 
 
+    @ResponseBody
+    @RequestMapping("/getVCode")
+    public Json getVCode(HttpServletRequest request) {
+        Json j = new Json();
+        try {
+            TokenWrap tokenWrap = getTokenWrap(request);
+            String phone = tokenWrap.getName();
+            if(!F.empty(phone)) {
+                String oldCode = (String) redisUtil.getString(Key.build(Namespace.DRIVER_LOGIN_VALIDATE_CODE, phone));
+                if(!F.empty(oldCode)) {
+                    j.setMsg("访问过于频繁，请秒后重试！");
+                    return j;
+                }
+                //TODO 短信模板可能不一致
+                String code = Util.CreateNonceNumstr(6); //生成短信验证码
+                MNSTemplate template = new MNSTemplate();
+                template.setTemplateCode("SMS_105720074");
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("code", code);
+                template.setParams(params);
+                TopicMessage topicMessage = MNSUtil.sendMns(phone, template);
+                if(topicMessage != null) {
+                    redisUtil.set(Key.build(Namespace.DRIVER_LOGIN_VALIDATE_CODE, phone), code, 60, TimeUnit.SECONDS);
+                    j.setSuccess(true);
+                    j.setMsg("获取短信验证码成功！");
+                    j.setObj(params);
+                    return j;
+                }
+                j.setMsg("获取短信验证码失败！");
+            }
+        } catch (Exception e) {
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
+            logger.error("获取短信验证码接口异常", e);
+        }
+        return j;
+    }
 
 
     /**
