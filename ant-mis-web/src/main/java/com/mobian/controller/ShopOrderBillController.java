@@ -195,7 +195,6 @@ public class ShopOrderBillController extends BaseController {
 		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
 		Json j = new Json();
 		shopOrderBill.setReviewerId(sessionInfo.getId());
-		shopOrderBill.setPayWay("DPW01");
 		shopOrderBillService.editBillStatusAndPayStatus(shopOrderBill);
 		j.setSuccess(true);
 		j.setMsg("编辑成功！");
