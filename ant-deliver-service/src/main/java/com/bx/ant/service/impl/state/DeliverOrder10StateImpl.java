@@ -33,14 +33,9 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderServiceI deliverOrderService;
 
-    @Autowired
-    private DeliverOrderPayServiceI deliverOrderPayService;
 
     @Autowired
     private DeliverOrderShopServiceI deliverOrderShopService;
-
-    @Autowired
-    private DeliverOrderLogServiceI deliverOrderLogService;
 
     @Autowired
     private DeliverOrderItemServiceI deliverOrderItemService;
@@ -48,8 +43,6 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderShopItemServiceI deliverOrderShopItemService;
 
-    @Autowired
-    private DeliverOrderShopPayServiceI deliverOrderShopPayService;
 
     @Resource
     private SupplierServiceI supplierService;
@@ -80,7 +73,7 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
         deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
         deliverOrderShop.setShopId(deliverOrder.getShopId());
         deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_AUDITING);
-        deliverOrderShop.setDistance(new BigDecimal(deliverOrder.getShopDistance()));
+        deliverOrderShop.setDistance(deliverOrder.getShopDistance());
         deliverOrderShopService.addAndGet(deliverOrderShop);
         List<DeliverOrderItem> deliverOrderItemList = deliverOrderItemService.getDeliverOrderItemList(deliverOrder.getId());
 

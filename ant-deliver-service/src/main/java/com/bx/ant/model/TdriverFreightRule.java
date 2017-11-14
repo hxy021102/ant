@@ -54,15 +54,17 @@ public class TdriverFreightRule implements java.io.Serializable,IEntity{
 	//
 	private java.lang.Integer weightUpper;
 	//
-	private java.lang.Integer distanceLower;
+	private java.math.BigDecimal distanceLower;
 	//
-	private java.lang.Integer distanceUpper;
+	private java.math.BigDecimal distanceUpper;
 	//
 	private java.lang.Integer regionId;
 	//
 	private java.lang.Integer freight;
 
 	private java.lang.String loginId;
+
+	private java.lang.String type;
 	//columns END
 
 
@@ -141,20 +143,20 @@ public class TdriverFreightRule implements java.io.Serializable,IEntity{
 	}
 	
 	@Column(name = "distance_lower", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
-	public java.lang.Integer getDistanceLower() {
+	public java.math.BigDecimal getDistanceLower() {
 		return this.distanceLower;
 	}
 	
-	public void setDistanceLower(java.lang.Integer distanceLower) {
+	public void setDistanceLower(java.math.BigDecimal distanceLower) {
 		this.distanceLower = distanceLower;
 	}
 	
 	@Column(name = "distance_upper", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
-	public java.lang.Integer getDistanceUpper() {
+	public java.math.BigDecimal getDistanceUpper() {
 		return this.distanceUpper;
 	}
 	
-	public void setDistanceUpper(java.lang.Integer distanceUpper) {
+	public void setDistanceUpper(java.math.BigDecimal distanceUpper) {
 		this.distanceUpper = distanceUpper;
 	}
 	
@@ -183,6 +185,15 @@ public class TdriverFreightRule implements java.io.Serializable,IEntity{
 
 	public void setLoginId(String loginId) {
 		this.loginId = loginId;
+	}
+
+	@Column(name = "type", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 	

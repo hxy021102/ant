@@ -1,28 +1,48 @@
 package com.bx.ant.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Array;
+import java.util.*;
 
 import com.bx.ant.dao.DriverFreightRuleDaoI;
 import com.bx.ant.model.TdriverFreightRule;
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderShop;
 import com.bx.ant.pageModel.DriverFreightRule;
+import com.bx.ant.pageModel.DriverFreightRuleQuery;
+import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DriverFreightRuleServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.DiveRegion;
+import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.PageHelper;
 
+import com.mobian.service.DiveRegionServiceI;
+import com.mobian.service.MbShopServiceI;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.mobian.util.MyBeanUtils;
+
+import javax.annotation.Resource;
+
+import static com.bx.ant.service.DeliverOrderState.deliverOrder;
 
 @Service
 public class DriverFreightRuleServiceImpl extends BaseServiceImpl<DriverFreightRule> implements DriverFreightRuleServiceI {
 
 	@Autowired
 	private DriverFreightRuleDaoI driverFreightRuleDao;
+
+	@Resource
+	private DiveRegionServiceI diveRegionService;
+
+	@Resource
+	private DeliverOrderServiceI deliverOrderService;
+
+	@Resource
+	private MbShopServiceI mbShopService;
 
 	@Override
 	public DataGrid dataGrid(DriverFreightRule driverFreightRule, PageHelper ph) {
@@ -63,11 +83,11 @@ public class DriverFreightRuleServiceImpl extends BaseServiceImpl<DriverFreightR
 				whereHql += " and t.weightUpper = :weightUpper";
 				params.put("weightUpper", driverFreightRule.getWeightUpper());
 			}		
-			if (!F.empty(driverFreightRule.getDistanceLower())) {
+			if (driverFreightRule.getDistanceLower() != null) {
 				whereHql += " and t.distanceLower = :distanceLower";
 				params.put("distanceLower", driverFreightRule.getDistanceLower());
 			}		
-			if (!F.empty(driverFreightRule.getDistanceUpper())) {
+			if (driverFreightRule.getDistanceUpper() != null) {
 				whereHql += " and t.distanceUpper = :distanceUpper";
 				params.put("distanceUpper", driverFreightRule.getDistanceUpper());
 			}		
@@ -82,6 +102,17 @@ public class DriverFreightRuleServiceImpl extends BaseServiceImpl<DriverFreightR
 			if (!F.empty(driverFreightRule.getLoginId())) {
 				whereHql += " and t.loginId = :loginId";
 				params.put("loginId", driverFreightRule.getLoginId());
+			}
+			if (driverFreightRule instanceof DriverFreightRuleQuery){
+				DriverFreightRuleQuery driverFreightRuleQuery = (DriverFreightRuleQuery) driverFreightRule;
+				if (!F.empty(driverFreightRuleQuery.getWeight())) {
+					whereHql += " and t.weightLower <= :weight and t.weightUpper > :weight";
+					params.put("weight", driverFreightRuleQuery.getWeight());
+				}
+				if (!F.empty(driverFreightRuleQuery.getWeight())) {
+					whereHql += " and t.distanceLower <= :distance and t.distanceUpper > :distance";
+					params.put("distance", driverFreightRuleQuery.getDistance());
+				}
 			}
 		}	
 		return whereHql;
@@ -120,5 +151,58 @@ public class DriverFreightRuleServiceImpl extends BaseServiceImpl<DriverFreightR
 		driverFreightRuleDao.executeHql("update TdriverFreightRule t set t.isdeleted = 1 where t.id = :id",params);
 		//driverFreightRuleDao.delete(driverFreightRuleDao.get(TdriverFreightRule.class, id));
 	}
+	@Override
+	public Integer getOrderFreight(DeliverOrderShop orderShop, String type) {
+		Integer amount = null ;
+		DriverFreightRuleQuery query = new DriverFreightRuleQuery();
+		if ((!F.empty(orderShop.getDeliverOrderId()))) {
+			DeliverOrder order =  deliverOrderService.get(orderShop.getDeliverOrderId());
+			MbShop shop = mbShopService.getFromCache(orderShop.getShopId());
+			if (order != null && shop != null) {
+				//通过重量距离区域和类型找出最小区域的运费规则并返回
+				query.setWeight(order.getWeight());
+				query.setDistance(orderShop.getDistance());
+				query.setRegionId(shop.getRegionId());
+				query.setType(type);
+				List<DriverFreightRule> driverFreightRules = getRuleList(query);
+				if (CollectionUtils.isNotEmpty(driverFreightRules)) {
+					DriverFreightRule rule = driverFreightRules.get(0);
+					amount = rule.getFreight();
+				}
+			}
+		}
+		return amount;
+	}
 
+	@Override
+	public List<DriverFreightRule> getRuleList(DriverFreightRuleQuery ruleQuery) {
+		List<DriverFreightRule> ol = new ArrayList<DriverFreightRule>();
+	    if (!F.empty(ruleQuery.getWeight()) && ruleQuery.getDistance() != null && !F.empty(ruleQuery.getRegionId())
+				&& !F.empty(ruleQuery.getType())) {
+			PageHelper ph = new PageHelper();
+			ph.setHiddenTotal(true);
+			DataGrid dataGrid = dataGrid(ruleQuery, ph);
+			List<DriverFreightRule> l = dataGrid.getRows();
+			if (CollectionUtils.isNotEmpty(l)) {
+			    for (DriverFreightRule d : l) {
+			    	if (diveRegionService.isParent(d.getLoginId().toString() ,ruleQuery.getRegionId().toString())){
+			    		ol.add(d);
+					}
+				}
+			}
+			//对符合的区域进行由小到大的排序
+			Collections.sort(ol, new Comparator<DriverFreightRule>() {
+				@Override
+				public int compare(DriverFreightRule t1, DriverFreightRule t2) {
+					DiveRegion d1 = diveRegionService.getFromCache(t1.getRegionId() + "");
+					DiveRegion d2 = diveRegionService.getFromCache(t2.getRegionId() + "");
+					if (d1 == null || d2 == null) return 0;
+					else {
+						return d1.getRegionLevel() - d2.getRegionLevel();
+					}
+				}
+			});
+	    }
+	    return  ol ;
+	}
 }

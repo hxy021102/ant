@@ -6,6 +6,7 @@ import com.bx.ant.pageModel.DriverOrderShop;
 import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderShopServiceI;
+import com.bx.ant.service.DriverOrderShopServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
@@ -44,6 +45,9 @@ public class ApiDeliverOrderController extends BaseController {
 
     @Autowired
     private DeliverOrderShopServiceI deliverOrderShopService;
+
+    @Resource
+    private DriverOrderShopServiceI driverOrderShopService;
 
     @RequestMapping("/dataGrid")
     @ResponseBody
@@ -404,7 +408,7 @@ public class ApiDeliverOrderController extends BaseController {
 
     @RequestMapping("/deliverWay")
     @ResponseBody
-    public Json deliverWay(DeliverOrderShop deliverOrderShop, String devlierWay, HttpServletRequest request){
+    public Json deliverWay(DeliverOrderShop deliverOrderShop, String devlierWay, String remark, HttpServletRequest request){
         Json json = new Json();
 
         TokenWrap tokenWrap = getTokenWrap(request);
@@ -414,7 +418,12 @@ public class ApiDeliverOrderController extends BaseController {
             DriverOrderShop driverOrderShop = new DriverOrderShop();
             driverOrderShop.setShopId(shopId);
             driverOrderShop.setDeliverOrderShopId(deliverOrderShop.getId());
+            driverOrderShop.setRemark(remark);
+            deliverOrderShop.setStatus(DriverOrderShopServiceI.PAY_STATUS_NOT_PAY);
+
+
 //            deliverOrderShop.setAmount(deliverOrderShop.getId());
+            driverOrderShopService.transform(driverOrderShop);
         }
         return json;
 

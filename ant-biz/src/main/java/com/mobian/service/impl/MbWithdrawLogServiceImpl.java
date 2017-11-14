@@ -240,9 +240,9 @@ public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> imp
 
 	@Override
 	public DataGrid dataGridView(MbWithdrawLogView mbWithdrawLogView, PageHelper pageHelper){
-		DataGrid dataGrid = new DataGrid();
+		DataGrid dataGrid = dataGrid(mbWithdrawLogView, pageHelper);
 		List<MbWithdrawLog> ol = new ArrayList<MbWithdrawLog>();
-		List<MbWithdrawLog> l = dataGrid(mbWithdrawLogView, pageHelper).getRows();
+		List<MbWithdrawLog> l = dataGrid.getRows();
 		if (CollectionUtils.isNotEmpty(l)) {
 			for (MbWithdrawLog log : l) {
 				MbWithdrawLogView logView = new MbWithdrawLogView();

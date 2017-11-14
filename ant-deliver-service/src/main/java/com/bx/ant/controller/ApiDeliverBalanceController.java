@@ -46,16 +46,14 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/api/deliver/deliverBalance")
 public class ApiDeliverBalanceController extends BaseController {
 
-    @Resource
-    private MbShopServiceI mbShopService;
 
-    @Autowired
+    @Resource
     private DeliverOrderServiceI deliverOrderService;
 
-    @Autowired
+    @Resource
     private MbBalanceServiceI mbBalanceService;
 
-    @Autowired
+    @Resource
     private MbBalanceLogServiceI mbBalanceLogService;
 
     @Autowired
@@ -404,6 +402,7 @@ public class ApiDeliverBalanceController extends BaseController {
         if (CollectionUtils.isNotEmpty(shopDeliverApplies)) {
             shopDeliverApply = shopDeliverApplies.get(0);
             withdrawLogView.setApplyLoginId(shopDeliverApply.getAccountId() + "");
+            withdrawLogView.setRefType("BT101");
             //未指定排序则默认为修改时间降序
             if (F.empty(pageHelper.getSort())) {
                 pageHelper.setSort("updatetime");
