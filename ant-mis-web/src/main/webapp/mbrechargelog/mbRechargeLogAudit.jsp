@@ -41,7 +41,7 @@
 				<table class="table table-hover table-condensed">
 				<tr>
 					<c:choose>
-						<c:when test="${mbRechargeLog.refType == 'BT004'}">
+						<c:when test="${mbRechargeLog.refType == 'BT004' or mbRechargeLog.refType == 'BT160'}">
 							<input type="hidden" name="refType" style="width: 90%" value="${mbRechargeLog.refType}"/>
 
 						</c:when>

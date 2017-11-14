@@ -276,12 +276,18 @@ public class MbRechargeLogController extends BaseController {
         if (F.empty(mbRechargeLog.getHandleRemark())&&F.empty(mbRechargeLog.getShopId())) {
             j.setSuccess(false);
             j.setMsg("请选择门店和填写备注！");
-        } else if (F.empty(mbRechargeLog.getPayCode()) && MbRechargeLogServiceI.HS02.equals(mbRechargeLog.getHandleStatus())&&(!"BT004".equals(mbRechargeLog.getRefType()))) {
+        } else if (F.empty(mbRechargeLog.getPayCode()) && MbRechargeLogServiceI.HS02.equals(mbRechargeLog.getHandleStatus())&&(!"BT004".equals(mbRechargeLog.getRefType()))
+                &&(!"BT160".equals(mbRechargeLog.getRefType()))) {
             j.setSuccess(false);
             j.setMsg("请输入银行汇款单号");
         } else {
             if (MbRechargeLogServiceI.HS02.equals(mbRechargeLog.getHandleStatus())) {
-                MbBalance mbBalance = mbBalanceService.queryByShopId(mbRechargeLog.getShopId());
+                MbBalance mbBalance;
+                if (!"BT160".equals(mbRechargeLog.getRefType())) {
+                    mbBalance = mbBalanceService.queryByShopId(mbRechargeLog.getShopId());
+                } else {
+                    mbBalance = mbBalanceService.addOrGetMbBalanceDelivery(mbRechargeLog.getShopId());
+                }
                 if (mbBalance != null) {
                     mbRechargeLog.setBalanceId(mbBalance.getId());
                 } else {
@@ -411,4 +417,40 @@ public class MbRechargeLogController extends BaseController {
         }
         return json;
     }
+
+    /**
+     * 跳转到派单钱包充值页面
+     * @param request
+     * @param shopId
+     * @return
+     */
+    @RequestMapping("/addDeliverShopMoneyPage")
+    public String addDeliverShopMoneyPage(HttpServletRequest request, Integer shopId) {
+        MbShop mbShop=mbShopService.getFromCache(shopId);
+        request.setAttribute("mbShop", mbShop);
+        return "mbuser/addDeliverShopMoney";
+    }
+
+    /**
+     *派单钱包充值
+     * @param session
+     * @param mbRechargeLog
+     * @return
+     */
+    @RequestMapping("/addDeliverShopMoney")
+    @ResponseBody
+    public Json addDeliverShopMoney(HttpSession session, MbRechargeLog mbRechargeLog) {
+        Json j = new Json();
+        SessionInfo sessionInfo = (SessionInfo) session.getAttribute("sessionInfo");
+        MbBalance mbBalance = mbBalanceService.addOrGetMbBalanceDelivery(mbRechargeLog.getShopId());
+        mbRechargeLog.setBalanceId(mbBalance.getId());
+        mbRechargeLog.setApplyLoginId(sessionInfo.getId());
+        //派单-配送费
+        mbRechargeLog.setRefType("BT160");
+        mbRechargeLogService.add(mbRechargeLog);
+        j.setSuccess(true);
+        j.setMsg("添加成功！");
+        return j;
+    }
+
 }
