@@ -13,6 +13,9 @@ public class MbWithdrawLogView extends MbWithdrawLog {
     private String handleLoginName;
     private Date addtimeBegin;
     private Date addtimeEnd;
+    private String shopName;
+    private Integer shopId;
+    private String applyLoginName;
 
     public String getRefTypeName() {
         return ConvertNameUtil.getString(super.getRefType());
@@ -52,5 +55,29 @@ public class MbWithdrawLogView extends MbWithdrawLog {
 
     public void setAddtimeEnd(Date addtimeEnd) {
         this.addtimeEnd = addtimeEnd;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public Integer getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
+    }
+
+    public String getApplyLoginName() {
+        return applyLoginName;
+    }
+
+    public void setApplyLoginName(String applyLoginName) {
+        this.applyLoginName = applyLoginName;
     }
 }
