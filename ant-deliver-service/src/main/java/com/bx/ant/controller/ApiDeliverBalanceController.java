@@ -95,7 +95,7 @@ public class ApiDeliverBalanceController extends BaseController {
      * @param  balanceLog
      * @return
      */
-    @RequestMapping("/viewDeliverBalanceLogDetial")
+    @RequestMapping("/viewDeliverBanlanceLogDetial")
     @ResponseBody
     public Json viewBalanceLogDetialAdandon(MbBalanceLog balanceLog) {
         return viewBalanceLogDetail(balanceLog);
