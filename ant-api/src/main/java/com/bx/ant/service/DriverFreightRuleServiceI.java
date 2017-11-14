@@ -1,9 +1,12 @@
 package com.bx.ant.service;
 
+import com.bx.ant.pageModel.DeliverOrderShop;
 import com.bx.ant.pageModel.DriverFreightRule;
 import com.bx.ant.pageModel.DriverFreightRuleQuery;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
+
+import java.util.List;
 
 /**
  * 
@@ -11,6 +14,9 @@ import com.mobian.pageModel.PageHelper;
  * 
  */
 public interface DriverFreightRuleServiceI {
+
+	String TYPE_CONTRACT = "DFR01";
+
 
 	/**
 	 * 获取DriverFreightRule数据表格
@@ -52,7 +58,20 @@ public interface DriverFreightRuleServiceI {
 	 */
 	public void delete(Integer id);
 
-	Integer getOrderAmount(Integer deliverOrderId, String type);
+	/**
+	 * 通过指定类型和orderShop找到符合运费规则的费用
+	 * @param orderShop
+	 * @param type
+	 * @return
+	 */
+    Integer getOrderFreight(DeliverOrderShop orderShop, String type);
 
-	DriverFreightRule getDriverFreightRule(DriverFreightRuleQuery ruleQuery);
+	/**
+	 * 通过条件回去到符合要求的运费规则
+	 * 规则为list
+	 * list区域由小到大
+	 * @param ruleQuery
+	 * @return
+	 */
+	List<DriverFreightRule> getRuleList(DriverFreightRuleQuery ruleQuery);
 }

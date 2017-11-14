@@ -29,7 +29,7 @@ public class DeliverOrder implements java.io.Serializable {
 	private BigDecimal latitude;
 	private String remark;
 	private Integer shopId;
-	private Double shopDistance;
+	private BigDecimal shopDistance;
 	private String supplierOrderId;
 	private String completeImages;
 	private String completeRemark;
@@ -193,11 +193,11 @@ public class DeliverOrder implements java.io.Serializable {
 		this.latitude = latitude;
 	}
 
-	public Double getShopDistance() {
+	public BigDecimal getShopDistance() {
 		return shopDistance;
 	}
 
-	public void setShopDistance(Double shopDistance) {
+	public void setShopDistance(BigDecimal shopDistance) {
 		this.shopDistance = shopDistance;
 	}
 

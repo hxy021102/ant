@@ -14,8 +14,8 @@ public class DriverFreightRule implements java.io.Serializable {
 	private java.lang.Boolean isdeleted;	
 	private java.lang.Integer weightLower;	
 	private java.lang.Integer weightUpper;	
-	private java.lang.Integer distanceLower;	
-	private java.lang.Integer distanceUpper;	
+	private java.math.BigDecimal distanceLower;
+	private java.math.BigDecimal distanceUpper;
 	private java.lang.Integer regionId;
 	private java.lang.Integer freight;
 	private java.lang.String loginId;
@@ -74,18 +74,18 @@ public class DriverFreightRule implements java.io.Serializable {
 	public java.lang.Integer getWeightUpper() {
 		return this.weightUpper;
 	}
-	public void setDistanceLower(java.lang.Integer distanceLower) {
+	public void setDistanceLower(java.math.BigDecimal distanceLower) {
 		this.distanceLower = distanceLower;
 	}
 	
-	public java.lang.Integer getDistanceLower() {
+	public java.math.BigDecimal getDistanceLower() {
 		return this.distanceLower;
 	}
-	public void setDistanceUpper(java.lang.Integer distanceUpper) {
+	public void setDistanceUpper(java.math.BigDecimal distanceUpper) {
 		this.distanceUpper = distanceUpper;
 	}
 	
-	public java.lang.Integer getDistanceUpper() {
+	public java.math.BigDecimal getDistanceUpper() {
 		return this.distanceUpper;
 	}
 	public void setRegionId(java.lang.Integer regionId) {

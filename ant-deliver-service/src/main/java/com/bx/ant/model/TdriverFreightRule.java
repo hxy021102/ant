@@ -54,9 +54,9 @@ public class TdriverFreightRule implements java.io.Serializable,IEntity{
 	//
 	private java.lang.Integer weightUpper;
 	//
-	private java.lang.Integer distanceLower;
+	private java.math.BigDecimal distanceLower;
 	//
-	private java.lang.Integer distanceUpper;
+	private java.math.BigDecimal distanceUpper;
 	//
 	private java.lang.Integer regionId;
 	//
@@ -143,20 +143,20 @@ public class TdriverFreightRule implements java.io.Serializable,IEntity{
 	}
 	
 	@Column(name = "distance_lower", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
-	public java.lang.Integer getDistanceLower() {
+	public java.math.BigDecimal getDistanceLower() {
 		return this.distanceLower;
 	}
 	
-	public void setDistanceLower(java.lang.Integer distanceLower) {
+	public void setDistanceLower(java.math.BigDecimal distanceLower) {
 		this.distanceLower = distanceLower;
 	}
 	
 	@Column(name = "distance_upper", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
-	public java.lang.Integer getDistanceUpper() {
+	public java.math.BigDecimal getDistanceUpper() {
 		return this.distanceUpper;
 	}
 	
-	public void setDistanceUpper(java.lang.Integer distanceUpper) {
+	public void setDistanceUpper(java.math.BigDecimal distanceUpper) {
 		this.distanceUpper = distanceUpper;
 	}
 	
