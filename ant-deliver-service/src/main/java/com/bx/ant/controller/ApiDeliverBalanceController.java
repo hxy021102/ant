@@ -76,8 +76,8 @@ public class ApiDeliverBalanceController extends BaseController {
      */
     @RequestMapping("/viewDeliverBanlanceLogList")
     @ResponseBody
-    public Json viewBalanceLogList(MbBalanceLog mbBalanceLog){
-        return viewBalanceLogList(mbBalanceLog);
+    public Json viewDeliverBanlanceLogList(MbBalanceLog mbBalanceLog){
+        return viewDeliverBalanceLogList(mbBalanceLog);
     }
     @RequestMapping("/viewDeliverBalanceLogList")
     @ResponseBody
@@ -90,26 +90,19 @@ public class ApiDeliverBalanceController extends BaseController {
     }
 
     /**
-     * 获取门店派单账号流水明细废弃
+     * 获取门店派单账号流水明细
      * mbBalanceLog
      * @param  balanceLog
      * @return
      */
     @RequestMapping("/viewDeliverBanlanceLogDetial")
     @ResponseBody
-    public Json viewBalanceLogDetialAdandon(MbBalanceLog balanceLog) {
-        return viewBalanceLogDetail(balanceLog);
+    public Json viewDeliverBanlanceLogDetial(MbBalanceLog balanceLog) {
+        return viewDeliverBalanceLogDetail(balanceLog);
     }
-
-    /**
-     * 获取门店派单账号流水明细
-     * mbBalanceLog
-     * @param  balanceLog
-     * @return
-     */
     @RequestMapping("/viewDeliverBalanceLogDetail")
     @ResponseBody
-    public Json viewBalanceLogDetail(MbBalanceLog balanceLog) {
+    public Json viewDeliverBalanceLogDetail(MbBalanceLog balanceLog) {
         Json json = new Json();
         if ("BT060".equals(balanceLog.getRefType()) ||"BT061".equals(balanceLog.getRefType()) ) {
             DeliverOrderShopPay deliverOrderShopPay = deliverOrderPayShopService.get(Long.parseLong(balanceLog.getRefId()));
@@ -132,17 +125,9 @@ public class ApiDeliverBalanceController extends BaseController {
      */
     @RequestMapping("/viewDeliverBanlanceLogDataGrid")
     @ResponseBody
-    public Json viewDeliverBalanceLogDataGridAbandon(String date,PageHelper pageHelper, HttpServletRequest request) {
+    public Json viewDeliverBanlanceLogDataGrid(String date,PageHelper pageHelper, HttpServletRequest request) {
         return viewDeliverBalanceLogDataGrid(date, pageHelper, request);
     }
-
-
-    /**
-     * 获取门店派单账号流水
-     * @param date
-     * @param pageHelper
-     * @return
-     */
     @RequestMapping("/viewDeliverBalanceLogDataGrid")
     @ResponseBody
     public Json viewDeliverBalanceLogDataGrid(String date,PageHelper pageHelper, HttpServletRequest request) {
@@ -244,15 +229,9 @@ public class ApiDeliverBalanceController extends BaseController {
      */
     @RequestMapping("/transformAmountDeliverToBalance")
     @ResponseBody
-    public Json updateAmountDeliverToBalanceAbandon(HttpServletRequest request, Integer amount, String vcode) {
+    public Json transformAmountDeliverToBalance(HttpServletRequest request, Integer amount, String vcode) {
         return updateAmountDeliverToBalance(request, amount, vcode);
     }
-
-    /**
-     * 派单账户余额转出采购账户余额
-     * @param request
-     * @return
-     */
     @RequestMapping("/updateAmountDeliverToBalance")
     @ResponseBody
     public Json updateAmountDeliverToBalance(HttpServletRequest request, Integer amount, String vcode) {
@@ -284,15 +263,9 @@ public class ApiDeliverBalanceController extends BaseController {
      */
     @RequestMapping("/transformAmountBalanceToDeliver")
     @ResponseBody
-    public Json updateAmountBalanceToDeliverAbandon(HttpServletRequest request, Integer amount, String vcode) {
+    public Json transformAmountBalanceToDeliver(HttpServletRequest request, Integer amount, String vcode) {
         return updateAmountBalanceToDeliver(request, amount, vcode);
     }
-
-    /**
-     * 采购账户余额转入派单账户余额
-     * @param request
-     * @return
-     */
     @RequestMapping("/updateAmountBalanceToDeliver")
     @ResponseBody
     public Json updateAmountBalanceToDeliver(HttpServletRequest request, Integer amount, String vcode) {
@@ -365,13 +338,6 @@ public class ApiDeliverBalanceController extends BaseController {
     public Json withdraw(HttpServletRequest request, MbWithdrawLog withdrawLog, String vcode) {
         return updateWithdraw(request, withdrawLog, vcode);
     }
-
-    /**
-     * 提现
-     * @param request
-     * @param
-     * @return
-     */
     @ResponseBody
     @RequestMapping("/updateWithdraw")
     public Json updateWithdraw(HttpServletRequest request, MbWithdrawLog withdrawLog, String vcode){
@@ -433,13 +399,18 @@ public class ApiDeliverBalanceController extends BaseController {
         return json;
     }
 
-
+    /**
+     *
+     * @param request
+     * @param pageHelper
+     * @param date
+     * @return
+     */
     @RequestMapping("/withdrawDataGrid")
     @ResponseBody
-    public Json dataGridWithdraw(HttpServletRequest request, PageHelper pageHelper, String date) {
+    public Json withdrawDataGrid(HttpServletRequest request, PageHelper pageHelper, String date) {
         return getWithdrawDataGrid(request, pageHelper, date);
     }
-
     @RequestMapping("/getWithdrawDataGrid")
     @ResponseBody
     public Json getWithdrawDataGrid(HttpServletRequest request, PageHelper pageHelper, String date) {
@@ -502,12 +473,6 @@ public class ApiDeliverBalanceController extends BaseController {
     public Json totalBalanceByMonth(HttpServletRequest request, String date) {
         return getTotalBalanceByMonth(request, date);
     }
-
-    /**
-     * 按月统计收入支出
-     * @param request
-     * @return
-     */
     @RequestMapping("/getTotalBalanceByMonth")
     @ResponseBody
     public Json getTotalBalanceByMonth(HttpServletRequest request, String date) {

@@ -317,7 +317,7 @@ public class ApiDeliverOrderController extends BaseController {
      */
     @RequestMapping("/editOrderTakeByUser")
     @ResponseBody
-    public Json takeOrderUserByUser(HttpServletRequest request, Long id){
+    public Json editOrderTakeByUser(HttpServletRequest request, Long id){
         Json json = new Json();
 
         //获取shopId
@@ -330,6 +330,7 @@ public class ApiDeliverOrderController extends BaseController {
         return json;
     }
 
+
     @RequestMapping("/editOrderTransformStatus")
     public Json transform(DeliverOrder deliverOrder) {
         Json json = new Json();
@@ -339,6 +340,12 @@ public class ApiDeliverOrderController extends BaseController {
         return json;
     }
 
+    /**
+     *
+     * @param shopId
+     * @param status
+     * @return
+     */
     @RequestMapping("/viewOrderList")
     @ResponseBody
     public Json viewOrderList(Integer shopId,String status){
@@ -349,6 +356,11 @@ public class ApiDeliverOrderController extends BaseController {
         return json;
     }
 
+    /**
+     * 获取新订单数量
+     * @param request
+     * @return
+     */
     @RequestMapping("/countNewAllocationOrder")
     @ResponseBody
     public  Json countNewAllocationOrder(HttpServletRequest request){
@@ -380,11 +392,6 @@ public class ApiDeliverOrderController extends BaseController {
     public Json todayOrders(HttpServletRequest request) {
         return getTodayOrders(request);
     }
-    /**
-     * 今日订单列表
-     * @param request
-     * @return
-     */
     @RequestMapping("/getTodayOrders")
     @ResponseBody
     public Json getTodayOrders(HttpServletRequest request) {
