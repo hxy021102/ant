@@ -2,6 +2,8 @@ package com.mobian.pageModel;
 
 import com.bx.ant.pageModel.DeliverOrder;
 
+import java.math.BigDecimal;
+
 /**
  * Created by 黄晓渝 on 2017/10/28.
  */
@@ -9,7 +11,7 @@ public class MbAssignShop implements Comparable<MbAssignShop>,java.io.Serializab
     private Integer id;
     private String name;
     private String contactPhone;
-    private double distance;
+    private BigDecimal distance;
     private Long deliverOrderId;
     private DeliverOrder deliverOrder;
 
@@ -37,11 +39,11 @@ public class MbAssignShop implements Comparable<MbAssignShop>,java.io.Serializab
         this.contactPhone = contactPhone;
     }
 
-    public double getDistance() {
+    public BigDecimal getDistance() {
         return distance;
     }
 
-    public void setDistance(double distance) {
+    public void setDistance(BigDecimal distance) {
         this.distance = distance;
     }
 
@@ -63,9 +65,9 @@ public class MbAssignShop implements Comparable<MbAssignShop>,java.io.Serializab
 
     @Override
     public int compareTo(MbAssignShop o) {
-        if (this.distance > o.getDistance()) {
+        if (this.distance.doubleValue() > o.getDistance().doubleValue()) {
             return 1;
-        } else if (this.distance < o.getDistance()) {
+        } else if (this.distance.doubleValue() < o.getDistance().doubleValue()) {
             return -1;
         } else {
             return 0;

@@ -115,7 +115,7 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
             }
             if(distance > maxDistance) continue;
 
-            shopDeliverApply.setDistance(distance);
+            shopDeliverApply.setDistance(BigDecimal.valueOf(distance));
             includeShop.add(shopDeliverApply);
 
 //            if (distance < minDistance || minDistance == 0) {

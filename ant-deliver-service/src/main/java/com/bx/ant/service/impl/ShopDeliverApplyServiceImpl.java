@@ -255,7 +255,7 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 			if (distance < minDistance || minDistance == 0) {
 				MbAssignShop mbAssignShop = new MbAssignShop();
 				BeanUtils.copyProperties(mbShop,mbAssignShop);
-				mbAssignShop.setDistance(distance);
+				mbAssignShop.setDistance(BigDecimal.valueOf(distance));
 				mbAssignShopArrayList.add(mbAssignShop);
 				if(distance == 0) break; // 解决同一个地址不分配的问题
 			}

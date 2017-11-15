@@ -29,7 +29,7 @@ import java.util.List;
 
 /**
  * Created by  wanxp 2017/9/22.
- *
+ * <p>
  * 用户相关接口
  */
 @Controller
@@ -71,20 +71,21 @@ public class ApiDeliverOrderController extends BaseController {
     }
 
     /**
-     *  查看已接单
-      * @param request
+     * 查看已接单
+     *
+     * @param request
      * @param pageHelper
      * @return
      */
     @RequestMapping("/viewAcceptedDataGrid")
     @ResponseBody
-    public Json viewAcceptedDataGrid(HttpServletRequest request, PageHelper pageHelper){
+    public Json viewAcceptedDataGrid(HttpServletRequest request, PageHelper pageHelper) {
         Json json = new Json();
 
         //获取shopId
         TokenWrap token = getTokenWrap(request);
         Integer shopId = token.getShopId();
-        DeliverOrder deliverOrder =  new DeliverOrder();
+        DeliverOrder deliverOrder = new DeliverOrder();
         deliverOrder.setShopId(shopId);
         deliverOrder.setStatus(deliverOrderService.STATUS_SHOP_ACCEPT);
         json.setMsg("u know");
@@ -94,14 +95,15 @@ public class ApiDeliverOrderController extends BaseController {
     }
 
     /**
-     *  查看
+     * 查看
+     *
      * @param request
      * @param pageHelper
      * @return
      */
     @RequestMapping("/viewRefusedDataGrid")
     @ResponseBody
-    public Json viewRefusedDataGrid(HttpServletRequest request, PageHelper pageHelper){
+    public Json viewRefusedDataGrid(HttpServletRequest request, PageHelper pageHelper) {
         Json json = new Json();
         DataGrid dataGrid = new DataGrid();
         List<DeliverOrder> ol = new ArrayList<DeliverOrder>();
@@ -122,7 +124,7 @@ public class ApiDeliverOrderController extends BaseController {
         Collections.sort(orderShops, new Comparator<DeliverOrderShop>() {
             @Override
             public int compare(DeliverOrderShop d1, DeliverOrderShop d2) {
-                return  d2.getUpdatetime().compareTo(d1.getUpdatetime());
+                return d2.getUpdatetime().compareTo(d1.getUpdatetime());
             }
         });
         if (CollectionUtils.isNotEmpty(orderShops)) {
@@ -142,19 +144,20 @@ public class ApiDeliverOrderController extends BaseController {
 
     /**
      * 查看已发货订单
+     *
      * @param request
      * @param pageHelper
      * @return
      */
     @RequestMapping("/viewDeliveringDataGrid")
     @ResponseBody
-    public Json viewDeliveringDataGrid(HttpServletRequest request, PageHelper pageHelper){
+    public Json viewDeliveringDataGrid(HttpServletRequest request, PageHelper pageHelper) {
         Json json = new Json();
 
         //获取shopId
         TokenWrap token = getTokenWrap(request);
         Integer shopId = token.getShopId();
-        DeliverOrder deliverOrder =  new DeliverOrder();
+        DeliverOrder deliverOrder = new DeliverOrder();
         deliverOrder.setShopId(shopId);
         deliverOrder.setStatus(deliverOrderService.STATUS_DELIVERING);
         json.setMsg("u know");
@@ -165,19 +168,20 @@ public class ApiDeliverOrderController extends BaseController {
 
     /**
      * 查看完成配送订单
+     *
      * @param request
      * @param pageHelper
      * @return
      */
     @RequestMapping("/viewDeliveredDataGrid")
     @ResponseBody
-    public Json viewDeliveredDataGrid(HttpServletRequest request, PageHelper pageHelper){
+    public Json viewDeliveredDataGrid(HttpServletRequest request, PageHelper pageHelper) {
         Json json = new Json();
 
         //获取shopId
         TokenWrap token = getTokenWrap(request);
         Integer shopId = token.getShopId();
-        DeliverOrder deliverOrder =  new DeliverOrder();
+        DeliverOrder deliverOrder = new DeliverOrder();
         deliverOrder.setShopId(shopId);
         deliverOrder.setStatus(deliverOrderService.STATUS_DELIVERY_COMPLETE);
         json.setMsg("u know");
@@ -188,13 +192,13 @@ public class ApiDeliverOrderController extends BaseController {
 
     @RequestMapping("/viewCompletedDataGrid")
     @ResponseBody
-    public Json viewCompletedDataGrid(HttpServletRequest request, PageHelper pageHelper){
+    public Json viewCompletedDataGrid(HttpServletRequest request, PageHelper pageHelper) {
         Json json = new Json();
 
         //获取shopId
         TokenWrap token = getTokenWrap(request);
         Integer shopId = token.getShopId();
-        DeliverOrder deliverOrder =  new DeliverOrder();
+        DeliverOrder deliverOrder = new DeliverOrder();
         deliverOrder.setShopId(shopId);
         deliverOrder.setStatus(deliverOrderService.STATUS_CLOSED);
         json.setMsg("u know");
@@ -205,33 +209,36 @@ public class ApiDeliverOrderController extends BaseController {
 
     /**
      * 门店接受新运单
+     *
      * @param request
      * @param id
      * @return
      */
     @RequestMapping("/editOrderAccept")
     @ResponseBody
-    public Json takeOrder(HttpServletRequest request, Long id){
+    public Json takeOrder(HttpServletRequest request, Long id) {
         Json json = new Json();
 
         //获取shopId
         TokenWrap token = getTokenWrap(request);
         Integer shopId = token.getShopId();
 
-        deliverOrderService.transformByShopIdAndStatus(id,shopId,deliverOrderService.STATUS_SHOP_ACCEPT);
+        deliverOrderService.transformByShopIdAndStatus(id, shopId, deliverOrderService.STATUS_SHOP_ACCEPT);
         json.setMsg("u know");
         json.setSuccess(true);
         return json;
     }
+
     /**
      * 门店拒绝新运单
+     *
      * @param request
      * @param id
      * @return
      */
     @RequestMapping("/editOrderRefuse")
     @ResponseBody
-    public Json refuseOrder(HttpServletRequest request, Long id, String remark){
+    public Json refuseOrder(HttpServletRequest request, Long id, String remark) {
         Json json = new Json();
 
         //获取shopId
@@ -239,7 +246,7 @@ public class ApiDeliverOrderController extends BaseController {
         Integer shopId = token.getShopId();
 
         //配置deliverOrder
-        DeliverOrder deliverOrder =  new DeliverOrder();
+        DeliverOrder deliverOrder = new DeliverOrder();
         deliverOrder.setId(id);
         deliverOrder.setShopId(shopId);
         deliverOrder.setRemark(remark);
@@ -254,20 +261,21 @@ public class ApiDeliverOrderController extends BaseController {
 
     /**
      * 门店运单发货
+     *
      * @param request
      * @param id
      * @return
      */
     @RequestMapping("/editOrderSendOut")
     @ResponseBody
-    public Json sendOutOrder(HttpServletRequest request, Long id){
+    public Json sendOutOrder(HttpServletRequest request, Long id) {
         Json json = new Json();
 
         //获取shopId
         TokenWrap token = getTokenWrap(request);
         Integer shopId = token.getShopId();
 
-        deliverOrderService.transformByShopIdAndStatus(id,shopId,deliverOrderService.STATUS_DELIVERING);
+        deliverOrderService.transformByShopIdAndStatus(id, shopId, deliverOrderService.STATUS_DELIVERING);
         json.setMsg("u know");
         json.setSuccess(true);
         return json;
@@ -275,12 +283,13 @@ public class ApiDeliverOrderController extends BaseController {
 
     /**
      * 门店运单发货完成
+     *
      * @param request
      * @return
      */
     @RequestMapping("/editOrderComplete")
     @ResponseBody
-    public Json completeOrder(HttpServletRequest request, DeliverOrder deliverOrder){
+    public Json completeOrder(HttpServletRequest request, DeliverOrder deliverOrder) {
         Json json = new Json();
 
         //获取shopId
@@ -299,11 +308,12 @@ public class ApiDeliverOrderController extends BaseController {
 
     /**
      * 图片上传
+     *
      * @return
      */
     @RequestMapping("/uploadImage")
     @ResponseBody
-    public Json uploadImage(@RequestParam(required = false) MultipartFile imageFile){
+    public Json uploadImage(@RequestParam(required = false) MultipartFile imageFile) {
         Json json = new Json();
 
         String path = uploadFile(ORDER_COMPLETE, imageFile);
@@ -316,20 +326,21 @@ public class ApiDeliverOrderController extends BaseController {
 
     /**
      * 门店接受新运单
+     *
      * @param request
      * @param id
      * @return
      */
     @RequestMapping("/editOrderTakeByUser")
     @ResponseBody
-    public Json takeOrderUserByUser(HttpServletRequest request, Long id){
+    public Json takeOrderUserByUser(HttpServletRequest request, Long id) {
         Json json = new Json();
 
         //获取shopId
         TokenWrap token = getTokenWrap(request);
         Integer shopId = token.getShopId();
 
-        deliverOrderService.transformByShopIdAndStatus(id,shopId,deliverOrderService.STATUS_CLOSED);
+        deliverOrderService.transformByShopIdAndStatus(id, shopId, deliverOrderService.STATUS_CLOSED);
         json.setMsg("u know");
         json.setSuccess(true);
         return json;
@@ -346,17 +357,17 @@ public class ApiDeliverOrderController extends BaseController {
 
     @RequestMapping("/viewOrderList")
     @ResponseBody
-    public Json viewOrderList(Integer shopId,String status){
+    public Json viewOrderList(Integer shopId, String status) {
         Json json = new Json();
         json.setMsg("u know");
-        json.setObj(deliverOrderService.listOrderByShopIdAndOrderStatus(shopId,status));
+        json.setObj(deliverOrderService.listOrderByShopIdAndOrderStatus(shopId, status));
         json.setSuccess(true);
         return json;
     }
 
     @RequestMapping("/countNewAllocationOrder")
     @ResponseBody
-    public  Json countNewAllocationOrder(HttpServletRequest request){
+    public Json countNewAllocationOrder(HttpServletRequest request) {
         Json json = new Json();
 
         //获取shopId
@@ -371,6 +382,7 @@ public class ApiDeliverOrderController extends BaseController {
 
     /**
      * 今日订单列表
+     *
      * @param request
      * @return
      */
@@ -390,7 +402,7 @@ public class ApiDeliverOrderController extends BaseController {
             Collections.sort(orderShops, new Comparator<DeliverOrderShop>() {
                 @Override
                 public int compare(DeliverOrderShop d1, DeliverOrderShop d2) {
-                    return  d2.getUpdatetime().compareTo(d1.getUpdatetime());
+                    return d2.getUpdatetime().compareTo(d1.getUpdatetime());
                 }
             });
             //通过deliverOrderShop获取deliverOrder
@@ -406,20 +418,30 @@ public class ApiDeliverOrderController extends BaseController {
         return json;
     }
 
+    //TODO 功能需要添加至小程序
+
+    /**
+     * 选择配送方式为骑手
+     * @param deliverOrderShop
+     * @param deliverWay
+     * @param remark
+     * @param request
+     * @return
+     */
     @RequestMapping("/deliverWay")
     @ResponseBody
-    public Json deliverWay(DeliverOrderShop deliverOrderShop, String devlierWay, String remark, HttpServletRequest request){
+    public Json deliverWay(DeliverOrderShop deliverOrderShop, String deliverWay, String remark, HttpServletRequest request) {
         Json json = new Json();
-
-        TokenWrap tokenWrap = getTokenWrap(request);
-        Integer shopId = tokenWrap.getShopId();
-
-        if ("driver".equals(devlierWay)) {
+//      TODO 調試時
+//        TokenWrap tokenWrap = getTokenWrap(request);
+//        Integer shopId = tokenWrap.getShopId();
+        Integer shopId = 119;
+        if ("driver".equals(deliverWay)) {
             DriverOrderShop driverOrderShop = new DriverOrderShop();
             driverOrderShop.setShopId(shopId);
             driverOrderShop.setDeliverOrderShopId(deliverOrderShop.getId());
             driverOrderShop.setRemark(remark);
-            deliverOrderShop.setStatus(DriverOrderShopServiceI.PAY_STATUS_NOT_PAY);
+            driverOrderShop.setStatus(DriverOrderShopServiceI.PAY_STATUS_NOT_PAY);
 
 
 //            deliverOrderShop.setAmount(deliverOrderShop.getId());

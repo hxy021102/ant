@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -805,7 +806,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			DeliverOrder order = get(deliverOrder.getId());
 			MbShop mbShop = mbShopService.getFromCache(deliverOrder.getShopId());
 			double distance = GeoUtil.getDistance(order.getLongitude().doubleValue(), order.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
-			deliverOrder.setShopDistance(distance);
+			deliverOrder.setShopDistance(BigDecimal.valueOf(distance));
 			deliverOrder.setSupplierId(order.getSupplierId());
 			deliverOrder.setStatus("DOS10");
 			deliverOrder.setDeliverOrderLogType(DeliverOrderLogServiceI.TYPE_ASSIGN_SHOP_DELIVER_ORDER);

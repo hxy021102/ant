@@ -7,6 +7,7 @@ import com.bx.ant.service.DriverFreightRuleServiceI;
 import com.bx.ant.service.DriverOrderShopServiceI;
 import com.bx.ant.service.DriverOrderShopState;
 import com.mobian.absx.F;
+import com.mobian.exception.ServiceException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -38,7 +39,10 @@ public class DriverOrderShop01StateImpl implements DriverOrderShopState {
 
     @Override
     public void handle(DriverOrderShop driverOrderShop) {
-//        if ()
+        //判断是否有充足的参数
+        if (F.empty(driverOrderShop.getShopId()) || F.empty(driverOrderShop.getDeliverOrderShopId())) {
+            throw new ServiceException("DriverOrderShop01StateImpl参数不足");
+        }
         //状态和支付状态
         driverOrderShop.setStatus(prefix + getStateName());
         driverOrderShop.setPayStatus(DriverOrderShopServiceI.PAY_STATUS_NOT_PAY);
