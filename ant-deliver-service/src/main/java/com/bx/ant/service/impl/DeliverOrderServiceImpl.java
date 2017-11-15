@@ -531,7 +531,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		List<DeliverOrderShop> deliverOrderShops=deliverOrderShopService.query(deliverOrderShop);
 		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
 			DeliverOrderShop orderShop = deliverOrderShops.get(0);
-			Date outDate = DateUtil.addMinuteToDate(orderShop.getAddtime(), Integer.valueOf(ConvertNameUtil.getString("DSV700", "2")));
+			Date outDate = DateUtil.addHourToDate(orderShop.getAddtime(), Integer.valueOf(ConvertNameUtil.getString("DSV700", "2")));
 			if (new Date().getTime() > outDate.getTime()) {
 				deliverOrderQuery.setStatus("notDriver");
 				long nd = 1000 * 24 * 60 * 60;
@@ -807,6 +807,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		 	deliverOrder.setStatus("DOS15");
 		 	edit(deliverOrder);
 		}
+		//1、指派时判断配送的商品是否足够，否则提示指派失败，商品不足
 		DeliverOrderItem deliverOrderItem = new DeliverOrderItem();
 		deliverOrderItem.setDeliverOrderId(deliverOrder.getId());
 		List<DeliverOrderItem> deliverOrderItems = deliverOrderItemService.list(deliverOrderItem);
@@ -823,14 +824,20 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 				}
 			}
 		}
+		//2、商品足够，则进行分单和强制接单处理
 		if(result) {
 			DeliverOrder order = get(deliverOrder.getId());
 			MbShop mbShop = mbShopService.getFromCache(deliverOrder.getShopId());
 			double distance = GeoUtil.getDistance(order.getLongitude().doubleValue(), order.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
 			deliverOrder.setShopDistance(distance);
 			deliverOrder.setSupplierId(order.getSupplierId());
-			deliverOrder.setStatus("DOS10");
+			deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_ALLOCATION);
 			deliverOrder.setDeliverOrderLogType(DeliverOrderLogServiceI.TYPE_ASSIGN_SHOP_DELIVER_ORDER);
+			//设置为强制接单，跳转到已分单，待接收状态机
+			deliverOrder.setDeliveryType(DeliverOrderServiceI.DELIVER_TYPE_FORCE);
+			transform(deliverOrder);
+			//进入强制接单状态机
+			deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_ACCEPT);
 			transform(deliverOrder);
 			return true;
 		}
@@ -884,10 +891,12 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 					ids[i++] = orderShop.getDeliverOrderId();
 				}
 			}
-			deliverOrderQuery.setStatus("DOS20,DOS25");
-			deliverOrderQuery.setIds(ids);
-			DataGrid dataGrid = dataGridWithName(deliverOrderQuery, ph);
-			return dataGrid;
+			if (ids != null && ids.length > 0) {
+				deliverOrderQuery.setStatus("DOS20,DOS25");
+				deliverOrderQuery.setIds(ids);
+				DataGrid dataGrid = dataGridWithName(deliverOrderQuery, ph);
+				return dataGrid;
+			}
 		}
 		return new DataGrid();
 	}

@@ -34,8 +34,6 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 
 	@Resource
 	private MbShopServiceI mbShopService;
-	@Autowired
-	private DeliverOrderServiceI deliverOrderService;
 
 	@Override
 	public DataGrid dataGrid(ShopDeliverApply shopDeliverApply, PageHelper ph) {
@@ -225,41 +223,38 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 	}
 
 	@Override
-	public List<MbAssignShop> queryAssignShopList(DeliverOrder deliverOrder)  {
-		//1、查询开通了派单功能，且状态开启配送的门店List
+	public List<MbAssignShop> queryAssignShopList(DeliverOrder deliverOrder) {
+		//1、查询开通了派单功能,且为直营或者加盟的门店，包括在线或不在线的门店
 		List<ShopDeliverApply> shopDeliverApplyList = getAvailableAndWorkShop();
-		//2、计算待分配订单的数字地址
-		if ((deliverOrder.getLongitude() == null || deliverOrder.getLatitude() == null)
-				&& !F.empty(deliverOrder.getDeliveryAddress())) {
-			//用tomcat的格式（iso-8859-1）方式去读
-			byte[] b= new byte[0];
-			try {
-				b = deliverOrder.getDeliveryAddress().getBytes("ISO-8859-1");
-				String deliveryAddress=new String(b,"utf-8");
-				BigDecimal[] point = GeoUtil.getPosition(deliveryAddress);
-				if (point != null) {
-					deliverOrder.setLongitude(point[0]);
-					deliverOrder.setLatitude(point[1]);
-					deliverOrderService.edit(deliverOrder);
-				}
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-		}
-		//3、获取最大配送距离并计算符合配送距离的门店
-		double minDistance = 0, maxDistance;
-		maxDistance = Double.valueOf(ConvertNameUtil.getString("DSV200", "5000"));
+		//2、获取最大配送距离
+		BigDecimal maxDistance = new BigDecimal(ConvertNameUtil.getString("DSV200", "5000"));
 		List<MbAssignShop> mbAssignShopArrayList = new ArrayList<MbAssignShop>();
-		for (ShopDeliverApply shopDeliverApply : shopDeliverApplyList) {
-			MbShop mbShop = shopDeliverApply.getMbShop();
-			double distance = GeoUtil.getDistance(deliverOrder.getLongitude().doubleValue(), deliverOrder.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
-			if(distance > maxDistance) continue;
-			if (distance < minDistance || minDistance == 0) {
+		//3、首先判断是否能解析派送地址，能，则计算符合配送距离的门店
+		if (deliverOrder.getLatitude() != null && deliverOrder.getLongitude() != null) {
+			for (ShopDeliverApply shopDeliverApply : shopDeliverApplyList) {
+				MbShop mbShop = shopDeliverApply.getMbShop();
+				double distance = GeoUtil.getDistance(deliverOrder.getLongitude().doubleValue(), deliverOrder.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
+				if (shopDeliverApply.getMaxDeliveryDistance() != null) {
+					maxDistance = shopDeliverApply.getMaxDeliveryDistance();
+				}
+				if (distance > maxDistance.doubleValue()) continue;
 				MbAssignShop mbAssignShop = new MbAssignShop();
-				BeanUtils.copyProperties(mbShop,mbAssignShop);
+				BeanUtils.copyProperties(mbShop, mbAssignShop);
 				mbAssignShop.setDistance(distance);
 				mbAssignShopArrayList.add(mbAssignShop);
-				if(distance == 0) break; // 解决同一个地址不分配的问题
+			}
+		}
+		//4、不管是否有符合派送距离的门店，都要添加兜底门店
+		String shopIds = ConvertNameUtil.getString("DSV800");
+		if (!F.empty(shopIds)) {
+			for (String shopId : shopIds.split(",")) {
+				MbShop mbShop = mbShopService.getFromCache(Integer.parseInt(shopId));
+				MbAssignShop mbAssignShop = new MbAssignShop();
+				BeanUtils.copyProperties(mbShop, mbAssignShop);
+				double distance = GeoUtil.getDistance(deliverOrder.getLongitude().doubleValue(), deliverOrder.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
+				mbAssignShop.setContactPhone("<font color='red'>" + mbShop.getContactPhone() + "</font>");
+				mbAssignShop.setDistance(distance);
+				mbAssignShopArrayList.add(mbAssignShop);
 			}
 		}
 		Collections.sort(mbAssignShopArrayList);
