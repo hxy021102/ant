@@ -10,6 +10,7 @@ import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.MbShopServiceI;
+import com.mobian.util.ConvertNameUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -63,6 +64,27 @@ public class ApiDeliverOrderController extends BaseController {
         json.setObj(deliverOrderService.dataGridExt(deliverOrder, pageHelper));
         json.setSuccess(true);
         return json;
+    }
+
+    /**
+     * 获取订单详情
+     * @param id
+     * @return
+     */
+    @RequestMapping("/getDetail")
+    @ResponseBody
+    public Json getDetail(Integer id) {
+        Json j = new Json();
+        try{
+            j.setMsg("u know");
+            j.setObj(deliverOrderService.getDetail(id));
+            j.setSuccess(true);
+        }catch(Exception e){
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
+            logger.error("获取订单详情接口异常", e);
+        }
+
+        return j;
     }
 
     /**
