@@ -534,6 +534,19 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			Date outDate = DateUtil.addMinuteToDate(orderShop.getAddtime(), Integer.valueOf(ConvertNameUtil.getString("DSV700", "2")));
 			if (new Date().getTime() > outDate.getTime()) {
 				deliverOrderQuery.setStatus("notDriver");
+				long nd = 1000 * 24 * 60 * 60;
+				long nh = 1000 * 60 * 60;
+				long nm = 1000 * 60;
+				// long ns = 1000;
+				// 获得两个时间的毫秒时间差异
+				long diff = new Date().getTime() - orderShop.getAddtime().getTime();
+				// 计算差多少天
+				long day = diff / nd;
+				// 计算差多少小时
+				long hour = diff % nd / nh;
+				// 计算差多少分钟
+				long min = diff % nd % nh / nm;
+				deliverOrderQuery.setShowTime(day+"天"+hour+"小时"+min+"分钟");
 				deliverOrderQuery.setOrderShopId(orderShop.getId());
 			} else {
 				deliverOrderQuery.setOrderShopId(0L);
