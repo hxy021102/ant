@@ -909,4 +909,17 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
         deliverOrderExt.setAmount(orderShop.getAmount());
 		return deliverOrderExt;
 	}
+
+
+	@Override
+	public DeliverOrderExt getDetail(Integer id) {
+		DeliverOrder o = get(id.longValue());
+		if(o != null) {
+			DeliverOrderExt ox = new DeliverOrderExt();
+			BeanUtils.copyProperties(o, ox);
+			fillIShopInfo(ox);
+			return ox;
+		}
+		return null;
+	}
 }
