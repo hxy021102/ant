@@ -328,9 +328,12 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 
 	@Override
 	public void fillDriverAccountInfo(DriverOrderShopView driverOrderShopView) {
-		DriverAccount driverAccount = driverAccountService.get(driverOrderShopView.getDriverAccountId());
-		if (driverAccount != null) {
-			driverOrderShopView.setUserName(driverAccount.getUserName());
+		if (!F.empty(driverOrderShopView.getDriverAccountId())) {
+			//TODO  账户加入到缓存
+			DriverAccount driverAccount = driverAccountService.get(driverOrderShopView.getDriverAccountId());
+			if (driverAccount != null) {
+				driverOrderShopView.setUserName(driverAccount.getUserName());
+			}
 		}
 	}
 
