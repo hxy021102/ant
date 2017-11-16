@@ -48,7 +48,13 @@
 					<td>
 						${driverFreightRule.freight / 100.00}元
 					</td>							
-				</tr>		
+				</tr>
+				<tr>
+					<th>类型</th>
+					<td>
+						${driverFreightRule.typeName}
+					</td>
+				</tr>
 		</table>
 	</div>
 </div>

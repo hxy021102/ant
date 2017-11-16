@@ -67,6 +67,14 @@
 						<input  name="freight" type="hidden"/>
 					</td>
 				</tr>
+				<tr>
+					<th>
+						类型
+					</th>
+					<td>
+						<jb:select name="type" dataType="DFRT" required="true" value="${driverFreightRule.typeName}"></jb:select>
+					</td>
+				</tr>
 			</table>				
 		</form>
 	</div>

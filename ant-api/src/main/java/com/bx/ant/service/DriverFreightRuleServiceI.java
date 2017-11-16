@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface DriverFreightRuleServiceI {
 
-	String TYPE_CONTRACT = "DFR01";
+	String TYPE_CONTRACT = "DFRT01";
 
 
 	/**

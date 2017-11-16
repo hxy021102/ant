@@ -4,8 +4,6 @@ import com.bx.ant.pageModel.DriverOrderShop;
 import com.bx.ant.service.DriverOrderShopAllocationServiceI;
 import com.bx.ant.service.DriverOrderShopServiceI;
 import com.bx.ant.service.DriverOrderShopState;
-import com.mobian.absx.F;
-import com.mobian.exception.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +23,7 @@ public class DriverOrderShop03StateImpl implements DriverOrderShopState {
     private DriverOrderShopServiceI driverOrderShopSerivce;
 
     @Autowired
-    private DriverOrderShopAllocationServiceI driverOrderShopAllocationService;
-
+    private DriverOrderShopServiceI driverOrderShopService;
 
     @Override
     public String getStateName() {
@@ -37,8 +34,12 @@ public class DriverOrderShop03StateImpl implements DriverOrderShopState {
     public void handle(DriverOrderShop driverOrderShop) {
         DriverOrderShop orderShop = new DriverOrderShop();
         orderShop.setId(driverOrderShop.getId());
+        orderShop.setDriverAccountId(driverOrderShop.getDriverAccountId());
         orderShop.setStatus(prefix + getStateName());
         driverOrderShopSerivce.edit(orderShop);
+
+        //增加骑手订单数量
+        driverOrderShopService.addAllocationOrderRedis(driverOrderShop.getDriverAccountId());
     }
 
     @Override

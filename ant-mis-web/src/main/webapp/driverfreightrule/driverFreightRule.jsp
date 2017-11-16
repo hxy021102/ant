@@ -84,6 +84,10 @@
 					}
                 }
 				}, {
+				field : 'typeName',
+                title : '类型',
+				width : 50
+				}, {
                     field : 'loginName',
                     title : '操作人',
                     width : 50

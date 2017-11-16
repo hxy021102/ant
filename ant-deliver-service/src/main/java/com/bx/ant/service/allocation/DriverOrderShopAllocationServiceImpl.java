@@ -50,16 +50,12 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
         //1. 获取待分配的订单
         DriverOrderShop request = new DriverOrderShop();
         PageHelper ph = new PageHelper();
-        String status = DriverOrderShopServiceI.STATUS_STANDBY;
-        request.setStatus(status);
-        List<DriverOrderShopView> driverOrderShops = driverOrderShopService.dataGridView(request, ph).getRows();
-        int size = driverOrderShops.size();
-        for (int i = 0;i < size;i++) {
+        request.setStatus(DriverOrderShopServiceI.STATUS_STANDBY);
+        List<DriverOrderShopView> driverOrderShopViews = driverOrderShopService.dataGridView(request, ph).getRows();
+        for (DriverOrderShopView driverOrderShopView : driverOrderShopViews) {
             try{
-                DriverOrderShopView driverOrderShopView = driverOrderShops.get(0);
                 allocationDriverOrder(driverOrderShopView);
                 driverOrderShopView.setStatus(DriverOrderShopServiceI.STATUS_ALLOCATION);
-                driverOrderShopService.transform(driverOrderShopView);
             }catch(Exception e){
                 logger.error("分单失败", e);
             }
@@ -123,15 +119,12 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
             //6. 分配订单
             if (distance < maxDistance) {
                 Calendar today = Calendar.getInstance();
-                String todayStr = today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH)
-                        + "-" + today.get(Calendar.DAY_OF_MONTH);
-                redisUtil.addSet(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, account.getId().toString() + ":" + todayStr),
-                        driverOrderShop.getId().toString());
-                redisUtil.expire(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, account.getId().toString() + ":" + todayStr),
-                        Integer.parseInt(ConvertNameUtil.getString("DDSV101","10")), TimeUnit.SECONDS);
-
-                //增加骑手订单数量
-                driverOrderShopService.addAllocationOrderRedis(account.getId());
+                String key = Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, account.getId().toString() + ":"
+                        +  today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-" + today.get(Calendar.DAY_OF_MONTH));
+                if (redisUtil.addSet(key, driverOrderShop.getId().toString())) {
+                    redisUtil.expire(key, Integer.parseInt(ConvertNameUtil.getString("DDSV101","48")), TimeUnit.HOURS);
+                    driverOrderShopService.transform(driverOrderShop);
+                }
                 logger.debug(String.format("订单:%1s分发给:%2s成功" ,driverOrderShop.getDeliverOrderShopId(), account.getId()));
             }
         }

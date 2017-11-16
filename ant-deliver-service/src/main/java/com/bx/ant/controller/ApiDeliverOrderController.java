@@ -428,9 +428,9 @@ public class ApiDeliverOrderController extends BaseController {
      * @param request
      * @return
      */
-    @RequestMapping("/deliverWay")
+    @RequestMapping("/addDeliverWay")
     @ResponseBody
-    public Json deliverWay(DeliverOrderShop deliverOrderShop, String deliverWay, String remark, HttpServletRequest request) {
+    public Json addDeliverWay(DeliverOrderShop deliverOrderShop, String deliverWay, String remark, HttpServletRequest request) {
         Json json = new Json();
 //      TODO 調試時
 //        TokenWrap tokenWrap = getTokenWrap(request);

@@ -79,8 +79,16 @@
 					<td>
 						<input class="span2 money_input" name="freightTemp" type="number"/>
 						<input  name="freight" type="hidden"/>
-					</td>							
-				</tr>	
+					</td>
+				</tr>
+				<tr>
+					<th>
+						类型
+					</th>
+					<td>
+						<jb:select name="type" dataType="DFRT" required="true" ></jb:select>
+					</td>
+				</tr>
 			</table>		
 		</form>
 	</div>
