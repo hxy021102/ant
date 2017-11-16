@@ -103,6 +103,10 @@ public class DriverFreightRuleServiceImpl extends BaseServiceImpl<DriverFreightR
 				whereHql += " and t.loginId = :loginId";
 				params.put("loginId", driverFreightRule.getLoginId());
 			}
+			if (!F.empty(driverFreightRule.getType())) {
+				whereHql += " and t.type = :type";
+				params.put("type", driverFreightRule.getType());
+			}
 			if (driverFreightRule instanceof DriverFreightRuleQuery){
 				DriverFreightRuleQuery driverFreightRuleQuery = (DriverFreightRuleQuery) driverFreightRule;
 				if (!F.empty(driverFreightRuleQuery.getWeight())) {
@@ -160,8 +164,8 @@ public class DriverFreightRuleServiceImpl extends BaseServiceImpl<DriverFreightR
 			MbShop shop = mbShopService.getFromCache(orderShop.getShopId());
 			if (order != null && shop != null) {
 				//通过重量距离区域和类型找出最小区域的运费规则并返回
-				query.setWeight(order.getWeight());
-				query.setDistance(orderShop.getDistance());
+//				query.setWeight(order.getWeight());
+//				query.setDistance(orderShop.getDistance());
 				query.setRegionId(shop.getRegionId());
 				query.setType(type);
 				List<DriverFreightRule> driverFreightRules = getRuleList(query);
@@ -181,11 +185,17 @@ public class DriverFreightRuleServiceImpl extends BaseServiceImpl<DriverFreightR
 				&& !F.empty(ruleQuery.getType())) {
 			PageHelper ph = new PageHelper();
 			ph.setHiddenTotal(true);
-			DataGrid dataGrid = dataGrid(ruleQuery, ph);
+			DriverFreightRuleQuery query = new DriverFreightRuleQuery();
+
+			query.setWeight(ruleQuery.getWeight());
+			query.setType(ruleQuery.getType());
+			query.setDistance(ruleQuery.getDistance());
+
+			DataGrid dataGrid = dataGrid(query, ph);
 			List<DriverFreightRule> l = dataGrid.getRows();
 			if (CollectionUtils.isNotEmpty(l)) {
 			    for (DriverFreightRule d : l) {
-			    	if (diveRegionService.isParent(d.getLoginId().toString() ,ruleQuery.getRegionId().toString())){
+			    	if (diveRegionService.isParent(d.getRegionId().toString() ,ruleQuery.getRegionId().toString())){
 			    		ol.add(d);
 					}
 				}

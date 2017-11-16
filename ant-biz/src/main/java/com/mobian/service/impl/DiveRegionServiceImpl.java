@@ -151,11 +151,12 @@ public class DiveRegionServiceImpl extends BaseServiceImpl<DiveRegion> implement
 	public Boolean isParent(String parentRegionId, String sonRegionId) {
 		if (parentRegionId.equals(sonRegionId)) return true;
 		DiveRegion realParent;
-		while ((realParent = getFromCache(sonRegionId)) != null) {
+		String realParentRegionId = sonRegionId;
+		while ((realParent = getFromCache(realParentRegionId)) != null) {
 			if (parentRegionId.equals(realParent.getRegionId())) {
 				return true;
 			}else {
-				sonRegionId = realParent.getRegionId();
+				realParentRegionId = realParent.getRegionParentId();
 			}
 		}
 		return false;
