@@ -334,9 +334,12 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 		}
 	}
 
+
+
 	@Override
 	public void refuseOrder(DriverOrderShop driverOrderShop) {
-		Calendar today = Calendar.getInstance();
-		String key = Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, today.get(Calendar.YEAR) + "-" );
+	    String key = driverAccountService.buildAllocationOrderKey(driverOrderShop.getDriverAccountId());
+		redisUtil.removeSet(key, driverOrderShop.getId().toString());
+		reduseAllocationOrderRedis(driverOrderShop.getDriverAccountId());
 	}
 }

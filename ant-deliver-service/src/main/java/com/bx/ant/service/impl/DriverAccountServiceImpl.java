@@ -15,6 +15,8 @@ import com.mobian.pageModel.PageHelper;
 import com.mobian.pageModel.User;
 import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.UserServiceI;
+import com.mobian.thirdpart.redis.Key;
+import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -285,4 +287,9 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 		return ol;
 	}
 
+	@Override
+	public String buildAllocationOrderKey(Integer id) {
+		Calendar today = Calendar.getInstance();
+		return Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, id + ":" + today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-" + today.get(Calendar.DAY_OF_MONTH));
+	}
 }

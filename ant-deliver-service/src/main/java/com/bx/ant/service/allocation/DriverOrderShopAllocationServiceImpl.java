@@ -71,12 +71,8 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
 
         //2. 删除对应的driverOrderShopId
        if (CollectionUtils.isNotEmpty(driverAccounts)) {
-           Calendar today = Calendar.getInstance();
-           String todayStr = today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH)
-                   + "-" + today.get(Calendar.DAY_OF_MONTH);
            for (DriverAccount account : driverAccounts) {
-              boolean b = redisUtil.removeSet(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, account.getId().toString()
-                      + ":" + todayStr), driverOrderShopId.toString());
+              boolean b = redisUtil.removeSet(driverAccountService.buildAllocationOrderKey(account.getId()), driverOrderShopId.toString());
               if (b) {
                   count++;
                   driverOrderShopService.reduseAllocationOrderRedis(account.getId());
@@ -118,9 +114,7 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
                     shop.getLongitude().doubleValue(), shop.getLatitude().doubleValue());
             //6. 分配订单
             if (distance < maxDistance) {
-                Calendar today = Calendar.getInstance();
-                String key = Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, account.getId().toString() + ":"
-                        +  today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-" + today.get(Calendar.DAY_OF_MONTH));
+                String key = driverAccountService.buildAllocationOrderKey(account.getId());
                 if (redisUtil.addSet(key, driverOrderShop.getId().toString())) {
                     redisUtil.expire(key, Integer.parseInt(ConvertNameUtil.getString("DDSV101","48")), TimeUnit.HOURS);
                     driverOrderShopService.transform(driverOrderShop);

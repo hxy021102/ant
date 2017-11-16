@@ -95,4 +95,6 @@ public interface DriverAccountServiceI {
 	 * @return
 	 */
 	List<DriverAccount> query(DriverAccount driverAccount);
+
+    String buildAllocationOrderKey(Integer id);
 }
