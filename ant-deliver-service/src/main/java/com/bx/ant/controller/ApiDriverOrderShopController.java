@@ -126,6 +126,28 @@ public class ApiDriverOrderShopController extends BaseController {
         return json;
     }
 
+    /**
+     * 拒绝运单
+     * @param request
+     * @return
+     */
+    @RequestMapping("/editOrderRefuse")
+    @ResponseBody
+    public Json editOrderRefuse(HttpServletRequest request, Long id ){
+        Json json = new Json();
+
+// TODO 正式使用将使用uid
+//        TokenWrap token = getTokenWrap(request);
+//        Integer accountId  = Integer.parseInt(token.getUid());
+        Integer accountId = 2;
+        DriverOrderShop driverOrderShop = new DriverOrderShop();
+        driverOrderShop.setId(id);
+        driverOrderShop.setDriverAccountId(accountId);
+        driverOrderShopService.refuseOrder(driverOrderShop);
+        json.setMsg("u know");
+        json.setSuccess(true);
+        return json;
+    }
 
     /**
      * 运单发货

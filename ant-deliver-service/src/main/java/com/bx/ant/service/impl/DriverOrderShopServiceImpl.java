@@ -1,9 +1,6 @@
 package com.bx.ant.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 import com.alibaba.fastjson.JSONObject;
@@ -337,5 +334,9 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 		}
 	}
 
-
+	@Override
+	public void refuseOrder(DriverOrderShop driverOrderShop) {
+		Calendar today = Calendar.getInstance();
+		String key = Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, today.get(Calendar.YEAR) + "-" );
+	}
 }

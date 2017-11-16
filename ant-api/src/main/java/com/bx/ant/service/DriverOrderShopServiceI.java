@@ -136,4 +136,6 @@ public interface DriverOrderShopServiceI {
 	 * @param driverOrderShopView
 	 */
 	void fillDriverAccountInfo(DriverOrderShopView driverOrderShopView);
+
+	void refuseOrder(DriverOrderShop driverOrderShop);
 }

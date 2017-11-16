@@ -384,6 +384,17 @@ public class RedisUtil {
 		setOps = redisTemplate.opsForSet();
 		return setOps.add(key, value) > 0;
 	}
+
+	/**
+	 * Set数据类型   key绑定的set集合删除元素value
+	 * @param  key
+	 * @param  value
+	 * @return true成功 false失败
+	 */
+	public boolean removeSet(String key, Serializable value) {
+		setOps = redisTemplate.opsForSet();
+		return setOps.remove(key, value) > 0;
+	}
 	
 	/**
 	 * Set数据类型   key绑定的set集合是否有元素value

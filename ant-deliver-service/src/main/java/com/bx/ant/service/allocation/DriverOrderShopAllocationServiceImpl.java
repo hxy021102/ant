@@ -75,7 +75,7 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
            String todayStr = today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH)
                    + "-" + today.get(Calendar.DAY_OF_MONTH);
            for (DriverAccount account : driverAccounts) {
-              boolean b = redisUtil.removeZSet(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, account.getId().toString()
+              boolean b = redisUtil.removeSet(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, account.getId().toString()
                       + ":" + todayStr), driverOrderShopId.toString());
               if (b) {
                   count++;
