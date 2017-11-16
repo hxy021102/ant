@@ -100,7 +100,7 @@
 				<tr>	
 					<th><%=TdriverOrderShopBill.ALIAS_PAY_WAY%></th>	
 					<td>
-											<jb:select dataType="DDW" name="payWay" value="${driverOrderShopBill.payWay}"></jb:select>	
+											<jb:select dataType="DDPW" name="payWay" value="${driverOrderShopBill.payWay}"></jb:select>
 					</td>							
 			</tr>	
 			</table>				

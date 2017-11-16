@@ -3,9 +3,7 @@ package com.bx.ant.service.impl;
 import com.bx.ant.dao.DriverOrderShopBillDaoI;
 import com.bx.ant.model.TdriverOrderShopBill;
 import com.bx.ant.pageModel.*;
-import com.bx.ant.service.DriverAccountServiceI;
-import com.bx.ant.service.DriverOrderShopBillServiceI;
-import com.bx.ant.service.DriverOrderShopServiceI;
+import com.bx.ant.service.*;
 import com.mobian.absx.F;
 import com.mobian.pageModel.*;
 import com.mobian.service.MbBalanceLogServiceI;
@@ -40,6 +38,8 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 	private MbBalanceServiceI mbBalanceService;
 	@Resource
 	private MbBalanceLogServiceI mbBalanceLogService;
+	@Resource
+	private DriverOrderPayServiceI driverOrderPayService;
 
 	@Override
 	public DataGrid dataGrid(DriverOrderShopBill driverOrderShopBill, PageHelper ph) {
@@ -192,12 +192,13 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 
 	@Override
 	public String addDriverOrderShopBillandPay(DriverOrderShopBillView driverOrderShopBillView) {
-		DriverOrderShopView driverOrderShopView = new DriverOrderShopView();
+        DriverOrderPayQuery driverOrderPayQuery = new DriverOrderPayQuery();
 		//判断骑手运单是否重复 通过id和状态为待审核状态
-		driverOrderShopView.setIds(driverOrderShopBillView.getOrderShopIds());
-		driverOrderShopView.setPayStatus(driverOrderShopService.PAY_STSTUS_WAITE_AUDIT);
-		List<DriverOrderShop> driverOrderShopList = driverOrderShopService.query(driverOrderShopView);
-		if (CollectionUtils.isEmpty(driverOrderShopList)) {
+		driverOrderPayQuery.setDriverOrderShopIds(driverOrderPayQuery.getDriverOrderShopIds());
+		String[] statusArray = {"DDPS01","DDPS02","DDPS03"};
+		driverOrderPayQuery.setStatusArray(statusArray);
+        List<DriverOrderPay> driverOrderPayList =driverOrderPayService.query(driverOrderPayQuery);
+		if (CollectionUtils.isEmpty(driverOrderPayList)) {
 			//创建账单
 			DriverAccount driverAccount = new DriverAccount();
 			driverAccount.setUserName(driverOrderShopBillView.getUserName());
@@ -213,14 +214,16 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 			orderShopView.setIds(driverOrderShopBillView.getOrderShopIds());
 			List<DriverOrderShop> driverOrderShops = driverOrderShopService.query(orderShopView);
 			for (DriverOrderShop driverOrderShop : driverOrderShops) {
-				driverOrderShop.setPayStatus(driverOrderShopService.PAY_STSTUS_WAITE_AUDIT);
-				driverOrderShop.setDriverOrderShopBillId(driverOrderShopBillView.getId());
-				driverOrderShopService.edit(driverOrderShop);
+				DriverOrderPay driverOrderPay =new DriverOrderPay();
+				driverOrderPay.setAmount(driverOrderShop.getAmount());
+				driverOrderPay.setDriverAccountId(driverOrderShop.getDriverAccountId());
+				driverOrderPay.setStatus("DDPS01");
+				driverOrderPay.setDriverOrderShopBillId(driverOrderShopBillView.getId());
 			}
 		} else {
 			String result = "运单ID:";
-			for (DriverOrderShop driverOrderShop : driverOrderShopList) {
-				result += driverOrderShop.getId().toString() + " ";
+			for (DriverOrderPay driverOrderPay : driverOrderPayList) {
+				result += driverOrderPay.getDriverOrderShopId().toString() + " ";
 			}
 		}
 		return null;
@@ -230,7 +233,7 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 	public void editDriverShopBillAndOrderPay(DriverOrderShopBill driverOrderShopBill) {
 		//若审核通过，否则无支付方式
 		if ("DHS02".equals(driverOrderShopBill.getHandleStatus())) {
-			driverOrderShopBill.setPayWay("DDW04");
+			driverOrderShopBill.setPayWay("DDPW04");
 		}
 		edit(driverOrderShopBill);
 		DriverOrderShop driverOrderShop=new DriverOrderShop();

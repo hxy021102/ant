@@ -81,7 +81,7 @@
 				<tr>	
 					<th>支付方式</th>
 					<td>
-						<jb:select dataType="DDW" name="payWay"></jb:select>
+						<jb:select dataType="DDPW" name="payWay"></jb:select>
 					</td>							
 				</tr>	
 			</table>		
