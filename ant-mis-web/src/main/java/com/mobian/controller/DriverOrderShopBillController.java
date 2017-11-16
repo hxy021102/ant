@@ -252,7 +252,12 @@ public class DriverOrderShopBillController extends BaseController {
 	}
 
 
-
+	/**
+	 * 审核通过则进行支付操作，否则不支付
+	 * @param driverOrderShopBill
+	 * @param session
+	 * @return
+	 */
 	@RequestMapping("/editState")
 	@ResponseBody
 	public Json editState(DriverOrderShopBill driverOrderShopBill, HttpSession session) {

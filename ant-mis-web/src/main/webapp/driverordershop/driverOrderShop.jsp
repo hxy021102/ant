@@ -84,9 +84,10 @@
                 title : '骑手账号',
                 width : 40,
                 formatter : function (value, row) {
-                    if ($.canViewAccount)
+                    if ($.canViewAccount && value != undefined)
                         return '<a onclick="viewAccount(' + row.driverAccountId + ')">' + row.userName + '</a>';
-                    return value;
+                    return value == null ? "" : value;
+
                 }
                 }, {
 				field : 'statusName',
