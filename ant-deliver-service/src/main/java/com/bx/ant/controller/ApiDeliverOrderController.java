@@ -354,7 +354,6 @@ public class ApiDeliverOrderController extends BaseController {
      */
     @RequestMapping("/editOrderTakeByUser")
     @ResponseBody
-    public Json takeOrderUserByUser(HttpServletRequest request, Long id) {
     public Json editOrderTakeByUser(HttpServletRequest request, Long id){
         Json json = new Json();
 
@@ -402,7 +401,6 @@ public class ApiDeliverOrderController extends BaseController {
     @RequestMapping("/countNewAllocationOrder")
     @ResponseBody
     public Json countNewAllocationOrder(HttpServletRequest request) {
-    public  Json countNewAllocationOrder(HttpServletRequest request){
         return getNewAllocationOrderQuantity(request);
     }
     @RequestMapping("/getNewAllocationOrderQuantity")
