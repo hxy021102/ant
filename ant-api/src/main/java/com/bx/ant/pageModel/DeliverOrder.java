@@ -37,8 +37,8 @@ public class DeliverOrder implements java.io.Serializable {
 	private Integer weight;
 
 	private String deliveryType; // 派单类型
+	private Long orderShopId;
 
-	
 
 	public void setId(Long value) {
 		this.id = value;
@@ -247,5 +247,13 @@ public class DeliverOrder implements java.io.Serializable {
 
 	public void setWeight(Integer weight) {
 		this.weight = weight;
+	}
+
+	public Long getOrderShopId() {
+		return orderShopId;
+	}
+
+	public void setOrderShopId(Long orderShopId) {
+		this.orderShopId = orderShopId;
 	}
 }

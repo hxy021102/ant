@@ -63,9 +63,6 @@ public class ApiAccountController extends BaseController {
     private RedisUtil redisUtil;
 
     @Resource
-    private MbBalanceLogServiceI mbBalanceLogService;
-
-    @Resource
     private DeliverOrderShopServiceImpl deliverOrderShopService;
 
     /**

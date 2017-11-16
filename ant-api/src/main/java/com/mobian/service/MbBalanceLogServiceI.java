@@ -5,6 +5,7 @@ import com.mobian.pageModel.MbBalanceLog;
 import com.mobian.pageModel.PageHelper;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -90,4 +91,5 @@ public interface MbBalanceLogServiceI {
 	 */
 	DataGrid dataGridBalanceLogDownload(MbBalanceLog mbBalanceLog, PageHelper ph);
 
+	Map<String,Integer> totalBalanceByMonth(MbBalanceLog mbBalanceLog);
 }

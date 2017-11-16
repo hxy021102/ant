@@ -62,7 +62,7 @@
 				}, {
 				field : 'addtime',
 				title : '<%=TmbWithdrawLog.ALIAS_ADDTIME%>',
-				width : 80,
+				width : 80
 				},  {
 				field : 'balanceId',
 				title : '<%=TmbWithdrawLog.ALIAS_BALANCE_ID%>',
@@ -99,11 +99,11 @@
                 }, {
 				field : 'applyLoginName',
 				title : '申请人名称',
-				width : 50,
+				width : 50
 				},{
 				field : 'recevierTime',
 				title : '<%=TmbWithdrawLog.ALIAS_REMITTER_TIME%>',
-				width : 50,
+				width : 50
 				}, {
 				field : 'handleStatusName',
 				title : '<%=TmbWithdrawLog.ALIAS_HANDLE_STATUS%>',
@@ -132,13 +132,14 @@
 					<%--}--%>
 //					str += '&nbsp;';
                     if ($.canDelete) {
-                        str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/cancel.png');
+                        //str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/cancel.png');
                     }
                     str += '&nbsp;';
                     if ($.canView) {
                         str += $.formatString('<img onclick="viewFun(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/link.png');
                     }
-					if ($.canEditAuditt){
+					str += '&nbsp;';
+					if ($.canEditAuditt && row.handleStatus != 'HS02'){
                         str += $.formatString('<img onclick="editAuditFun(\'{0}\');" src="{1}" title="审核"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/joystick.png');
                     }
 					return str;
@@ -257,22 +258,29 @@
             height: 200,
             href: '${pageContext.request.contextPath}/mbWithdrawLogController/editAuditPage?id=' + id ,
             buttons: [{
-                text: '通过',
+                text: '同意',
                 handler: function () {
-                    parent.$.modalDialog.openner_dataGrid = dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
-                    var f = parent.$.modalDialog.handler.find('#form');
-                    f.find("input[name=handleStatus]").val("HS02");
-                    f.submit();
-
+					parent.$.messager.confirm('询问', '同意提现，是否继续？', function(b) {
+						if (b) {
+							parent.$.modalDialog.openner_dataGrid = dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+							var f = parent.$.modalDialog.handler.find('#form');
+							f.find("input[name=handleStatus]").val("HS02");
+							f.submit();
+						}
+					});
                 }
             },
                 {
                     text: '拒绝',
                     handler: function () {
-                        parent.$.modalDialog.openner_dataGrid = dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
-                        var f = parent.$.modalDialog.handler.find('#form');
-                        f.find("input[name=handleStatus]").val("HS03");
-                        f.submit();
+						parent.$.messager.confirm('询问', '拒绝提现，是否继续？', function(b) {
+							if (b) {
+								parent.$.modalDialog.openner_dataGrid = dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+								var f = parent.$.modalDialog.handler.find('#form');
+								f.find("input[name=handleStatus]").val("HS03");
+								f.submit();
+							}
+						});
                     }
                 }
             ]

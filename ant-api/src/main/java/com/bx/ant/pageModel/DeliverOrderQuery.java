@@ -3,6 +3,7 @@ package com.bx.ant.pageModel;
 import com.mobian.util.ConvertNameUtil;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by 黄晓渝 on 2017/10/13.
@@ -20,6 +21,10 @@ public class DeliverOrderQuery extends DeliverOrder {
     private String createDate;
     private String requiredDate;
     private Integer time;
+    private Long[] ids;
+    private List<String> image;
+    private String showTime;
+
 
     public String getStatusName() {
         return ConvertNameUtil.getString(this.statusName);
@@ -115,5 +120,29 @@ public class DeliverOrderQuery extends DeliverOrder {
 
     public void setTime(Integer time) {
         this.time = time;
+    }
+
+    public Long[] getIds() {
+        return ids;
+    }
+
+    public void setIds(Long[] ids) {
+        this.ids = ids;
+    }
+
+    public List<String> getImage() {
+        return image;
+    }
+
+    public void setImage(List<String> image) {
+        this.image = image;
+    }
+
+    public String getShowTime() {
+        return showTime;
+    }
+
+    public void setShowTime(String showTime) {
+        this.showTime = showTime;
     }
 }

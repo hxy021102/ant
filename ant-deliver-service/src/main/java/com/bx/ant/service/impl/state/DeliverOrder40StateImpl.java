@@ -47,6 +47,7 @@ public class DeliverOrder40StateImpl implements DeliverOrderState {
 
     @Override
     public void handle(DeliverOrder deliverOrder) {
+        //条件检查
         //修改运单状态
         DeliverOrder orderNew = new DeliverOrder();
         orderNew.setId(deliverOrder.getId());
@@ -60,29 +61,24 @@ public class DeliverOrder40StateImpl implements DeliverOrderState {
         deliverOrderShop.setStatus(DeliverOrderShopServiceI.STAUS_SERVICE);
         deliverOrderShop.setDeliverOrderId(orderNew.getId());
         deliverOrderShop.setShopPayStatus("SPS01");
+        deliverOrderShop.setId(deliverOrder.getOrderShopId());
         DeliverOrderShop orderShopEdit = new DeliverOrderShop();
         orderShopEdit.setStatus(DeliverOrderShopServiceI.STATUS_COMPLETE);
         orderShopEdit.setShopPayStatus("SPS04");
-      //deliverOrderShop = deliverOrderShopService.editStatus(deliverOrderShop,orderShopEdit);
-        deliverOrderShop=deliverOrderShopService.editStatusByHql(deliverOrderShop,orderShopEdit.getStatus(),orderShopEdit.getShopPayStatus());
-
-
+        deliverOrderShopService.editStatusByHql(deliverOrderShop,orderShopEdit.getStatus(),orderShopEdit.getShopPayStatus());
 
         //门店结算
-        //TODO 只做了给门店运费账增加,未做其他地方减少,要保持一致性,必须完成这一点
         DeliverOrderShopPay deliverOrderShopPay = new DeliverOrderShopPay();
-        deliverOrderShopPay.setDeliverOrderId(deliverOrder.getId());
-        deliverOrderShopPay.setShopId(deliverOrderShop.getShopId());
+        deliverOrderShopPay.setDeliverOrderShopId(deliverOrder.getOrderShopId());
         List<DeliverOrderShopPay> orderShopPays = deliverOrderShopPayService.list(deliverOrderShopPay);
         if (CollectionUtils.isNotEmpty(orderShopPays)) {
-
             //修改运单门店支付状态
             deliverOrderShopPay = orderShopPays.get(0);
             deliverOrderShopPay.setStatus(DeliverOrderServiceI.SHOP_PAY_STATUS_SUCCESS);
             deliverOrderShopPay.setPayWay(deliverOrder.getPayWay());
             deliverOrderShopPayService.edit(deliverOrderShopPay);
 
-            MbBalance balance = mbBalanceService.addOrGetMbBalanceDelivery(deliverOrderShop.getShopId());
+            MbBalance balance = mbBalanceService.addOrGetMbBalanceDelivery(deliverOrder.getShopId());
             MbBalanceLog balanceLog = new MbBalanceLog();
             balanceLog.setBalanceId(balance.getId());
             balanceLog.setRefId(deliverOrderShopPay.getId() + "");
@@ -92,10 +88,8 @@ public class DeliverOrder40StateImpl implements DeliverOrderState {
             } else {
                 balanceLog.setRefType("BT060");
             }
-            //TODO 这里不知道是否写对?
             balanceLog.setAmount(deliverOrderShopPay.getAmount());
-
-            balanceLog.setReason(String.format("门店[ID:%1$s]完成运单[ID:%2$s]结算转入", deliverOrderShop.getShopId(), orderNew.getId()));
+            balanceLog.setReason(String.format("门店[ID:%1$s]完成运单[ID:%2$s]结算转入", deliverOrder.getShopId(), orderNew.getId()));
             mbBalanceLogService.addAndUpdateBalance(balanceLog);
         }
     }

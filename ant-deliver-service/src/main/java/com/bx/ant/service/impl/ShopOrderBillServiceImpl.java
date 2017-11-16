@@ -201,7 +201,7 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 			}
 			return null;
 		} else {
-			String result="订单ID:";
+			String result="运单ID:";
 			for(DeliverOrderShopPay deliverOrderShopPay:orderShopPays){
 				result+=deliverOrderShopPay.getDeliverOrderId().toString()+"  ";
 			}
@@ -237,6 +237,10 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 
 	@Override
 	public void editBillStatusAndPayStatus(ShopOrderBill shopOrderBill) {
+		//审核通过才设置支付方式 否则没有支付方式
+		if ("BAS02".equals(shopOrderBill.getStatus())) {
+			shopOrderBill.setPayWay("DPW01");
+		}
 		edit(shopOrderBill);
 		DeliverOrderShopPay deliverOrderShopPay = new DeliverOrderShopPay();
 		deliverOrderShopPay.setShopOrderBillId(shopOrderBill.getId());
@@ -250,10 +254,11 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 					//审核通过 进行支付
 					DeliverOrderExt orderExt = new DeliverOrderExt();
 					orderExt.setId(orderShopPay.getDeliverOrderId());
-					orderExt.setShopId(shopOrderBill.getShopId());
+					orderExt.setShopId(orderShopPay.getShopId());
 					orderExt.setBalanceLogType("BT061");
 					orderExt.setPayWay(shopOrderBill.getPayWay());
 					orderExt.setStatus(DeliverOrderServiceI.STATUS_CLOSED);
+					orderExt.setOrderShopId(orderShopPay.getDeliverOrderShopId());
 					deliverOrderService.transform(orderExt);
 				}else {
 					orderShopPay.setStatus("SPS03");

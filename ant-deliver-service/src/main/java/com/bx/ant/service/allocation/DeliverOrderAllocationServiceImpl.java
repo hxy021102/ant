@@ -100,7 +100,7 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                 excludeShop.add(orderShop.getShopId());
             }
         }
-        // TODO 查询门店最大配送距离
+        //  查询门店最大配送距离
         double maxDistance = Double.valueOf(ConvertNameUtil.getString("DSV200", "5000"));
 
         List<ShopDeliverApply> includeShop = new ArrayList<ShopDeliverApply>();
@@ -144,7 +144,10 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                 TransactionStatus status = transactionManager.getTransaction(def); // 获得事务状态
 
                 try{
-                    if(tokenService.getTokenByShopId(mbShop.getId()) == null) throw new ServiceException("门店不在线，token已失效");
+                    if(!DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(shopDeliverApply.getDeliveryType())
+                            && tokenService.getTokenByShopId(mbShop.getId()) == null) throw new ServiceException("门店不在线，token已失效");
+                    if(!DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(shopDeliverApply.getDeliveryType())
+                            && (shopDeliverApply.getOnline() == null || !shopDeliverApply.getOnline())) throw new ServiceException("门店停止营业");
                     deliverOrder.setDeliveryType(shopDeliverApply.getDeliveryType());
                     deliverOrder.setShopId(mbShop.getId());
                     deliverOrder.setShopDistance(shopDeliverApply.getDistance());
@@ -152,7 +155,8 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                     deliverOrderService.transform(deliverOrder);
 
                     // 自动接单
-                    if(DeliverOrderServiceI.DELIVER_TYPE_AUTO.equals(shopDeliverApply.getDeliveryType())) {
+                    if(DeliverOrderServiceI.DELIVER_TYPE_AUTO.equals(shopDeliverApply.getDeliveryType()) ||
+                            DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(shopDeliverApply.getDeliveryType())) {
                         deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_ACCEPT);
                         deliverOrderService.transform(deliverOrder);
                     }

@@ -81,6 +81,7 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
         //2.1 添加门店订单明细List<deliverOrderShopItem>
 
         //2.3 编辑deliverOrderShop中金额amount字段
+        deliverOrderShop.setDeliveryType(deliverOrder.getDeliveryType());
         deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItemList, deliverOrderShop);
 
         //3. 对门店新订单进行计数:非自动接单

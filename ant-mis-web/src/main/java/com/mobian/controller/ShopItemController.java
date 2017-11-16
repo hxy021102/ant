@@ -86,9 +86,9 @@ public class ShopItemController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/addPage")
-	public String addPage(HttpServletRequest request) {
-		ShopItem shopItem = new ShopItem();
-		return "/shopitem/shopItemAdd";
+	public String addPage(HttpServletRequest request,Integer shopId) {
+		request.setAttribute("shopId", shopId);
+		return "/delivershopitem/shopItemAdd";
 	}
 
 	/**
@@ -100,6 +100,7 @@ public class ShopItemController extends BaseController {
 	@ResponseBody
 	public Json add(ShopItem shopItem) {
 		Json j = new Json();
+		shopItem.setPrice(shopItem.getInPrice() + shopItem.getFreight());
 		shopItemService.add(shopItem);
 		j.setSuccess(true);
 		j.setMsg("添加成功！");

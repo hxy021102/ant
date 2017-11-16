@@ -79,6 +79,15 @@
                     <jb:select name="deliveryType" dataType="DAT" required="true" value="${shopDeliverApply.deliveryType}"></jb:select>
                     </td>
                 </tr>
+                <tr>
+                    <th>冻结状态</th>
+                    <td>
+                        <select class="easyui-combobox" name="frozen" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+                            <option value="1" <c:if test="${shopDeliverApply.frozen}">selected="selected"</c:if>>冻结</option>
+                            <option value="0" <c:if test="${!shopDeliverApply.frozen}">selected="selected"</c:if>>正常</option>
+                        </select>
+                    </td>
+                </tr>
             </table>
         </form>
     </div>

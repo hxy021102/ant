@@ -4,10 +4,19 @@ import com.alibaba.fastjson.JSON;
 import com.bx.ant.pageModel.*;
 import com.bx.ant.service.*;
 import com.mobian.absx.F;
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderPay;
+import com.bx.ant.pageModel.DeliverOrderQuery;
+import com.bx.ant.pageModel.Supplier;
+import com.bx.ant.service.DeliverOrderItemServiceI;
+import com.bx.ant.service.DeliverOrderServiceI;
+import com.bx.ant.service.SupplierItemRelationServiceI;
+import com.bx.ant.service.SupplierServiceI;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
 import com.mobian.service.BasedataServiceI;
 import com.mobian.util.ConfigUtil;
+import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.ImportExcelUtil;
 import net.sf.json.JSONArray;
 import org.apache.commons.collections.CollectionUtils;
@@ -87,12 +96,10 @@ public class DeliverOrderController extends BaseController {
 	@ResponseBody
 	public DataGrid dataGrid(DeliverOrderQuery deliverOrderQuery, PageHelper ph) {
         if(deliverOrderQuery.getTime()!=null&&deliverOrderQuery.getTime()!=0){
-			BaseData base = new BaseData();
-			BaseData database =basedataService.get("DVS500");
-			if(database!=null){
-				deliverOrderQuery.setTime(Integer.parseInt(database.getName()));
-			}
+			deliverOrderQuery.setTime(Integer.valueOf(ConvertNameUtil.getString("DSV500", "30")));
 			return deliverOrderService.dataGridOutTimeDeliverOrder(deliverOrderQuery, ph);
+		}else if("notDriver,".equals(deliverOrderQuery.getStatus())){
+        	return deliverOrderService.dataGridNotDriverDeliverOrder(deliverOrderQuery,ph);
 		}else
 			return deliverOrderService.dataGridWithName(deliverOrderQuery, ph);
 
@@ -361,10 +368,11 @@ public class DeliverOrderController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/assignOrderShopPage")
-	public String assignOrderShopPage(HttpServletRequest request, Long id) {
+	public String assignOrderShopPage(HttpServletRequest request, Long id,Long orderShopId) {
 		DeliverOrder deliverOrder = deliverOrderService.get(id);
 	 	request.setAttribute("deliverOrder", JSON.toJSONString(deliverOrder));
 		request.setAttribute("id", id);
+		request.setAttribute("orderShopId", orderShopId);
 		return "/deliverorder/assignOrderShop";
 	}
 

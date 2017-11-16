@@ -12,6 +12,7 @@ import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.MbShopServiceI;
+import com.mobian.util.ConvertNameUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,7 +30,7 @@ import java.util.List;
 
 /**
  * Created by  wanxp 2017/9/22.
- * <p>
+ *
  * 用户相关接口
  */
 @Controller
@@ -68,6 +69,27 @@ public class ApiDeliverOrderController extends BaseController {
         json.setObj(deliverOrderService.dataGridExt(deliverOrder, pageHelper));
         json.setSuccess(true);
         return json;
+    }
+
+    /**
+     * 获取订单详情
+     * @param id
+     * @return
+     */
+    @RequestMapping("/getDetail")
+    @ResponseBody
+    public Json getDetail(Integer id) {
+        Json j = new Json();
+        try{
+            j.setMsg("u know");
+            j.setObj(deliverOrderService.getDetail(id));
+            j.setSuccess(true);
+        }catch(Exception e){
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
+            logger.error("获取订单详情接口异常", e);
+        }
+
+        return j;
     }
 
     /**
@@ -326,7 +348,6 @@ public class ApiDeliverOrderController extends BaseController {
 
     /**
      * 门店接受新运单
-     *
      * @param request
      * @param id
      * @return
@@ -334,6 +355,7 @@ public class ApiDeliverOrderController extends BaseController {
     @RequestMapping("/editOrderTakeByUser")
     @ResponseBody
     public Json takeOrderUserByUser(HttpServletRequest request, Long id) {
+    public Json editOrderTakeByUser(HttpServletRequest request, Long id){
         Json json = new Json();
 
         //获取shopId
@@ -346,6 +368,7 @@ public class ApiDeliverOrderController extends BaseController {
         return json;
     }
 
+
     @RequestMapping("/editOrderTransformStatus")
     public Json transform(DeliverOrder deliverOrder) {
         Json json = new Json();
@@ -355,6 +378,12 @@ public class ApiDeliverOrderController extends BaseController {
         return json;
     }
 
+    /**
+     *
+     * @param shopId
+     * @param status
+     * @return
+     */
     @RequestMapping("/viewOrderList")
     @ResponseBody
     public Json viewOrderList(Integer shopId, String status) {
@@ -365,9 +394,20 @@ public class ApiDeliverOrderController extends BaseController {
         return json;
     }
 
+    /**
+     * 获取新订单数量
+     * @param request
+     * @return
+     */
     @RequestMapping("/countNewAllocationOrder")
     @ResponseBody
     public Json countNewAllocationOrder(HttpServletRequest request) {
+    public  Json countNewAllocationOrder(HttpServletRequest request){
+        return getNewAllocationOrderQuantity(request);
+    }
+    @RequestMapping("/getNewAllocationOrderQuantity")
+    @ResponseBody
+    public  Json getNewAllocationOrderQuantity(HttpServletRequest request) {
         Json json = new Json();
 
         //获取shopId
@@ -380,6 +420,7 @@ public class ApiDeliverOrderController extends BaseController {
         return json;
     }
 
+
     /**
      * 今日订单列表
      *
@@ -389,6 +430,11 @@ public class ApiDeliverOrderController extends BaseController {
     @RequestMapping("/todayOrders")
     @ResponseBody
     public Json todayOrders(HttpServletRequest request) {
+        return getTodayOrders(request);
+    }
+    @RequestMapping("/getTodayOrders")
+    @ResponseBody
+    public Json getTodayOrders(HttpServletRequest request) {
         Json json = new Json();
 
         //获取shopId

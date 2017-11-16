@@ -45,9 +45,7 @@ import java.util.concurrent.TimeUnit;
 @Controller
 @RequestMapping("/api/deliver/deliverBalance")
 public class ApiDeliverBalanceController extends BaseController {
-
-
-    @Resource
+    @Autowired
     private DeliverOrderServiceI deliverOrderService;
 
     @Resource
@@ -71,10 +69,19 @@ public class ApiDeliverBalanceController extends BaseController {
     @Resource
     private MbWithdrawLogServiceI mbWithdrawLogService;
 
-
+    /**
+     * 查看余额列表
+     * @param mbBalanceLog
+     * @return
+     */
     @RequestMapping("/viewDeliverBanlanceLogList")
     @ResponseBody
-    public Json viewBanlanceLogList(MbBalanceLog mbBalanceLog){
+    public Json viewDeliverBanlanceLogList(MbBalanceLog mbBalanceLog){
+        return viewDeliverBalanceLogList(mbBalanceLog);
+    }
+    @RequestMapping("/viewDeliverBalanceLogList")
+    @ResponseBody
+    public Json viewDeliverBalanceLogList(MbBalanceLog mbBalanceLog){
         Json json = new Json();
         json.setMsg("u know");
         json.setObj(mbBalanceLogService.list(mbBalanceLog));
@@ -90,14 +97,20 @@ public class ApiDeliverBalanceController extends BaseController {
      */
     @RequestMapping("/viewDeliverBanlanceLogDetial")
     @ResponseBody
-    public Json viewBanlanceLogDetial(MbBalanceLog balanceLog) {
+    public Json viewDeliverBanlanceLogDetial(MbBalanceLog balanceLog) {
+        return viewDeliverBalanceLogDetail(balanceLog);
+    }
+    @RequestMapping("/viewDeliverBalanceLogDetail")
+    @ResponseBody
+    public Json viewDeliverBalanceLogDetail(MbBalanceLog balanceLog) {
         Json json = new Json();
         if ("BT060".equals(balanceLog.getRefType()) ||"BT061".equals(balanceLog.getRefType()) ) {
             DeliverOrderShopPay deliverOrderShopPay = deliverOrderPayShopService.get(Long.parseLong(balanceLog.getRefId()));
             DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
             deliverOrderShop.setDeliverOrderId(deliverOrderShopPay.getDeliverOrderId());
             deliverOrderShop.setId(deliverOrderShopPay.getDeliverOrderShopId());
-            json.setObj(deliverOrderService.getDeliverOrderExt(deliverOrderShop));
+            deliverOrderShop.setStatus("DSS04");
+            json.setObj(deliverOrderService.getBanlanceLogDetial(deliverOrderShop));
         }
         json.setMsg("u know");
         json.setSuccess(true);
@@ -113,6 +126,11 @@ public class ApiDeliverBalanceController extends BaseController {
     @RequestMapping("/viewDeliverBanlanceLogDataGrid")
     @ResponseBody
     public Json viewDeliverBanlanceLogDataGrid(String date,PageHelper pageHelper, HttpServletRequest request) {
+        return viewDeliverBalanceLogDataGrid(date, pageHelper, request);
+    }
+    @RequestMapping("/viewDeliverBalanceLogDataGrid")
+    @ResponseBody
+    public Json viewDeliverBalanceLogDataGrid(String date,PageHelper pageHelper, HttpServletRequest request) {
         Json j = new Json();
         DataGrid dataGrid;
         MbBalanceLog mbBalanceLog = new MbBalanceLog();
@@ -212,6 +230,11 @@ public class ApiDeliverBalanceController extends BaseController {
     @RequestMapping("/transformAmountDeliverToBalance")
     @ResponseBody
     public Json transformAmountDeliverToBalance(HttpServletRequest request, Integer amount, String vcode) {
+        return updateAmountDeliverToBalance(request, amount, vcode);
+    }
+    @RequestMapping("/updateAmountDeliverToBalance")
+    @ResponseBody
+    public Json updateAmountDeliverToBalance(HttpServletRequest request, Integer amount, String vcode) {
         Json j = new Json();
         TokenWrap tokenWrap = getTokenWrap(request);
         Integer shopId = tokenWrap.getShopId();
@@ -232,6 +255,7 @@ public class ApiDeliverBalanceController extends BaseController {
         return j;
     }
 
+
     /**
      * 采购账户余额转入派单账户余额
      * @param request
@@ -240,6 +264,11 @@ public class ApiDeliverBalanceController extends BaseController {
     @RequestMapping("/transformAmountBalanceToDeliver")
     @ResponseBody
     public Json transformAmountBalanceToDeliver(HttpServletRequest request, Integer amount, String vcode) {
+        return updateAmountBalanceToDeliver(request, amount, vcode);
+    }
+    @RequestMapping("/updateAmountBalanceToDeliver")
+    @ResponseBody
+    public Json updateAmountBalanceToDeliver(HttpServletRequest request, Integer amount, String vcode) {
         Json j = new Json();
         TokenWrap tokenWrap = getTokenWrap(request);
         Integer shopId = tokenWrap.getShopId();
@@ -259,6 +288,7 @@ public class ApiDeliverBalanceController extends BaseController {
         j.setSuccess(true);
         return j;
     }
+
 
     @ResponseBody
     @RequestMapping("/getVCode")
@@ -305,7 +335,12 @@ public class ApiDeliverBalanceController extends BaseController {
      */
     @ResponseBody
     @RequestMapping("/withdraw")
-    public Json test(HttpServletRequest request, MbWithdrawLog withdrawLog, String vcode){
+    public Json withdraw(HttpServletRequest request, MbWithdrawLog withdrawLog, String vcode) {
+        return updateWithdraw(request, withdrawLog, vcode);
+    }
+    @ResponseBody
+    @RequestMapping("/updateWithdraw")
+    public Json updateWithdraw(HttpServletRequest request, MbWithdrawLog withdrawLog, String vcode){
         Json json = new Json();
 
         //1. 单次限额1W
@@ -321,11 +356,11 @@ public class ApiDeliverBalanceController extends BaseController {
 
         // 短信验证
         String oldCode = (String) redisUtil.getString(Key.build(Namespace.SHOP_BALANCE_ROLL_VALIDATE_CODE, tokenWrap.getName()));
-        if(F.empty(oldCode)) {
+        if (F.empty(oldCode)) {
             json.setMsg("验证码已过期！");
             return json;
         }
-        if(!oldCode.equals(vcode)) {
+        if (!oldCode.equals(vcode)) {
             json.setMsg("验证码错误！");
             return json;
         }
@@ -333,7 +368,7 @@ public class ApiDeliverBalanceController extends BaseController {
         MbBalance balance = mbBalanceService.addOrGetMbBalanceDelivery(shopId);
 
         //1. 判断余额
-        if(F.empty(withdrawLog.getAmount()) || withdrawLog.getAmount() > balance.getAmount()) {
+        if (F.empty(withdrawLog.getAmount()) || withdrawLog.getAmount() > balance.getAmount()) {
             //throw new ServiceException("转账金额为空或余额不足");
             json.setSuccess(false);
             json.setMsg("转账金额为空或余额不足");
@@ -364,16 +399,27 @@ public class ApiDeliverBalanceController extends BaseController {
         return json;
     }
 
-
+    /**
+     *
+     * @param request
+     * @param pageHelper
+     * @param date
+     * @return
+     */
     @RequestMapping("/withdrawDataGrid")
     @ResponseBody
-    public Json dataGridWithdraw(HttpServletRequest request, PageHelper pageHelper, String date) {
+    public Json withdrawDataGrid(HttpServletRequest request, PageHelper pageHelper, String date) {
+        return getWithdrawDataGrid(request, pageHelper, date);
+    }
+    @RequestMapping("/getWithdrawDataGrid")
+    @ResponseBody
+    public Json getWithdrawDataGrid(HttpServletRequest request, PageHelper pageHelper, String date) {
         Json json = new Json();
         DataGrid dataGrid = new DataGrid();
 
         //通过门店ID找到申请者账户
-       TokenWrap tokenWrap = getTokenWrap(request);
-       Integer shopId = tokenWrap.getShopId();
+        TokenWrap tokenWrap = getTokenWrap(request);
+        Integer shopId = tokenWrap.getShopId();
 
         MbWithdrawLogView withdrawLogView = new MbWithdrawLogView();
 
@@ -415,5 +461,55 @@ public class ApiDeliverBalanceController extends BaseController {
         json.setSuccess(true);
         json.setMsg("查询数据成功");
         return json;
+
+    }
+
+    /**
+     * 按月统计收入支出
+     * @param request
+     * @return
+     */
+    @RequestMapping("/totalBalanceByMonth")
+    @ResponseBody
+    public Json totalBalanceByMonth(HttpServletRequest request, String date) {
+        return getTotalBalanceByMonth(request, date);
+    }
+    @RequestMapping("/getTotalBalanceByMonth")
+    @ResponseBody
+    public Json getTotalBalanceByMonth(HttpServletRequest request, String date) {
+
+        Json j = new Json();
+        try{
+            TokenWrap token = getTokenWrap(request);
+            if(!F.empty(token.getUid())) {
+                MbBalanceLog mbBalanceLog = new MbBalanceLog();
+                mbBalanceLog.setShopId(token.getShopId());
+                //默认时间为当月
+                if (date == null) {
+                    Calendar now = Calendar.getInstance();
+                    date = now.get(Calendar.YEAR) + "-" + (now.get(Calendar.MONTH) + 1) ;
+                }
+
+                //设定搜索时间为月初00:00:00至下月初00:00:00
+
+                Date timeStart = new SimpleDateFormat("yyyy-MM").parse(date);
+                mbBalanceLog.setUpdatetimeBegin(timeStart);
+                Calendar calendar = new GregorianCalendar();
+                calendar.setTime(timeStart);
+                calendar.add(Calendar.MONTH,1);
+                mbBalanceLog.setUpdatetimeEnd(calendar.getTime());
+                Map<String, Integer> totalBalance = mbBalanceLogService.totalBalanceByMonth(mbBalanceLog);
+
+                j.setSuccess(true);
+                j.setMsg("获取成功！");
+                j.setObj(totalBalance);
+            }
+
+        }catch(Exception e){
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
+            logger.error("按月统计收入支出接口异常", e);
+        }
+
+        return j;
     }
 }

@@ -51,6 +51,7 @@ public interface DeliverOrderServiceI {
 	// 派单类型
 	String DELIVER_TYPE_HAND = "DAT01"; // 手动接单
 	String DELIVER_TYPE_AUTO = "DAT02"; // 自动接单
+	String DELIVER_TYPE_FORCE = "DAT03"; // 强制接单
 
 	//派单结算时间差
 	Long TIME_DIF_SHOP_PAY_SETTLED = new Long(1 * 1 * 1 * 60 * 1000) ;
@@ -271,4 +272,21 @@ public interface DeliverOrderServiceI {
 	DataGrid dataGridOutTimeDeliverOrder(DeliverOrderQuery deliverOrderQuery,PageHelper ph);
 
 	Integer editOrderStatus(DeliverOrder deliverorder);
+
+	/**
+	 * 获取超时未配送的订单
+	 * @param deliverOrderQuery
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridNotDriverDeliverOrder(DeliverOrderQuery deliverOrderQuery,PageHelper ph);
+
+	/**
+	 * 小程序获取账单详情信息
+	 * @param deliverOrderShop
+	 * @return
+	 */
+	DeliverOrderExt getBanlanceLogDetial(DeliverOrderShop deliverOrderShop);
+
+	DeliverOrderExt getDetail(Integer id);
 }

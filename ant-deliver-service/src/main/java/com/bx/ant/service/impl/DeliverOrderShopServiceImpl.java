@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bx.ant.pageModel.*;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderShopItemServiceI;
+import com.bx.ant.service.DeliverOrderShopPayServiceI;
 import com.bx.ant.service.ShopOrderBillServiceI;
 import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderShopDaoI;
@@ -23,7 +24,11 @@ import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -41,6 +46,11 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 	private DeliverOrderServiceI deliverOrderService;
 	@Resource
 	private ShopOrderBillServiceI shopOrderBillService;
+	@Resource
+	private DeliverOrderShopPayServiceI deliverOrderShopPayService;
+
+	@Autowired
+	private HibernateTransactionManager transactionManager;
 
 	@Autowired
 	private DeliverOrderShopItemServiceI deliverOrderShopItemSerivce;
@@ -72,7 +82,11 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 			if (!F.empty(deliverOrderShop.getTenantId())) {
 				whereHql += " and t.tenantId = :tenantId";
 				params.put("tenantId", deliverOrderShop.getTenantId());
-			}		
+			}
+			if (deliverOrderShop.getIds() != null && deliverOrderShop.getIds().length > 0) {
+				whereHql += " and t.id not in(:ids)";
+				params.put("ids", deliverOrderShop.getIds());
+			}
 			if (!F.empty(deliverOrderShop.getIsdeleted())) {
 				whereHql += " and t.isdeleted = :isdeleted";
 				params.put("isdeleted", deliverOrderShop.getIsdeleted());
@@ -89,8 +103,9 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 				whereHql += " and t.status in(:status)";
 				if (deliverOrderShop.getStatus().split(",") != null && deliverOrderShop.getStatus().split(",").length > 0) {
 					params.put("status", deliverOrderShop.getStatus().split(","));
-				} else {
-					params.put("status", deliverOrderShop.getStatus());
+					if (params.get("status") == null || " ".equals(params.get("status"))) {
+						params.put("status", deliverOrderShop.getStatus());
+					}
 				}
 			}		
 			if (!F.empty(deliverOrderShop.getAmount())) {
@@ -105,6 +120,16 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 				whereHql += " and t.updatetime < :updatetimeEnd";
 				params.put("updatetimeEnd",deliverOrderShop.getUpdatetimeEnd());
 			}
+
+			if (deliverOrderShop.getAddtimeBegin() != null) {
+				whereHql += " and t.addtime >= :addtimeBegin";
+				params.put("addtimeBegin",deliverOrderShop.getAddtimeBegin());
+			}
+			if (deliverOrderShop.getAddtimeEnd() != null) {
+				whereHql += " and t.addtime < :addtimeEnd";
+				params.put("addtimeEnd",deliverOrderShop.getAddtimeEnd());
+			}
+
 			if (!F.empty(deliverOrderShop.getShopPayStatus())) {
 				whereHql += " and t.shopPayStatus = :shopPayStatus";
 				params.put("shopPayStatus", deliverOrderShop.getShopPayStatus());
@@ -198,11 +223,11 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 	public DeliverOrderShop editStatus(DeliverOrderShop deliverOrderShop, DeliverOrderShop orderShopEdit) {
 		List<DeliverOrderShop> deliverOrderShops = query(deliverOrderShop);
 		DeliverOrderShop o = new DeliverOrderShop();
-		if (CollectionUtils.isNotEmpty(deliverOrderShops)  && deliverOrderShops.size() == 1) {
+		if (CollectionUtils.isNotEmpty(deliverOrderShops) && deliverOrderShops.size() == 1) {
 			//只对第一个结果进行处理
 			o = deliverOrderShops.get(0);
 			o.setStatus(orderShopEdit.getStatus());
-			if(!F.empty(orderShopEdit.getShopPayStatus())){
+			if (!F.empty(orderShopEdit.getShopPayStatus())) {
 				o.setShopPayStatus(orderShopEdit.getShopPayStatus());
 			}
 			edit(o);
@@ -242,17 +267,25 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		deliverOrderShop.setStatus(STATUS_AUDITING);
 		List<DeliverOrderShop> deliverOrderShops = dataGrid(deliverOrderShop, new PageHelper()).getRows();
 		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
-			Iterator<DeliverOrderShop> orderShopIterator = deliverOrderShops.iterator();
-			while (orderShopIterator.hasNext()) {
-				DeliverOrderShop orderShop = orderShopIterator.next();
+			for (DeliverOrderShop orderShop : deliverOrderShops) {
 				Date now = new Date();
-				if (now.getTime() - orderShop.getUpdatetime().getTime() > Integer.valueOf(ConvertNameUtil.getString("DSV100", "10"))*60*1000) {
+				if (now.getTime() - orderShop.getAddtime().getTime() > Integer.valueOf(ConvertNameUtil.getString("DSV100", "10")) * 60 * 1000) {
 					DeliverOrder deliverOrder = new DeliverOrder();
 					deliverOrder.setShopId(orderShop.getShopId());
 					deliverOrder.setId(orderShop.getDeliverOrderId());
 					deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_REFUSE);
 					deliverOrder.setRemark("超时未接单");
-					deliverOrderService.transform(deliverOrder);
+					DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+					def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);// 事物隔离级别，开启新事务
+					TransactionStatus status = transactionManager.getTransaction(def); // 获得事务状态
+					try {
+						deliverOrderService.transform(deliverOrder);
+						transactionManager.commit(status);
+					}catch (Exception e){
+						transactionManager.rollback(status);
+						e.printStackTrace();
+						continue;
+					}
 				}
 			}
 		}
@@ -260,6 +293,17 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 
 	@Override
 	public DataGrid dataGridShopArtificialPay(DeliverOrderShop deliverOrderShop, PageHelper ph) {
+		DeliverOrderShopPay deliverOrderShopPay = new DeliverOrderShopPay();
+		deliverOrderShopPay.setStatus("SPS01");
+		List<DeliverOrderShopPay> deliverOrderShopPays=deliverOrderShopPayService.query(deliverOrderShopPay);
+		if(CollectionUtils.isNotEmpty(deliverOrderShopPays)){
+			Long[] deliverOrderShopIds=new Long[deliverOrderShopPays.size()];
+			int i=0;
+			for(DeliverOrderShopPay shopPay:deliverOrderShopPays){
+				deliverOrderShopIds[i++]=shopPay.getDeliverOrderShopId();
+			}
+ 		  deliverOrderShop.setIds(deliverOrderShopIds);
+		}
 		DataGrid dataGrid = dataGrid(deliverOrderShop, ph);
 		List<DeliverOrderShop> deliverOrderShops = dataGrid.getRows();
 		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
@@ -327,7 +371,7 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		DeliverOrderShopQuery deliverOrderShop = new DeliverOrderShopQuery();
 		deliverOrderShop.setShopPayStatus("SPS01");
 		deliverOrderShop.setStatus(DeliverOrderShopServiceI.STAUS_SERVICE);
-	 	Date endDate= DateUtil.addDayToDate(new Date(),-Integer.valueOf(ConvertNameUtil.getString("DVS600", "7")));
+	 	Date endDate= DateUtil.addDayToDate(new Date(),-Integer.valueOf(ConvertNameUtil.getString("DSV600", "7")));
 		deliverOrderShop.setEndDate(endDate);
 		PageHelper ph = new PageHelper();
 		List<DeliverOrderShop> deliverOrderShopList = dataGrid(deliverOrderShop, ph).getRows();
@@ -374,34 +418,31 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 			ShopOrderBillQuery shopOrderBillQuery = (ShopOrderBillQuery) entry.getValue();
 			shopOrderBillService.addAndPayShopOrderBillAndShopPay(shopOrderBillQuery);
 			List<DeliverOrderShop> orderShopList = shopOrderBillQuery.getDeliverOrderShopList();
-			int size = orderShopList.size();
-			for (int i = 0; i < size; i++) {
-				DeliverOrderShop order = orderShopList.get(i);
+			for (DeliverOrderShop orderShop : orderShopList) {
 				DeliverOrderExt orderExt = new DeliverOrderExt();
-				orderExt.setId(order.getDeliverOrderId());
-				orderExt.setShopId(order.getShopId());
+				orderExt.setId(orderShop.getDeliverOrderId());
+				orderExt.setShopId(orderShop.getShopId());
 				orderExt.setBalanceLogType("BT060");
-				orderExt.setStatus("DOS40");
+				orderExt.setPayWay(DeliverOrderServiceI.PAY_WAY_BALANCE);
+				orderExt.setStatus(DeliverOrderServiceI.STATUS_CLOSED);
+				orderExt.setOrderShopId(orderShop.getId());
 				deliverOrderService.transform(orderExt);
 			}
 		}
 	}
 
 	@Override
-	public DeliverOrderShop editStatusByHql(DeliverOrderShop deliverOrderShop, String status, String shopPayStatus) {
+	public void editStatusByHql(DeliverOrderShop deliverOrderShop, String status, String shopPayStatus) {
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("status",deliverOrderShop.getStatus());
-		params.put("shopPayStatus",deliverOrderShop.getShopPayStatus());
-		params.put("deliverOrderId",deliverOrderShop.getDeliverOrderId());
+		params.put("status", deliverOrderShop.getStatus());
+		params.put("shopPayStatus", deliverOrderShop.getShopPayStatus());
+		params.put("id", deliverOrderShop.getId());
 		params.put("newsStatus", status);
 		params.put("newsShopPayStatus", shopPayStatus);
-		DeliverOrderShop orderShop=query(deliverOrderShop).get(0);
-		int result=deliverOrderShopDao.executeHql("update TdeliverOrderShop t set t.status = :newsStatus , t.shopPayStatus = :newsShopPayStatus " +
-				"where t.status = :status and t.shopPayStatus = :shopPayStatus and t.deliverOrderId = :deliverOrderId", params);
+		int result = deliverOrderShopDao.executeHql("update TdeliverOrderShop t set t.status = :newsStatus , t.shopPayStatus = :newsShopPayStatus " +
+				"where t.status = :status and t.shopPayStatus = :shopPayStatus and t.id = :id", params);
 		if (result <= 0) {
 			throw new ServiceException("修改门店订单状态失败");
-		}else {
-			return orderShop;
 		}
 	}
 
@@ -423,11 +464,12 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		deliverOrderShop.setShopId(shopId);
 		String[] statusList = {DeliverOrderShopServiceI.STATUS_ACCEPTED,DeliverOrderShopServiceI.STATUS_COMPLETE,DeliverOrderShopServiceI.STAUS_SERVICE};
 		deliverOrderShop.setStatusList(statusList);
-		deliverOrderShop.setUpdatetimeBegin(todayStart);
-		deliverOrderShop.setUpdatetimeEnd(todayEnd);
+		deliverOrderShop.setAddtimeBegin(todayStart);
+		deliverOrderShop.setAddtimeEnd(todayEnd);
 
 		PageHelper ph = new PageHelper();
 		ph.setHiddenTotal(true);
 		return dataGrid(deliverOrderShop, ph).getRows();
 	}
+
 }
