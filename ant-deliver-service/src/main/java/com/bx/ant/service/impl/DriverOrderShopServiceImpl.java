@@ -89,8 +89,8 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 				params.put("shopId", driverOrderShop.getShopId());
 			}		
 			if (!F.empty(driverOrderShop.getStatus())) {
-				whereHql += " and t.status = :status";
-				params.put("status", driverOrderShop.getStatus());
+				whereHql += " and t.status in ( :status)";
+				params.put("status", driverOrderShop.getStatus().split(","));
 			}		
 			if (!F.empty(driverOrderShop.getAmount())) {
 				whereHql += " and t.amount = :amount";
@@ -362,11 +362,8 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 		ph.setSort("updatetime");
 
 		driverOrderShopView.setDriverAccountId(driverAccountId);
-		driverOrderShopView.setStatus(DriverOrderShopServiceI.STATUS_ACCEPTED + 	DriverOrderShopServiceI.STATUS_DELVIERING + DriverOrderShopServiceI.STATUS_DELIVERED + DriverOrderShopServiceI.STATUS_SETTLEED );
-
+		driverOrderShopView.setStatus(DriverOrderShopServiceI.STATUS_ACCEPTED + "," + 	DriverOrderShopServiceI.STATUS_DELVIERING + ","+ DriverOrderShopServiceI.STATUS_DELIVERED + ","+ DriverOrderShopServiceI.STATUS_SETTLEED );
 		DataGrid dataGrid = dataGridView(driverOrderShopView, ph);
-
-
 	return dataGrid;
 	}
 }

@@ -240,32 +240,13 @@ public class ApiDriverOrderShopController extends BaseController {
     @ResponseBody
     public Json getTodayOrders(HttpServletRequest request) {
         Json json = new Json();
-
-        //获取shopId
+        //获取accountId
         TokenWrap token = getTokenWrap(request);
         Integer accountId = Integer.parseInt(token.getUid());
-
-        List<DriverOrderShop> ol = new ArrayList<DriverOrderShop>();
-
-
-
         DataGrid dataGrid = driverOrderShopService.listTodayOrderByAccountId(accountId);
-//        if (CollectionUtils.isNotEmpty(orderShops)) {
-//            Collections.sort(orderShops, new Comparator<DriverOrderShop>() {
-//                @Override
-//                public int compare(DriverOrderShop d1, DriverOrderShop d2) {
-//                    return d2.getUpdatetime().compareTo(d1.getUpdatetime());
-//                }
-//            });
-//            //通过deliverOrderShop获取deliverOrder
-//            for (DriverOrderShop driverOrderShop : orderShops) {
-//                    ol.add(driverOrderShopService.getView(driverOrderShop.getId()));
-//                }
-//            }
-//        }
-//        json.setMsg("u know");
-//        json.setObj(ol);
-//        json.setSuccess(true);
+        json.setMsg("u know");
+        json.setObj(dataGrid);
+        json.setSuccess(true);
         return json;
     }
 }

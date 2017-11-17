@@ -64,7 +64,7 @@ public class DeliverOrder20StateImpl implements DeliverOrderState {
         orderShopEdit.setStatus(DeliverOrderShopServiceI.STATUS_ACCEPTED);
         deliverOrderShop = deliverOrderShopService.editStatus(deliverOrderShop,orderShopEdit);
 
-        //修改门店运单支付状态
+    //修改门店运单支付状态
 //        DeliverOrderShopPay deliverOrderShopPay = new DeliverOrderShopPay();
 //        deliverOrderShopPay.setDeliverOrderId(orderNew.getId());
 //        deliverOrderShopPay.setShopId(deliverOrder.getShopId());

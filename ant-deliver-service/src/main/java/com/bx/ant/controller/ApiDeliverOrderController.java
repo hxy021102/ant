@@ -246,6 +246,8 @@ public class ApiDeliverOrderController extends BaseController {
         Integer shopId = token.getShopId();
 
         deliverOrderService.transformByShopIdAndStatus(id, shopId, deliverOrderService.STATUS_SHOP_ACCEPT);
+
+
         json.setMsg("u know");
         json.setSuccess(true);
         return json;
