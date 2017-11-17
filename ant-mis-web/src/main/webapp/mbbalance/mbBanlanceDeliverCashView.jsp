@@ -34,7 +34,7 @@
                 idField : 'id',
                 pageSize : 10,
                 pageList : [ 10, 20, 30, 40, 50 ],
-                sortName : 'addtime',
+                sortName:'updatetime',
                 sortOrder : 'desc',
                 checkOnSelect : false,
                 selectOnCheck : false,
@@ -52,17 +52,43 @@
                     title : '<%=TmbBalanceLog.ALIAS_TIME%>',
                     width : 100
                 }, {
-                    field : 'amount',
-                    title : '<%=TmbBalanceLog.ALIAS_AMOUNT%>',
-                    width : 50,
-                    align:'right',
-                    formatter:function(value){
-                        return $.formatMoney(value);
-                    }
-                }, {
                     field : 'refTypeName',
                     title : '<%=TmbBalanceLog.ALIAS_REF_TYPE%>',
                     width : 100
+                }, {
+                    field : 'amountIn',
+                    title : '收入（+）',
+                    width : 50,
+                    align:'right',
+                    formatter: function (value) {
+                        if (value >= 0)
+                            return $.formatMoney(value);
+                        else
+                            return "";
+                    }
+                },{
+                    field : 'amountOut',
+                    title : '支出（-）',
+                    width : 50,
+                    align:'right',
+                    formatter:function(value){
+                        if (value)
+                            return $.formatMoney(value);
+                        else
+                            return "";
+                    }
+                }, {
+                    field : 'amount',
+                    title : '账户余额',
+                    width : 50,
+                    align:'right',
+                    formatter:function(value,row){
+                        var nums = getNum(row.remark);
+                        if (nums&&nums.length>0)
+                            return $.formatMoney(nums[nums.length-1]);
+                        else
+                            return "";
+                    }
                 }, {
                     field : 'refId',
                     title : '<%=TmbBalanceLog.ALIAS_REF_ID%>',
@@ -111,6 +137,28 @@
                 }
             });
         });
+
+        var getNum = function (Str) {
+            //用来判断是否把连续的0去掉
+            if (typeof Str === "string") {
+                // var arr = Str.match(/(0\d{2,})|([1-9]\d+)/g);
+                //"/[1-9]\d{1,}/g",表示匹配1到9,一位数以上的数字(不包括一位数).
+                //"/\d{2,}/g",  表示匹配至少二个数字至多无穷位数字
+                var arr = Str.match(/期末余额:[0-9\-]{1,}分/);
+
+                if (arr&&arr.length>0) {
+                    var num = arr[arr.length-1];
+                    num = num.replace("期末余额:","").replace("分","");
+                    arr[arr.length-1] = num;
+                    return arr;
+                } else {
+                    return [];
+                }
+            } else {
+                return [];
+            }
+        }
+
         function viewOrder(id, type) {
             var href = '${pageContext.request.contextPath}/mbOrderController/view?id=' + id +"&type=" +type;
             parent.$("#index_tabs").tabs('add', {
@@ -137,6 +185,23 @@
         function cleanFun() {
             $('#searchForm input').val('');
             dataGrid.datagrid('load', {});
+        }
+
+        function addDeliverShopMoney() {
+            parent.$.modalDialog({
+                title : '派单钱包充值',
+                width : 780,
+                height : 220,
+                href : '${pageContext.request.contextPath}/mbRechargeLogController/addDeliverShopMoneyPage?shopId='+${mbBalance.refId},
+                buttons : [ {
+                    text : '添加',
+                    handler : function() {
+                        parent.$.modalDialog.openner_dataGrid = dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                        var f = parent.$.modalDialog.handler.find('#form');
+                        f.submit();
+                    }
+                } ]
+            });
         }
     </script>
 </head>
@@ -166,14 +231,10 @@
     </div>
 </div>
 <div id="toolbar" style="display: none;">
-    <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true"
-       onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton"
-                                       data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
-    <c:if test="${fn:contains(sessionInfo.resourceList, '/mbRechargeLogController/addShopMoneyPage')}">
-        <a onclick="addShopMoney();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'pencil_add'">充值</a>
-    </c:if>
-    <c:if test="${fn:contains(sessionInfo.resourceList, '/mbRechargeLogController/addShopCashChargePage')}">
-        <a onclick="addShopCashCharge();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'pencil_add'">现金充值</a>
+    <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a>
+    <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/mbRechargeLogController/addDeliverShopMoneyPage')}">
+        <a onclick="addDeliverShopMoney();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'pencil_add'">充值</a>
     </c:if>
 </div>
 </body>
