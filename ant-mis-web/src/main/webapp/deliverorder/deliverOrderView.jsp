@@ -21,6 +21,7 @@
              idField : 'id',
              pageSize : 10,
              pageList : [ 10, 20, 30, 40, 50 ],
+             sortName:'addtime',
              sortOrder : 'desc',
              checkOnSelect : false,
              selectOnCheck : false,
@@ -28,7 +29,11 @@
              striped : true,
              rownumbers : true,
              singleSelect : true,
-             columns : [ [ {
+             columns : [ [  {
+                 field : 'addtime',
+                 title : '分配时间',
+                 width : 30,
+             },{
                  field : 'shopId',
                  title : '门店ID',
                  width : 30,
