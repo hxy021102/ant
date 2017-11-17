@@ -24,6 +24,7 @@ public class DriverOrderShopView extends DriverOrderShop {
     private DeliverOrderShop deliverOrderShop;
     private MbShop shop;
     private Integer shopDistance;
+    private Long[]  notInIds;
 
     public String getStatusName() {
         return ConvertNameUtil.getString(super.getStatus());
@@ -143,5 +144,13 @@ public class DriverOrderShopView extends DriverOrderShop {
 
     public void setShopDistance(Integer shopDistance) {
         this.shopDistance = shopDistance;
+    }
+
+    public Long[] getNotInIds() {
+        return notInIds;
+    }
+
+    public void setNotInIds(Long[] notInIds) {
+        this.notInIds = notInIds;
     }
 }

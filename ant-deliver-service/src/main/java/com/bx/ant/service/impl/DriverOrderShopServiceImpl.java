@@ -122,6 +122,10 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 					whereHql += " and t.id in(:ids)";
 					params.put("ids", driverOrderShopView.getIds());
 				}
+				if (driverOrderShopView.getNotInIds() != null && driverOrderShopView.getNotInIds().length > 0) {
+					whereHql += " and t.id not in(:ids)";
+					params.put("ids", driverOrderShopView.getNotInIds());
+				}
 			}
 		}	
 		return whereHql;
@@ -304,18 +308,13 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 		Map<String,Object> params =new HashMap<String,Object>();
 		params.put("id",id);
 		params.put("status",STATUS_DELIVERED);
-		params.put("payStatus",PAY_STSTUS_WAITE_AUDIT);
+		params.put("payStatus",PAY_STATUS_NOT_PAY);
 		int result=0;
 		if("DHS02".equals(handleStatus)) {
 			params.put("newsStatus",STATUS_SETTLEED);
 			params.put("newsPayStatus",PAY_STATUS_PAID);
 			//审核通过，则将运单状态变成已结算且支付状态变成已支付
 			result = driverOrderShopDao.executeHql("update TdriverOrderShop t set t.status = :newsStatus , t.payStatus = :newsPayStatus " +
-					"where t.status = :status and t.payStatus = :payStatus and t.id = :id", params);
-		}else{
-			params.put("refusePayStatus",PAY_STATUS_NOT_PAY);
-			//审核拒绝，则将运单支付状态变为待支付
-			result = driverOrderShopDao.executeHql("update TdriverOrderShop t set t.payStatus = :refusePayStatus " +
 					"where t.status = :status and t.payStatus = :payStatus and t.id = :id", params);
 		}
 		if (result <= 0) {

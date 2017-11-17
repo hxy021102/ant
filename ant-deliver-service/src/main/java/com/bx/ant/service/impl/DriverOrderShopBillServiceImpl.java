@@ -58,44 +58,44 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 		dg.setRows(ol);
 		return dg;
 	}
-	
+
 
 	protected String whereHql(DriverOrderShopBill driverOrderShopBill, Map<String, Object> params) {
-		String whereHql = "";	
+		String whereHql = "";
 		if (driverOrderShopBill != null) {
 			whereHql += " where t.isdeleted = 0 ";
 			if (!F.empty(driverOrderShopBill.getTenantId())) {
 				whereHql += " and t.tenantId = :tenantId";
 				params.put("tenantId", driverOrderShopBill.getTenantId());
-			}		
+			}
 			if (!F.empty(driverOrderShopBill.getIsdeleted())) {
 				whereHql += " and t.isdeleted = :isdeleted";
 				params.put("isdeleted", driverOrderShopBill.getIsdeleted());
-			}		
+			}
 			if (!F.empty(driverOrderShopBill.getDriverAccountId())) {
 				whereHql += " and t.driverAccountId = :driverAccountId";
 				params.put("driverAccountId", driverOrderShopBill.getDriverAccountId());
-			}		
+			}
 			if (!F.empty(driverOrderShopBill.getShopId())) {
 				whereHql += " and t.shopId = :shopId";
 				params.put("shopId", driverOrderShopBill.getShopId());
-			}		
+			}
 			if (!F.empty(driverOrderShopBill.getHandleStatus())) {
 				whereHql += " and t.handleStatus = :handleStatus";
 				params.put("handleStatus", driverOrderShopBill.getHandleStatus());
-			}		
+			}
 			if (!F.empty(driverOrderShopBill.getHandleRemark())) {
 				whereHql += " and t.handleRemark = :handleRemark";
 				params.put("handleRemark", driverOrderShopBill.getHandleRemark());
-			}		
+			}
 			if (!F.empty(driverOrderShopBill.getHandleLoginId())) {
 				whereHql += " and t.handleLoginId = :handleLoginId";
 				params.put("handleLoginId", driverOrderShopBill.getHandleLoginId());
-			}		
+			}
 			if (!F.empty(driverOrderShopBill.getAmount())) {
 				whereHql += " and t.amount = :amount";
 				params.put("amount", driverOrderShopBill.getAmount());
-			}		
+			}
 			if (!F.empty(driverOrderShopBill.getPayWay())) {
 				whereHql += " and t.payWay = :payWay";
 				params.put("payWay", driverOrderShopBill.getPayWay());
@@ -111,7 +111,7 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 					params.put("addtimeEnd", driverOrderShopBillView.getAddtimeEnd());
 				}
 			}
-		}	
+		}
 		return whereHql;
 	}
 
@@ -139,7 +139,7 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 	public void edit(DriverOrderShopBill driverOrderShopBill) {
 		TdriverOrderShopBill t = driverOrderShopBillDao.get(TdriverOrderShopBill.class, driverOrderShopBill.getId());
 		if (t != null) {
-			MyBeanUtils.copyProperties(driverOrderShopBill, t, new String[] { "id" , "addtime", "isdeleted","updatetime" },true);
+			MyBeanUtils.copyProperties(driverOrderShopBill, t, new String[]{"id", "addtime", "isdeleted", "updatetime"}, true);
 		}
 	}
 
@@ -147,9 +147,10 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 	public void delete(Long id) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
-		driverOrderShopBillDao.executeHql("update TdriverOrderShopBill t set t.isdeleted = 1 where t.id = :id",params);
+		driverOrderShopBillDao.executeHql("update TdriverOrderShopBill t set t.isdeleted = 1 where t.id = :id", params);
 		//driverOrderShopBillDao.delete(driverOrderShopBillDao.get(TdriverOrderShopBill.class, id));
 	}
+
 	@Override
 	public DriverOrderShopBillView getView(Long id) {
 		DriverOrderShopBill driverOrderShopBill = get(id);
@@ -168,10 +169,10 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 		List<DriverOrderShopBillView> ol = new ArrayList<DriverOrderShopBillView>();
 		if (CollectionUtils.isNotEmpty(driverOrderShopBills)) {
 			int size = driverOrderShopBills.size();
-			for (int i = 0 ; i < size; i++) {
+			for (int i = 0; i < size; i++) {
 				DriverOrderShopBillView o = new DriverOrderShopBillView();
 				BeanUtils.copyProperties(driverOrderShopBills.get(i), o);
-				DriverAccount driverAccount=driverAccountService.get(o.getDriverAccountId());
+				DriverAccount driverAccount = driverAccountService.get(o.getDriverAccountId());
 				o.setUserName(driverAccount.getUserName());
 				fillUserInfo(o);
 				ol.add(o);
@@ -182,8 +183,8 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 	}
 
 	protected void fillUserInfo(DriverOrderShopBillView driverOrderShopBillView) {
-		if (!F.empty(driverOrderShopBillView.getHandleLoginId())){
-			User user  = userService.getFromCache(driverOrderShopBillView.getHandleLoginId());
+		if (!F.empty(driverOrderShopBillView.getHandleLoginId())) {
+			User user = userService.getFromCache(driverOrderShopBillView.getHandleLoginId());
 			if (user != null) {
 				driverOrderShopBillView.setHandleLoginName(user.getName());
 			}
@@ -192,41 +193,39 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 
 	@Override
 	public String addDriverOrderShopBillandPay(DriverOrderShopBillView driverOrderShopBillView) {
-        DriverOrderPayQuery driverOrderPayQuery = new DriverOrderPayQuery();
-		//判断骑手运单是否重复 通过id和状态为待审核状态
+		DriverOrderPayQuery driverOrderPayQuery = new DriverOrderPayQuery();
+		//判断骑手运单所对应的账单是否重复创建， 通过所选择的运单id和driverOrderPay的状态进行查询
 		driverOrderPayQuery.setDriverOrderShopIds(driverOrderPayQuery.getDriverOrderShopIds());
-		String[] statusArray = {"DDPS01","DDPS02","DDPS03"};
+		String[] statusArray = {"DDPS01", "DDPS02", "DDPS03"};
 		driverOrderPayQuery.setStatusArray(statusArray);
-        List<DriverOrderPay> driverOrderPayList =driverOrderPayService.query(driverOrderPayQuery);
+		List<DriverOrderPay> driverOrderPayList = driverOrderPayService.query(driverOrderPayQuery);
 		if (CollectionUtils.isEmpty(driverOrderPayList)) {
-			//创建账单
+			//创建骑手账单
 			DriverAccount driverAccount = new DriverAccount();
-			driverAccount.setUserName(driverOrderShopBillView.getUserName());
-			List<DriverAccount> driverAccountList = driverAccountService.query(driverAccount);
-			if (CollectionUtils.isNotEmpty(driverAccountList)) {
-				driverOrderShopBillView.setDriverAccountId(driverAccountList.get(0).getId());
-			}
+			driverOrderShopBillView.setDriverAccountId(driverOrderShopBillView.getDriverOrderShopList().get(0).getDriverAccountId());
 			driverOrderShopBillView.setStartDate(driverOrderShopBillView.getAddtimeBegin());
 			driverOrderShopBillView.setEndDate(driverOrderShopBillView.getAddtimeEnd());
 			add(driverOrderShopBillView);
-			//修改运单为待审核状态
-			DriverOrderShopView orderShopView = new DriverOrderShopView();
-			orderShopView.setIds(driverOrderShopBillView.getOrderShopIds());
-			List<DriverOrderShop> driverOrderShops = driverOrderShopService.query(orderShopView);
+			//根据骑手运单信息创建对应的DriverOrderPay
+			List<DriverOrderShop> driverOrderShops = driverOrderShopBillView.getDriverOrderShopList();
 			for (DriverOrderShop driverOrderShop : driverOrderShops) {
-				DriverOrderPay driverOrderPay =new DriverOrderPay();
+				DriverOrderPay driverOrderPay = new DriverOrderPay();
 				driverOrderPay.setAmount(driverOrderShop.getAmount());
 				driverOrderPay.setDriverAccountId(driverOrderShop.getDriverAccountId());
 				driverOrderPay.setStatus("DDPS01");
 				driverOrderPay.setDriverOrderShopBillId(driverOrderShopBillView.getId());
+				driverOrderPay.setDeliverOrderShopId(driverOrderShop.getDeliverOrderShopId());
+				driverOrderPay.setDriverOrderShopId(driverOrderShop.getId());
+				driverOrderPayService.add(driverOrderPay);
 			}
+			return null;
 		} else {
 			String result = "运单ID:";
 			for (DriverOrderPay driverOrderPay : driverOrderPayList) {
 				result += driverOrderPay.getDriverOrderShopId().toString() + " ";
 			}
+			return result;
 		}
-		return null;
 	}
 
 	@Override
@@ -236,31 +235,36 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 			driverOrderShopBill.setPayWay("DDPW04");
 		}
 		edit(driverOrderShopBill);
-		DriverOrderShop driverOrderShop=new DriverOrderShop();
-		driverOrderShop.setDriverOrderShopBillId(driverOrderShopBill.getId());
-		List<DriverOrderShop> driverOrderShopList = driverOrderShopService.query(driverOrderShop);
-		if(CollectionUtils.isNotEmpty(driverOrderShopList)){
-			for(DriverOrderShop orderShop : driverOrderShopList){
+		DriverOrderPay driverOrderPay = new DriverOrderPay();
+		driverOrderPay.setDriverOrderShopBillId(driverOrderShopBill.getId());
+		driverOrderPay.setStatus("DDPS01");
+		List<DriverOrderPay> driverOrderPayList = driverOrderPayService.query(driverOrderPay);
+		if (CollectionUtils.isNotEmpty(driverOrderPayList)) {
+			for (DriverOrderPay orderPay : driverOrderPayList) {
 				//若审核通过，则修改运单状态和余额及日志
-				if("DHS02".equals(driverOrderShopBill.getHandleStatus())) {
-					//依次修改运单状态
-					driverOrderShopService.editStatusByHql(orderShop.getId(),driverOrderShopBill.getHandleStatus());
-					MbBalance mbBalance = mbBalanceService.addOrGetDriverBalance(orderShop.getDriverAccountId());
+				if ("DHS02".equals(driverOrderShopBill.getHandleStatus())) {
+					//修改为支付成功和余额支付
+					orderPay.setStatus("DDPS02");
+					orderPay.setPayWay("DDPW04");
+					//修改运单状态
+					driverOrderShopService.editStatusByHql(orderPay.getDriverOrderShopId(), driverOrderShopBill.getHandleStatus());
+					MbBalance mbBalance = mbBalanceService.addOrGetDriverBalance(orderPay.getDriverAccountId());
 					MbBalanceLog mbBalanceLog = new MbBalanceLog();
 					mbBalanceLog.setBalanceId(mbBalance.getId());
 					//余额日志类型id 为运单的id
-					mbBalanceLog.setRefId(orderShop.getId() + "");
+					mbBalanceLog.setRefId(orderPay.getId() + "");
 					//门店手动结算
 					mbBalanceLog.setRefType("BT151");
-					mbBalanceLog.setAmount(orderShop.getAmount());
-					mbBalanceLog.setReason(String.format("骑手[ID:%1$s]完成运单[ID:%2$s]结算转入", orderShop.getDriverAccountId(), orderShop.getId()));
+					mbBalanceLog.setAmount(orderPay.getAmount());
+					mbBalanceLog.setReason(String.format("骑手[ID:%1$s]完成运单[ID:%2$s]结算转入", orderPay.getDriverAccountId(), orderPay.getDriverOrderShopId()));
 					mbBalanceLogService.addAndUpdateBalance(mbBalanceLog);
-				}else{
-					driverOrderShopService.editStatusByHql(orderShop.getId(),driverOrderShopBill.getHandleStatus());
+				} else {
+					//修改为审核拒绝
+					orderPay.setStatus("DDPS04");
 				}
+				driverOrderPayService.edit(orderPay);
 			}
 		}
-
-	}
+    }
 
 }
