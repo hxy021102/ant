@@ -907,6 +907,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
         deliverOrderExt.setDistance(orderShop.getDistance());
         deliverOrderExt.setAmount(orderShop.getAmount());
 		return deliverOrderExt;
+
 	}
 
 
