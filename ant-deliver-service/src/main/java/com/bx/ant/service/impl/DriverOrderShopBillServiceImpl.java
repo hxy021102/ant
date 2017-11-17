@@ -245,7 +245,7 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 				if ("DHS02".equals(driverOrderShopBill.getHandleStatus())) {
 					//修改为支付成功和余额支付
 					orderPay.setStatus("DDPS02");
-					orderPay.setPayWay("DDPW01");
+					orderPay.setPayWay("DDPW04");
 					//修改运单状态
 					driverOrderShopService.editStatusByHql(orderPay.getDriverOrderShopId(), driverOrderShopBill.getHandleStatus());
 					MbBalance mbBalance = mbBalanceService.addOrGetDriverBalance(orderPay.getDriverAccountId());

@@ -74,11 +74,11 @@
                 title : '运费',
                 width : 30
             }, {
-                field : 'status',
+                field : 'statusName',
                 title : '支付状态',
                 width : 40
             }, {
-                field : 'payWay',
+                field : 'payWayName',
                 title : '支付方式',
                 width : 40
             }] ],

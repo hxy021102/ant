@@ -162,6 +162,8 @@ public class DriverOrderPayServiceImpl extends BaseServiceImpl<DriverOrderPay> i
 				BeanUtils.copyProperties(orderPay, driverOrderPayView);
 				DriverAccount driverAccount = driverAccountService.get(orderPay.getDriverAccountId());
 				driverOrderPayView.setUserName(driverAccount.getUserName());
+				driverOrderPayView.setPayWayName(orderPay.getPayWay());
+				driverOrderPayView.setStatusName(orderPay.getStatus());
 				driverOrderPayViewList.add(driverOrderPayView);
 			}
 			dataGrid.setRows(driverOrderPayViewList);
