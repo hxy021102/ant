@@ -237,7 +237,7 @@ public class ApiDriverAccountController extends BaseController {
                 if (CollectionUtils.isNotEmpty(driverOrderShops)) {
                     todayQuantity = driverOrderShops.size();
                     for (DriverOrderShop o : driverOrderShops) {
-                        if (DriverOrderShopServiceI.STATUS_SETTLEED.equals(o.getStatus())) {
+                        if (DriverOrderShopServiceI.STATUS_DELIVERED.equals(o.getStatus())) {
                             todayAmount += o.getAmount();
                         }
                     }

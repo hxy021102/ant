@@ -55,7 +55,6 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
         for (DriverOrderShopView driverOrderShopView : driverOrderShopViews) {
             try{
                 allocationDriverOrder(driverOrderShopView);
-                driverOrderShopView.setStatus(DriverOrderShopServiceI.STATUS_ALLOCATION);
             }catch(Exception e){
                 logger.error("分单失败", e);
             }
@@ -117,6 +116,7 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
                 String key = driverAccountService.buildAllocationOrderKey(account.getId());
                 if (redisUtil.addSet(key, driverOrderShop.getId().toString())) {
                     redisUtil.expire(key, Integer.parseInt(ConvertNameUtil.getString("DDSV101","48")), TimeUnit.HOURS);
+                    driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_ALLOCATION);
                     driverOrderShopService.transform(driverOrderShop);
                 }
                 logger.debug(String.format("订单:%1s分发给:%2s成功" ,driverOrderShop.getDeliverOrderShopId(), account.getId()));

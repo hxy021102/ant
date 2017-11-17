@@ -342,4 +342,36 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 		redisUtil.removeSet(key, driverOrderShop.getId().toString());
 		reduseAllocationOrderRedis(driverOrderShop.getDriverAccountId());
 	}
+
+	@Override
+	public DataGrid listTodayOrderByAccountId(Integer driverAccountId){
+		Calendar today = Calendar.getInstance();
+		DriverOrderShopView driverOrderShopView = new DriverOrderShopView();
+		today.set(Calendar.HOUR, 0);
+		today.set(Calendar.MINUTE, 0);
+		today.set(Calendar.SECOND, 0);
+		driverOrderShopView.setAddtimeBegin(today.getTime());
+
+		today.set(Calendar.HOUR, 23);
+		today.set(Calendar.HOUR, 59);
+		today.set(Calendar.SECOND, 59);
+		driverOrderShopView.setAddtimeEnd(today.getTime());
+
+		PageHelper ph = new PageHelper();
+		ph.setOrder("desc");
+		ph.setSort("updatetime");
+
+		driverOrderShopView.setDriverAccountId(driverAccountId);
+		driverOrderShopView.setStatus(DriverOrderShopServiceI.STATUS_ACCEPTED + 	DriverOrderShopServiceI.STATUS_DELVIERING + DriverOrderShopServiceI.STATUS_DELIVERED + DriverOrderShopServiceI.STATUS_SETTLEED );
+
+		DataGrid dataGrid = dataGridView(driverOrderShopView, ph);
+
+
+	return dataGrid;
+	}
 }
+
+
+
+
+

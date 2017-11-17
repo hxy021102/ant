@@ -142,4 +142,6 @@ public interface DriverOrderShopServiceI {
 	 * @param driverOrderShop
 	 */
 	void refuseOrder(DriverOrderShop driverOrderShop);
+
+    DataGrid listTodayOrderByAccountId(Integer driverAccountId);
 }

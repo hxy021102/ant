@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.crypto.Data;
 import java.util.*;
 
 /**
@@ -233,6 +234,38 @@ public class ApiDriverOrderShopController extends BaseController {
         json.setObj(driverOrderShopService.clearAllocationOrderRedis(accountId));
         json.setMsg("u know");
         json.setSuccess(true);
+        return json;
+    }
+    @RequestMapping("/getTodayOrders")
+    @ResponseBody
+    public Json getTodayOrders(HttpServletRequest request) {
+        Json json = new Json();
+
+        //获取shopId
+        TokenWrap token = getTokenWrap(request);
+        Integer accountId = Integer.parseInt(token.getUid());
+
+        List<DriverOrderShop> ol = new ArrayList<DriverOrderShop>();
+
+
+
+        DataGrid dataGrid = driverOrderShopService.listTodayOrderByAccountId(accountId);
+//        if (CollectionUtils.isNotEmpty(orderShops)) {
+//            Collections.sort(orderShops, new Comparator<DriverOrderShop>() {
+//                @Override
+//                public int compare(DriverOrderShop d1, DriverOrderShop d2) {
+//                    return d2.getUpdatetime().compareTo(d1.getUpdatetime());
+//                }
+//            });
+//            //通过deliverOrderShop获取deliverOrder
+//            for (DriverOrderShop driverOrderShop : orderShops) {
+//                    ol.add(driverOrderShopService.getView(driverOrderShop.getId()));
+//                }
+//            }
+//        }
+//        json.setMsg("u know");
+//        json.setObj(ol);
+//        json.setSuccess(true);
         return json;
     }
 }
