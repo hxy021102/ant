@@ -101,13 +101,8 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 			}
 			if (!F.empty(deliverOrderShop.getStatus())) {
 				whereHql += " and t.status in(:status)";
-				if (deliverOrderShop.getStatus().split(",") != null && deliverOrderShop.getStatus().split(",").length > 0) {
-					params.put("status", deliverOrderShop.getStatus().split(","));
-					if (params.get("status") == null || " ".equals(params.get("status"))) {
-						params.put("status", deliverOrderShop.getStatus());
-					}
-				}
-			}		
+				params.put("status", deliverOrderShop.getStatus().split(","));
+			}
 			if (!F.empty(deliverOrderShop.getAmount())) {
 				whereHql += " and t.amount = :amount";
 				params.put("amount", deliverOrderShop.getAmount());

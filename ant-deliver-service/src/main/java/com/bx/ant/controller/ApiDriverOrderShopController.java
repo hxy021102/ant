@@ -5,6 +5,7 @@ import com.bx.ant.pageModel.DriverOrderShop;
 import com.bx.ant.pageModel.DriverOrderShopView;
 import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.DeliverOrderServiceI;
+import com.bx.ant.service.DriverAccountServiceI;
 import com.bx.ant.service.DriverOrderShopServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
@@ -41,6 +42,9 @@ public class ApiDriverOrderShopController extends BaseController {
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    private DriverAccountServiceI driverAccountService;
 
     @RequestMapping("/dataGrid")
     @ResponseBody
@@ -228,8 +232,9 @@ public class ApiDriverOrderShopController extends BaseController {
     public  Json countNewAllocationOrder(HttpServletRequest request){
         Json json = new Json();
 
-        TokenWrap token = getTokenWrap(request);
-        Integer accountId  = Integer.parseInt(token.getUid());
+//        TokenWrap token = getTokenWrap(request);
+//        Integer accountId  = Integer.parseInt(token.getUid());
+        Integer accountId = 2;
 
         json.setObj(driverOrderShopService.clearAllocationOrderRedis(accountId));
         json.setMsg("u know");
@@ -249,4 +254,39 @@ public class ApiDriverOrderShopController extends BaseController {
         json.setSuccess(true);
         return json;
     }
+
+    /**
+     * 删除某账户上的redis
+     * @param
+     * @return
+     */
+    @RequestMapping("/deleteRedisErrorOrder")
+    @ResponseBody
+    public Json getTodayOrders(Integer accountId, String driverOrderShopld) {
+        Json json = new Json();
+
+        redisUtil.removeSet(driverAccountService.buildAllocationOrderKey(accountId),driverOrderShopld);
+
+        json.setMsg(String.format("accountId:%1s成功删除driverOrderShopld:%2s", accountId, driverOrderShopld) );
+        json.setSuccess(true);
+        return json;
+    }
+
+    /**
+     *获取新订单数量(test)
+     * @param
+     * @return
+     */
+    @RequestMapping("/getRedisNewOrder")
+    @ResponseBody
+    public Json getTodayOrders(String accountId) {
+        Json json = new Json();
+        String key = Key.build(Namespace.DRIVER_ORDER_SHOP_NEW_ASSIGNMENT_COUNT, accountId);
+        String s = (String) redisUtil.getString(key);
+
+        json.setMsg(String.format("accountId:%1新订单数量:%2s",accountId, s));
+        json.setSuccess(true);
+        return json;
+    }
+
 }

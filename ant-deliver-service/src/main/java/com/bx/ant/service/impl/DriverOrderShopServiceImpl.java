@@ -239,7 +239,7 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 	protected Integer updateAllocationOrderRedis(Integer accountId, Integer quantity){
 		int count = 0;
 		String key = Key.build(Namespace.DRIVER_ORDER_SHOP_NEW_ASSIGNMENT_COUNT, accountId + "");
-		String value = (String) redisUtil.get(key);
+		String value = (String) redisUtil.getString(key);
 		if (!F.empty(value)) {
 			count =  Integer.parseInt(value);
 			switch (quantity) {
