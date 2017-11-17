@@ -22,7 +22,7 @@
     var dataGrid;
     $(function() {
         dataGrid = $('#dataGrid').datagrid({
-            url: '${pageContext.request.contextPath}/driverOrderShopController/dataGrid?driverOrderShopBillId='+${driverOrderShopBill.id},
+            url : '${pageContext.request.contextPath}/driverOrderPayController/dataGrid?driverOrderShopBillId='+${driverOrderShopBill.id},
             fit : true,
             fitColumns : true,
             border : false,
@@ -30,7 +30,7 @@
             idField : 'id',
             pageSize : 10,
             pageList : [ 10, 20, 30, 40, 50 ],
-            sortName : 'updatetime',
+            sortName : 'id',
             sortOrder : 'desc',
             checkOnSelect : false,
             selectOnCheck : false,
@@ -43,59 +43,45 @@
                 title : '编号',
                 width : 150,
                 hidden : true
-            },  {
+            },{
                 field : 'addtime',
                 title : '添加时间',
-                width : 50
-            }, {
-                field : 'updatetime',
-                title : '更新时间',
-                width : 50
-            }, {
-                field : 'shopName',
-                title : '门店名称',
                 width : 70
             },{
-                field : 'deliverOrderShopId',
-                title : '门店运单ID',
-                width : 30,
-                formatter : function (value, row) {
-                    if ($.canViewDeliverOrder)
-                        return '<a onclick="viewDeliverOrder(' + row.deliverOrderShopId + ')">' + row.deliverOrderShopId + '</a>';
-                    return value;
-                }
-            }, {
                 field : 'userName',
                 title : '骑手账号',
-                width : 40,
-                formatter : function (value, row) {
-                    if ($.canViewAccount)
-                        return '<a onclick="viewAccount(' + row.driverAccountId + ')">' + row.userName + '</a>';
-                    return value;
-                }
-            }, {
-                field : 'statusName',
-                title : '运单状态',
-                width : 30
-            }, {
-                field : 'amount',
-                title : '金额',
                 width : 30,
-                align:"right",
-                formatter: function (value) {
-                    if (value == null)
-                        return "";
-                    return $.formatMoney(value);
+                formatter : function (value, row) {
+                    if ($.canViewAccount && value != undefined)
+                        return '<a onclick="viewAccount(' + row.driverAccountId + ')">' + row.userName + '</a>';
+                    return value == null ? "" : value;
+
                 }
-            }, {
-                field : 'payStatusName',
-                title : '支付状态',
+            },/*{
+                field : 'driverOrderShopId',
+                title : '骑手运单ID',
+                width : 30
+            },*/ {
+                field : 'deliverOrderShopId',
+                title : '运单ID',
                 width : 30
             }, {
                 field : 'driverOrderShopBillId',
-                title : '支付账单ID',
+                title : '账单ID',
                 width : 30
-            },] ],
+            }, {
+                field : 'amount',
+                title : '运费',
+                width : 30
+            }, {
+                field : 'status',
+                title : '支付状态',
+                width : 40
+            }, {
+                field : 'payWay',
+                title : '支付方式',
+                width : 40
+            }] ],
             toolbar : '#toolbar',
             onLoadSuccess : function() {
                 $('#searchForm table').show();
@@ -106,14 +92,6 @@
         });
     });
 
-    function viewDeliverOrder(id) {
-        var href = '${pageContext.request.contextPath}/deliverOrderController/view?deliverOrderShopId=' + id;
-        parent.$("#index_tabs").tabs('add', {
-            title : '运单详情-' + id,
-            content : '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
-            closable : true
-        });
-    }
 
     function viewAccount(id) {
         if (id == undefined) {

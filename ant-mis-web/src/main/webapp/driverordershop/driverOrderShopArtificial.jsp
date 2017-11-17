@@ -158,7 +158,7 @@
             }
             driverOrderShopBillView.orderShopIds=orderShopIds;
             driverOrderShopBillView.amount=totalAmount;
-            driverOrderShopBillView.deliverOrderShopList=rows;
+            driverOrderShopBillView.driverOrderShopList=rows;
             parent.$.messager.confirm("询问","总金额："+$.formatMoney(totalAmount) +"<br/>起始时间："+driverOrderShopBillView.addtimeBegin+"<br/>结束时间:"+driverOrderShopBillView.addtimeEnd+"<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>是否确认创建账单?</strong>",function (result) {
                 if(result)  {
                     $.ajax({

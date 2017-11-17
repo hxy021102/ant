@@ -2,9 +2,11 @@ package com.mobian.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.bx.ant.pageModel.DriverAccount;
+import com.bx.ant.pageModel.DriverOrderPay;
 import com.bx.ant.pageModel.DriverOrderShop;
 import com.bx.ant.pageModel.DriverOrderShopView;
 import com.bx.ant.service.DriverAccountServiceI;
+import com.bx.ant.service.DriverOrderPayServiceI;
 import com.bx.ant.service.DriverOrderShopServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.Colum;
@@ -38,7 +40,8 @@ public class DriverOrderShopController extends BaseController {
 	private DriverOrderShopServiceI driverOrderShopService;
 	@Resource
 	private DriverAccountServiceI driverAccountService;
-
+	@Resource
+	private DriverOrderPayServiceI driverOrderPayService;
 
 	/**
 	 * 跳转到DriverOrderShop管理页面
@@ -218,8 +221,8 @@ public class DriverOrderShopController extends BaseController {
 	@RequestMapping("/dataGridArtificial")
 	@ResponseBody
 	public DataGrid dataGridArtificial(DriverOrderShopView driverOrderShopView, PageHelper ph) {
-		if (!F.empty(driverOrderShopView.getUserName()) || driverOrderShopView.getAddtimeBegin() != null
-				|| driverOrderShopView.getAddtimeEnd() != null) {
+		if (!F.empty(driverOrderShopView.getUserName()) && driverOrderShopView.getAddtimeBegin() != null
+				&& driverOrderShopView.getAddtimeEnd() != null) {
 			if (!F.empty(driverOrderShopView.getUserName())) {
 				DriverAccount driverAccount = new DriverAccount();
 				driverAccount.setUserName(driverOrderShopView.getUserName().trim());
@@ -227,6 +230,18 @@ public class DriverOrderShopController extends BaseController {
 				if (CollectionUtils.isNotEmpty(driverAccountList)) {
 					driverOrderShopView.setDriverAccountId(driverAccountList.get(0).getId());
 				}
+			}
+			DriverOrderPay driverOrderPay = new DriverOrderPay();
+			//获取运单支付状态为待支付或者已支付
+			driverOrderPay.setStatus("DDPS01,DDPS02");
+			List<DriverOrderPay> driverOrderPayList = driverOrderPayService.query(driverOrderPay);
+			if (CollectionUtils.isNotEmpty(driverOrderPayList)) {
+				Long[] notInIds = new Long[driverOrderPayList.size()];
+				int i = 0;
+				for (DriverOrderPay orderPay : driverOrderPayList) {
+					notInIds[i++] = orderPay.getDriverOrderShopId();
+				}
+				driverOrderShopView.setNotInIds(notInIds);
 			}
 			//已送达且未支付的
 			driverOrderShopView.setStatus("DDSS20");

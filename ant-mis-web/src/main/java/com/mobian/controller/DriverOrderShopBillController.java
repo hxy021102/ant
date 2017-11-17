@@ -265,7 +265,6 @@ public class DriverOrderShopBillController extends BaseController {
 		Json j = new Json();
 		driverOrderShopBill.setHandleLoginId(sessionInfo.getId());
 		driverOrderShopBillService.editDriverShopBillAndOrderPay(driverOrderShopBill);
-
 		j.setSuccess(true);
 		j.setMsg("编辑成功！");
 		return j;

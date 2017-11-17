@@ -4,6 +4,7 @@ import com.bx.ant.dao.DriverOrderPayDaoI;
 import com.bx.ant.model.TdeliverOrderShopPay;
 import com.bx.ant.model.TdriverOrderPay;
 import com.bx.ant.pageModel.*;
+import com.bx.ant.service.DriverAccountServiceI;
 import com.bx.ant.service.DriverOrderPayServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
@@ -24,6 +25,9 @@ public class DriverOrderPayServiceImpl extends BaseServiceImpl<DriverOrderPay> i
 
 	@Autowired
 	private DriverOrderPayDaoI driverOrderPayDao;
+
+	@Autowired
+	private DriverAccountServiceI driverAccountService;
 
 	@Override
 	public DataGrid dataGrid(DriverOrderPay driverOrderPay, PageHelper ph) {
@@ -69,8 +73,8 @@ public class DriverOrderPayServiceImpl extends BaseServiceImpl<DriverOrderPay> i
 				params.put("driverOrderShopBillId", driverOrderPay.getDriverOrderShopBillId());
 			}		
 			if (!F.empty(driverOrderPay.getStatus())) {
-				whereHql += " and t.status = :status";
-				params.put("status", driverOrderPay.getStatus());
+				whereHql += " and t.status in(:status)";
+				params.put("status", driverOrderPay.getStatus().split(","));
 			}		
 			if (!F.empty(driverOrderPay.getAmount())) {
 				whereHql += " and t.amount = :amount";
@@ -147,4 +151,22 @@ public class DriverOrderPayServiceImpl extends BaseServiceImpl<DriverOrderPay> i
 		return ol;
 	}
 
+	@Override
+	public DataGrid dataGridView(DriverOrderPay driverOrderPay, PageHelper ph) {
+		DataGrid dataGrid = dataGrid(driverOrderPay, ph);
+		List<DriverOrderPay> driverOrderPayList = dataGrid.getRows();
+		if (CollectionUtils.isNotEmpty(driverOrderPayList)) {
+			List<DriverOrderPayView> driverOrderPayViewList = new ArrayList<DriverOrderPayView>();
+			for (DriverOrderPay orderPay : driverOrderPayList) {
+				DriverOrderPayView driverOrderPayView = new DriverOrderPayView();
+				BeanUtils.copyProperties(orderPay, driverOrderPayView);
+				DriverAccount driverAccount = driverAccountService.get(orderPay.getDriverAccountId());
+				driverOrderPayView.setUserName(driverAccount.getUserName());
+				driverOrderPayViewList.add(driverOrderPayView);
+			}
+			dataGrid.setRows(driverOrderPayViewList);
+		}
+		return dataGrid;
+	}
 }
+

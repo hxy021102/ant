@@ -61,4 +61,13 @@ public interface DriverOrderPayServiceI {
 	 */
 	List<DriverOrderPay> query(DriverOrderPay driverOrderPay);
 
+
+	/**
+	 * 获取DriverOrderPay显示的数据
+	 * @param driverOrderPay
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridView(DriverOrderPay driverOrderPay, PageHelper ph);
+
 }

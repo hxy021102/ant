@@ -18,7 +18,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "driver_order_pay")
 @DynamicInsert(true)
 @DynamicUpdate(true)
-public class TdriverOrderPay implements java.io.Serializable, com.mobian.model.IEntity {
+public class TdriverOrderPay implements java.io.Serializable, IEntity {
 	private static final long serialVersionUID = 5454155825314635342L;
 	
 	//alias
