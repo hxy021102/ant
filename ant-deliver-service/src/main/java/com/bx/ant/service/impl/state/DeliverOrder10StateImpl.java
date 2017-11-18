@@ -106,7 +106,8 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
         if(F.empty(deliverOrder.getDeliverOrderLogType())) {
             deliverOrderService.editAndAddLog(deliverOrder, DeliverOrderLogServiceI.TYPE_ASSIGN_DELIVER_ORDER, "系统自动分配订单");
         }else{
-            deliverOrderService.editAndAddLog(deliverOrder, deliverOrder.getDeliverOrderLogType(), "指派订单给门店");
+            String content = deliverOrder.getOrderLogRemark() == null ? "指派订单给门店" : "指派订单给门店【" + deliverOrder.getOrderLogRemark() + "】";
+            deliverOrderService.editAndAddLog(deliverOrder, deliverOrder.getDeliverOrderLogType(), content);
         }
     }
 

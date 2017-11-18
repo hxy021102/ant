@@ -84,8 +84,8 @@
 				title : '<%=TmbWithdrawLog.ALIAS_BALANCE_ID%>',
 				width : 40,
 				formatter:function (value, row) {
-                    if ($.canViewBalance && row.shopId !=null)
-                        return '<a onclick="viewBalance(' + row.shopId + ')">' + value + '</a>';
+                    if ($.canViewBalance && row.balanceId !=null)
+                        return '<a onclick="viewBalance(' + row.balanceId + ')">' + value + '</a>';
                     return value;
                 }
 				}, {
@@ -294,7 +294,7 @@
         });
     }
     function viewBalance(id) {
-        var href = '${pageContext.request.contextPath}/mbUserController/viewBalance?shopId=' + id;
+        var href = '${pageContext.request.contextPath}/mbUserController/viewBalance?balanceId=' + id;
         parent.$("#index_tabs").tabs('add', {
             title: '余额-' + id,
             content: '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',

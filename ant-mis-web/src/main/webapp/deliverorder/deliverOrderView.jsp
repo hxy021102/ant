@@ -224,7 +224,7 @@
                  }, {
                      field : 'content',
                      title : '内容',
-                     width : 80
+                     width : 130
                  }, {
                      field : 'loginName',
                      title : '操作人',

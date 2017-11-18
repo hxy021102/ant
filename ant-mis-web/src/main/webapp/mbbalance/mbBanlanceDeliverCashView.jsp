@@ -41,6 +41,7 @@
                 nowrap : false,
                 striped : true,
                 rownumbers : true,
+                showFooter : true,
                 singleSelect : true,
                 columns : [ [ {
                     field : 'id',
@@ -50,11 +51,11 @@
                 }, {
                     field : 'updatetime',
                     title : '<%=TmbBalanceLog.ALIAS_TIME%>',
-                    width : 100
+                    width : 80
                 }, {
                     field : 'refTypeName',
                     title : '<%=TmbBalanceLog.ALIAS_REF_TYPE%>',
-                    width : 100
+                    width : 70
                 }, {
                     field : 'amountIn',
                     title : '收入（+）',
@@ -92,7 +93,7 @@
                 }, {
                     field : 'refId',
                     title : '<%=TmbBalanceLog.ALIAS_REF_ID%>',
-                    width : 80,
+                    width : 40,
                     formatter : function (value, row, index) {
                         if(row.refType=="BT016" || row.refType =="BT017" || row.refType == "BT018"  || row.refType=="BT005" || row.refType=="BT006" || row.refType=="BT002") {
                             return '<a onclick="viewOrder('+ row.refId +',\''+row.refType+'\')">' + row.refId + '</a>';
@@ -105,7 +106,7 @@
                 }, {
                     field : 'reason',
                     title : '<%=TmbBalanceLog.ALIAS_REASON%>',
-                    width : 100
+                    width : 120
                 }, {
                     field : 'remark',
                     title : '<%=TmbBalanceLog.ALIAS_REMARK%>',
@@ -117,12 +118,14 @@
                     hidden: $.canEdit ? false : true,
                     formatter: function (value, row, index) {
                         var str = '';
-                        if ($.canEdit) {
+                        if (row.id&&$.canEdit&& ${readOnly!=true})  {
                             str = '<a onclick="editShow(' + row.id + ',' + row.isShow + ');" href="javascript:void(0);" class="switch" is-show="'+row.isShow+'">'+(row.isShow ? '点击影藏' : '点击显示')+'</a>';
                         }
 
                         return str;
                     }
+
+
                 }]],
                 toolbar : '#toolbar',
                 onLoadSuccess: function () {

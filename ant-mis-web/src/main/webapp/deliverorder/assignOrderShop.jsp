@@ -44,6 +44,12 @@
 						 <jb:selectGrid dataType="assignShopId" name="shopId" params="${deliverOrder}"></jb:selectGrid>
 					</td>
 			    </tr>
+				<tr>
+					<th>备注</th>
+					<td colspan="2">
+						<textarea name="orderLogRemark" style="width: 97%" rows="3"    class="easyui-validatebox"    > </textarea>
+					</td>
+				</tr>
 			</table>				
 		</form>
 	</div>
