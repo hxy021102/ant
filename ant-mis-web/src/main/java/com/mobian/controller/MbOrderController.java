@@ -12,6 +12,7 @@ import com.mobian.service.impl.CompletionFactory;
 import com.mobian.service.impl.DiveRegionServiceImpl;
 import com.mobian.service.impl.order.OrderState;
 import com.mobian.util.ConfigUtil;
+import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,28 +125,28 @@ public class MbOrderController extends BaseController {
 	}
 
 
-     protected  void  getDriver(DataGrid dg){
-		 List<MbOrder> ol = dg.getRows();
-		 if (CollectionUtils.isNotEmpty(ol)) {
-			 CompletionService completionService = CompletionFactory.initCompletion();
-			 for (MbOrder o : ol) {
-				 // 获取司机
-				 if (!F.empty(o.getDeliveryDriver()))
-					 completionService.submit(new Task<MbOrder, User>(new CacheKey("user", o.getDeliveryDriver()), o) {
-						 @Override
-						 public User call() throws Exception {
-							 return userService.getFromCache(getD().getDeliveryDriver());
-						 }
+	protected void getDriver(DataGrid dg) {
+		List<MbOrder> ol = dg.getRows();
+		if (CollectionUtils.isNotEmpty(ol)) {
+			CompletionService completionService = CompletionFactory.initCompletion();
+			for (MbOrder o : ol) {
+				// 获取司机
+				if (!F.empty(o.getDeliveryDriver()))
+					completionService.submit(new Task<MbOrder, User>(new CacheKey("user", o.getDeliveryDriver()), o) {
+						@Override
+						public User call() throws Exception {
+							return userService.getFromCache(getD().getDeliveryDriver());
+						}
 
-						 protected void set(MbOrder d, User v) {
-							 if (v != null)
-								 d.setDeliveryDriverName(v.getNickname());
-						 }
-					 });
-			 }
-			 completionService.sync();
-		 }
-	 }
+						protected void set(MbOrder d, User v) {
+							if (v != null)
+								d.setDeliveryDriverName(v.getNickname());
+						}
+					});
+			}
+			completionService.sync();
+		}
+	}
 	@RequestMapping("/queryOrderDataGrid")
 	@ResponseBody
 	public DataGrid queryOrderDataGrid(MbOrder mbOrder,PageHelper ph){
@@ -300,12 +301,16 @@ public class MbOrderController extends BaseController {
 			//自动支付
 			mbOrder.setStatus("OD10");
 		}else{
+			//非直营门店
+			if ("1".equals(ConvertNameUtil.getString("SV110")) && !MbShopServiceI.ST03.equals(mbShop.getShopType()) && ConvertNameUtil.getDesc("SV111", "").indexOf("|" + mbShop.getId() + "|") < 0) {
+				//并且不在例外门店中，限制发货
+				throw new ServiceException("余额不足，不能发货，请联系财务");
+			}
 			mbOrder.setStatus("OD09");
 		}
 		mbOrder.setDeliveryPrice(0);
 		mbOrder.setAddLoginId(sessionInfo.getId());
 
-		//TODO 找到他的用户ID
 		mbOrder.setUserId(mbShop.getUserId());
 		orderService02.handle(mbOrder);
 		j.setObj(mbOrder.getId());
