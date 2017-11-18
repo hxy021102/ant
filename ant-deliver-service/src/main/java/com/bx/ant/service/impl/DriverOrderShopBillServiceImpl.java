@@ -9,6 +9,8 @@ import com.mobian.pageModel.*;
 import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.UserServiceI;
+import com.mobian.util.ConvertNameUtil;
+import com.mobian.util.DateUtil;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -16,11 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import java.util.*;
 
 
 @Service
@@ -266,5 +264,66 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 			}
 		}
     }
+
+	@Override
+	public void addPayOperation() {
+		DriverOrderShopView driverOrderShopView = new DriverOrderShopView();
+		DriverOrderPay driverOrderPay = new DriverOrderPay();
+		//获取运单支付状态为待支付或者已支付的运单id
+		driverOrderPay.setStatus("DDPS01,DDPS02");
+		List<DriverOrderPay> driverOrderPayList = driverOrderPayService.query(driverOrderPay);
+		if (CollectionUtils.isNotEmpty(driverOrderPayList)) {
+			Long[] notInIds = new Long[driverOrderPayList.size()];
+			int i = 0;
+			for (DriverOrderPay orderPay : driverOrderPayList) {
+				notInIds[i++] = orderPay.getDriverOrderShopId();
+			}
+			driverOrderShopView.setNotInIds(notInIds);
+		}
+		//已送达且未支付的
+		driverOrderShopView.setStatus("DDSS20");
+		driverOrderShopView.setPayStatus("DDPS01");
+		//获取符合支付要求的运单列表
+		List<DriverOrderShop> driverOrderShopList=driverOrderShopService.query(driverOrderShopView);
+		if(CollectionUtils.isNotEmpty(driverOrderPayList)) {
+			for(DriverOrderShop driverOrderShop:driverOrderShopList) {
+				Date expireDate = DateUtil.addDayToDate(new Date(), -Integer.valueOf(ConvertNameUtil.getString("DDSV102", "1")));
+				if (driverOrderShop.getAddtime().getTime() < expireDate.getTime()) {
+					//创建骑手运单bill
+					DriverOrderShopBill driverOrderShopBill =new DriverOrderShopBill();
+					driverOrderShopBill.setAmount(driverOrderShop.getAmount());
+					driverOrderShopBill.setStartDate(driverOrderShop.getAddtime());
+					driverOrderShopBill.setEndDate(driverOrderShop.getAddtime());
+					driverOrderShopBill.setHandleStatus("DHS02");
+					driverOrderShopBill.setPayWay("DDPW04");
+					add(driverOrderShopBill);
+					//创建骑手运单所对应的pay
+					DriverOrderPay orderPay = new DriverOrderPay();
+					orderPay.setAmount(driverOrderShop.getAmount());
+					orderPay.setDriverAccountId(driverOrderShop.getDriverAccountId());
+					orderPay.setStatus("DDPS02");
+					orderPay.setPayWay("DDPW04");
+					orderPay.setDriverOrderShopBillId(driverOrderShopBill.getId());
+					orderPay.setDeliverOrderShopId(driverOrderShop.getDeliverOrderShopId());
+					orderPay.setDriverOrderShopId(driverOrderShop.getId());
+					driverOrderPayService.add(driverOrderPay);
+
+					//修改运单状态
+					driverOrderShopService.editStatusByHql(orderPay.getDriverOrderShopId(), "DHS02");
+					MbBalance mbBalance = mbBalanceService.addOrGetDriverBalance(orderPay.getDriverAccountId());
+					MbBalanceLog mbBalanceLog = new MbBalanceLog();
+					mbBalanceLog.setBalanceId(mbBalance.getId());
+					//余额日志类型id 为运单的id
+					mbBalanceLog.setRefId(orderPay.getId() + "");
+					//门店手动结算
+					mbBalanceLog.setRefType("BT150");
+					mbBalanceLog.setAmount(orderPay.getAmount());
+					mbBalanceLog.setReason(String.format("骑手[ID:%1$s]完成运单[ID:%2$s]结算转入", orderPay.getDriverAccountId(), orderPay.getDriverOrderShopId()));
+					mbBalanceLogService.addAndUpdateBalance(mbBalanceLog);
+				}
+			}
+		}
+
+	}
 
 }

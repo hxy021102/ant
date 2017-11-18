@@ -66,8 +66,8 @@ public class DriverFreightRuleController extends BaseController {
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(DriverFreightRule driverFreightRule, PageHelper ph) {
-		DataGrid dataGrid = new DataGrid();
-		List<DriverFreightRule> l = driverFreightRuleService.dataGrid(driverFreightRule, ph).getRows();
+		DataGrid dataGrid = driverFreightRuleService.dataGrid(driverFreightRule, ph);
+		List<DriverFreightRule> l = dataGrid.getRows();
 		List<DriverFreightRuleVO> ol = new ArrayList<DriverFreightRuleVO>();
 		if (CollectionUtils.isNotEmpty(l)) {
 			for(DriverFreightRule t : l) {

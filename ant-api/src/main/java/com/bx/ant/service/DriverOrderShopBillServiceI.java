@@ -67,5 +67,10 @@ public interface DriverOrderShopBillServiceI {
 	/**
 	 * 骑手账单审核通过过后进行支付操作，改变账单状态和运单状态，以及修改骑手余额和添加余额日志
 	 */
-	public void editDriverShopBillAndOrderPay(DriverOrderShopBill driverOrderShopBill);
+	void editDriverShopBillAndOrderPay(DriverOrderShopBill driverOrderShopBill);
+
+	/**
+	 * 添加骑手账单并进行自动支付
+	 */
+	void addPayOperation();
 }

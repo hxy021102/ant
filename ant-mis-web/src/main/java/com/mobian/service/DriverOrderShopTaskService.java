@@ -17,4 +17,6 @@ public class DriverOrderShopTaskService {
     public void orderAllocation(){
         driverOrderShopAllocationService.orderAllocation();
     }
+
+    public void addPayOperation() {}
 }
