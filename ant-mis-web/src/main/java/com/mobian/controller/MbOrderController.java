@@ -295,14 +295,22 @@ public class MbOrderController extends BaseController {
 
 		//费用
 		MbBalance mbBalance = mbBalanceService.addOrGetMbBalance(mbShop.getId());
+		boolean isCheck = "1".equals(ConvertNameUtil.getString("SV110")) && !MbShopServiceI.ST03.equals(mbShop.getShopType()) && ConvertNameUtil.getDesc("SV111", "").indexOf("|" + mbShop.getId() + "|") < 0;
 		if (mbBalance.getAmount() >= totalPrice) {
+			if (isCheck) {
+				Integer debt = mbOrderService.getOrderDebtMoney(mbShop.getId());
+				if (debt != null && debt > 0) {
+					throw new ServiceException("存在欠款，不能发货，请联系财务");
+				}
+			}
 			//支付相关数据
 			mbOrder.setPayWay("PW01");
 			//自动支付
 			mbOrder.setStatus("OD10");
-		}else{
+
+		} else {
 			//非直营门店
-			if ("1".equals(ConvertNameUtil.getString("SV110")) && !MbShopServiceI.ST03.equals(mbShop.getShopType()) && ConvertNameUtil.getDesc("SV111", "").indexOf("|" + mbShop.getId() + "|") < 0) {
+			if (isCheck) {
 				//并且不在例外门店中，限制发货
 				throw new ServiceException("余额不足，不能发货，请联系财务");
 			}
