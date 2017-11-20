@@ -108,20 +108,25 @@ public class MbSupplierStockInServiceImpl extends BaseServiceImpl<MbSupplierStoc
             Integer totalPrice, totalQuantity, averagePrice;
             totalQuantity = mbItemStockShop.getQuantity() + mbSupplierStockInItem.getQuantity();
             if (F.empty(mbItemStockShop.getAveragePrice())) {
-                averagePrice =mbSupplierStockInItem.getPrice();
+                averagePrice = mbSupplierStockInItem.getPrice();
             } else {
                 if (mbItemStockShop.getQuantity() < 0) {
                     mbItemStockShop.setQuantity(mbItemStockShop.getQuantity() * (-1));
                 }
                 totalPrice = mbItemStockShop.getAveragePrice() * mbItemStockShop.getQuantity() + mbSupplierStockInItem.getPrice() * mbSupplierStockInItem.getQuantity();
-                averagePrice = totalPrice / (mbItemStockShop.getQuantity() + mbSupplierStockInItem.getQuantity());
+                int denominator = mbItemStockShop.getQuantity() + mbSupplierStockInItem.getQuantity();
+                if (denominator != 0) {
+                    averagePrice = totalPrice / denominator;
+                } else {
+                    averagePrice = mbItemStockShop.getAveragePrice();
+                }
             }
             MbItemStock changeShop = new MbItemStock();
             changeShop.setId(mbItemStockShop.getId());
             changeShop.setAdjustment(mbSupplierStockInItem.getQuantity() == null ? 0 : mbSupplierStockInItem.getQuantity());
             changeShop.setAveragePrice(averagePrice);
             changeShop.setLogType("SL02");
-            changeShop.setReason(String.format("入库ID：%s发货入库，库存:%s", mbSupplierStockIn.getId(),totalQuantity));
+            changeShop.setReason(String.format("入库ID：%s发货入库，库存:%s", mbSupplierStockIn.getId(), totalQuantity));
             changeShop.setInPrice(mbSupplierStockInItem.getPrice());
             mbItemStockService.editItemStockAveragePrice(changeShop);
             mbItemStockService.editAndInsertLog(changeShop, mbSupplierStockIn.getLoginId());
