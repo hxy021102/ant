@@ -51,10 +51,10 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
         DriverOrderShop request = new DriverOrderShop();
         PageHelper ph = new PageHelper();
         request.setStatus(DriverOrderShopServiceI.STATUS_STANDBY);
-        List<DriverOrderShop> driverOrderShops = driverOrderShopService.dataGrid(request, ph).getRows();
-        for (DriverOrderShop driverOrderShop : driverOrderShops) {
+        List<DriverOrderShopView> driverOrderShopViews = driverOrderShopService.dataGridView(request, ph).getRows();
+        for (DriverOrderShopView driverOrderShopView : driverOrderShopViews) {
             try{
-                allocationDriverOrder(driverOrderShop);
+                allocationDriverOrder(driverOrderShopView);
             }catch(Exception e){
                 logger.error("分单失败", e);
             }
@@ -81,7 +81,7 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
         return count;
     }
 
-    protected void allocationDriverOrder(DriverOrderShop driverOrderShop) {
+    protected void allocationDriverOrder(DriverOrderShopView driverOrderShop) {
         //2. 获取骑手
         List<DriverAccount> driverAccounts = driverAccountService.getAvilableAndWorkDriver();
 

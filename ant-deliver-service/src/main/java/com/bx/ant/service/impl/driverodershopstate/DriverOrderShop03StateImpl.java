@@ -34,7 +34,7 @@ public class DriverOrderShop03StateImpl implements DriverOrderShopState {
     public void handle(DriverOrderShop driverOrderShop) {
         DriverOrderShop orderShop = new DriverOrderShop();
         orderShop.setId(driverOrderShop.getId());
-        orderShop.setDriverAccountId(driverOrderShop.getDriverAccountId());
+//        orderShop.setDriverAccountId(driverOrderShop.getDriverAccountId());
         orderShop.setStatus(prefix + getStateName());
         driverOrderShopSerivce.edit(orderShop);
 
