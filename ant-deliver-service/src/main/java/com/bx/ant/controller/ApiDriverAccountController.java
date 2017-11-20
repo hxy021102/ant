@@ -208,32 +208,12 @@ public class ApiDriverAccountController extends BaseController {
         try{
             TokenWrap token = tokenService.getToken(request);
             if(!F.empty(token.getUid())) {
-                DriverAccount account = driverAccountService.get(Integer.valueOf(token.getUid()));
-                DriverOrderShopView orderShopView = new DriverOrderShopView();
-
-
-                // TODO 统计今日有效订单和今日营业额
-                //获取当天结束与开始
-                Calendar todayC = Calendar.getInstance();
-                todayC.set(Calendar.HOUR_OF_DAY,0);
-                todayC.set(Calendar.MINUTE,0);
-                todayC.set(Calendar.SECOND,0);
-                Date todayStart = todayC.getTime();
-                todayC.set(Calendar.HOUR_OF_DAY,23);
-                todayC.set(Calendar.MINUTE,59);
-                todayC.set(Calendar.SECOND,59);
-                Date todayEnd = todayC.getTime();
+                Integer accountId = Integer.valueOf(token.getUid());
+                DriverAccount account = driverAccountService.get(accountId);
                 Integer todayAmount = new Integer(0) ;
-
                 //获取有效订单数量
                 Integer todayQuantity = new Integer(0);
-
-
-//                String statusList = DriverOrderShopServiceI.STATUS_ACCEPTED + "," + DriverOrderShopServiceI.STATUS_DELVIERING + "," +DriverOrderShopServiceI.STATUS_DELIVERED ;
-//                orderShopView.setStatus(statusList);
-                orderShopView.setUpdatetimeBegin(todayStart);
-                orderShopView.setUpdatetimeEnd(todayEnd);
-                List<DriverOrderShop> driverOrderShops = driverOrderShopService.dataGridView(orderShopView, new PageHelper()).getRows();
+                List<DriverOrderShop> driverOrderShops = driverOrderShopService.listTodayOrderByAccountId(accountId).getRows();
                 if (CollectionUtils.isNotEmpty(driverOrderShops)) {
                     todayQuantity = driverOrderShops.size();
                     for (DriverOrderShop o : driverOrderShops) {
