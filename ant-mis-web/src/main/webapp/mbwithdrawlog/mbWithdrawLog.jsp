@@ -28,11 +28,11 @@
 		$.canEditAuditt = true;
 	</script>
 </c:if>
-	<c:if test="${fn:contains(sessionInfo.resourceList, '/mbBalanceController/view')}">
-		<script type="text/javascript">
-            $.canViewBalance = true;
-		</script>
-	</c:if>
+<c:if test="${fn:contains(sessionInfo.resourceList, '/mbUserController/viewBalance')}">
+	<script type="text/javascript">
+		$.canViewBalance = true;
+	</script>
+</c:if>
 
 <script type="text/javascript">
 	var dataGrid;
@@ -62,25 +62,36 @@
 				}, {
 				field : 'addtime',
 				title : '<%=TmbWithdrawLog.ALIAS_ADDTIME%>',
-				width : 80
-				},  {
+				width : 90
+				}, {
+                field : 'shopId',
+                title : '门店ID',
+                width : 40
+                },{
+                field : 'shopName',
+                title : '门店名称',
+                width : 80
+                }, {
+                field : 'applyLoginId',
+                title : '申请人ID',
+                width : 40
+                },{
+                field : 'applyLoginName',
+                title : '申请人名称',
+                width : 50
+                },{
 				field : 'balanceId',
 				title : '<%=TmbWithdrawLog.ALIAS_BALANCE_ID%>',
-				width : 50,
-				formatter:function (value, row, index) {
-                    var str = '';
-					if ($.canView) {
-                        str += $.formatString('<a href="javascript:void(0);" onclick="viewBalance(\'{0}\');" class="easyui-linkbutton">{1}</a>',value, value);
-                        return str;
-                    } else {
-					    return value;
-					}
-
+				width : 40,
+				formatter:function (value, row) {
+                    if ($.canViewBalance && row.balanceId !=null)
+                        return '<a onclick="viewBalance(' + row.balanceId + ')">' + value + '</a>';
+                    return value;
                 }
 				}, {
 				field : 'amount',
 				title : '<%=TmbWithdrawLog.ALIAS_AMOUNT%>',
-				width : 50,
+				width : 40,
 				align: "right",
 				formatter: function (value, row, index) {
 				    if (value != null)
@@ -91,27 +102,23 @@
 				}, {
 				field : 'refTypeName',
 				title : '<%=TmbWithdrawLog.ALIAS_REF_TYPE%>',
-				width : 70
+				width : 80
 				},{
                     field : 'receiverAccount',
                     title : '收款账户',
-                    width : 120
+                    width : 135
                 }, {
-				field : 'applyLoginName',
-				title : '申请人名称',
-				width : 50
-				},{
 				field : 'recevierTime',
 				title : '<%=TmbWithdrawLog.ALIAS_REMITTER_TIME%>',
-				width : 50
+				width : 90
 				}, {
 				field : 'handleStatusName',
 				title : '<%=TmbWithdrawLog.ALIAS_HANDLE_STATUS%>',
-				width : 50		
+				width : 40
 				}, {
 				field : 'handleLoginName',
 				title : '<%=TmbWithdrawLog.ALIAS_HANDLE_LOGIN_ID%>',
-				width : 50		
+				width : 40
 				}, {
 				field : 'payCode',
 				title : '<%=TmbWithdrawLog.ALIAS_PAY_CODE%>',
@@ -124,7 +131,7 @@
 				}, {
 				field : 'action',
 				title : '操作',
-				width : 100,
+				width : 40,
 				formatter : function(value, row, index) {
 					var str = '';
 					<%--if ($.canEdit) {--%>
@@ -287,7 +294,7 @@
         });
     }
     function viewBalance(id) {
-        var href = '${pageContext.request.contextPath}/mbUserController/viewBalance?shopId=' + id;
+        var href = '${pageContext.request.contextPath}/mbUserController/viewBalance?balanceId=' + id;
         parent.$("#index_tabs").tabs('add', {
             title: '余额-' + id,
             content: '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
