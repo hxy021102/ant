@@ -295,7 +295,7 @@ public class MbOrderController extends BaseController {
 
 		//费用
 		MbBalance mbBalance = mbBalanceService.addOrGetMbBalance(mbShop.getId());
-		boolean isCheck = "1".equals(ConvertNameUtil.getString("SV110")) && !MbShopServiceI.ST03.equals(mbShop.getShopType()) && ConvertNameUtil.getDesc("SV111", "").indexOf("|" + mbShop.getId() + "|") < 0;
+		boolean isCheck = "1".equals(ConvertNameUtil.getString("SV110")) && !MbShopServiceI.ST02.equals(mbShop.getShopType()) && ConvertNameUtil.getDesc("SV111", "").indexOf("|" + mbShop.getId() + "|") < 0;
 		if (mbBalance.getAmount() >= totalPrice) {
 			if (isCheck) {
 				Integer debt = mbOrderService.getOrderDebtMoney(mbShop.getId());
