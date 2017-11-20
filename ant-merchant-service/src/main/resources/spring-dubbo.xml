@@ -9,11 +9,15 @@
        <!--定义了提供方应用信息，用于计算依赖关系；在 dubbo-admin 或 dubbo-monitor 会显示这个名字，方便辨识-->
        <dubbo:application name="merchant" owner="programmer" organization="dubbox"/>
        <!--使用 redis 注册中心暴露服务，注意要先开启 redis-->
-       <dubbo:registry address="${dubbo.registry.address}" check="false"/>
-       <!--<dubbo:registry protocol="redis" address="114.55.59.141:6379" />-->
-<!--
-       <dubbo:registry address="127.0.0.1:9090" />
--->
+       <dubbo:registry address="${dubbo.registry.address}" check="false" register="${dubbo.registry.registry}"/>
+
+       <dubbo:consumer check="false" />
+
+       <!-- 扫描注解包路径，多个包用逗号分隔，不填pacakge表示扫描当前ApplicationContext中所有的类 -->
+       <!--<dubbo:annotation package="com.bx.ant.controller" />-->
+
+       <dubbo:reference id="shopDeliverAccountService" interface="com.bx.ant.service.ShopDeliverAccountServiceI" url="${dubbo.direct.url}"/>
+
        <!-- 用dubbo协议在20880端口暴露服务 -->
        <dubbo:protocol name="${dubbo.protocol.name}" port="${dubbo.protocol.port}" />
        <!-- 延迟到Spring初始化完成后，再暴露服务,服务调用超时设置为6秒,超时不重试-->

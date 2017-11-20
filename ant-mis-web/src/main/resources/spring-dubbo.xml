@@ -12,21 +12,21 @@
     <!-- 扫描注解包路径，多个包用逗号分隔，不填pacakge表示扫描当前ApplicationContext中所有的类 -->
     <!--<dubbo:annotation package="com.bx.ant.controller" />-->
     <dubbo:consumer check="false" />
-    <dubbo:reference id="shopDeliverAccountService" interface="com.bx.ant.service.ShopDeliverAccountServiceI"/>
-    <dubbo:reference id="shopDeliverApplyService" interface="com.bx.ant.service.ShopDeliverApplyServiceI"/>
-    <dubbo:reference id="deliverOrderService" interface="com.bx.ant.service.DeliverOrderServiceI"/>
-    <dubbo:reference id="deliverOrderAllocationService" interface="com.bx.ant.service.DeliverOrderAllocationServiceI" retries="0" timeout="60000"/>
-    <dubbo:reference id="deliverOrderYouzanService" interface="com.bx.ant.service.DeliverOrderYouzanServiceI" retries="0"/>
-    <dubbo:reference id="supplierService" interface="com.bx.ant.service.SupplierServiceI"/>
-    <dubbo:reference id="supplierItemRelationService" interface="com.bx.ant.service.SupplierItemRelationServiceI"/>
+    <dubbo:reference id="shopDeliverAccountService" interface="com.bx.ant.service.ShopDeliverAccountServiceI" url="${dubbo.direct.url}"/>
+    <dubbo:reference id="shopDeliverApplyService" interface="com.bx.ant.service.ShopDeliverApplyServiceI" url="${dubbo.direct.url}"/>
+    <dubbo:reference id="deliverOrderService" interface="com.bx.ant.service.DeliverOrderServiceI" url="${dubbo.direct.url}"/>
+    <dubbo:reference id="deliverOrderAllocationService" interface="com.bx.ant.service.DeliverOrderAllocationServiceI" url="${dubbo.direct.url}" retries="0" timeout="60000"/>
+    <dubbo:reference id="deliverOrderYouzanService" interface="com.bx.ant.service.DeliverOrderYouzanServiceI" url="${dubbo.direct.url}" retries="0"/>
+    <dubbo:reference id="supplierService" interface="com.bx.ant.service.SupplierServiceI" url="${dubbo.direct.url}"/>
+    <dubbo:reference id="supplierItemRelationService" interface="com.bx.ant.service.SupplierItemRelationServiceI" url="${dubbo.direct.url}"/>
 
-    <dubbo:reference id="deliverOrderShopService" interface="com.bx.ant.service.DeliverOrderShopServiceI"/>
-    <dubbo:reference id="deliverOrderShopItemService" interface="com.bx.ant.service.DeliverOrderShopItemServiceI"/>
-    <dubbo:reference id="deliverOrderLogService" interface="com.bx.ant.service.DeliverOrderLogServiceI"/>
-    <dubbo:reference id="deliverOrderItemService" interface="com.bx.ant.service.DeliverOrderItemServiceI"/>
-    <dubbo:reference id="supplierOrderBillService" interface="com.bx.ant.service.SupplierOrderBillServiceI"/>
-    <dubbo:reference id="deliverOrderPayService" interface="com.bx.ant.service.DeliverOrderPayServiceI"/>
-    <dubbo:reference id="shopOrderBillService" interface="com.bx.ant.service.ShopOrderBillServiceI"/>
-    <dubbo:reference id="deliverOrderShopPayService" interface="com.bx.ant.service.DeliverOrderShopPayServiceI"/>
-    <dubbo:reference id="shopItemService" interface="com.bx.ant.service.ShopItemServiceI"/>
+    <dubbo:reference id="deliverOrderShopService" interface="com.bx.ant.service.DeliverOrderShopServiceI" url="${dubbo.direct.url}"/>
+    <dubbo:reference id="deliverOrderShopItemService" interface="com.bx.ant.service.DeliverOrderShopItemServiceI" url="${dubbo.direct.url}"/>
+    <dubbo:reference id="deliverOrderLogService" interface="com.bx.ant.service.DeliverOrderLogServiceI" url="${dubbo.direct.url}"/>
+    <dubbo:reference id="deliverOrderItemService" interface="com.bx.ant.service.DeliverOrderItemServiceI" url="${dubbo.direct.url}"/>
+    <dubbo:reference id="supplierOrderBillService" interface="com.bx.ant.service.SupplierOrderBillServiceI" url="${dubbo.direct.url}"/>
+    <dubbo:reference id="deliverOrderPayService" interface="com.bx.ant.service.DeliverOrderPayServiceI" url="${dubbo.direct.url}"/>
+    <dubbo:reference id="shopOrderBillService" interface="com.bx.ant.service.ShopOrderBillServiceI" url="${dubbo.direct.url}"/>
+    <dubbo:reference id="deliverOrderShopPayService" interface="com.bx.ant.service.DeliverOrderShopPayServiceI" url="${dubbo.direct.url}"/>
+    <dubbo:reference id="shopItemService" interface="com.bx.ant.service.ShopItemServiceI" url="${dubbo.direct.url}"/>
 </beans>
