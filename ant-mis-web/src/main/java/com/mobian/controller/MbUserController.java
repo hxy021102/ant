@@ -123,8 +123,7 @@ public class MbUserController extends BaseController {
 	}
 
 	@RequestMapping("/viewBalance")
-    public String viewBalance(HttpServletRequest request,Integer id,Integer shopId,Integer realShopId,Integer driverAccountId) {
-    public String viewBalance(HttpServletRequest request,Integer id,Integer shopId,Integer realShopId,Integer balanceId) {
+    public String viewBalance(HttpServletRequest request,Integer id,Integer shopId,Integer realShopId,Integer driverAccountId, Integer balanceId) {
 		MbBalance mbBalance = null;
 		if(!F.empty(id)) {
 			MbUser mbUser = mbUserService.get(id);
