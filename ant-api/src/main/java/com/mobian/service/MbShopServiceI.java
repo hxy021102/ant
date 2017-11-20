@@ -19,6 +19,11 @@ public interface MbShopServiceI {
 	 * 直营门店
 	 */
 	String ST03 = "ST03";
+
+	/**
+	 * 直营单位
+	 */
+	String ST02 = "ST02";
 	/**
 	 * 待审核
 	 */
