@@ -32,6 +32,12 @@ public class MbSalesReport implements java.io.Serializable{
     //毛利
     private Integer profit;
 
+    //导出属性设置
+    private double totalPriceElement;
+    private double avgPriceElement;
+    private double totalCostElement;
+    private double avgCostElement;
+    private double profitElement;
     /**
      * 进货成本
      */
@@ -197,5 +203,46 @@ public class MbSalesReport implements java.io.Serializable{
 
     public void setProfit(Integer profit) {
         this.profit = profit;
+    }
+
+    public double getAvgPriceElement() {
+        return avgPriceElement;
+    }
+
+    public void setAvgPriceElement(double avgPriceElement) {
+        this.avgPriceElement = avgPriceElement;
+    }
+
+    public double getTotalCostElement() {
+        return totalCostElement;
+    }
+
+    public void setTotalCostElement(double totalCostElement) {
+        this.totalCostElement = totalCostElement;
+    }
+
+    public double getAvgCostElement() {
+        return avgCostElement;
+    }
+
+    public void setAvgCostElement(double avgCostElement) {
+        this.avgCostElement = avgCostElement;
+    }
+
+    public double getProfitElement() {
+        return profitElement;
+    }
+
+    public void setProfitElement(double profitElement) {
+        this.profitElement = profitElement;
+    }
+
+    public double getTotalPriceElement() {
+
+        return totalPriceElement;
+    }
+
+    public void setTotalPriceElement(double totalPriceElement) {
+        this.totalPriceElement = totalPriceElement;
     }
 }

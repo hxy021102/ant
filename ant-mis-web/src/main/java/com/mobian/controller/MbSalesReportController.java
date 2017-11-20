@@ -1,10 +1,9 @@
 package com.mobian.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.mobian.absx.F;
 import com.mobian.pageModel.*;
 import com.mobian.service.MbOrderItemServiceI;
-import com.mobian.service.MbSupplierOrderItemServiceI;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,9 +68,46 @@ public class MbSalesReportController extends BaseController {
     @RequestMapping("/download")
     public void download(MbSalesReport mbSalesReport, PageHelper ph, String downloadFields, HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
         DataGrid dg = dataGrid(mbSalesReport, ph);
+        List<MbSalesReport> mbSalesReportList=dg.getRows();
+        if (CollectionUtils.isNotEmpty(mbSalesReportList)) {
+            for (MbSalesReport salesReport : mbSalesReportList) {
+                salesReport.setTotalPriceElement(salesReport.getTotalPrice() / 100.0);
+                salesReport.setAvgPriceElement(salesReport.getAvgPrice() / 100.0);
+                salesReport.setTotalCostElement(salesReport.getTotalCost() / 100.0);
+                salesReport.setAvgCostElement(salesReport.getAvgCost() / 100.0);
+                salesReport.setProfitElement(salesReport.getProfit() / 100.0);
+            }
+            MbSalesReport footer = (MbSalesReport) dg.getFooter().get(0);
+            footer.setTotalPriceElement(footer.getTotalPrice() / 100.0);
+            footer.setAvgPriceElement(footer.getAvgPrice() / 100.0);
+            footer.setTotalCostElement(footer.getTotalCost() / 100.0);
+            footer.setAvgCostElement(footer.getAvgCost() / 100.0);
+            footer.setProfitElement(footer.getProfit() / 100.0);
+        }
         downloadFields = downloadFields.replace("&quot;", "\"");
         downloadFields = downloadFields.substring(1, downloadFields.length() - 1);
         List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
+        if (CollectionUtils.isNotEmpty(colums)) {
+            for (Colum colum : colums) {
+                switch (colum.getField()) {
+                    case "totalPrice":
+                        colum.setField("totalPriceElement");
+                        break;
+                    case "avgPrice":
+                        colum.setField("avgPriceElement");
+                        break;
+                    case "totalCost":
+                        colum.setField("totalCostElement");
+                        break;
+                    case "avgCost":
+                        colum.setField("avgCostElement");
+                        break;
+                    case "profit":
+                        colum.setField("profitElement");
+                        break;
+                }
+            }
+        }
         downloadTable(colums, dg, response);
     }
 
