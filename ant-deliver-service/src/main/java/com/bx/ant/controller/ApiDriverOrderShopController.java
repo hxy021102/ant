@@ -245,9 +245,11 @@ public class ApiDriverOrderShopController extends BaseController {
     @ResponseBody
     public Json getTodayOrders(HttpServletRequest request) {
         Json json = new Json();
+        //TODO
         //获取accountId
-        TokenWrap token = getTokenWrap(request);
-        Integer accountId = Integer.parseInt(token.getUid());
+//        TokenWrap token = getTokenWrap(request);
+//        Integer accountId = Integer.parseInt(token.getUid());
+        Integer accountId = 2;
         DataGrid dataGrid = driverOrderShopService.listTodayOrderByAccountId(accountId);
         json.setMsg("u know");
         json.setObj(dataGrid);
@@ -281,7 +283,7 @@ public class ApiDriverOrderShopController extends BaseController {
     @ResponseBody
     public Json getTodayOrders(String accountId) {
         Json json = new Json();
-        String key = Key.build(Namespace.DRIVER_ORDER_SHOP_NEW_ASSIGNMENT_COUNT, accountId);
+        String key = Key.build(Namespace.DRIVER_ORDER_SHOP_NEW_ASSIGNMENT_COUNT, accountId + "");
         String s = (String) redisUtil.getString(key);
 
         json.setMsg(String.format("accountId:%1新订单数量:%2s",accountId, s));

@@ -51,10 +51,10 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
         DriverOrderShop request = new DriverOrderShop();
         PageHelper ph = new PageHelper();
         request.setStatus(DriverOrderShopServiceI.STATUS_STANDBY);
-        List<DriverOrderShopView> driverOrderShopViews = driverOrderShopService.dataGridView(request, ph).getRows();
-        for (DriverOrderShopView driverOrderShopView : driverOrderShopViews) {
+        List<DriverOrderShop> driverOrderShops = driverOrderShopService.dataGrid(request, ph).getRows();
+        for (DriverOrderShop driverOrderShop : driverOrderShops) {
             try{
-                allocationDriverOrder(driverOrderShopView);
+                allocationDriverOrder(driverOrderShop);
             }catch(Exception e){
                 logger.error("分单失败", e);
             }
@@ -81,7 +81,7 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
         return count;
     }
 
-    protected void allocationDriverOrder(DriverOrderShopView driverOrderShop) {
+    protected void allocationDriverOrder(DriverOrderShop driverOrderShop) {
         //2. 获取骑手
         List<DriverAccount> driverAccounts = driverAccountService.getAvilableAndWorkDriver();
 
@@ -117,6 +117,7 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
                 if (redisUtil.addSet(key, driverOrderShop.getId().toString())) {
                     redisUtil.expire(key, Integer.parseInt(ConvertNameUtil.getString("DDSV101","48")), TimeUnit.HOURS);
                     driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_ALLOCATION);
+                    driverOrderShop.setDriverAccountId(account.getId());
                     driverOrderShopService.transform(driverOrderShop);
                 }
                 logger.debug(String.format("订单:%1s分发给:%2s成功" ,driverOrderShop.getDeliverOrderShopId(), account.getId()));

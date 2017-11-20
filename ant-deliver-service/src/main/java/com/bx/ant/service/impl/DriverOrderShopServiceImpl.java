@@ -1,6 +1,7 @@
 package com.bx.ant.service.impl;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 
 import com.alibaba.fastjson.JSONObject;
@@ -266,7 +267,7 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 			count += quantity;
 		}
 		if (count  > 0){
-			redisUtil.set(key, JSONObject.toJSONString(count));
+			redisUtil.set(key, JSONObject.toJSONString(count),24, TimeUnit.HOURS);
 		}
 		return count;
 	}
@@ -363,7 +364,7 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 		driverOrderShopView.setDriverAccountId(driverAccountId);
 		driverOrderShopView.setStatus(DriverOrderShopServiceI.STATUS_ACCEPTED + "," + 	DriverOrderShopServiceI.STATUS_DELVIERING + ","+ DriverOrderShopServiceI.STATUS_DELIVERED + ","+ DriverOrderShopServiceI.STATUS_SETTLEED );
 		DataGrid dataGrid = dataGridView(driverOrderShopView, ph);
-	return dataGrid;
+		return dataGrid;
 	}
 }
 
