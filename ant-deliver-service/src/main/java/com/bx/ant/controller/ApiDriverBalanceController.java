@@ -65,8 +65,6 @@ public class ApiDriverBalanceController extends BaseController {
     @RequestMapping("/viewDriverBanlanceLogDetial")
     @ResponseBody
     public Json viewBanlanceLogDetial(MbBalanceLog balanceLog) {
-
-
         Json json = new Json();
         if ("BT150".equals(balanceLog.getRefType()) ||"BT151".equals(balanceLog.getRefType()) ) {
             DriverOrderShop driverOrderShop= driverOrderPShopService.getView(Long.parseLong(balanceLog.getRefId()));
@@ -88,7 +86,7 @@ public class ApiDriverBalanceController extends BaseController {
     public Json viewDriverBanlanceLogDataGrid(String date,PageHelper pageHelper, HttpServletRequest request) {
         Json j = new Json();
         DataGrid dataGrid;
-        MbBalanceLog mbBalanceLog = new MbBalanceLog();
+        MbBalanceLogDriver mbBalanceLogDriver = new MbBalanceLogDriver();
         if(F.empty(pageHelper.getRows()  )) {
             pageHelper.setRows(50);
         }
@@ -107,11 +105,11 @@ public class ApiDriverBalanceController extends BaseController {
         //设定搜索时间为月初00:00:00至下月初00:00:00
         try {
             Date timeStart  = new SimpleDateFormat("yyyy-MM").parse(date);
-            mbBalanceLog.setUpdatetimeBegin(timeStart);
+            mbBalanceLogDriver.setUpdatetimeBegin(timeStart);
             Calendar calendar = new GregorianCalendar();
             calendar.setTime(timeStart);
             calendar.add(Calendar.MONTH,1);
-            mbBalanceLog.setUpdatetimeEnd(calendar.getTime());
+            mbBalanceLogDriver.setUpdatetimeEnd(calendar.getTime());
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -119,10 +117,12 @@ public class ApiDriverBalanceController extends BaseController {
 
         //TODO 测试时设置shop ID值,若
         // 真正使用从token中获取
-        TokenWrap token = getTokenWrap(request);
-        Integer accountId = Integer.parseInt(token.getUid());
-        mbBalanceLog.setShopId(accountId);
-        dataGrid = mbBalanceLogService.updateDriverBalanceLogDataGrid(mbBalanceLog, pageHelper);
+//        TokenWrap token = getTokenWrap(request);
+
+//        Integer accountId = Integer.parseInt(token.getUid());
+        Integer accountId = 2;
+        mbBalanceLogDriver.setAccountId(accountId);
+        dataGrid = mbBalanceLogService.updateDriverBalanceLogDataGrid(mbBalanceLogDriver, pageHelper);
         j.setObj(dataGrid);
         j.setMsg("u know");
         j.setSuccess(true);
