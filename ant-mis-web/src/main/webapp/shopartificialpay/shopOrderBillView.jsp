@@ -68,14 +68,15 @@
 
          function examineFun(id) {
              parent.$.modalDialog({
-                 title : '审核派单',
+                 title : '审核并结算账单',
                  width : 780,
-                 height : 300,
+                 height : 260,
                  href : '${pageContext.request.contextPath}/shopOrderBillController/examinePage?id=' + ${shopOrderBill.id},
                  buttons: [{
                      text: '通过',
                      handler: function () {
-                         parent.$.modalDialog.openner_dataGrid =  shopBillDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                         parent.$.modalDialog.opener_url = window.location;
+                        // parent.$.modalDialog.openner_dataGrid =  shopBillDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
                          var f = parent.$.modalDialog.handler.find('#form');
                          f.find("input[name=status]").val("BAS02");
                          f.submit();
@@ -84,7 +85,8 @@
                      {
                          text: '拒绝',
                          handler: function () {
-                             parent.$.modalDialog.openner_dataGrid =  shopBillDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                             parent.$.modalDialog.opener_url = window.location;
+                            // parent.$.modalDialog.openner_dataGrid =  shopBillDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
                              var f = parent.$.modalDialog.handler.find('#form');
                              f.find("input[name=status]").val("BAS03");
                              f.submit();
@@ -103,7 +105,8 @@
                  buttons : [ {
                      text : '确认',
                      handler : function() {
-                         parent.$.modalDialog.openner_dataGrid = shopBillDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                         parent.$.modalDialog.opener_url = window.location;
+                         //parent.$.modalDialog.openner_dataGrid = shopBillDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
                          var f = parent.$.modalDialog.handler.find('#form');
                          f.submit();
                      }
@@ -121,10 +124,7 @@
 				<td>
 					${shopOrderBill.id}
 					    <c:if test="${fn:contains(sessionInfo.resourceList, '/shopOrderBillController/examinePage') and shopOrderBill.status=='BAS01' }">
-							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="examineFun();">审核</a>
-						</c:if>
-						<c:if test="${fn:contains(sessionInfo.resourceList, '/shopOrderBillController/examinePage') and shopOrderBill.status=='BAS02' and shopOrderBill.status !='SPS04' }">
-							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="payShopBill();">支付</a>
+							<a href="javascript:void(0);" class="easyui-linkbutton" onclick="examineFun();">审核并支付</a>
 						</c:if>
 				</td>
 				<th>创建时间</th>
@@ -150,8 +150,12 @@
 					${shopOrderBill.payWayName}
 				</td>
 				<th>审核人</th>
-				<td colspan="3">
+				<td >
 					${shopOrderBill.reviewerName}
+				</td>
+				<th>审核状态</th>
+				<td>
+					${shopOrderBill.statusName}
 				</td>
 			</tr>
 			<tr>

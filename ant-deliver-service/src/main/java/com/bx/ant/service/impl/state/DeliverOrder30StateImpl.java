@@ -1,7 +1,9 @@
 package com.bx.ant.service.impl.state;
 
+import com.bx.ant.pageModel.DeliverOrderShop;
 import com.bx.ant.service.DeliverOrderLogServiceI;
 import com.bx.ant.service.DeliverOrderServiceI;
+import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.bx.ant.service.DeliverOrderState;
 import com.bx.ant.pageModel.DeliverOrder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ public class DeliverOrder30StateImpl implements DeliverOrderState {
 
     @Autowired
     private DeliverOrderLogServiceI deliverOrderLogService;
+    @Autowired
+    private DeliverOrderShopServiceI deliverOrderShopService;
 
     @Override
     public String getStateName() {
@@ -38,9 +42,17 @@ public class DeliverOrder30StateImpl implements DeliverOrderState {
         orderNew.setId(deliverOrder.getId());
         orderNew.setStatus(prefix + getStateName());
         orderNew.setDeliveryStatus(DeliverOrderServiceI.DELIVER_STATUS_DELIVERED);
+        orderNew.setCompleteImages(deliverOrder.getCompleteImages());
+        orderNew.setCompleteRemark(deliverOrder.getCompleteRemark());
         deliverOrderService.editAndAddLog(orderNew, DeliverOrderLogServiceI.TYPE_DELIVERED_DELIVER_ORDER, "运单已被派送至目的地");
 
-        //
+        //门店订单状态
+        DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+        deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_ACCEPTED);
+        deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
+        DeliverOrderShop orderShopEdit = new DeliverOrderShop();
+        orderShopEdit.setStatus(DeliverOrderShopServiceI.STAUS_SERVICE);
+        deliverOrderShop = deliverOrderShopService.editStatus(deliverOrderShop,orderShopEdit);
     }
 
     @Override

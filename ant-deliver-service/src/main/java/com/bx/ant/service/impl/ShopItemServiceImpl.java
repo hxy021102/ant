@@ -10,15 +10,18 @@ import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbItem;
+import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.PageHelper;
 import com.bx.ant.pageModel.ShopItem;
 import com.mobian.service.MbItemServiceI;
+import com.mobian.service.MbShopServiceI;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +40,8 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 
 	@Autowired
 	private ShopItemServiceImpl shopItemService;
+	@Resource
+	private MbShopServiceI mbShopService;
 
 	@Override
 	public DataGrid dataGrid(ShopItem shopItem, PageHelper ph) {
@@ -111,12 +116,20 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 
 	@Override
 	public void add(ShopItem shopItem) {
-		TshopItem t = new TshopItem();
-		BeanUtils.copyProperties(shopItem, t);
-		//t.setId(jb.absx.UUID.uuid());
-		t.setIsdeleted(false);
-		if(shopItem.getOnline() == null) t.setOnline(false);
-		shopItemDao.save(t);
+		Map<String, Object> params = new HashMap<String, Object>();
+		ShopItem oldShopItem = new ShopItem();
+		oldShopItem.setShopId(shopItem.getShopId());
+		oldShopItem.setItemId(shopItem.getItemId());
+		oldShopItem.setIsdeleted(false);
+		String where = whereHql(oldShopItem, params);
+		TshopItem t = shopItemDao.get("from TshopItem t " + where, params);
+		if (t == null) {
+			t = new TshopItem();
+			BeanUtils.copyProperties(shopItem, t);
+			t.setIsdeleted(false);
+			if (shopItem.getOnline() == null) t.setOnline(false);
+			shopItemDao.save(t);
+		}
 	}
 
 	@Override
@@ -142,7 +155,6 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
 		shopItemDao.executeHql("update TshopItem t set t.isdeleted = 1 where t.id = :id", params);
-		//shopItemDao.delete(shopItemDao.get(TshopItem.class, id));
 	}
 
 	@Override
@@ -319,6 +331,8 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 				if (F.empty(shop.getQuantity())) {
 					shopItemQuery.setQuantity(0);
 				}
+				MbShop mbShop = mbShopService.getFromCache(shop.getShopId());
+				shopItemQuery.setShopName(mbShop.getName());
 				shopItemQuery.setStatusName(shop.getStatus());
 				shopItemQuery.setName(item.getName());
 				shopItemQuery.setQuantityUnitName(item.getQuantityUnitName());
@@ -383,7 +397,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 	}
 
 	@Override
-	public void refundByDeliverOrder(DeliverOrder deliverOrder) {
+	public void updateForRefundByDeliverOrder(DeliverOrder deliverOrder) {
 		if (!F.empty(deliverOrder.getId()) && !F.empty(deliverOrder.getShopId())) {
 			//通过deliverOrder获取deliverOrderShopItem
 			DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
@@ -402,14 +416,14 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 					ShopItem si = new ShopItem();
 					si.setId(sItem.getId());
 					si.setQuantity(orderShopItem.getQuantity());
-					updateQunatity(si);
+					updateQuantity(si);
 				}
 			}
 		}
 	}
 
 	@Override
-	public void updateQunatity(ShopItem shopItem) {
+	public void updateQuantity(ShopItem shopItem) {
 		if (!F.empty(shopItem.getId()) && !F.empty(shopItem.getQuantity())) {
 			int i = shopItemDao.executeHql("update TshopItem t set t.quantity=quantity+" + shopItem.getQuantity() + " where t.id=" + shopItem.getId());
 			if (i != 1) {

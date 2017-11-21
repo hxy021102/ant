@@ -62,6 +62,7 @@ public class TshopDeliverApply implements java.io.Serializable,IEntity{
 	private String deliveryWay;
 	//
 	private Boolean online;
+	private Boolean frozen;
 	//@Length(max=512)
 	private String result;
 	//@NotBlank @Length(max=10)
@@ -161,7 +162,16 @@ public class TshopDeliverApply implements java.io.Serializable,IEntity{
 	public void setOnline(Boolean online) {
 		this.online = online;
 	}
-	
+
+	@Column(name = "frozen", unique = false, nullable = true, insertable = true, updatable = true, length = 0)
+	public Boolean getFrozen() {
+		return frozen;
+	}
+
+	public void setFrozen(Boolean frozen) {
+		this.frozen = frozen;
+	}
+
 	@Column(name = "result", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
 	public String getResult() {
 		return this.result;
@@ -196,7 +206,7 @@ public class TshopDeliverApply implements java.io.Serializable,IEntity{
 	public void setMaxDeliveryDistance(BigDecimal maxDeliveryDistance) {
 		this.maxDeliveryDistance = maxDeliveryDistance;
 	}
-	@Column(name = "sms_remind", unique = false, nullable = false, insertable = true, updatable = true, length = 0)
+	@Column(name = "sms_remind", unique = false, nullable = true, insertable = true, updatable = true, length = 0)
 	public Boolean getSmsRemind() {
 		return smsRemind;
 	}
@@ -204,7 +214,7 @@ public class TshopDeliverApply implements java.io.Serializable,IEntity{
 	public void setSmsRemind(Boolean smsRemind) {
 		this.smsRemind = smsRemind;
 	}
-	@Column(name = "upload_required", unique = false, nullable = false, insertable = true, updatable = true, length = 0)
+	@Column(name = "upload_required", unique = false, nullable = true, insertable = true, updatable = true, length = 0)
 	public Boolean getUploadRequired() {
 		return uploadRequired;
 	}

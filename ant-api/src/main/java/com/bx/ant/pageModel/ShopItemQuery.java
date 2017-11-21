@@ -11,6 +11,7 @@ public class ShopItemQuery extends ShopItem {
 	private String quantityUnitName;
 	private String url;
     private String statusName;
+    private String shopName;
 	public String getName() {
 		return name;
 	}
@@ -41,5 +42,13 @@ public class ShopItemQuery extends ShopItem {
 
 	public void setStatusName(String statusName) {
 		this.statusName = statusName;
+	}
+
+	public String getShopName() {
+		return shopName;
+	}
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
 	}
 }

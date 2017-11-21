@@ -273,17 +273,17 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 
 	@Override
 	public DataGrid dataGridSalesReport(MbSalesReport mbSalesReport) {
-        DataGrid dataGrid = new DataGrid();
-        Map<Integer, MbSalesReport> map = new HashMap<Integer, MbSalesReport>();
-        Map<String, Integer> priceMap = new HashMap<String, Integer>();
+		DataGrid dataGrid = new DataGrid();
+		Map<Integer, MbSalesReport> map = new HashMap<Integer, MbSalesReport>();
+		Map<String, Integer> priceMap = new HashMap<String, Integer>();
 		Map<String, Integer> costPriceMap = new HashMap<String, Integer>();
-        List<MbSalesReport> ol = new ArrayList<MbSalesReport>();
-        MbOrder mbOrder = new MbOrder();
-        mbOrder.setDeliveryTimeBegin(mbSalesReport.getStartDate());
-        mbOrder.setDeliveryTimeEnd(mbSalesReport.getEndDate());
-        mbOrder.setDeliveryWarehouseId(mbSalesReport.getWarehouseId());
-        mbOrder.setStatus(mbSalesReport.getOrderStatus());
-		if(!F.empty(mbSalesReport.getShopId())){
+		List<MbSalesReport> ol = new ArrayList<MbSalesReport>();
+		MbOrder mbOrder = new MbOrder();
+		mbOrder.setDeliveryTimeBegin(mbSalesReport.getStartDate());
+		mbOrder.setDeliveryTimeEnd(mbSalesReport.getEndDate());
+		mbOrder.setDeliveryWarehouseId(mbSalesReport.getWarehouseId());
+		mbOrder.setStatus(mbSalesReport.getOrderStatus());
+		if (!F.empty(mbSalesReport.getShopId())) {
 			List<MbShop> shopList = mbShopService.queryListById(mbSalesReport.getShopId());
 			Integer[] shopIds = new Integer[shopList.size()];
 			for (int i = 0; i < shopList.size(); i++) {
@@ -292,14 +292,19 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 			mbOrder.setShopId(mbSalesReport.getShopId());
 			mbOrder.setShopIds(shopIds);
 		}
-        if ("OD40".equals(mbSalesReport.getOrderStatus())) {
-            mbOrder.setPayStatus("PS01");
-        }
+		if ("OD41".equals(mbSalesReport.getOrderStatus())) {
+			mbOrder.setPayStatus("PS01");
+			mbOrder.setStatus("OD40");
+		}
+
+		if (F.empty(mbSalesReport.getOrderStatus())) {
+			mbOrder.setStatus("OD20,OD35,OD30,OD40");
+		}
+
 		String split = "_";
-        //先找到所有符合条件的订单
-        List<MbOrder> mbOrders = mbOrderService.query(mbOrder);
-        if(!CollectionUtils.isEmpty(mbOrders)) {
-			Integer[] orderIds = new Integer[mbOrders.size()];
+		//先找到所有符合条件的订单
+		List<MbOrder> mbOrders = mbOrderService.query(mbOrder);
+		if (!CollectionUtils.isEmpty(mbOrders)) {
 			List<Integer> orderIdList = new ArrayList<Integer>();
 			String excludeShop = ConvertNameUtil.getDesc("SV101");
 			for (MbOrder order : mbOrders) {
@@ -315,9 +320,11 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 					}
 				}
 			}
+			Integer[] orderIds = orderIdList.toArray(new Integer[orderIdList.size()]);
+
 			//找到所有订单项
-			List<MbOrderItem> orderItems = queryListByOrderIds(orderIdList.toArray(new Integer[orderIdList.size()]));
-			List<MbOrderRefundItem> OrderRefundItems = mbOrderRefundItemService.queryListByOrderIds(orderIds);
+			List<MbOrderItem> orderItems = queryListByOrderIds(orderIds);
+			List<MbOrderRefundItem> orderRefundItems = mbOrderRefundItemService.queryListByOrderIds(orderIds);
 			//将同种商品在不同订单里的不同价格都保存
 			for (MbOrder m : mbOrders) {
 				for (MbOrderItem item : orderItems) {
@@ -333,13 +340,13 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 					MbSalesReport oldItem = map.get(item.getItemId());
 					oldItem.setQuantity(oldItem.getQuantity() + item.getQuantity());
 					oldItem.setTotalPrice(oldItem.getTotalPrice() + item.getQuantity() * item.getBuyPrice());
-					if(item.getCostPrice()!=null)
-					oldItem.setTotalCost(oldItem.getTotalCost() + item.getQuantity() * item.getCostPrice());
+					if (item.getCostPrice() != null)
+						oldItem.setTotalCost(oldItem.getTotalCost() + item.getQuantity() * item.getCostPrice());
 				} else {
 					MbSalesReport salesReport = new MbSalesReport();
-					if(item.getCostPrice()!=null) {
+					if (item.getCostPrice() != null) {
 						salesReport.setTotalCost(item.getQuantity() * item.getCostPrice());
-					}else{
+					} else {
 						salesReport.setTotalCost(0);
 					}
 					salesReport.setTotalPrice(item.getQuantity() * item.getBuyPrice());
@@ -349,7 +356,7 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 
 			}
 			//遍历所有订单里面所有的退货
-			for (MbOrderRefundItem rf : OrderRefundItems) {
+			for (MbOrderRefundItem rf : orderRefundItems) {
 				Integer price = priceMap.get(rf.getOrderId() + split + rf.getItemId());
 				Integer costPrice = costPriceMap.get(rf.getOrderId() + split + rf.getItemId());
 				if (map.get(rf.getItemId()) != null) {
@@ -366,66 +373,75 @@ public class MbOrderItemServiceImpl extends BaseServiceImpl<MbOrderItem> impleme
 						salesReport.setTotalCost(salesReport.getTotalCost() - rf.getQuantity() * costPrice);
 					}
 				}
-
 			}
 
 		}
-        //统计报表
-        Integer totalPrice = 0;
+		//统计报表
+		Integer totalPrice = 0;
 		Integer totalCost = 0;
-        Integer total = 0;
-        Integer backTotal = 0;
-        Integer salesTotal = 0;
-        Set<Integer> keys = map.keySet();
-        for (Integer key : keys) {
-            MbItem mbItem = mbItemService.getFromCache(key);
-            MbSalesReport salesReport = new MbSalesReport();
-            salesReport.setItemId(key);
-            salesReport.setItemCode(mbItem.getCode());
-            salesReport.setItemName(mbItem.getName());
-            salesReport.setQuantity(map.get(key).getQuantity());
-            salesReport.setBackQuantity(map.get(key).getBackQuantity());
-			salesReport.setTotalCost(map.get(key).getTotalCost());
-            if (!F.empty(map.get(key).getBackQuantity())) {
-                salesReport.setSalesQuantity(salesReport.getQuantity() - map.get(key).getBackQuantity());
-                backTotal += salesReport.getBackQuantity();
-            } else {
-                salesReport.setSalesQuantity(salesReport.getQuantity());
-            }
-            if (!F.empty(map.get(key).getBackMoney())) {
-                salesReport.setTotalPrice(map.get(key).getTotalPrice() - map.get(key).getBackMoney());
-            } else {
-                salesReport.setTotalPrice(map.get(key).getTotalPrice());
-            }
-            ol.add(salesReport);
-            total += salesReport.getQuantity();
-            salesTotal += salesReport.getSalesQuantity();
-            totalPrice += salesReport.getTotalPrice();
-			if(!F.empty(map.get(key).getTotalCost()))
-			totalCost += map.get(key).getTotalCost();
-        }
-        //将销售明细按照数量高低来排序
-        Collections.sort(ol, new Comparator<MbSalesReport>() {
-            public int compare(MbSalesReport arg0, MbSalesReport arg1) {
-                return arg1.getQuantity().compareTo(arg0.getQuantity());
-            }
-        });
-        //最后一栏加上合计
-        if (!CollectionUtils.isEmpty(ol)) {
-            MbSalesReport mbsalesReport = new MbSalesReport();
-            mbsalesReport.setItemCode("合计");
-            mbsalesReport.setTotalPrice(totalPrice);
-            mbsalesReport.setSalesQuantity(salesTotal);
-            mbsalesReport.setQuantity(total);
-            mbsalesReport.setBackQuantity(backTotal);
-			mbsalesReport.setTotalCost(totalCost);
-            //ol.add(mbsalesReport);
-			dataGrid.setFooter(Arrays.asList(mbsalesReport));
-        }
-        dataGrid.setRows(ol);
+		Integer total = 0;
+		Integer backTotal = 0;
+		Integer salesTotal = 0;
+		Set<Integer> keys = map.keySet();
+		for (Integer key : keys) {
+			MbItem mbItem = mbItemService.getFromCache(key);
+			MbSalesReport salesReport = map.get(key);
+			salesReport.setItemId(key);
+			salesReport.setItemCode(mbItem.getCode());
+			salesReport.setItemName(mbItem.getName());
+			if (!F.empty(salesReport.getBackQuantity())) {
+				salesReport.setSalesQuantity(salesReport.getQuantity() - salesReport.getBackQuantity());
+				backTotal += salesReport.getBackQuantity();
+			} else {
+				salesReport.setSalesQuantity(salesReport.getQuantity());
+			}
 
-        return dataGrid;
-    }
+			if (F.empty(salesReport.getBackMoney())) {
+				salesReport.setTotalPrice(salesReport.getTotalPrice());
+			} else {
+				salesReport.setTotalPrice(salesReport.getTotalPrice() - salesReport.getBackMoney());
+			}
+
+			if (!F.empty(salesReport.getSalesQuantity())) {
+				salesReport.setAvgPrice(salesReport.getTotalPrice() / salesReport.getSalesQuantity());
+				salesReport.setAvgCost(salesReport.getTotalCost() / salesReport.getSalesQuantity());
+			}
+			salesReport.setProfit(salesReport.getTotalPrice() - salesReport.getTotalCost());
+
+			ol.add(salesReport);
+			total += salesReport.getQuantity();
+			salesTotal += salesReport.getSalesQuantity();
+			totalPrice += salesReport.getTotalPrice();
+			if (!F.empty(salesReport.getTotalCost()))
+				totalCost += salesReport.getTotalCost();
+		}
+		//将销售明细按照数量高低来排序
+		Collections.sort(ol, new Comparator<MbSalesReport>() {
+			public int compare(MbSalesReport arg0, MbSalesReport arg1) {
+				return arg1.getQuantity().compareTo(arg0.getQuantity());
+			}
+		});
+		//最后一栏加上合计
+		if (!CollectionUtils.isEmpty(ol)) {
+			MbSalesReport mbsalesReport = new MbSalesReport();
+			mbsalesReport.setItemCode("合计");
+			mbsalesReport.setTotalPrice(totalPrice);
+			mbsalesReport.setSalesQuantity(salesTotal);
+			mbsalesReport.setQuantity(total);
+			mbsalesReport.setBackQuantity(backTotal);
+			mbsalesReport.setTotalCost(totalCost);
+			if(!F.empty(mbsalesReport.getSalesQuantity())) {
+				mbsalesReport.setAvgPrice(mbsalesReport.getTotalPrice() / mbsalesReport.getSalesQuantity());
+				mbsalesReport.setAvgCost(mbsalesReport.getTotalCost() / mbsalesReport.getSalesQuantity());
+			}
+			mbsalesReport.setProfit(mbsalesReport.getTotalPrice() - mbsalesReport.getTotalCost());
+			//ol.add(mbsalesReport);
+			dataGrid.setFooter(Arrays.asList(mbsalesReport));
+		}
+		dataGrid.setRows(ol);
+
+		return dataGrid;
+	}
 
 	@Override
 	public List<MbOrderItem> queryListByOrderIds(Integer[] orderIds) {

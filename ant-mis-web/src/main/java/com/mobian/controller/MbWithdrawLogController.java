@@ -1,10 +1,10 @@
 package com.mobian.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.mobian.absx.F;
 import com.mobian.pageModel.*;
 import com.mobian.service.MbWithdrawLogServiceI;
-import com.mobian.util.BeanUtil;
-import com.mobian.util.ConfigUtil;
+import com.mobian.util.*;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -171,16 +171,31 @@ public class MbWithdrawLogController extends BaseController {
 
 	@RequestMapping("/editAudit")
 	@ResponseBody
-	public Json editAudit(MbWithdrawLog mbWithdrawLog, HttpSession session, HttpServletRequest request) {
+	public Json editAudit(MbWithdrawLog mbWithdrawLog, String checkPwd, HttpSession session, HttpServletRequest request) {
 		Json json = new Json();
+
+		// 获取提现充值密码
+		String privateKey = (String)request.getSession().getAttribute(RSAUtil.PRIVATE_KEY);
+		if(F.empty(privateKey)) {
+			json.setMsg("操作失败，请刷新或关闭当前浏览器重新打开！");
+			return json;
+		}
+		checkPwd = RSAUtil.decryptByPravite(checkPwd, privateKey);
+		String pwd = ConvertNameUtil.getString(Constants.CASH_PASSWORD);
+		if(F.empty(checkPwd) || (!F.empty(pwd) && !MD5Util.md5(checkPwd).toUpperCase().equals(pwd.toUpperCase()))) {
+			json.fail();
+			json.setMsg("校验密码错误");
+			return json;
+		}
+
+
 		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
 		String loginId = sessionInfo.getId();
 
 		mbWithdrawLogService.editAudit(mbWithdrawLog, loginId, request);
+		json.success();
 
-
-
-		return null;
+		return json;
 
 
 	}

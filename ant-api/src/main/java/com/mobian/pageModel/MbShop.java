@@ -257,4 +257,5 @@ public class MbShop implements java.io.Serializable {
     public void setSalesLoginId(String salesLoginId) {
         this.salesLoginId = salesLoginId;
     }
+
 }

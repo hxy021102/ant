@@ -33,6 +33,10 @@
                 field : 'ck',
                 checkbox:true,
                 width : 30
+            },{
+                field : 'deliverOrderId',
+                title : '运单ID',
+                width : 30,
             }, {
                 field : 'id',
                 title : '订单ID',
@@ -42,16 +46,16 @@
                 title : '创建时间',
                 width : 50,
             },{
-                field : 'shopId',
-                title : '门店ID',
-                width : 30,
-            },{
                 field : 'shopName',
                 title : '名店名称',
                 width : 80
             }, {
                 field : 'statusName',
                 title : '状态',
+                width : 50
+            },{
+                field : 'shopPayStatusName',
+                title : '门店结算',
                 width : 50
             },{
                 field : 'amount',
@@ -80,12 +84,12 @@
         var deliverOrderIds = new Array(rows.length);
         for (var i = 0; i < rows.length; i++) {
             totalAmount += rows[i].amount;
-            deliverOrderIds[i] = rows[i].id;
+            deliverOrderIds[i] = rows[i].deliverOrderId;
         }
         shopOrderBillQuery.deliverOrderIds=deliverOrderIds;
         shopOrderBillQuery.amount=totalAmount;
-        shopOrderBillQuery.deliverOrderList=rows;
-         parent.$.messager.confirm("询问","总金额："+totalAmount/100.0+"\n起始时间："+shopOrderBillQuery.startDate+"\n结束时间:"+shopOrderBillQuery.endDate+"\n是否确认创建账单?",function (result) {
+        shopOrderBillQuery.deliverOrderShopList=rows;
+         parent.$.messager.confirm("询问","总金额："+$.formatMoney(totalAmount) +"<br/>起始时间："+shopOrderBillQuery.startDate+"<br/>结束时间:"+shopOrderBillQuery.endDate+"<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>是否确认创建账单?</strong>",function (result) {
            if(result)  {
         $.ajax({
             url:  '${pageContext.request.contextPath}/deliverShopArtificialPayController/addShopOrderBill',
@@ -104,8 +108,14 @@
                 parent.$.messager.progress('close');
                 if(result.success) {
                     parent.$.messager.alert('提示', result.msg);
+                    dataGrid.datagrid('clearChecked');
+                    //location.reload()
+                    dataGrid.datagrid("reload");
                 }else{
                     parent.$.messager.alert('错误', result.msg);
+                  //  location.reload()
+                    dataGrid.datagrid('clearChecked');
+                    dataGrid.datagrid("reload");
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -115,7 +125,7 @@
 		}
       });
 	  }else{
-            parent.$.messager.alert("提示","请选择要结算的运单！")
+            parent.$.messager.alert("提示","请选择要创建的运单！")
         }
 
     }

@@ -31,10 +31,13 @@ public class DeliverOrder implements java.io.Serializable {
 	private Integer shopId;
 	private Double shopDistance;
 	private String supplierOrderId;
+	private String completeImages;
+	private String completeRemark;
+    private String deliverOrderLogType;
 
-
-
-	
+	private String deliveryType; // 派单类型
+	private Long orderShopId;
+	private String  orderLogRemark;
 
 	public void setId(Long value) {
 		this.id = value;
@@ -203,5 +206,53 @@ public class DeliverOrder implements java.io.Serializable {
 
 	public void setSupplierOrderId(String supplierOrderId) {
 		this.supplierOrderId = supplierOrderId;
+	}
+
+	public String getCompleteImages() {
+		return completeImages;
+	}
+
+	public void setCompleteImages(String completeImages) {
+		this.completeImages = completeImages;
+	}
+
+	public String getCompleteRemark() {
+		return completeRemark;
+	}
+
+	public void setCompleteRemark(String completeRemark) {
+		this.completeRemark = completeRemark;
+	}
+
+	public String getDeliverOrderLogType() {
+		return deliverOrderLogType;
+	}
+
+	public void setDeliverOrderLogType(String deliverOrderLogType) {
+		this.deliverOrderLogType = deliverOrderLogType;
+	}
+
+	public String getDeliveryType() {
+		return deliveryType;
+	}
+
+	public void setDeliveryType(String deliveryType) {
+		this.deliveryType = deliveryType;
+	}
+
+	public Long getOrderShopId() {
+		return orderShopId;
+	}
+
+	public void setOrderShopId(Long orderShopId) {
+		this.orderShopId = orderShopId;
+	}
+
+	public String getOrderLogRemark() {
+		return orderLogRemark;
+	}
+
+	public void setOrderLogRemark(String orderLogRemark) {
+		this.orderLogRemark = orderLogRemark;
 	}
 }

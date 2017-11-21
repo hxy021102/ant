@@ -18,6 +18,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +59,6 @@ public class SelectTagGrid extends TagSupport {
     @Override
     public int doStartTag() throws JspException {
         JspWriter out = pageContext.getOut();
-        DiveRegionServiceI diveRegionService = BeanUtil.getBean(DiveRegionServiceI.class);
         try {
             String _disabled = "false";
             if (!F.empty(disabled)) {
@@ -205,7 +205,20 @@ public class SelectTagGrid extends TagSupport {
                 data.put("text", supplier.getName());
                 data.put("parentName", supplier.getContacter());
             }
-        } else {
+        } else if ("assignShopId".equals(dataType)) {
+            MbShopServiceI mbShopService = BeanUtil.getBean(MbShopServiceI.class);
+            MbShop mbShop = mbShopService.getFromCache(Integer.parseInt(value));
+            if (mbShop != null) {
+                data.put("text", mbShop.getName());
+                data.put("parentName", mbShop.getContactPhone());
+                String pid = "";
+                if(!F.empty(mbShop.getParentId())) {
+                    mbShop = mbShopService.getFromCache(mbShop.getParentId());
+                    pid = mbShop.getName();
+                }
+             //   data.put("pid", pid);
+            }
+        }else {
 
             //行政区划
             DiveRegionServiceI diveRegionService = BeanUtil.getBean(DiveRegionServiceI.class);
@@ -240,7 +253,11 @@ public class SelectTagGrid extends TagSupport {
             url = path + "/shopDeliverAccountController/selectQuery";
         }else if ("deliverSupplierId".equals(dataType)) {
             url = path + "/supplierController/selectQuery";
-        } else {
+        }else if ("assignShopId".equals(dataType)) {
+            url = path + "/mbShopController/selectssignShopQuery";
+            System.out.println(URLEncoder.encode(params));
+             if(!F.empty(params)) url += "?params=" + params.replace("{", "%7b").replace("}", "%7d").replaceAll("\"", "%22");
+        }  else {
             url = path + "/diveRegionController/selectQuery";
         }
         return url;
@@ -264,7 +281,8 @@ public class SelectTagGrid extends TagSupport {
             sb.append("]]");
         } else if ("warehouseId".equals(dataType)) {
             sb.append("		columns: [[");
-            sb.append("{field:'id',title:'ID',width:100},");
+            sb.append("{field:'id',title:'ID',width:30},");
+            sb.append("{field:'code',title:'代码',width:70},");
             sb.append("{field:'text',title:'名称',width:180},");
             sb.append("{field:'parentName',title:'区县',width:180}");
             sb.append("]]");
@@ -298,6 +316,12 @@ public class SelectTagGrid extends TagSupport {
             sb.append("{field:'id',title:'ID',width:100},");
             sb.append("{field:'text',title:'供应商名称',width:180},");
             sb.append("{field:'parentName',title:'联系人',width:180}");
+            sb.append("]]");
+        } else if ("assignShopId".equals(dataType)) {
+            sb.append("		columns: [[");
+            sb.append("{field:'text',title:'名称',width:150},");
+            sb.append("{field:'parentName',title:'联系号码',width:130},");
+            sb.append("{field:'distance',title:'距离',width:100}");
             sb.append("]]");
         } else {
             sb.append("		columns: [[");

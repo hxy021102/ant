@@ -131,7 +131,7 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 	}
 
 	@Override
-	public void delete(Integer id) {
+	public void delete(Long id) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
 		deliverOrderShopItemDao.executeHql("update TdeliverOrderShopItem t set t.isdeleted = 1 where t.id = :id",params);
@@ -142,7 +142,6 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 	public void addByDeliverOrderItemList(List<DeliverOrderItem> deliverOrderItems, DeliverOrderShop deliverOrderShop) {
 		if (F.empty(deliverOrderShop.getId()) || F.empty(deliverOrderShop.getShopId()))
 			throw new ServiceException("数据传递不完整");
-
 		if (CollectionUtils.isNotEmpty(deliverOrderItems)) {
 			int amount = 0;
 			Long deliverOrderId = null;
@@ -150,7 +149,9 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 //				ShopItem shopItem = shopItemService.getByShopIdAndItemId(deliverOrderShop.getShopId(), d.getItemId());
 				ShopItem shopItem = shopItemService.getByShopIdAndItemId(deliverOrderShop.getShopId(), d.getItemId(), true, "SIS02");
 				if (shopItem == null) throw new ServiceException("无法找到门店对应商品");
-				if (F.empty(shopItem.getQuantity()) || d.getQuantity() > shopItem.getQuantity()) throw new ServiceException("门店对应商品库存不足");
+				if (!DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(deliverOrderShop.getDeliveryType())
+						&& (F.empty(shopItem.getQuantity()) || d.getQuantity() > shopItem.getQuantity()))
+					throw new ServiceException("门店对应商品库存不足");
 
 				//记录deliverOrderId
 				deliverOrderId = d.getDeliverOrderId();
@@ -159,7 +160,7 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
                 ShopItem shopItemN = new ShopItem();
                 shopItemN.setId(shopItem.getId());
                 shopItemN.setQuantity( - d.getQuantity());
-				shopItemService.updateQunatity(shopItemN);
+				shopItemService.updateQuantity(shopItemN);
 
 				//添加deliverOrderShopItem
 				DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
@@ -231,7 +232,7 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 	public DataGrid dataGridWithName(DeliverOrderShopItem deliverOrderShopItem, PageHelper ph) {
 		DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
 		deliverOrderShop.setDeliverOrderId(deliverOrderShopItem.getDeliverOrderId());
-		deliverOrderShop.setStatus("DSS02");
+		//deliverOrderShop.setStatus("DSS02");
 		List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(deliverOrderShop);
 		DataGrid dg = new DataGrid();
 		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {

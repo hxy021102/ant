@@ -1,20 +1,24 @@
 package com.mobian.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.bx.ant.pageModel.*;
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderPay;
+import com.bx.ant.pageModel.DeliverOrderQuery;
+import com.bx.ant.pageModel.Supplier;
 import com.bx.ant.service.DeliverOrderItemServiceI;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.SupplierItemRelationServiceI;
 import com.bx.ant.service.SupplierServiceI;
-import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
+import com.mobian.service.BasedataServiceI;
 import com.mobian.util.ConfigUtil;
+import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.ImportExcelUtil;
 import net.sf.json.JSONArray;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,8 +37,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * DeliverOrder管理控制器
@@ -55,7 +57,8 @@ public class DeliverOrderController extends BaseController {
 
 	@Resource
 	private SupplierItemRelationServiceI supplierItemRelationService;
-
+    @Autowired
+	private BasedataServiceI basedataService;
 
 	/**
 	 * 跳转到DeliverOrder管理页面
@@ -87,7 +90,14 @@ public class DeliverOrderController extends BaseController {
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(DeliverOrderQuery deliverOrderQuery, PageHelper ph) {
-		return deliverOrderService.dataGridWithName(deliverOrderQuery, ph);
+        if(deliverOrderQuery.getTime()!=null&&deliverOrderQuery.getTime()!=0){
+			deliverOrderQuery.setTime(Integer.valueOf(ConvertNameUtil.getString("DSV500", "30")));
+			return deliverOrderService.dataGridOutTimeDeliverOrder(deliverOrderQuery, ph);
+		}else if("notDriver,".equals(deliverOrderQuery.getStatus())){
+        	return deliverOrderService.dataGridNotDriverDeliverOrder(deliverOrderQuery,ph);
+		}else
+			return deliverOrderService.dataGridWithName(deliverOrderQuery, ph);
+
 	}
 	@RequestMapping("/unPayOrderDataGrid")
 	@ResponseBody
@@ -286,13 +296,18 @@ public class DeliverOrderController extends BaseController {
 		Json j = new Json();
 		JSONArray jsonArray = JSONArray.fromObject(unpayDeliverOrders);
 	   	List<DeliverOrder> list = (List<DeliverOrder>) jsonArray.toCollection(jsonArray,DeliverOrder.class);
-	   	deliverOrderService.addOrderBill(list,supplierId,startTime,endTime);
-	   	for(DeliverOrder d : list) {
-	   		d.setPayStatus("DPS03");//结算中
-			deliverOrderService.edit(d);
+	   	List<DeliverOrderPay> d = deliverOrderService.addOrderBill(list,supplierId,startTime,endTime);
+	   	if (CollectionUtils.isEmpty(d)) {
+			j.setMsg("创建账单成功！");
+			j.setSuccess(true);
+		}else {
+	   		String msg = "";
+	   		for (DeliverOrderPay pay : d) {
+	   			msg += pay.getDeliverOrderId().toString()+",";
+			}
+			j.setMsg("运单号" + msg +"已创建过账单！请勿重复创建！");
 		}
-	   	j.setMsg("创建账单成功！");
-	   	j.setSuccess(true);
+
 	   	return  j;
 	}
 
@@ -333,5 +348,40 @@ public class DeliverOrderController extends BaseController {
 		json.setMsg("error");
 		json.setSuccess(false);
 		return json;
+	}
+
+	/**
+	 * 跳转到指派运单给门店页
+	 * @param request
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/assignOrderShopPage")
+	public String assignOrderShopPage(HttpServletRequest request, Long id,Long orderShopId) {
+		DeliverOrder deliverOrder = deliverOrderService.get(id);
+	 	request.setAttribute("deliverOrder", JSON.toJSONString(deliverOrder));
+		request.setAttribute("id", id);
+		request.setAttribute("orderShopId", orderShopId);
+		return "/deliverorder/assignOrderShop";
+	}
+
+	/**
+	 * 指派运单给门店
+	 * @param deliverOrder
+	 * @return
+	 */
+	@RequestMapping("/assignOrderShop")
+	@ResponseBody
+	public Json assignOrderShop(DeliverOrder deliverOrder) {
+		Json j = new Json();
+	 	Boolean result=deliverOrderService.handleAssignDeliverOrder(deliverOrder);
+	 	if(result) {
+			j.setSuccess(true);
+			j.setMsg("指派成功！");
+		}else{
+			j.setSuccess(false);
+			j.setMsg("指派失败，门店商品不足！");
+		}
+		return j;
 	}
 }

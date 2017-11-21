@@ -32,6 +32,7 @@
             pageSize : 10,
             pageList : [ 10, 20, 30, 40, 50 ],
             sortOrder : 'desc',
+            sortName:'updatetime',
             checkOnSelect : false,
             selectOnCheck : false,
             nowrap : false,
@@ -50,17 +51,13 @@
                 title : '创建时间',
                 width : 50,
             },{
-                field : 'shopId',
-                title : '门店ID',
-                width : 30,
-            },{
                 field : 'shopName',
                 title : '名店名称',
                 width : 80
             }, {
                 field : 'statusName',
                 title : '状态',
-                width : 50
+                width : 30
             },{
                 field : 'startDate',
                 title : '开始时间',
@@ -73,7 +70,7 @@
                 field : 'amount',
                 title : '总金额',
                 align:"right",
-                width : 50,
+                width : 20,
                 formatter: function (value) {
                     if (value == null)
                         return "";
@@ -120,6 +117,10 @@
 						<th style="width: 50px">门店名称</th>
 						<td>
 							<jb:selectGrid dataType="shopId" name="shopId"></jb:selectGrid>
+						</td>
+						<th style="width: 50px">状态</th>
+						<td>
+							<jb:select dataType="BAS" name="status"></jb:select>
 						</td>
 						<th>创建时间</th>
 						<td>

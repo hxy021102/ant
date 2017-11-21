@@ -19,6 +19,11 @@ public interface MbShopServiceI {
 	 * 直营门店
 	 */
 	String ST03 = "ST03";
+
+	/**
+	 * 直营单位
+	 */
+	String ST02 = "ST02";
 	/**
 	 * 待审核
 	 */
@@ -158,5 +163,12 @@ public interface MbShopServiceI {
 	 * @return
 	 */
 	List<MbShopMap> getShopMapData(MbShop mbShop);
+
+/*	*//**
+	 * 获取满足指派要求的门店
+	 * @param deliverOrder
+	 * @return
+	 *//*
+	List<MbAssignShop> queryAssignShopList(DeliverOrder deliverOrder);*/
 
 }

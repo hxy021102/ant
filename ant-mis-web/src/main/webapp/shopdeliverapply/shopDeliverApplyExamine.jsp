@@ -81,6 +81,15 @@
 					</td>
 				</tr>
 				<tr>
+					<th>冻结状态</th>
+					<td>
+						<select class="easyui-combobox" name="frozen" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+							<option value="1" <c:if test="${shopDeliverApply.frozen}">selected="selected"</c:if>>冻结</option>
+							<option value="0" <c:if test="${!shopDeliverApply.frozen}">selected="selected"</c:if>>正常</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
 					<th>审核结果</th>
 					<td colspan="2">
 						<textarea name="result" style="width: 97%" rows="3"    class="easyui-validatebox"    > </textarea>
