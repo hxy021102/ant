@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -32,7 +33,7 @@ import com.alibaba.fastjson.JSON;
 @RequestMapping("/driverAccountController")
 public class DriverAccountController extends BaseController {
 
-	@javax.annotation.Resource
+	@Resource
 	private DriverAccountServiceI driverAccountService;
 
 

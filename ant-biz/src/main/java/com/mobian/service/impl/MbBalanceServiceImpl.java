@@ -219,7 +219,7 @@ public class MbBalanceServiceImpl extends BaseServiceImpl<MbBalance> implements 
 			BeanUtils.copyProperties(t, o);
 		} else {
 			if(refId == null)
-				throw new ServiceException("shopId 不能为空");
+				throw new ServiceException("refId 不能为空");
 			if(refType == null)
 				throw new ServiceException("refType 不能为空");
 			if(refType == null)

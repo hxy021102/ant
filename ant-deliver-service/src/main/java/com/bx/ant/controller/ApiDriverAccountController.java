@@ -110,7 +110,7 @@ public class ApiDriverAccountController extends BaseController {
             }
             String oldCode = (String) redisUtil.getString(Key.build(Namespace.DRIVER_LOGIN_VALIDATE_CODE, mobile));
             if(!F.empty(oldCode)) {
-                j.setMsg("访问过于频繁，请秒后重试！");
+                j.setMsg("访问过于频繁，请60秒后重试！");
                 return j;
             }
             String code = Util.CreateNonceNumstr(6); // 生成短信验证码
@@ -175,6 +175,7 @@ public class ApiDriverAccountController extends BaseController {
             account.setIcon(DownloadMediaUtil.downloadHeadImage(account.getIcon()));
             account.setNickName(Util.filterEmoji(account.getNickName()));
             account.setHandleStatus(DriverAccountServiceI.HANDLE_STATUS_ADUIT);
+            account.setOnline(false);
 
             driverAccountService.add(account);
 
@@ -319,16 +320,14 @@ public class ApiDriverAccountController extends BaseController {
         Json json = new Json();
 
         //TODO 正式使用需更更改为
-//        TokenWrap tokenWrap = getTokenWrap(request);
-//        String accountId = tokenWrap.getUid();
-        String accountId = "2";
-        longitude = "121.553894";
-        latitude = "31.190966";
+        TokenWrap tokenWrap = getTokenWrap(request);
+        String accountId = tokenWrap.getUid();
+
 
         if (!F.empty(latitude) && !F.empty(longitude)) {
             redisUtil.set(Key.build(Namespace.DRIVER_REALTIME_LOCATION, accountId.toString()),
                     longitude + "," + latitude, Integer.parseInt(ConvertNameUtil.getString("DDSV100", "10")), TimeUnit.SECONDS);
-            json.setMsg("YJNH");
+            json.setMsg("更新成功！");
             json.setSuccess(true);
         }else {
             json.setMsg("无法获取位置信息");

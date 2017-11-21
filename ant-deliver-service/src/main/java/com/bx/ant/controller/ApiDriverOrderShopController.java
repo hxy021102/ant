@@ -78,18 +78,14 @@ public class ApiDriverOrderShopController extends BaseController {
 
         //获取accountId
         //TODO 需修改为正常
-//        TokenWrap token = getTokenWrap(request);
-//        String accountId = token.getUid();
-        String accountId = "2";
-        Calendar today = Calendar.getInstance();
-        String todayStr = today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-"
-                + today.get(Calendar.DAY_OF_MONTH);
+        TokenWrap token = getTokenWrap(request);
+        String accountId = token.getUid();
 
-        Set<String> orderIdSet = redisUtil.getAllSet(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE,
-                accountId + ":" +  todayStr));
-//        Set<String> orderIdSet = new HashSet<String>();
-//        orderIdSet.add("1");
-//        orderIdSet.add("2");
+        Calendar today = Calendar.getInstance();
+        String todayStr = today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-" + today.get(Calendar.DAY_OF_MONTH);
+
+       Set<String> orderIdSet = redisUtil.getAllSet(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, accountId + ":" +  todayStr));
+
         if (CollectionUtils.isNotEmpty(orderIdSet)) {
             for (String orderId : orderIdSet) {
                 DriverOrderShopView o = driverOrderShopService.getView(Long.parseLong(orderId));
@@ -117,9 +113,9 @@ public class ApiDriverOrderShopController extends BaseController {
     public Json takeOrder(HttpServletRequest request, Long id){
         Json json = new Json();
 // TODO 正式使用将使用uid
-//        TokenWrap token = getTokenWrap(request);
-//        Integer accountId  = Integer.parseInt(token.getUid());
-        Integer accountId = 2;
+        TokenWrap token = getTokenWrap(request);
+       Integer accountId  = Integer.parseInt(token.getUid());
+
         DriverOrderShop driverOrderShop = new DriverOrderShop();
         driverOrderShop.setId(id);
         driverOrderShop.setDriverAccountId(accountId);
@@ -142,9 +138,9 @@ public class ApiDriverOrderShopController extends BaseController {
         Json json = new Json();
 
 // TODO 正式使用将使用uid
-//        TokenWrap token = getTokenWrap(request);
-//        Integer accountId  = Integer.parseInt(token.getUid());
-        Integer accountId = 2;
+        TokenWrap token = getTokenWrap(request);
+        Integer accountId  = Integer.parseInt(token.getUid());
+
         DriverOrderShop driverOrderShop = new DriverOrderShop();
         driverOrderShop.setId(id);
         driverOrderShop.setDriverAccountId(accountId);
