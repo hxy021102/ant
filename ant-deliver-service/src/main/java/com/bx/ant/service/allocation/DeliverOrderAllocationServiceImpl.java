@@ -85,6 +85,13 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
             if(point != null) {
                 deliverOrder.setLongitude(point[0]);
                 deliverOrder.setLatitude(point[1]);
+
+                // 保存经纬度，防止重复获取,不影响分单逻辑
+                try{
+                    deliverOrderService.edit(deliverOrder);
+                }catch(Exception e){
+                    logger.error("保存经纬度失败", e);
+                }
             }
 
         }
