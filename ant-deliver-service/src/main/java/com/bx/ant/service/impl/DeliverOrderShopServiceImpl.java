@@ -413,15 +413,24 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 			ShopOrderBillQuery shopOrderBillQuery = (ShopOrderBillQuery) entry.getValue();
 			shopOrderBillService.addAndPayShopOrderBillAndShopPay(shopOrderBillQuery);
 			List<DeliverOrderShop> orderShopList = shopOrderBillQuery.getDeliverOrderShopList();
-			for (DeliverOrderShop orderShop : orderShopList) {
-				DeliverOrderExt orderExt = new DeliverOrderExt();
-				orderExt.setId(orderShop.getDeliverOrderId());
-				orderExt.setShopId(orderShop.getShopId());
-				orderExt.setBalanceLogType("BT060");
-				orderExt.setPayWay(DeliverOrderServiceI.PAY_WAY_BALANCE);
-				orderExt.setStatus(DeliverOrderServiceI.STATUS_CLOSED);
-				orderExt.setOrderShopId(orderShop.getId());
-				deliverOrderService.transform(orderExt);
+			DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+			def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+			TransactionStatus status = transactionManager.getTransaction(def);
+			try {
+				for (DeliverOrderShop orderShop : orderShopList) {
+					DeliverOrderExt orderExt = new DeliverOrderExt();
+					orderExt.setId(orderShop.getDeliverOrderId());
+					orderExt.setShopId(orderShop.getShopId());
+					orderExt.setBalanceLogType("BT060");
+					orderExt.setPayWay(DeliverOrderServiceI.PAY_WAY_BALANCE);
+					orderExt.setStatus(DeliverOrderServiceI.STATUS_CLOSED);
+					orderExt.setOrderShopId(orderShop.getId());
+					deliverOrderService.transform(orderExt);
+					transactionManager.commit(status);
+				}
+			}catch (Exception e) {
+				transactionManager.rollback(status);
+				continue;
 			}
 		}
 	}

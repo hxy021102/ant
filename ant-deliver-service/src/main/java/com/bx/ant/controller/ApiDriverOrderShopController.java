@@ -81,19 +81,31 @@ public class ApiDriverOrderShopController extends BaseController {
         TokenWrap token = getTokenWrap(request);
         String accountId = token.getUid();
 
-        Calendar today = Calendar.getInstance();
-        String todayStr = today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-" + today.get(Calendar.DAY_OF_MONTH);
+        DriverOrderShop driverOrderShop = new DriverOrderShop();
+        driverOrderShop.setDriverAccountId(Integer.parseInt(accountId));
+        driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_ACCEPTED  + ","
+                + DriverOrderShopServiceI.STATUS_DELVIERING
+        );
+        PageHelper ph = new PageHelper();
+        ph.setHiddenTotal(true);
+        DataGrid dg = driverOrderShopService.dataGrid(driverOrderShop, ph);
+        if (CollectionUtils.isEmpty(dataGrid.getRows())) {
+            Calendar today = Calendar.getInstance();
+            String todayStr = today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-"
+                    + today.get(Calendar.DAY_OF_MONTH);
 
-       Set<String> orderIdSet = redisUtil.getAllSet(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, accountId + ":" +  todayStr));
+            Set<String> orderIdSet = redisUtil.getAllSet(Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE,
+                    accountId + ":" + todayStr));
 
-        if (CollectionUtils.isNotEmpty(orderIdSet)) {
-            for (String orderId : orderIdSet) {
-                DriverOrderShopView o = driverOrderShopService.getView(Long.parseLong(orderId));
-                if (o != null && DriverOrderShopServiceI.STATUS_ALLOCATION.equals(o.getStatus())) {
-                    ol.add(o);
+            if (CollectionUtils.isNotEmpty(orderIdSet)) {
+                for (String orderId : orderIdSet) {
+                    DriverOrderShopView o = driverOrderShopService.getView(Long.parseLong(orderId));
+                    if (o != null && DriverOrderShopServiceI.STATUS_ALLOCATION.equals(o.getStatus())) {
+                        ol.add(o);
+                    }
                 }
+                dataGrid.setRows(ol);
             }
-            dataGrid.setRows(ol);
         }
 
         json.setSuccess(true);
