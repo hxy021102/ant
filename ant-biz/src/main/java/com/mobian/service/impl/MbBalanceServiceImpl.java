@@ -47,33 +47,33 @@ public class MbBalanceServiceImpl extends BaseServiceImpl<MbBalance> implements 
 		dg.setRows(ol);
 		return dg;
 	}
-	
+
 
 	protected String whereHql(MbBalance mbBalance, Map<String, Object> params) {
-		String whereHql = "";	
+		String whereHql = "";
 		if (mbBalance != null) {
 			whereHql += " where t.isdeleted = 0 ";
 			if (!F.empty(mbBalance.getTenantId())) {
 				whereHql += " and t.tenantId = :tenantId";
 				params.put("tenantId", mbBalance.getTenantId());
-			}		
+			}
 			if (!F.empty(mbBalance.getIsdeleted())) {
 				whereHql += " and t.isdeleted = :isdeleted";
 				params.put("isdeleted", mbBalance.getIsdeleted());
-			}		
+			}
 			if (!F.empty(mbBalance.getAmount())) {
 				whereHql += " and t.amount = :amount";
 				params.put("amount", mbBalance.getAmount());
-			}		
+			}
 			if (!F.empty(mbBalance.getRefId())) {
 				whereHql += " and t.refId = :refId";
 				params.put("refId", mbBalance.getRefId());
-			}		
+			}
 			if (!F.empty(mbBalance.getRefType())) {
 				whereHql += " and t.refType = :refType";
 				params.put("refType", mbBalance.getRefType());
-			}		
-		}	
+			}
+		}
 		return whereHql;
 	}
 
@@ -285,7 +285,36 @@ public class MbBalanceServiceImpl extends BaseServiceImpl<MbBalance> implements 
 		mbBalanceLogTarget.setRefType("BT051");
 		mbBalanceLogTarget.setReason("门店账户金额转入");
 
-		mbBalanceLogService.addAndUpdateBalance(mbBalanceLogSource);
-		mbBalanceLogService.addAndUpdateBalance(mbBalanceLogTarget);
-	}
+        mbBalanceLogService.addAndUpdateBalance(mbBalanceLogSource);
+        mbBalanceLogService.addAndUpdateBalance(mbBalanceLogTarget);
+    }
+
+    @Override
+    public MbBalance addOrGetSupplierMbBalance(Integer refId, Integer refType, Integer initAmount) {
+        MbBalance o;
+        TmbBalance t = mbBalanceDao.get("from TmbBalance t where t.isdeleted = 0 and t.refType = " + refType + " and refId=" + refId);
+        if (t != null && t.getId() != null) {
+            o = new MbBalance();
+            BeanUtils.copyProperties(t, o);
+        } else {
+            if (refId == null)
+                throw new ServiceException("supplierId 不能为空");
+            if (refType == null)
+                throw new ServiceException("refType 不能为空");
+            if (refType == null)
+                throw new ServiceException("initAmount 不能为空");
+            o = new MbBalance();
+            o.setAmount(initAmount);
+            o.setRefId(refId);
+            o.setRefType(refType);
+            add(o);
+        }
+        return o;
+    }
+
+    @Override
+    public MbBalance addOrGetSupplierMbBalance(Integer supplierId) {
+        return addOrGetSupplierMbBalance(supplierId, 17, 0);
+    }
+
 }

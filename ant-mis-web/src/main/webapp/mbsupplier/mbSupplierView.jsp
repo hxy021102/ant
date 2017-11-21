@@ -379,11 +379,25 @@
             }
         });
     }
+    //获取供应商钱包日志
+    function viewBalance(id) {
+        var href = '${pageContext.request.contextPath}/mbUserController/viewBalance?supplierId=' + id;
+        parent.$("#index_tabs").tabs('add', {
+            title: '余额-' + id,
+            content: '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            closable: true
+        });
+    }
+    $(function () {
+        $('.money_input').each(function () {
+            $(this).text($.formatMoney($(this).text().trim()));
+        });
+    });
 </script>
 </head>
 <body>
 <div class="easyui-layout" data-options="fit:true,border:false">
-	<div data-options="region:'north',border:false">
+	<div data-options="region:'north',border:false" style="height: 180px; overflow: hidden;">
 		<table class="table table-hover table-condensed">
 				<tr>
 					<th><%=TmbSupplier.ALIAS_ADDTIME%></th>
@@ -409,10 +423,13 @@
 				</tr>		
 				<tr>	
 					<th><%=TmbSupplier.ALIAS_ADDRESS%></th>	
-					<td colspan="3">
+					<td>
 						${mbSupplier.address}							
-					</td>							
-
+					</td>
+					<th>钱包</th>
+					<td>
+						<a href="javascript:void(0);" onclick="viewBalance('${mbSupplier.id}')" class="money_input">${mbSupplier.balanceAmount}</a>
+					</td>
 				</tr>		
 				<tr>	
 					<th><%=TmbSupplier.ALIAS_CONTACT_PEOPLE%></th>	
