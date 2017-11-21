@@ -159,8 +159,8 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 				params.put("contactPeople", deliverOrder.getContactPeople());
 			}
 			if (!F.empty(deliverOrder.getSupplierOrderId())) {
-				whereHql += " and t.supplierOrderId = :supplierOrderId";
-				params.put("supplierOrderId", deliverOrder.getSupplierOrderId());
+				whereHql += " and t.supplierOrderId in (:supplierOrderId)";
+				params.put("supplierOrderId", deliverOrder.getSupplierOrderId().split(","));
 			}
 			if (!F.empty(deliverOrder.getRemark())) {
 				whereHql += " and t.remark = :remark";

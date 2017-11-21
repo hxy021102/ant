@@ -41,4 +41,8 @@ public class DeliverOrderTaskService {
     public void youzanOrders(){
         deliverOrderYouzanService.youzanOrders();
     }
+
+    public void settleYouzanBill(){
+        deliverOrderYouzanService.settleYouzanBill();
+    }
 }

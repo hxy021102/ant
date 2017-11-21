@@ -20,7 +20,6 @@
 		<task:scheduled ref="taskServiceImpl" method="updateBatchShopLocation" cron= "0 23 23 * * ?" />
 
 		<task:scheduled ref="taskServiceImpl" method="remindDrivers" cron="0 0/5 8-19 * * ?"/>
-		<task:scheduled ref="taskServiceImpl" method="updateSupplierOrderBill" cron="0 0 22 * * ?"></task:scheduled>
 
 		<!--<task:scheduled ref="deliverOrderTaskService" method="orderAllocation" cron="0 0/1 * * * ?"/>-->
 
@@ -29,6 +28,8 @@
 		<!--<task:scheduled ref="deliverOrderTaskService" method="checkTimeOutOrder" cron="0 0/1 * * * ? "></task:scheduled>-->
 
 		<!--<task:scheduled ref="deliverOrderTaskService" method="youzanOrders" cron="0 0/1 * * * ? "></task:scheduled>-->
+
+		<!--<task:scheduled ref="deliverOrderTaskService" method="settleYouzanBill" cron="0 0 0 * * ?"></task:scheduled>-->
 
 	</task:scheduled-tasks>
 
