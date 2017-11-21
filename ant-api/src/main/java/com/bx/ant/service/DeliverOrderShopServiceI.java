@@ -2,6 +2,7 @@ package com.bx.ant.service;
 
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.DeliverOrderShop;
+import com.bx.ant.pageModel.DeliverOrderShopView;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
@@ -126,4 +127,6 @@ public interface DeliverOrderShopServiceI {
 	void editStatusByHql(DeliverOrderShop deliverOrderShop,String status,String shopPayStatus);
 
 	List<DeliverOrderShop> queryTodayOrdersByShopId(Integer shopId);
+
+    DeliverOrderShopView getView(Long id);
 }

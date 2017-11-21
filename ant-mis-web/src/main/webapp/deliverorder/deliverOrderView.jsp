@@ -391,6 +391,8 @@
 				</td>
 			</tr>
 			<tr>
+				<th>商品总重</th>
+				<td>${deliverOrder.weight}克</td>
 				<th>备注</th>
 				<td colspan="3">
 					${deliverOrder.remark}

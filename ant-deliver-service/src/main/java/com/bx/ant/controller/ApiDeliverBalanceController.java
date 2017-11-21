@@ -448,6 +448,7 @@ public class ApiDeliverBalanceController extends BaseController {
         if (CollectionUtils.isNotEmpty(shopDeliverApplies)) {
             shopDeliverApply = shopDeliverApplies.get(0);
             withdrawLogView.setApplyLoginId(shopDeliverApply.getAccountId() + "");
+            withdrawLogView.setRefType("BT101");
             //未指定排序则默认为修改时间降序
             if (F.empty(pageHelper.getSort())) {
                 pageHelper.setSort("updatetime");

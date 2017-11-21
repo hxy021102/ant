@@ -7,19 +7,20 @@
        http://code.alibabatech.com/schema/dubbo
        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
        <dubbo:application name="deliver-service" />
-       <dubbo:registry address="${dubbo.registry.address}" check="false" register="${dubbo.registry.registry}"/>
+       <dubbo:registry address="${dubbo.registry.address}" check="false"/>
        <dubbo:consumer check="false" />
 
        <!-- 扫描注解包路径，多个包用逗号分隔，不填pacakge表示扫描当前ApplicationContext中所有的类 -->
        <!--<dubbo:annotation package="com.bx.ant.controller" />-->
 
-       <dubbo:reference id="mbShopService" interface="com.mobian.service.MbShopServiceI" url="${dubbo.direct.url}"/>
-       <dubbo:reference id="basedataService" interface="com.mobian.service.BasedataServiceI" url="${dubbo.direct.url}"/>
-       <dubbo:reference id="mbItemService" interface="com.mobian.service.MbItemServiceI" url="${dubbo.direct.url}"/>
-       <dubbo:reference id="mbBalanceLogService" interface="com.mobian.service.MbBalanceLogServiceI" url="${dubbo.direct.url}"/>
-       <dubbo:reference id="mbBalanceService" interface="com.mobian.service.MbBalanceServiceI" url="${dubbo.direct.url}"/>
-       <dubbo:reference id="userService" interface="com.mobian.service.UserServiceI" url="${dubbo.direct.url}"/>
-       <dubbo:reference id="mbWithdrawLogService" interface="com.mobian.service.MbWithdrawLogServiceI" url="${dubbo.direct.url}"/>
+       <dubbo:reference id="mbShopService" interface="com.mobian.service.MbShopServiceI"/>
+       <dubbo:reference id="basedataService" interface="com.mobian.service.BasedataServiceI"/>
+       <dubbo:reference id="mbItemService" interface="com.mobian.service.MbItemServiceI"/>
+       <dubbo:reference id="mbBalanceLogService" interface="com.mobian.service.MbBalanceLogServiceI"/>
+       <dubbo:reference id="mbBalanceService" interface="com.mobian.service.MbBalanceServiceI"/>
+       <dubbo:reference id="userService" interface="com.mobian.service.UserServiceI"/>
+       <dubbo:reference id="mbWithdrawLogService" interface="com.mobian.service.MbWithdrawLogServiceI"/>
+       <dubbo:reference id="diveRegionService" interface="com.mobian.service.DiveRegionServiceI"/>
 
        <!-- 用dubbo协议在20880端口暴露服务 -->
        <dubbo:protocol name="${dubbo.protocol.name}" port="${dubbo.protocol.port}" />
@@ -29,6 +30,7 @@
        <dubbo:service interface="com.bx.ant.service.ShopDeliverApplyServiceI" ref="shopDeliverApplyServiceImpl" protocol="dubbo"/>
        <dubbo:service interface="com.bx.ant.service.DeliverOrderServiceI" ref="deliverOrderServiceImpl" protocol="dubbo"/>
        <dubbo:service interface="com.bx.ant.service.DeliverOrderAllocationServiceI" ref="deliverOrderAllocationServiceImpl" protocol="dubbo"/>
+       <dubbo:service interface="com.bx.ant.service.DriverOrderShopAllocationServiceI" ref="driverOrderShopAllocationServiceImpl" protocol="dubbo" />
        <dubbo:service interface="com.bx.ant.service.DeliverOrderYouzanServiceI" ref="deliverOrderYouzanServiceImpl" protocol="dubbo"/>
        <dubbo:service interface="com.bx.ant.service.SupplierServiceI" ref="supplierServiceImpl" protocol="dubbo"/>
        <dubbo:service interface="com.bx.ant.service.SupplierItemRelationServiceI" ref="supplierItemRelationServiceImpl" protocol="dubbo"/>
@@ -42,4 +44,9 @@
        <dubbo:service interface="com.bx.ant.service.ShopOrderBillServiceI" ref="shopOrderBillServiceImpl" protocol="dubbo"/>
        <dubbo:service interface="com.bx.ant.service.DeliverOrderShopPayServiceI" ref="deliverOrderShopPayServiceImpl" protocol="dubbo"/>
        <dubbo:service interface="com.bx.ant.service.ShopItemServiceI" ref="shopItemServiceImpl" protocol="dubbo"/>
+       <dubbo:service interface="com.bx.ant.service.DriverAccountServiceI" ref="driverAccountServiceImpl" protocol="dubbo"/>
+       <dubbo:service interface="com.bx.ant.service.DriverOrderShopServiceI" ref="driverOrderShopServiceImpl" protocol="dubbo"/>
+       <dubbo:service interface="com.bx.ant.service.DriverOrderShopBillServiceI" ref="driverOrderShopBillServiceImpl" protocol="dubbo"/>
+       <dubbo:service interface="com.bx.ant.service.DriverFreightRuleServiceI" ref="driverFreightRuleServiceImpl" protocol="dubbo"/>
+       <dubbo:service interface="com.bx.ant.service.DriverOrderPayServiceI" ref="driverOrderPayServiceImpl" protocol="dubbo"/>
 </beans>

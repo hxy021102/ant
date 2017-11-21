@@ -86,7 +86,6 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                 deliverOrder.setLongitude(point[0]);
                 deliverOrder.setLatitude(point[1]);
             }
-
         }
         //4、计算最近距离点
 //        MbShop minMbShop = null;
@@ -116,7 +115,7 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
             }
             if(distance > maxDistance) continue;
 
-            shopDeliverApply.setDistance(distance);
+            shopDeliverApply.setDistance(BigDecimal.valueOf(distance));
             includeShop.add(shopDeliverApply);
 
 //            if (distance < minDistance || minDistance == 0) {
@@ -194,6 +193,5 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
 
             }
         }
-
     }
 }

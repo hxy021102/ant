@@ -288,4 +288,9 @@ public class MbBalanceServiceImpl extends BaseServiceImpl<MbBalance> implements 
 		mbBalanceLogService.addAndUpdateBalance(mbBalanceLogSource);
 		mbBalanceLogService.addAndUpdateBalance(mbBalanceLogTarget);
 	}
+
+	@Override
+	public MbBalance addOrGetDriverBalance(Integer driverAccountId) {
+		return  addOrGetMbBalance(driverAccountId, 50,0);
+	}
 }
