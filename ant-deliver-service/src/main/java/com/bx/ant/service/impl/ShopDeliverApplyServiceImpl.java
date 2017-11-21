@@ -2,14 +2,19 @@ package com.bx.ant.service.impl;
 
 import com.bx.ant.dao.ShopDeliverApplyDaoI;
 import com.bx.ant.model.TshopDeliverApply;
+import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.ShopDeliverApplyQuery;
+import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.MbAssignShop;
 import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.PageHelper;
 import com.bx.ant.pageModel.ShopDeliverApply;
 import com.mobian.service.MbShopServiceI;
+import com.mobian.util.ConvertNameUtil;
+import com.mobian.util.GeoUtil;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -17,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -165,6 +172,7 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 		BeanUtils.copyProperties(shopDeliverApply, shopDeliverApplyQuery);
 		MbShop shop = mbShopService.getFromCache(shopDeliverApply.getShopId());
 		shopDeliverApplyQuery.setShopName(shop.getName());
+		shopDeliverApplyQuery.setDeliveryTypeName(shopDeliverApply.getDeliveryType());
 		return shopDeliverApplyQuery;
 	}
 
@@ -173,7 +181,8 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 		ShopDeliverApply shopDeliverApply = new ShopDeliverApply();
 		PageHelper ph = new PageHelper();
 		ph.setHiddenTotal(true);
-		shopDeliverApply.setOnline(true);
+//		shopDeliverApply.setOnline(true);
+		shopDeliverApply.setFrozen(false); // 未冻结
 		shopDeliverApply.setStatus(DAS_02);
 		DataGrid dataGrid = dataGrid(shopDeliverApply, ph);
 		List<ShopDeliverApply> shopDeliverApplyList = dataGrid.getRows();
@@ -211,5 +220,44 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 			}
 		}
 		return ol;
+	}
+
+	@Override
+	public List<MbAssignShop> queryAssignShopList(DeliverOrder deliverOrder) {
+		//1、查询开通了派单功能,且为直营或者加盟的门店，包括在线或不在线的门店
+		List<ShopDeliverApply> shopDeliverApplyList = getAvailableAndWorkShop();
+		//2、获取最大配送距离
+		BigDecimal maxDistance = new BigDecimal(ConvertNameUtil.getString("DSV200", "5000"));
+		List<MbAssignShop> mbAssignShopArrayList = new ArrayList<MbAssignShop>();
+		//3、首先判断是否能解析派送地址，能，则计算符合配送距离的门店
+		if (deliverOrder.getLatitude() != null && deliverOrder.getLongitude() != null) {
+			for (ShopDeliverApply shopDeliverApply : shopDeliverApplyList) {
+				MbShop mbShop = shopDeliverApply.getMbShop();
+				double distance = GeoUtil.getDistance(deliverOrder.getLongitude().doubleValue(), deliverOrder.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
+				if (shopDeliverApply.getMaxDeliveryDistance() != null) {
+					maxDistance = shopDeliverApply.getMaxDeliveryDistance();
+				}
+				if (distance > maxDistance.doubleValue()) continue;
+				MbAssignShop mbAssignShop = new MbAssignShop();
+				BeanUtils.copyProperties(mbShop, mbAssignShop);
+				mbAssignShop.setDistance(BigDecimal.valueOf(distance));
+				mbAssignShopArrayList.add(mbAssignShop);
+			}
+		}
+		//4、不管是否有符合派送距离的门店，都要添加兜底门店
+		String shopIds = ConvertNameUtil.getString("DSV800");
+		if (!F.empty(shopIds)) {
+			for (String shopId : shopIds.split(",")) {
+				MbShop mbShop = mbShopService.getFromCache(Integer.parseInt(shopId));
+				MbAssignShop mbAssignShop = new MbAssignShop();
+				BeanUtils.copyProperties(mbShop, mbAssignShop);
+				double distance = GeoUtil.getDistance(deliverOrder.getLongitude().doubleValue(), deliverOrder.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
+				mbAssignShop.setContactPhone("<font color='red'>" + mbShop.getContactPhone() + "</font>");
+				mbAssignShop.setDistance(BigDecimal.valueOf(distance));
+				mbAssignShopArrayList.add(mbAssignShop);
+			}
+		}
+		Collections.sort(mbAssignShopArrayList);
+		return mbAssignShopArrayList;
 	}
 }

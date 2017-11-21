@@ -35,6 +35,9 @@ public class TshopDeliverApply implements java.io.Serializable,IEntity{
 	public static final String ALIAS_STATUS = "状态";
 	public static final String ALIAS_ACCOUNT_ID = "账号ID";
 	public static final String ALIAS_MAXDELIVERYDISTANCE = "最大配送距离";
+	public static final String ALIAS_SMS_REMIND = "短信通知";
+	public static final String ALIAS_UPLOAD_REQUIRED = "必须上传回单";
+	public static final String ALIAS_DELIVERY_TYPE = "派单类型";
 	
 	//date formats
 	public static final String FORMAT_ADDTIME = com.mobian.util.Constants.DATE_FORMAT_FOR_ENTITY;
@@ -59,6 +62,7 @@ public class TshopDeliverApply implements java.io.Serializable,IEntity{
 	private String deliveryWay;
 	//
 	private Boolean online;
+	private Boolean frozen;
 	//@Length(max=512)
 	private String result;
 	//@NotBlank @Length(max=10)
@@ -67,6 +71,12 @@ public class TshopDeliverApply implements java.io.Serializable,IEntity{
 	private Integer accountId;
 	//
 	private BigDecimal maxDeliveryDistance;
+	//
+	private Boolean smsRemind;
+	//
+	private Boolean uploadRequired;
+	//
+	private String deliveryType;
 	//columns END
 
 
@@ -152,7 +162,16 @@ public class TshopDeliverApply implements java.io.Serializable,IEntity{
 	public void setOnline(Boolean online) {
 		this.online = online;
 	}
-	
+
+	@Column(name = "frozen", unique = false, nullable = true, insertable = true, updatable = true, length = 0)
+	public Boolean getFrozen() {
+		return frozen;
+	}
+
+	public void setFrozen(Boolean frozen) {
+		this.frozen = frozen;
+	}
+
 	@Column(name = "result", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
 	public String getResult() {
 		return this.result;
@@ -187,7 +206,29 @@ public class TshopDeliverApply implements java.io.Serializable,IEntity{
 	public void setMaxDeliveryDistance(BigDecimal maxDeliveryDistance) {
 		this.maxDeliveryDistance = maxDeliveryDistance;
 	}
+	@Column(name = "sms_remind", unique = false, nullable = true, insertable = true, updatable = true, length = 0)
+	public Boolean getSmsRemind() {
+		return smsRemind;
+	}
 
+	public void setSmsRemind(Boolean smsRemind) {
+		this.smsRemind = smsRemind;
+	}
+	@Column(name = "upload_required", unique = false, nullable = true, insertable = true, updatable = true, length = 0)
+	public Boolean getUploadRequired() {
+		return uploadRequired;
+	}
+	public void setUploadRequired(Boolean uploadRequired) {
+		this.uploadRequired = uploadRequired;
+	}
+	@Column(name = "delivery_type", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public String getDeliveryType() {
+		return deliveryType;
+	}
+
+	public void setDeliveryType(String deliveryType) {
+		this.deliveryType = deliveryType;
+	}
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

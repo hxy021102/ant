@@ -21,6 +21,15 @@ public class DeliverOrderShop implements java.io.Serializable {
 	private Date updatetimeBegin;
 	private Date updatetimeEnd;
 
+	private Date addtimeBegin;
+	private Date addtimeEnd;
+
+
+	private String shopPayStatus;
+    private Long[] ids;
+
+	private String deliveryType; // 派单类型
+
 
 
 
@@ -112,5 +121,45 @@ public class DeliverOrderShop implements java.io.Serializable {
 
 	public void setDistance(BigDecimal distance) {
 		this.distance = distance;
+	}
+
+	public String getShopPayStatus() {
+		return shopPayStatus;
+	}
+
+	public void setShopPayStatus(String shopPayStatus) {
+		this.shopPayStatus = shopPayStatus;
+	}
+
+	public Long[] getIds() {
+		return ids;
+	}
+
+	public void setIds(Long[] ids) {
+		this.ids = ids;
+	}
+
+	public String getDeliveryType() {
+		return deliveryType;
+	}
+
+	public void setDeliveryType(String deliveryType) {
+		this.deliveryType = deliveryType;
+	}
+
+	public Date getAddtimeBegin() {
+		return addtimeBegin;
+	}
+
+	public void setAddtimeBegin(Date addtimeBegin) {
+		this.addtimeBegin = addtimeBegin;
+	}
+
+	public Date getAddtimeEnd() {
+		return addtimeEnd;
+	}
+
+	public void setAddtimeEnd(Date addtimeEnd) {
+		this.addtimeEnd = addtimeEnd;
 	}
 }

@@ -1,16 +1,12 @@
 package com.bx.ant.service.impl.state;
 
-import com.bx.ant.pageModel.DeliverOrderShopItem;
-import com.bx.ant.pageModel.ShopItem;
 import com.bx.ant.service.*;
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.DeliverOrderShop;
-import com.mobian.absx.F;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * 门店拒绝接单状态
@@ -56,10 +52,12 @@ public class DeliverOrder15StateImpl implements DeliverOrderState {
         DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
         deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_AUDITING);
         deliverOrderShop.setDeliverOrderId(orderNew.getId());
-        deliverOrderShopService.editStatus(deliverOrderShop,DeliverOrderShopServiceI.STATUS_REFUSED);
+        DeliverOrderShop orderShopEdit = new DeliverOrderShop();
+        orderShopEdit.setStatus(DeliverOrderShopServiceI.STATUS_REFUSED);
+        deliverOrderShopService.editStatus(deliverOrderShop,orderShopEdit);
 
         //返还门店商品库存
-        shopItemService.refundByDeliverOrder(deliverOrder);
+        shopItemService.updateForRefundByDeliverOrder(deliverOrder);
         //TODO 这里应该执行重新分配订单方法
 
         //对门店新订单进行计数

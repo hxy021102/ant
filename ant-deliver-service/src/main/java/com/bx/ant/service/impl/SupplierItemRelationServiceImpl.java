@@ -1,17 +1,23 @@
 package com.bx.ant.service.impl;
 
+import com.bx.ant.pageModel.SupplierItemRelationView;
 import com.mobian.absx.F;
 import com.bx.ant.dao.SupplierItemRelationDaoI;
 import com.bx.ant.model.TsupplierItemRelation;
+import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.MbItem;
 import com.mobian.pageModel.PageHelper;
 import com.bx.ant.pageModel.SupplierItemRelation;
 import com.bx.ant.service.SupplierItemRelationServiceI;
+import com.mobian.service.MbItemServiceI;
 import com.mobian.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import javax.xml.ws.soap.Addressing;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +28,9 @@ public class SupplierItemRelationServiceImpl extends BaseServiceImpl<SupplierIte
 
 	@Autowired
 	private SupplierItemRelationDaoI supplierItemRelationDao;
+
+	@Resource
+	private MbItemServiceI mbItemService;
 
 	@Override
 	public DataGrid dataGrid(SupplierItemRelation supplierItemRelation, PageHelper ph) {
@@ -117,4 +126,28 @@ public class SupplierItemRelationServiceImpl extends BaseServiceImpl<SupplierIte
 		//supplierItemRelationDao.delete(supplierItemRelationDao.get(TsupplierItemRelation.class, id));
 	}
 
+	@Override
+	public DataGrid dataGridView(SupplierItemRelation supplierItemRelation, PageHelper ph) {
+		DataGrid dataGrid = new DataGrid();
+		List<SupplierItemRelationView> ol = new ArrayList<SupplierItemRelationView>();
+		List<SupplierItemRelationView> supplierItemRelationViews = dataGrid(supplierItemRelation, ph).getRows();
+		for (SupplierItemRelation s : supplierItemRelationViews) {
+			SupplierItemRelationView sv = new SupplierItemRelationView();
+			BeanUtils.copyProperties(s, sv);
+			fillItemInfo(sv);
+			ol.add(sv);
+		}
+		dataGrid.setRows(ol);
+		return dataGrid;
+	}
+
+	protected void fillItemInfo(SupplierItemRelationView view) {
+		if (!F.empty(view.getItemId())) {;
+			MbItem item = mbItemService.getFromCache(view.getItemId());
+			if (item != null) {
+				if (item.getWeight() == null) throw new ServiceException(String.format("商品ID%1s:%2s无重量数据", item.getId(), item.getName()));
+				view.setWeight(item.getWeight());
+			}
+		}
+	}
 }

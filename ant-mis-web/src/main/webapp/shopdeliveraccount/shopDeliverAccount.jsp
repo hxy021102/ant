@@ -72,7 +72,7 @@
 				formatter : function(value,row,index) {
 				    if(row.sex == 1) {
 				       return '男';
-					}else if(row.sex == 0){
+					}else if(row.sex == 0) {
 				       return '女';
  					}
 				}

@@ -7,6 +7,7 @@ import com.bx.ant.pageModel.Supplier;
 import com.bx.ant.service.*;
 import com.mobian.thirdpart.youzan.YouzanUtil;
 import com.mobian.util.ConvertNameUtil;
+import com.mobian.absx.F;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,14 +33,9 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderServiceI deliverOrderService;
 
-    @Autowired
-    private DeliverOrderPayServiceI deliverOrderPayService;
 
     @Autowired
     private DeliverOrderShopServiceI deliverOrderShopService;
-
-    @Autowired
-    private DeliverOrderLogServiceI deliverOrderLogService;
 
     @Autowired
     private DeliverOrderItemServiceI deliverOrderItemService;
@@ -47,8 +43,6 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderShopItemServiceI deliverOrderShopItemService;
 
-    @Autowired
-    private DeliverOrderShopPayServiceI deliverOrderShopPayService;
 
     @Resource
     private SupplierServiceI supplierService;
@@ -75,11 +69,11 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
         DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
 
         //1.1设置默认金额为订单金额
-        deliverOrderShop.setAmount(deliverOrder.getAmount());
+      //  deliverOrderShop.setAmount(deliverOrder.getAmount());
         deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
         deliverOrderShop.setShopId(deliverOrder.getShopId());
         deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_AUDITING);
-        deliverOrderShop.setDistance(new BigDecimal(deliverOrder.getShopDistance()));
+        deliverOrderShop.setDistance(deliverOrder.getShopDistance());
         deliverOrderShopService.addAndGet(deliverOrderShop);
         List<DeliverOrderItem> deliverOrderItemList = deliverOrderItemService.getDeliverOrderItemList(deliverOrder.getId());
 
@@ -87,21 +81,26 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
         //2.1 添加门店订单明细List<deliverOrderShopItem>
 
         //2.3 编辑deliverOrderShop中金额amount字段
+        deliverOrderShop.setDeliveryType(deliverOrder.getDeliveryType());
         deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItemList, deliverOrderShop);
 
-        //3. 对门店新订单进行计数
-        deliverOrderService.addAllocationOrderRedis(deliverOrder.getShopId());
-
+        //3. 对门店新订单进行计数:非自动接单
+        if(!DeliverOrderServiceI.DELIVER_TYPE_AUTO.equals(deliverOrder.getDeliveryType()))
+            deliverOrderService.addAllocationOrderRedis(deliverOrder.getShopId());
 
         //4. 编辑订单并添加修改记录
         deliverOrder.setStatus(prefix + getStateName());
-
-        deliverOrderService.editAndAddLog(deliverOrder, DeliverOrderLogServiceI.TYPE_ASSIGN_DELIVER_ORDER, "系统自动分配订单");
 
         // 有赞商城订单，对接有赞api-卖家确认发货
         Supplier supplier = supplierService.get(deliverOrder.getSupplierId());
         if(ConvertNameUtil.getString(YouzanUtil.APPKEY).equals(supplier.getAppKey())) {
             deliverOrderYouzanService.youzanOrderConfirm(deliverOrder.getSupplierOrderId());
+        }
+        if(F.empty(deliverOrder.getDeliverOrderLogType())) {
+            deliverOrderService.editAndAddLog(deliverOrder, DeliverOrderLogServiceI.TYPE_ASSIGN_DELIVER_ORDER, "系统自动分配订单");
+        }else{
+            String content = deliverOrder.getOrderLogRemark() == null ? "指派订单给门店" : "指派订单给门店【" + deliverOrder.getOrderLogRemark() + "】";
+            deliverOrderService.editAndAddLog(deliverOrder, deliverOrder.getDeliverOrderLogType(), content);
         }
     }
 

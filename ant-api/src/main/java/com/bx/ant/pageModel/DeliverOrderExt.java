@@ -82,4 +82,5 @@ public class DeliverOrderExt extends DeliverOrder {
     public void setShopPayWay(String shopPayWay) {
         this.shopPayWay = shopPayWay;
     }
+
 }

@@ -1,10 +1,13 @@
 package com.bx.ant.service;
 
+import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.ShopDeliverApplyQuery;
 import com.bx.ant.pageModel.ShopDeliverApply;
 import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.MbAssignShop;
 import com.mobian.pageModel.PageHelper;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -81,6 +84,13 @@ public interface ShopDeliverApplyServiceI {
 	 */
 	List<ShopDeliverApply> getAvailableAndWorkShop();
 	List<ShopDeliverApply> query(ShopDeliverApply shopDeliverApply);
+
+	/**
+	 * 获取满足指派要求的门店
+	 * @param deliverOrder
+	 * @return
+	 */
+	List<MbAssignShop> queryAssignShopList(DeliverOrder deliverOrder);
 
 
 }

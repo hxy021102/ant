@@ -157,7 +157,7 @@ public class TmbItemStock implements java.io.Serializable,IEntity{
 	public void setSafeQuantity(Integer safeQuantity) {
 		this.safeQuantity = safeQuantity;
 	}
-	@Column(name = "average_price", unique = false, nullable = false, insertable = true, updatable = true, length = 10)
+	@Column(name = "average_price", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
 	public Integer getAveragePrice() { return averagePrice; }
 	public void setAveragePrice(Integer averagePrice) { this.averagePrice = averagePrice; }
 	/*

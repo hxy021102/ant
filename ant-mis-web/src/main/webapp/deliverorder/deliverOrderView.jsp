@@ -10,9 +10,9 @@
 	<title>DeliverOrder管理</title>
 	<jsp:include page="../inc.jsp"></jsp:include>
 	 <script type="text/javascript">
-
+		 var deliverDataGrid;
          function loadDeliverDataGrid() {
-         return $('#deliverDataGrid').datagrid({
+         return deliverDataGrid=$('#deliverDataGrid').datagrid({
              url : '${pageContext.request.contextPath}/deliverOrderShopController/dataGrid?deliverOrderId='+${deliverOrder.id},
              fit : true,
              fitColumns : true,
@@ -21,6 +21,7 @@
              idField : 'id',
              pageSize : 10,
              pageList : [ 10, 20, 30, 40, 50 ],
+             sortName:'addtime',
              sortOrder : 'desc',
              checkOnSelect : false,
              selectOnCheck : false,
@@ -28,13 +29,17 @@
              striped : true,
              rownumbers : true,
              singleSelect : true,
-             columns : [ [ {
+             columns : [ [  {
+                 field : 'addtime',
+                 title : '分配时间',
+                 width : 30,
+             },{
                  field : 'shopId',
                  title : '门店ID',
                  width : 30,
              },{
                  field : 'shopName',
-                 title : '名店名称',
+                 title : '门店名称',
                  width : 80
              }, {
                  field : 'statusName',
@@ -201,6 +206,7 @@
                  pageSize : 10,
                  pageList : [ 10, 20, 30, 40, 50 ],
                  sortOrder : 'desc',
+                 sortName:'updatetime',
                  checkOnSelect : false,
                  selectOnCheck : false,
                  nowrap : false,
@@ -218,7 +224,7 @@
                  }, {
                      field : 'content',
                      title : '内容',
-                     width : 80
+                     width : 130
                  }, {
                      field : 'loginName',
                      title : '操作人',
@@ -231,8 +237,7 @@
                  }
              });
          }
-
-
+         var orderShopId;
          var gridMap = {};
          $(function() {
              gridMap = {
@@ -265,20 +270,49 @@
                      gridMap[index].invoke();
                  }
              });
+
              gridMap[0].invoke();
+             if (isNaN(${deliverOrder.orderShopId})) {
+                 orderShopId = 0;
+             } else {
+                 orderShopId =${deliverOrder.orderShopId};
+             }
+
+
          });
 
+         //指派运单给门店
+         function assignOrderShop() {
+             parent.$.modalDialog({
+                 title : '指派门店',
+                 width : 780,
+                 height : 200,
+                 href : '${pageContext.request.contextPath}/deliverOrderController/assignOrderShopPage?id=' + ${deliverOrder.id}+'&orderShopId='+orderShopId,
+                 buttons : [ {
+                     text : '提交',
+                     handler : function() {
+                         parent.$.modalDialog.opener_url = window.location;
+                        // parent.$.modalDialog.openner_dataGrid = deliverDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                         var f = parent.$.modalDialog.handler.find('#form');
+                         f.submit();
+                     }
+                 } ]
+             });
+         }
 
 	 </script>
 </head>
 <body>
 <div class="easyui-layout" data-options="fit : true,border:false">
-	<div data-options="region:'north',title:'基本信息',border:false" style="height: 180px; overflow: hidden;">
+	<div data-options="region:'north',title:'基本信息',border:false" style="height: 270px; overflow: hidden;">
 		<table class="table">
 			<tr>
 				<th>运单ID</th>
 				<td>
 					${deliverOrder.id}
+					<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/assignOrderShopPage') and ( deliverOrder.status=='DOS01' or deliverOrder.status=='DOS15' or deliverOrder.status=='notDriver')}">
+						<a href="javascript:void(0);" class="easyui-linkbutton" onclick="assignOrderShop();">指派</a>
+					</c:if>
 				</td>
 				<th>供应商名称</th>
 				<td>
@@ -331,11 +365,36 @@
 			</tr>
 			<tr>
 				<th>供应商订单ID</th>
-				<td>${deliverOrder.supplierOrderId}</td>
+				<td colspan="">${deliverOrder.supplierOrderId}</td>
+				<c:choose>
+					<c:when test="${deliverOrder.status=='notDriver'}">
+					<th>超时</th>
+					<td>
+						${deliverOrder.showTime}
+					</td>
+					</c:when>
+					<c:otherwise>
+					    <th></th><td></td>
+					</c:otherwise>
+				</c:choose>
+				<th>回单</th>
+				<c:forEach items="${deliverOrder.image}" var="image">
+					<td rowspan="2">
+					 <img src="${image}" width="80px" height="80px" />
+					</td>
+				</c:forEach>
 			</tr>
 			<tr>
+				<th>送达备注</th>
+				<td colspan="3">
+					${deliverOrder.completeRemark}
+				</td>
+			</tr>
+			<tr>
+				<th>商品总重</th>
+				<td>${deliverOrder.weight}克</td>
 				<th>备注</th>
-				<td colspan="7">
+				<td colspan="3">
 					${deliverOrder.remark}
 				</td>
 			</tr>

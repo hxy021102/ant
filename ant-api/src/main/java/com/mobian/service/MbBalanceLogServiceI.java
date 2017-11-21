@@ -5,6 +5,7 @@ import com.mobian.pageModel.MbBalanceLog;
 import com.mobian.pageModel.PageHelper;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -79,7 +80,10 @@ public interface MbBalanceLogServiceI {
     List<MbBalanceLog> list(MbBalanceLog mbBalanceLog);
 
     DataGrid updateDeliveryBalanceLogDataGrid(MbBalanceLog mbBalanceLog, PageHelper pageHelper);
-	/**
+
+    DataGrid updateDriverBalanceLogDataGrid(MbBalanceLog mbBalanceLog, PageHelper pageHelper);
+
+    /**
 	 * 导出余额流水
 	 * @param mbBalanceLog
 	 * @param ph
@@ -87,4 +91,5 @@ public interface MbBalanceLogServiceI {
 	 */
 	DataGrid dataGridBalanceLogDownload(MbBalanceLog mbBalanceLog, PageHelper ph);
 
+	Map<String,Integer> totalBalanceByMonth(MbBalanceLog mbBalanceLog);
 }

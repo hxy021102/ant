@@ -1,12 +1,14 @@
 package com.mobian.service.impl;
 
+import com.bx.ant.pageModel.ShopDeliverAccount;
+import com.bx.ant.service.ShopDeliverAccountServiceI;
 import com.mobian.absx.F;
 import com.mobian.dao.MbWithdrawLogDaoI;
 import com.mobian.exception.ServiceException;
 import com.mobian.model.TmbWithdrawLog;
 import com.mobian.pageModel.*;
 import com.mobian.service.MbBalanceServiceI;
-import com.mobian.service.MbUserServiceI;
+import com.mobian.service.MbShopServiceI;
 import com.mobian.service.MbWithdrawLogServiceI;
 import com.mobian.thirdpart.wx.HttpUtil;
 import com.mobian.thirdpart.wx.PayCommonUtil;
@@ -36,6 +38,12 @@ public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> imp
 
 	@Autowired
 	private UserServiceImpl UserService;
+
+	@Autowired
+	private MbShopServiceI mbShopService;
+
+	@javax.annotation.Resource
+	private ShopDeliverAccountServiceI shopDeliverAccountService;
 
 	@Override
 	public DataGrid dataGrid(MbWithdrawLog mbWithdrawLog, PageHelper ph) {
@@ -240,14 +248,16 @@ public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> imp
 
 	@Override
 	public DataGrid dataGridView(MbWithdrawLogView mbWithdrawLogView, PageHelper pageHelper){
-		DataGrid dataGrid = new DataGrid();
-		List<MbWithdrawLog> ol = new ArrayList<MbWithdrawLog>();
-		List<MbWithdrawLog> l = dataGrid(mbWithdrawLogView, pageHelper).getRows();
+		DataGrid dataGrid = dataGrid(mbWithdrawLogView, pageHelper);
+		List<MbWithdrawLogView> ol = new ArrayList<MbWithdrawLogView>();
+		List<MbWithdrawLog> l = dataGrid.getRows();
 		if (CollectionUtils.isNotEmpty(l)) {
 			for (MbWithdrawLog log : l) {
 				MbWithdrawLogView logView = new MbWithdrawLogView();
 				BeanUtils.copyProperties(log, logView);
 				fillLoginInfo(logView);
+				fillMbshopInfo(logView);
+				fillApplyLoginInfo(logView);
 				ol.add(logView);
 			}
 		}
@@ -264,4 +274,27 @@ public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> imp
 		return mbWithdrawLogView;
 	}
 
+	protected void fillMbshopInfo(MbWithdrawLogView mbWithdrawLogView) {
+		if (!F.empty(mbWithdrawLogView.getBalanceId())) {
+			MbBalance mbBalance = mbBalanceService.get(mbWithdrawLogView.getBalanceId());
+			MbShop mbShop = mbShopService.getFromCache(mbBalance.getRefId());
+			if (mbShop != null) {
+				mbWithdrawLogView.setShopName(mbShop.getName());
+				mbWithdrawLogView.setShopId(mbShop.getId());
+			}
+		}
+	}
+
+	protected void fillApplyLoginInfo(MbWithdrawLogView mbWithdrawLogView) {
+		if (!F.empty(mbWithdrawLogView.getApplyLoginId())) {
+			if ("BT101".equals(mbWithdrawLogView.getRefType())) {
+				ShopDeliverAccount shopDeliverAccount = shopDeliverAccountService.get(Integer.parseInt(mbWithdrawLogView.getApplyLoginId()));
+				if (shopDeliverAccount != null) {
+					mbWithdrawLogView.setApplyLoginName(shopDeliverAccount.getNickName());
+				}
+			} else if ("BT101".equals(mbWithdrawLogView.getRefType())) {
+				//TODO  若是骑手提现，则先查询driveraccount表，并设置申请人名称
+			}
+		}
+	}
 }

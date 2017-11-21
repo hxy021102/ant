@@ -93,6 +93,10 @@ public class DeliverOrderShopPayServiceImpl extends BaseServiceImpl<DeliverOrder
 					whereHql += " and t.deliverOrderId in(:deliverOrderIds) ";
 					params.put("deliverOrderIds",deliverOrderShopPayQuery.getDeliverOrderIds());
 				}
+				if(deliverOrderShopPayQuery.getStatusArray()!=null&&deliverOrderShopPayQuery.getStatusArray().length>0){
+					whereHql += " and t.status in(:statusArray) ";
+					params.put("statusArray",deliverOrderShopPayQuery.getStatusArray());
+				}
 			}
 		}	
 		return whereHql;
@@ -135,7 +139,9 @@ public class DeliverOrderShopPayServiceImpl extends BaseServiceImpl<DeliverOrder
 
 	@Override
 	public List<DeliverOrderShopPay> list(DeliverOrderShopPay deliverOrderShopPay) {
-		return dataGrid(deliverOrderShopPay, new PageHelper()).getRows();
+		PageHelper ph = new PageHelper();
+		ph.setHiddenTotal(true);
+		return dataGrid(deliverOrderShopPay, ph).getRows();
 	}
 
 	@Override

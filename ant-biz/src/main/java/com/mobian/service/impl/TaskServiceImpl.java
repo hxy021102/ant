@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by john on 16/10/16.
@@ -51,9 +53,13 @@ public class TaskServiceImpl implements TaskServiceI {
     @Autowired
     private MbItemStockServiceI mbItemStockService;
     @Autowired
+    private MbItemStockLogServiceI mbItemStockLogService;
+    @Autowired
     private UserServiceI userService;
     @Autowired
     private MbShopServiceI mbShopService;
+    @Autowired
+    private MbSupplierStockInItemServiceI mbSupplierStockInItemService;
     @Autowired
     private RedisUtil redisUtil;
     @Autowired
@@ -194,6 +200,62 @@ public class TaskServiceImpl implements TaskServiceI {
                 }
 
             }
+
+            ThreadCache mbItemStock2 = new ThreadCache(MbItemStock.class) {
+                @Override
+                protected Object handle(Object key) {
+                    return mbItemStockService.get((Integer) key);
+                }
+            };
+            List<MbItemStockLog> mbItemStockLogList = mbItemStockLogService.queryListByWithoutCostPrice();
+            for (MbItemStockLog mbItemStockLog : mbItemStockLogList) {
+                MbItemStock stock = mbItemStock2.getValue(mbItemStockLog.getItemStockId());
+                DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+                def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);// 事物隔离级别，开启新事务
+                TransactionStatus status = transactionManager.getTransaction(def); // 获得事务状态
+                if(F.empty(mbItemStockLog.getCostPrice())) {
+                    mbItemStockLog.setCostPrice(stock.getAveragePrice() == null ? -1 : stock.getAveragePrice());
+                }
+                try {
+                    //入库单；取入库价格
+                    if (!F.empty(mbItemStockLog.getReason())) {
+                        Pattern p = Pattern.compile("([\\s\\S]*)ID[:：](\\d+)[\\s\\S]*库存[:：](\\d+)");
+                        Matcher m = p.matcher(mbItemStockLog.getReason());
+                        String[] strs = new String[3];
+                        boolean isMatch = m.find();
+                        int i = 0, j = m.groupCount();
+                        while (isMatch && i < j) {
+                            strs[i] = m.group(i + 1);
+                            i++;
+                        }
+                        if (isMatch) {
+                            if (strs[0].indexOf("入库") > -1) {
+                                MbSupplierStockInItem request = new MbSupplierStockInItem();
+                                request.setSupplierStockInId(Integer.parseInt(strs[1]));
+                                request.setQuantity(mbItemStockLog.getQuantity());
+                                request.setItemId(stock.getItemId());
+                                List<MbSupplierStockInItem> list = mbSupplierStockInItemService.query(request);
+                                if (!CollectionUtils.isEmpty(list)) {
+                                    mbItemStockLog.setInPrice(list.get(0).getPrice());
+                                }
+                            }
+                            if (F.empty(mbItemStockLog.getEndQuantity())) {
+                                String endQuantity = strs[2];
+                                if (!F.empty(endQuantity)) {
+                                    mbItemStockLog.setEndQuantity(Integer.parseInt(endQuantity));
+                                }
+                            }
+                        }
+                    }
+
+                    mbItemStockLogService.edit(mbItemStockLog);
+                    transactionManager.commit(status);
+                } catch (Exception e) {
+                    transactionManager.rollback(status);
+                    e.printStackTrace();
+                }
+            }
+
         }catch (Exception e){
             e.printStackTrace();
         }finally {

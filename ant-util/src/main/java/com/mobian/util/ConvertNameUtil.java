@@ -31,4 +31,10 @@ public class ConvertNameUtil {
         return configTransfer.getDesc(key);
     }
 
+    public static String getDesc(String key, String defaultVal) {
+        String desc = getDesc(key);
+        desc = desc == null ? defaultVal : desc;
+        return desc;
+    }
+
 }

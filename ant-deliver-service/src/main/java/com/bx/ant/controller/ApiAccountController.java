@@ -46,6 +46,7 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/api/deliver/account")
 public class ApiAccountController extends BaseController {
 
+
     @Resource
     private MbShopServiceI mbShopService;
 
@@ -60,9 +61,6 @@ public class ApiAccountController extends BaseController {
 
     @Resource
     private RedisUtil redisUtil;
-
-    @Resource
-    private MbBalanceLogServiceI mbBalanceLogService;
 
     @Resource
     private DeliverOrderShopServiceImpl deliverOrderShopService;
@@ -217,51 +215,19 @@ public class ApiAccountController extends BaseController {
                 ShopDeliverApply shopDeliverApply = shopDeliverApplyService.getByAccountId(Integer.valueOf(token.getUid()));
                 MbShop mbShop = mbShopService.getFromCache(shopDeliverApply.getShopId());
 
-                // TODO 统计今日有效订单和今日营业额
-                //获取当天结束与开始
-                Calendar todayC = Calendar.getInstance();
-                todayC.set(Calendar.HOUR_OF_DAY,0);
-                todayC.set(Calendar.MINUTE,0);
-                todayC.set(Calendar.SECOND,0);
-                Date todayStart = todayC.getTime();
-                todayC.set(Calendar.HOUR_OF_DAY,23);
-                todayC.set(Calendar.MINUTE,59);
-                todayC.set(Calendar.SECOND,59);
-                Date todayEnd = todayC.getTime();
-
-                //获取今日营业额
-//                MbBalanceLog mbBalanceLog = new MbBalanceLog();
-//                mbBalanceLog.setUpdatetimeBegin(todayStart);
-//                mbBalanceLog.setUpdatetimeEnd(todayEnd);
-//                mbBalanceLog.setShopId(shopDeliverApply.getShopId());
-////                mbBalanceLog.setRefType("BT060");
-//                mbBalanceLog.setRefTypes("BT060,BT061");
-//                DataGrid dataGrid = mbBalanceLogService.updateDeliveryBalanceLogDataGrid(mbBalanceLog,new PageHelper());
-                Integer todayAmount = new Integer(0) ;
-//                if (dataGrid.getFooter() != null && CollectionUtils.isNotEmpty(dataGrid.getFooter())) {
-//                    MbBalanceLog  balanceLog =(MbBalanceLog) dataGrid.getFooter().get(0);
-//                    todayAmount = balanceLog.getAmountIn() + balanceLog.getAmountOut();
-//                }
-
-
-
-
+                //  统计今日有效订单和今日营业额
+                Integer todayAmount = new Integer(0);
                 //获取有效订单数量
                 Integer todayQuantity = new Integer(0);
-                DeliverOrderShopQuery deliverOrderShop = new DeliverOrderShopQuery();
-                deliverOrderShop.setShopId(shopDeliverApply.getShopId());
-                String[] statusList = {DeliverOrderShopServiceI.STATUS_ACCEPTED,DeliverOrderShopServiceI.STATUS_COMPLETE};
-                deliverOrderShop.setStatusList(statusList);
-                deliverOrderShop.setUpdatetimeBegin(todayStart);
-                deliverOrderShop.setUpdatetimeEnd(todayEnd);
-                List<DeliverOrderShop> deliverOrderShopList = deliverOrderShopService.dataGrid(deliverOrderShop, new PageHelper()).getRows();
+                List<DeliverOrderShop> deliverOrderShopList = deliverOrderShopService.queryTodayOrdersByShopId(shopDeliverApply.getShopId());
                 if (CollectionUtils.isNotEmpty(deliverOrderShopList)) {
                     todayQuantity = deliverOrderShopList.size();
                     for (DeliverOrderShop o : deliverOrderShopList) {
-                        todayAmount += o.getAmount();
+                        if (DeliverOrderShopServiceI.STATUS_COMPLETE.equals(o.getStatus())) {
+                            todayAmount += o.getAmount();
+                        }
                     }
                 }
-
 
                 Map<String, Object> obj = new HashMap<String, Object>();
                 obj.put("account", account);

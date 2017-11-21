@@ -2,7 +2,7 @@ package com.bx.ant.pageModel;
 
 import com.mobian.util.ConvertNameUtil;
 
-import java.util.List;
+import java.util.Date;
 
 
 @SuppressWarnings("serial")
@@ -10,6 +10,8 @@ public class DeliverOrderShopQuery extends DeliverOrderShop {
 	private String shopName;
 	private String statusName;
 	private String[] statusList;
+	private String shopPayStatusName;
+	private Date endDate;
 
 	public String getShopName() {
 		return shopName;
@@ -33,5 +35,21 @@ public class DeliverOrderShopQuery extends DeliverOrderShop {
 
 	public void setStatusList(String[] statusList) {
 		this.statusList = statusList;
+	}
+
+	public String getShopPayStatusName() {
+		return ConvertNameUtil.getString(shopPayStatusName);
+	}
+
+	public void setShopPayStatusName(String shopPayStatusName) {
+		this.shopPayStatusName = shopPayStatusName;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 }

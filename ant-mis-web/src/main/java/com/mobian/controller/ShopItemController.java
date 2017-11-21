@@ -86,9 +86,9 @@ public class ShopItemController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/addPage")
-	public String addPage(HttpServletRequest request) {
-		ShopItem shopItem = new ShopItem();
-		return "/shopitem/shopItemAdd";
+	public String addPage(HttpServletRequest request,Integer shopId) {
+		request.setAttribute("shopId", shopId);
+		return "/delivershopitem/shopItemAdd";
 	}
 
 	/**
@@ -100,6 +100,7 @@ public class ShopItemController extends BaseController {
 	@ResponseBody
 	public Json add(ShopItem shopItem) {
 		Json j = new Json();
+		shopItem.setPrice(shopItem.getInPrice() + shopItem.getFreight());
 		shopItemService.add(shopItem);
 		j.setSuccess(true);
 		j.setMsg("添加成功！");
@@ -143,7 +144,9 @@ public class ShopItemController extends BaseController {
 	 */
 	@RequestMapping("/editPrice")
 	@ResponseBody
-	public Json edit(ShopItem shopItem) {
+	public Json edit(ShopItem shopItem,String totalPrice) {
+		Double price = Double.parseDouble(totalPrice)*100;
+		shopItem.setPrice(price.intValue());
 		Json j = new Json();
 		shopItemService.edit(shopItem);
 		j.setSuccess(true);
@@ -174,8 +177,9 @@ public class ShopItemController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/examinePage")
-	public String examinePage(HttpServletRequest request, Long id) {
-		request.setAttribute("id", id);
+	public String examinePage(HttpServletRequest request, Integer id) {
+		ShopItem shopItem = shopItemService.get(id);
+		request.setAttribute("shopItem", shopItem);
 		return "delivershopitem/shopItemEditAudit";
 	}
 
@@ -187,7 +191,9 @@ public class ShopItemController extends BaseController {
 	 */
 	@RequestMapping("/editAuditState")
 	@ResponseBody
-	public Json editState(ShopItem shopItem, HttpSession session) {
+	public Json editState(ShopItem shopItem, HttpSession session,String totalPrice) {
+		Double price = Double.parseDouble(totalPrice)*100;
+		shopItem.setPrice(price.intValue());
 		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
 		Json j = new Json();
 		if("SIS02".equals(shopItem.getStatus())){

@@ -164,19 +164,27 @@ public class ShopOrderBillController extends BaseController {
 	}
 
 	/**
-	 *
+	 *跳转到门店账单审核页面
 	 * @param request
 	 * @param id
 	 * @return
 	 */
 	@RequestMapping("/examinePage")
 	public String examinePage(HttpServletRequest request, Long id) {
+		ShopOrderBill shopOrderBill = shopOrderBillService.get(id);
+		if(shopOrderBill!=null){
+			MbShop shop =mbShopService.getFromCache(shopOrderBill.getShopId());
+			ShopOrderBillQuery shopOrderBillQuery = new ShopOrderBillQuery();
+			BeanUtils.copyProperties(shopOrderBill,shopOrderBillQuery);
+			shopOrderBillQuery.setShopName(shop.getName());
+			request.setAttribute("shopOrderBill", shopOrderBillQuery);
+		}
 		request.setAttribute("id", id);
 		return "shopartificialpay/shopOrderBillExamine";
 	}
 
 	/**
-	 * 编辑审核状态
+	 * 编辑审核状态（若审核通过则进行支付，否则不做支付操作）
 	 * @param shopOrderBill
 	 * @param session
 	 * @return

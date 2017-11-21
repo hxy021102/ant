@@ -129,7 +129,9 @@ public class ShopDeliverAccountController extends BaseController {
 	public String view(HttpServletRequest request, Integer id) {
 		ShopDeliverAccount shopDeliverAccount = shopDeliverAccountService.get(id);
 		ShopDeliverApply shopDeliverApply = shopDeliverApplyService.getByAccountId(shopDeliverAccount.getId());
-		shopDeliverAccount.setShopId(shopDeliverApply.getShopId());
+		if(shopDeliverApply !=null && "DAS02".equals(shopDeliverApply.getStatus())) {
+			shopDeliverAccount.setShopId(shopDeliverApply.getShopId());
+		}
 		request.setAttribute("shopDeliverAccount", shopDeliverAccount);
 		return "/shopdeliveraccount/shopDeliverAccountView";
 	}

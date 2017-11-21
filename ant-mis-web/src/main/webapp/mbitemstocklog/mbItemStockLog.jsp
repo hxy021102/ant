@@ -1,5 +1,6 @@
 ﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.mobian.model.TmbItemStockLog" %>
+<%@ page import="com.mobian.model.TmbItemStock" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%> 
@@ -26,16 +27,17 @@
 <script type="text/javascript">
 	var dataGrid;
 	$(function() {
+		parent.$.messager.progress('close');
 		dataGrid = $('#dataGrid').datagrid({
-			url : '${pageContext.request.contextPath}/mbItemStockLogController/dataGrid',
+			//url : '${pageContext.request.contextPath}/mbItemStockLogController/dataGrid',
 			fit : true,
 			fitColumns : true,
 			border : false,
 			pagination : true,
 			idField : 'id',
 			pageSize : 10,
-			pageList : [ 10, 20, 30, 40, 50 ],
-			sortName : 'id',
+			pageList : [ 100, 500, 1000, 2000, 5000 ],
+			sortName : 'addtime',
 			sortOrder : 'desc',
 			checkOnSelect : false,
 			selectOnCheck : false,
@@ -43,72 +45,7 @@
 			striped : true,
 			rownumbers : true,
 			singleSelect : true,
-			columns : [ [ {
-				field : 'id',
-				title : '编号',
-				width : 150,
-				hidden : true
-				}, {
-				field : 'tenantId',
-				title : '<%=TmbItemStockLog.ALIAS_TENANT_ID%>',
-				width : 50		
-				}, {
-				field : 'addtime',
-				title : '<%=TmbItemStockLog.ALIAS_ADDTIME%>',
-				width : 50		
-				}, {
-				field : 'updatetime',
-				title : '<%=TmbItemStockLog.ALIAS_UPDATETIME%>',
-				width : 50		
-				}, {
-				field : 'isdeleted',
-				title : '<%=TmbItemStockLog.ALIAS_ISDELETED%>',
-				width : 50		
-				}, {
-				field : 'itemStockId',
-				title : '<%=TmbItemStockLog.ALIAS_ITEM_STOCK_ID%>',
-				width : 50		
-				}, {
-				field : 'quantity',
-				title : '<%=TmbItemStockLog.ALIAS_QUANTITY%>',
-				width : 50		
-				}, {
-				field : 'loginId',
-				title : '<%=TmbItemStockLog.ALIAS_LOGIN_ID%>',
-				width : 50		
-				}, {
-				field : 'logType',
-				title : '<%=TmbItemStockLog.ALIAS_LOG_TYPE%>',
-				width : 50		
-				}, {
-				field : 'reason',
-				title : '<%=TmbItemStockLog.ALIAS_REASON%>',
-				width : 50		
-				}, {
-				field : 'remark',
-				title : '<%=TmbItemStockLog.ALIAS_REMARK%>',
-				width : 50		
-			}, {
-				field : 'action',
-				title : '操作',
-				width : 100,
-				formatter : function(value, row, index) {
-					var str = '';
-					if ($.canEdit) {
-						str += $.formatString('<img onclick="editFun(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/pencil.png');
-					}
-					str += '&nbsp;';
-					if ($.canDelete) {
-						str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/cancel.png');
-					}
-					str += '&nbsp;';
-					if ($.canView) {
-						str += $.formatString('<img onclick="viewFun(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/link.png');
-					}
-					return str;
-				}
-			} ] ],
-			toolbar : '#toolbar',
+			toolbar: '#toolbar',
 			onLoadSuccess : function() {
 				$('#searchForm table').show();
 				parent.$.messager.progress('close');
@@ -210,7 +147,13 @@
         }); 
 	}
 	function searchFun() {
-		dataGrid.datagrid('load', $.serializeObject($('#searchForm')));
+		var isValid = $('#searchForm').form('validate');
+		if (isValid) {
+			var options = {};
+			options.url = '${pageContext.request.contextPath}/mbItemStockLogController/dataGridReport';
+			options.queryParams = $.serializeObject($('#searchForm'));
+			dataGrid.datagrid(options);
+		}
 	}
 	function cleanFun() {
 		$('#searchForm input').val('');
@@ -220,62 +163,91 @@
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit : true,border : false">
-		<div data-options="region:'north',title:'查询条件',border:false" style="height: 160px; overflow: hidden;">
+		<div data-options="region:'north',title:'查询条件',border:false" style="height: 65px; overflow: hidden;">
 			<form id="searchForm">
-				<table class="table table-hover table-condensed" style="display: none;">
-						<tr>	
-							<th><%=TmbItemStockLog.ALIAS_TENANT_ID%></th>	
-							<td>
-											<input type="text" name="tenantId" maxlength="10" class="span2"/>
-							</td>
+				<table class="table table-hover table-condensed">
+						<tr>
 							<th><%=TmbItemStockLog.ALIAS_ADDTIME%></th>	
 							<td>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TmbItemStockLog.FORMAT_ADDTIME%>'})" id="addtimeBegin" name="addtimeBegin"/>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TmbItemStockLog.FORMAT_ADDTIME%>'})" id="addtimeEnd" name="addtimeEnd"/>
+								<input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'<%=TmbItemStockLog.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'stockLogEndTime\',{M:-1});}',maxDate:'#F{$dp.$D(\'stockLogEndTime\',{d:-1});}'})" id="stockLogStartTime" name="stockLogStartTime"/>
+								<input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'<%=TmbItemStockLog.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'stockLogStartTime\',{d:1});}',maxDate:'#F{$dp.$D(\'stockLogStartTime\',{M:1});}'})" id="stockLogEndTime" name="stockLogEndTime"/>
 							</td>
-							<th><%=TmbItemStockLog.ALIAS_UPDATETIME%></th>	
+							<th>发货仓库</th>
 							<td>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TmbItemStockLog.FORMAT_UPDATETIME%>'})" id="updatetimeBegin" name="updatetimeBegin"/>
-								<input type="text" class="span2" onclick="WdatePicker({dateFmt:'<%=TmbItemStockLog.FORMAT_UPDATETIME%>'})" id="updatetimeEnd" name="updatetimeEnd"/>
+								<jb:selectSql dataType="SQ004" name="warehouseId"></jb:selectSql>
 							</td>
-							<th><%=TmbItemStockLog.ALIAS_ISDELETED%></th>	
+							<th><%=TmbItemStock.ALIAS_ITEM_NAME%></th>
 							<td>
-											<input type="text" name="isdeleted" maxlength="0" class="span2"/>
+								<jb:selectGrid dataType="itemId" name="itemId"></jb:selectGrid>
 							</td>
 						</tr>	
-						<tr>	
-							<th><%=TmbItemStockLog.ALIAS_ITEM_STOCK_ID%></th>	
-							<td>
-											<input type="text" name="itemStockId" maxlength="10" class="span2"/>
-							</td>
-							<th><%=TmbItemStockLog.ALIAS_QUANTITY%></th>	
-							<td>
-											<input type="text" name="quantity" maxlength="10" class="span2"/>
-							</td>
-							<th><%=TmbItemStockLog.ALIAS_LOGIN_ID%></th>	
-							<td>
-											<input type="text" name="loginId" maxlength="10" class="span2"/>
-							</td>
-							<th><%=TmbItemStockLog.ALIAS_LOG_TYPE%></th>	
-							<td>
-											<jb:select dataType="SL" name="logType"></jb:select>	
-							</td>
-						</tr>	
-						<tr>	
-							<th><%=TmbItemStockLog.ALIAS_REASON%></th>	
-							<td>
-											<input type="text" name="reason" maxlength="512" class="span2"/>
-							</td>
-							<th><%=TmbItemStockLog.ALIAS_REMARK%></th>	
-							<td>
-											<input type="text" name="remark" maxlength="512" class="span2"/>
-							</td>
-						</tr>	
+
 				</table>
 			</form>
 		</div>
 		<div data-options="region:'center',border:false">
-			<table id="dataGrid"></table>
+			<table class="easyui-datagrid" id="dataGrid"
+				   data-options="rownumbers:true,singleSelect:true,url:'',showFooter:true,method:'post'">
+				<thead>
+				<tr>
+					<th data-options="field:'addtime',width:80" rowspan="2">时间</th>
+					<th data-options="field:'refTypeName',width:40" rowspan="2">单据类型</th>
+					<th data-options="field:'summary',width:100" rowspan="2">摘要</th>
+					<th data-options="field:'itemName',width:100" rowspan="2">商品名称</th>
+					<th colspan="3">期初结存</th>
+					<th colspan="3">本期进货</th>
+					<th colspan="3">本期出货</th>
+					<th colspan="3">期末结存</th>
+				</tr>
+				<tr>
+					<th data-options="field:'initQuantity',width:30,align:'right'">数量</th>
+					<th data-options="field:'initPrice',width:30,align:'right'">进价</th>
+					<th data-options="field:'initAmount',width:30">金额</th>
+
+					<th data-options="field:'inQuantity',width:30,align:'right'">数量</th>
+					<th data-options="field:'inPrice',width:30,align:'right',
+				formatter:function(value){
+				if(value==undefined)return'';
+					return $.formatMoney(value);
+				}">进价
+					</th>
+					<th data-options="field:'inAmount',width:30,align:'right',
+											formatter:function(value,row){
+												if(value==undefined)return'';
+												return $.formatMoney(value);
+											}">金额
+					</th>
+
+					<th data-options="field:'outQuantity',width:30,align:'right'">数量</th>
+					<th data-options="field:'outPrice',width:30,align:'right',
+				formatter:function(value){
+					if(value==undefined)return'';
+					return $.formatMoney(value);
+				}">进价
+					</th>
+					<th data-options="field:'outAmount',width:30,align:'right',
+				formatter:function(value,row){
+					if(value==undefined)return'';
+					return $.formatMoney(value);
+				}">金额
+					</th>
+
+					<th data-options="field:'endQuantity',width:30,align:'right'">数量</th>
+					<th data-options="field:'costPrice',width:30,align:'right',
+				formatter:function(value){
+				if(value==undefined)return'';
+					return $.formatMoney(value);
+				}">进价
+					</th>
+					<th data-options="field:'costAmount',width:40,align:'right',
+				formatter:function(value,row){
+				if(row.costPrice==undefined)return'';
+					return $.formatMoney(row.endQuantity*row.costPrice);
+				}">金额
+					</th>
+				</tr>
+				</thead>
+			</table>
 		</div>
 	</div>
 	<div id="toolbar" style="display: none;">

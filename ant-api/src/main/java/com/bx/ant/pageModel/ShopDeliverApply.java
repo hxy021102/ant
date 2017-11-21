@@ -19,6 +19,7 @@ public class ShopDeliverApply implements java.io.Serializable {
 	private Integer shopId;
 	private String deliveryWay;
 	private Boolean online;
+	private Boolean frozen;
 	private String result;
 	private String status;
 	private Integer accountId;
@@ -27,6 +28,11 @@ public class ShopDeliverApply implements java.io.Serializable {
 	private MbShop mbShop;
 
 	private BigDecimal maxDeliveryDistance;
+	private Boolean smsRemind;//短信通知
+	private Boolean uploadRequired; //上传回单
+	private String  deliveryType; //派单类型
+
+	private BigDecimal distance; // 运单和门店之间的距离
 
 	public void setId(Integer value) {
 		this.id = value;
@@ -86,6 +92,15 @@ public class ShopDeliverApply implements java.io.Serializable {
 	public Boolean getOnline() {
 		return this.online;
 	}
+
+	public Boolean getFrozen() {
+		return frozen;
+	}
+
+	public void setFrozen(Boolean frozen) {
+		this.frozen = frozen;
+	}
+
 	public void setResult(String result) {
 		this.result = result;
 	}
@@ -130,5 +145,37 @@ public class ShopDeliverApply implements java.io.Serializable {
 
 	public void setMaxDeliveryDistance(BigDecimal maxDeliveryDistance) {
 		this.maxDeliveryDistance = maxDeliveryDistance;
+	}
+
+	public Boolean getSmsRemind() {
+		return smsRemind;
+	}
+
+	public void setSmsRemind(Boolean smsRemind) {
+		this.smsRemind = smsRemind;
+	}
+
+	public Boolean getUploadRequired() {
+		return uploadRequired;
+	}
+
+	public void setUploadRequired(Boolean uploadRequired) {
+		this.uploadRequired = uploadRequired;
+	}
+
+	public String getDeliveryType() {
+		return deliveryType;
+	}
+
+	public void setDeliveryType(String deliveryType) {
+		this.deliveryType = deliveryType;
+	}
+
+	public BigDecimal getDistance() {
+		return distance;
+	}
+
+	public void setDistance(BigDecimal distance) {
+		this.distance = distance;
 	}
 }

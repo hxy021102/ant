@@ -1,13 +1,11 @@
 package com.bx.ant.service;
 
-import com.bx.ant.pageModel.DeliverOrderExt;
-import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.*;
 
-import com.bx.ant.pageModel.DeliverOrderQuery;
-import com.bx.ant.pageModel.SupplierItemRelationView;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Date;
 import java.util.List;
 
@@ -42,13 +40,18 @@ public interface DeliverOrderServiceI {
 	//配送状态
 	String DELIVER_STATUS_STANDBY = "DDS01"; //待处理
 	String DELIVER_STATUS_DELIVERING = "DDS02"; //配送中
-	String DELIVER_STATUS_USER_CHECK = "DDS03"; //用户确认
+//	String DELIVER_STATUS_USER_CHECK = "DDS03"; //用户确认
 	String DELIVER_STATUS_DELIVERED = "DDS04"; //已配送
 
 	//支付方式
 	String PAY_WAY_BALANCE = "DPW01"; //余额
 	String PAY_WAY_WECHAT = "DPW02"; //微信
 	String PAY_WAY_TRANSFER = "DPW03"; //汇款
+
+	// 派单类型
+	String DELIVER_TYPE_HAND = "DAT01"; // 手动接单
+	String DELIVER_TYPE_AUTO = "DAT02"; // 自动接单
+	String DELIVER_TYPE_FORCE = "DAT03"; // 强制接单
 
 	//派单结算时间差
 	Long TIME_DIF_SHOP_PAY_SETTLED = new Long(1 * 1 * 1 * 60 * 1000) ;
@@ -144,10 +147,10 @@ public interface DeliverOrderServiceI {
 
 	/**
 	 * 获取到含明细的运单
-	 * @param id
+	 * @param deliverOrderShop
 	 * @return
 	 */
-	DeliverOrder getDeliverOrderExt(Long id);
+	DeliverOrder getDeliverOrderExt(DeliverOrderShop deliverOrderShop);
 
 	/**
 	 * 获取包含DeliverOrderShopItemList的order
@@ -189,19 +192,11 @@ public interface DeliverOrderServiceI {
 	 */
 	DeliverOrderQuery getDeliverOrderView(Long id );
 
-	void settleShopPay();
 
     void addAndItems(DeliverOrder deliverOrder, String itemListStr);
 
     void addAndItems(DeliverOrder deliverOrder, List<SupplierItemRelationView> items);
 
-    /**
-	 *获取需要支付给门店的订单
-	 * @param deliverOrder
-	 * @param ph
-	 * @return
-	 */
-	DataGrid dataGridShopArtificialPay(DeliverOrder deliverOrder,PageHelper ph);
 
 	/**
 	 * 查询DeliverOrder集合列表
@@ -215,7 +210,7 @@ public interface DeliverOrderServiceI {
 	 * @param list
 	 * @param supplierId
 	 */
-	void addOrderBill(List<DeliverOrder> list, Integer supplierId, Date startTime, Date endTime);
+	List<DeliverOrderPay> addOrderBill(List<DeliverOrder> list, Integer supplierId, Date startTime, Date endTime);
 
 	/**
 	 * 更新r门店新订单计数
@@ -261,4 +256,37 @@ public interface DeliverOrderServiceI {
 	 * @param supplierId
 	 */
     void addByTableList(List<Object> lo, Integer supplierId);
+
+	/**
+	 * 处理指派后的订单
+	 * @param deliverOrder
+	 */
+	Boolean handleAssignDeliverOrder(DeliverOrder deliverOrder);
+
+	/**
+	 * 获取超时的未处理的订单
+	 * @param deliverOrderQuery
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridOutTimeDeliverOrder(DeliverOrderQuery deliverOrderQuery,PageHelper ph);
+
+	Integer editOrderStatus(DeliverOrder deliverorder);
+
+	/**
+	 * 获取超时未配送的订单
+	 * @param deliverOrderQuery
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridNotDriverDeliverOrder(DeliverOrderQuery deliverOrderQuery,PageHelper ph);
+
+	/**
+	 * 小程序获取账单详情信息
+	 * @param deliverOrderShop
+	 * @return
+	 */
+	DeliverOrderExt getBanlanceLogDetial(DeliverOrderShop deliverOrderShop);
+
+	DeliverOrderExt getDetail(Integer id);
 }

@@ -29,18 +29,66 @@
 				}
 			}
 		});
+        $('.money_input').blur(function () {
+            var source = $(this);
+            var target = source.next();
+            if (!/^([1-9]\d*|0)(\.\d{2})?$/.test(source.val())) {
+                source.val("").focus();
+            }
+            var val = source.val().trim();
+            if (val.indexOf('.') > -1) {
+                val = val.replace('.', "");
+            } else if (val != '') {
+                val += "00";
+            }
+            target.val(val);
+        });
+
+        $('.money_input').each(function(){
+            $(this).val($.formatMoney($(this).val().trim()));
+        });
 	});
+    function computerPrice() {
+        var inPrice = parseFloat($("#inPrice").val());
+        var freight = parseFloat($("#freight").val());
+        var totalPrice=(inPrice*100+freight*100)/100;
+        if (!isNaN(inPrice) && !isNaN(freight)) {
+            $("#price").val(totalPrice);
+        }
+    }
 </script>
 
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;">
 		<form id="form" method="post">
-			<input type="hidden" name="id" value = "${param.id}"/>
+			<input type="hidden" name="id" value = "${shopItem.id}"/>
 			<input type="hidden" name="status" value = ""/>
 			<table class="table table-hover table-condensed">
 				<tr>
+					<th>采购价格
+					</th>
+					<td>
+						<input class="span2 easyui-validatebox money_input" name="priceStr" id="inPrice" value="${shopItem.inPrice}"type="text" onblur="computerPrice()" data-options="required:true"/>
+						<input class="span2 "   name="inPrice"  type="hidden"  value="${shopItem.inPrice}"/>
+					</td>
+					<th>运费
+					</th>
+					<td>
+						<input class="span2 easyui-validatebox money_input" name="priceStr" id="freight" type="text" value="${shopItem.freight}" onblur="computerPrice()" data-options="required:true"/>
+						<input class="span2 " name="freight" type="hidden" value="${shopItem.freight}"/>
+					</td>
+				</tr>
+				<tr>
+					<th>价格
+					</th>
+					<td colspan="3">
+						<input class="span2 money_input"  id="price"  name="totalPrice" readonly type="text"  value="${shopItem.price}" />
+						<input class="span2 " name="price" type="hidden"  value="${shopItem.price}"/>
+					</td>
+				</tr>
+				<tr>
 					<th>审核备注</th>
-					<td colspan="2">
+					<td colspan="5">
 						<textarea name="remark" style="width: 97%" rows="4"    class="easyui-validatebox"    > </textarea>
 					</td>
 				</tr>
