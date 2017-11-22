@@ -147,7 +147,7 @@ public class MbBalanceServiceImpl extends BaseServiceImpl<MbBalance> implements 
 
 	@Override
 	public MbBalance addOrGetMbBalanceCash(Integer shopId) {
-		return addOrGetMbBalance(shopId,4,-10000000);
+		return addOrGetMbBalance(shopId,4,0);
 	}
 	@Override
 	public MbBalance addOrGetMbBalanceDelivery(Integer shopId) {
