@@ -33,11 +33,11 @@ public class MbSalesReport implements java.io.Serializable{
     private Integer profit;
 
     //导出属性设置
-    private double totalPriceElement;
-    private double avgPriceElement;
-    private double totalCostElement;
-    private double avgCostElement;
-    private double profitElement;
+    private Double totalPriceElement;
+    private Double avgPriceElement;
+    private Double totalCostElement;
+    private Double avgCostElement;
+    private Double profitElement;
     /**
      * 进货成本
      */
@@ -205,44 +205,43 @@ public class MbSalesReport implements java.io.Serializable{
         this.profit = profit;
     }
 
-    public double getAvgPriceElement() {
-        return avgPriceElement;
-    }
-
-    public void setAvgPriceElement(double avgPriceElement) {
-        this.avgPriceElement = avgPriceElement;
-    }
-
-    public double getTotalCostElement() {
-        return totalCostElement;
-    }
-
-    public void setTotalCostElement(double totalCostElement) {
-        this.totalCostElement = totalCostElement;
-    }
-
-    public double getAvgCostElement() {
-        return avgCostElement;
-    }
-
-    public void setAvgCostElement(double avgCostElement) {
-        this.avgCostElement = avgCostElement;
-    }
-
-    public double getProfitElement() {
-        return profitElement;
-    }
-
-    public void setProfitElement(double profitElement) {
-        this.profitElement = profitElement;
-    }
-
-    public double getTotalPriceElement() {
-
+    public Double getTotalPriceElement() {
         return totalPriceElement;
     }
 
-    public void setTotalPriceElement(double totalPriceElement) {
+    public void setTotalPriceElement(Double totalPriceElement) {
         this.totalPriceElement = totalPriceElement;
+    }
+
+    public Double getAvgPriceElement() {
+        return avgPriceElement;
+    }
+
+    public void setAvgPriceElement(Double avgPriceElement) {
+        this.avgPriceElement = avgPriceElement;
+    }
+
+    public Double getTotalCostElement() {
+        return totalCostElement;
+    }
+
+    public void setTotalCostElement(Double totalCostElement) {
+        this.totalCostElement = totalCostElement;
+    }
+
+    public Double getAvgCostElement() {
+        return avgCostElement;
+    }
+
+    public void setAvgCostElement(Double avgCostElement) {
+        this.avgCostElement = avgCostElement;
+    }
+
+    public Double getProfitElement() {
+        return profitElement;
+    }
+
+    public void setProfitElement(Double profitElement) {
+        this.profitElement = profitElement;
     }
 }
