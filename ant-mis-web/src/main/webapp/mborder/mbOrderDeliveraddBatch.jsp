@@ -236,19 +236,22 @@
 		</div>
 		<div data-options="region:'center',border:false">
 			<table id="dataGrid"></table>
-		</div>--%>
-			<div data-options="region:'west',border:false" style="width: 80px; overflow: hidden;"></div>
-			<div  data-options="region:'east'"  style="width: 220px; overflow: hidden;"></div>
+		</div>
+			<div data-options="region:'west'" style="width: 80px; overflow: hidden;"></div>
+			<div data-options="region:'east'" style="width: 220px; overflow: hidden;"></div>
 	</div>
-	<div id="toolbar" style="display: none;">
-		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a>
-		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
+	<%--<div id="toolbar" style="display: none;">
+		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true"
+		   onclick="searchFun();">查询</a>
+		<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true"
+		   onclick="cleanFun();">清空条件</a>
 		<c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderController/download')}">
-			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_go',plain:true" onclick="downloadTable();">导出</a>		
+			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_go',plain:true"
+			   onclick="downloadTable();">导出</a>
 			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">
 			</form>
 			<iframe id="downloadIframe" name="downloadIframe" style="display: none;"></iframe>
 		</c:if>
-	</div>	
+	</div>--%>
 </body>
 </html>
