@@ -85,6 +85,10 @@ public class MbSupplierStockInItemServiceImpl extends BaseServiceImpl<MbSupplier
 				whereHql += " and t.updatetime <= :updatetimeEnd";
 				params.put("updatetimeEnd", mbSupplierStockInItem.getUpdatetimeEnd());
 			}
+			if (mbSupplierStockInItem.getSupplierStockInIdArray() != null && mbSupplierStockInItem.getSupplierStockInIdArray().length > 0) {
+				whereHql += " and t.supplierStockInId in (:supplierStockInIdArray)";
+				params.put("supplierStockInIdArray", mbSupplierStockInItem.getSupplierStockInIdArray());
+			}
 		}	
 		return whereHql;
 	}

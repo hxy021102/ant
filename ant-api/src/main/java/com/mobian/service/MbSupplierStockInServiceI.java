@@ -64,4 +64,11 @@ public interface MbSupplierStockInServiceI {
     List<MbSupplierStockIn> getListByOrderIds(Integer[] orderIds);
 
     List<MbSupplierStockIn> query(MbSupplierStockIn stockIn);
+
+    /**
+     * 获取已入库且未结算的库存价值
+     * @param supplierId
+     * @return
+     */
+    Integer getUnPayStockIn(Integer supplierId);
 }
