@@ -4,19 +4,17 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.*;
 
 import com.mobian.absx.F;
 import com.mobian.pageModel.*;
+import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.MbSupplierServiceI;
 
 import com.mobian.service.UserServiceI;
 import com.mobian.service.impl.DiveRegionServiceImpl;
-import com.mobian.service.impl.MbItemStockServiceImpl;
 import com.mobian.service.impl.MbWarehouseServiceImpl;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +41,8 @@ public class MbSupplierController extends BaseController {
     private MbWarehouseServiceImpl mbWarehouseService;
     @Autowired
     private UserServiceI userService;
-
+    @Autowired
+    private MbBalanceServiceI mbBalanceService;
     /**
      * 跳转到MbSupplier管理页面
      *
@@ -147,6 +146,10 @@ public class MbSupplierController extends BaseController {
         if (mbSupplier.getWarehouseId() != null) {
             MbWarehouse mbWarehouse = mbWarehouseService.get(mbSupplier.getWarehouseId());
             mbSupplier.setWarehouseName(mbWarehouse.getName());
+        }
+        MbBalance mbBalance =mbBalanceService.addOrGetSupplierMbBalance(id);
+        if (mbBalance != null) {
+            mbSupplier.setBalanceAmount(mbBalance.getAmount());
         }
         request.setAttribute("mbSupplier", mbSupplier);
         return "/mbsupplier/mbSupplierView";

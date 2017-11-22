@@ -29,6 +29,8 @@ public class MbSupplier implements java.io.Serializable {
 	private String financialContact;
 	//财务联系人电话
 	private String financialContactPhone;
+	//供应商钱包
+	private Integer balanceAmount;
 	public String getRegionPath() {
 		return regionPath;
 	}
@@ -167,5 +169,11 @@ public class MbSupplier implements java.io.Serializable {
 		this.financialContactPhone = financialContactPhone;
 	}
 
+	public Integer getBalanceAmount() {
+		return balanceAmount;
+	}
 
+	public void setBalanceAmount(Integer balanceAmount) {
+		this.balanceAmount = balanceAmount;
+	}
 }
