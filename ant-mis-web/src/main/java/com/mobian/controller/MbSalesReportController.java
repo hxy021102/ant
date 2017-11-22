@@ -68,21 +68,21 @@ public class MbSalesReportController extends BaseController {
     @RequestMapping("/download")
     public void download(MbSalesReport mbSalesReport, PageHelper ph, String downloadFields, HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
         DataGrid dg = dataGrid(mbSalesReport, ph);
-        List<MbSalesReport> mbSalesReportList=dg.getRows();
+        List<MbSalesReport> mbSalesReportList = dg.getRows();
         if (CollectionUtils.isNotEmpty(mbSalesReportList)) {
             for (MbSalesReport salesReport : mbSalesReportList) {
-                salesReport.setTotalPriceElement(salesReport.getTotalPrice() / 100.0);
-                salesReport.setAvgPriceElement(salesReport.getAvgPrice() / 100.0);
-                salesReport.setTotalCostElement(salesReport.getTotalCost() / 100.0);
-                salesReport.setAvgCostElement(salesReport.getAvgCost() / 100.0);
-                salesReport.setProfitElement(salesReport.getProfit() / 100.0);
+                salesReport.setTotalPriceElement(formatMoney(salesReport.getTotalPrice()));
+                salesReport.setAvgPriceElement(formatMoney(salesReport.getAvgPrice()));
+                salesReport.setTotalCostElement(formatMoney(salesReport.getTotalCost()));
+                salesReport.setAvgCostElement(formatMoney(salesReport.getAvgCost()));
+                salesReport.setProfitElement(formatMoney(salesReport.getProfit()));
             }
             MbSalesReport footer = (MbSalesReport) dg.getFooter().get(0);
-            footer.setTotalPriceElement(footer.getTotalPrice() / 100.0);
-            footer.setAvgPriceElement(footer.getAvgPrice() / 100.0);
-            footer.setTotalCostElement(footer.getTotalCost() / 100.0);
-            footer.setAvgCostElement(footer.getAvgCost() / 100.0);
-            footer.setProfitElement(footer.getProfit() / 100.0);
+            footer.setTotalPriceElement(formatMoney(footer.getTotalPrice()));
+            footer.setAvgPriceElement(formatMoney(footer.getAvgPrice()));
+            footer.setTotalCostElement(formatMoney(footer.getTotalCost()));
+            footer.setAvgCostElement(formatMoney(footer.getAvgCost()));
+            footer.setProfitElement(formatMoney(footer.getProfit()));
         }
         downloadFields = downloadFields.replace("&quot;", "\"");
         downloadFields = downloadFields.substring(1, downloadFields.length() - 1);
@@ -109,6 +109,13 @@ public class MbSalesReportController extends BaseController {
             }
         }
         downloadTable(colums, dg, response);
+    }
+
+    private Double formatMoney(Integer amount) {
+        if (amount != null) {
+            return amount / 100.0;
+        }
+        return null;
     }
 
     /**
