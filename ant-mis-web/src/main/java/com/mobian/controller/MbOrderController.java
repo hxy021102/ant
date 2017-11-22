@@ -775,4 +775,15 @@ public class MbOrderController extends BaseController {
 		}
 		return null;
 	}
+
+	/**
+	 * 批量添加MbOrder页面
+	 *
+	 * @return
+	 */
+	@RequestMapping("/addBatchOrderDeliverPage")
+	public String addBatchOrderDeliverPage() {
+		return "mborder/mbOrderDeliveraddBatch";
+	}
+
 }
