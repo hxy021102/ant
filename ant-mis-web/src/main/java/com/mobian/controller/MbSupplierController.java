@@ -13,6 +13,7 @@ import com.mobian.pageModel.*;
 import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.MbSupplierServiceI;
 
+import com.mobian.service.MbSupplierStockInServiceI;
 import com.mobian.service.UserServiceI;
 import com.mobian.service.impl.DiveRegionServiceImpl;
 import com.mobian.service.impl.MbWarehouseServiceImpl;
@@ -43,6 +44,8 @@ public class MbSupplierController extends BaseController {
     private UserServiceI userService;
     @Autowired
     private MbBalanceServiceI mbBalanceService;
+    @Autowired
+    private MbSupplierStockInServiceI mbSupplierStockInService;
     /**
      * 跳转到MbSupplier管理页面
      *
@@ -151,6 +154,7 @@ public class MbSupplierController extends BaseController {
         if (mbBalance != null) {
             mbSupplier.setBalanceAmount(mbBalance.getAmount());
         }
+        mbSupplier.setUnPayBalanceAmount(mbSupplierStockInService.getUnPayStockIn(id));
         request.setAttribute("mbSupplier", mbSupplier);
         return "/mbsupplier/mbSupplierView";
     }

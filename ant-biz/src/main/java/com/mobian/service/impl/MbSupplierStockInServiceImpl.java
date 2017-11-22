@@ -157,7 +157,7 @@ public class MbSupplierStockInServiceImpl extends BaseServiceImpl<MbSupplierStoc
         MbBalanceLog balanceLog = new MbBalanceLog();
         balanceLog.setBalanceId(mbBalance.getId());
         balanceLog.setRefId(id+"");
-        balanceLog.setRefType("BT020");
+        balanceLog.setRefType("BT070");
         MbSupplierStockInItem supplierStockInItem =new MbSupplierStockInItem();
         supplierStockInItem.setSupplierStockInId(id);
         List<MbSupplierStockInItem> mbSupplierStockInItemList =mbSupplierStockInItemService.query(supplierStockInItem);
@@ -334,5 +334,41 @@ public class MbSupplierStockInServiceImpl extends BaseServiceImpl<MbSupplierStoc
             }
         }
         return ol;
+    }
+
+    @Override
+    public Integer getUnPayStockIn(Integer supplierId) {
+        MbSupplierOrder mbSupplierOrder = new MbSupplierOrder();
+        mbSupplierOrder.setSupplierId(supplierId);
+        List<MbSupplierOrder> mbSupplierOrderList = mbSupplierOrderService.query(mbSupplierOrder);
+        if (CollectionUtils.isNotEmpty(mbSupplierOrderList)) {
+            Integer[] supplierOrderArray = new Integer[mbSupplierOrderList.size()];
+            int i = 0;
+            for (MbSupplierOrder supplierOrder : mbSupplierOrderList) {
+                supplierOrderArray[i++] = supplierOrder.getId();
+            }
+            //查询未结算的入库
+            MbSupplierStockIn mbSupplierStockIn = new MbSupplierStockIn();
+            mbSupplierStockIn.setSupplierOrderIdList(supplierOrderArray);
+            mbSupplierStockIn.setPayStatus("FS01");
+            List<MbSupplierStockIn> mbSupplierStockInList = query(mbSupplierStockIn);
+            if (CollectionUtils.isNotEmpty(mbSupplierStockInList)) {
+                Integer[] supplierStockInArray = new Integer[mbSupplierStockInList.size()];
+                int j = 0;
+                for (MbSupplierStockIn supplierStockIn : mbSupplierStockInList) {
+                    supplierStockInArray[j++] = supplierStockIn.getId();
+                }
+                //查询入库且未结算的商品信息
+                MbSupplierStockInItem mbSupplierStockInItem = new MbSupplierStockInItem();
+                mbSupplierStockInItem.setSupplierStockInIdArray(supplierStockInArray);
+                List<MbSupplierStockInItem> mbSupplierStockInItemList = mbSupplierStockInItemService.query(mbSupplierStockInItem);
+                Integer unPayMoney = 0;
+                for (MbSupplierStockInItem supplierStockInItem : mbSupplierStockInItemList) {
+                    unPayMoney += supplierStockInItem.getPrice() * supplierStockInItem.getQuantity();
+                }
+                return unPayMoney;
+            }
+        }
+        return 0;
     }
 }

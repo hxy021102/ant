@@ -52,7 +52,7 @@
 		<form id="form" method="post">		
 			<input type="hidden" name="id"/>
 			<input type="hidden" name="supplierId" value="${mbSupplier.id}"/>
-			<input type="hidden"  name="refType" value="BT021"/>
+			<input type="hidden"  name="refType" value="BT071"/>
 			<table class="table table-hover table-condensed">
 				<tr>
 					<th>供应商</th>
