@@ -32,7 +32,9 @@ public interface DriverOrderPayServiceI {
 	 */
 	public void add(DriverOrderPay driverOrderPay);
 
-	/**
+    DriverOrderPay update(DriverOrderPay driverOrderPay);
+
+    /**
 	 * 获得DriverOrderPay对象
 	 * 
 	 * @param id

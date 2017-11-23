@@ -1,12 +1,11 @@
 package com.bx.ant.service.impl.state;
 
+import com.bx.ant.pageModel.*;
 import com.bx.ant.service.*;
-import com.bx.ant.pageModel.DeliverOrder;
-import com.bx.ant.pageModel.DeliverOrderItem;
-import com.bx.ant.pageModel.DeliverOrderShop;
-import com.bx.ant.pageModel.DeliverOrderShopPay;
+import com.mobian.exception.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -39,6 +38,9 @@ public class DeliverOrder20StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderLogServiceI deliverOrderLogService;
 
+    @Resource
+    private DriverOrderShopServiceI driverOrderShopService;
+
 
     @Override
     public String getStateName() {
@@ -63,6 +65,24 @@ public class DeliverOrder20StateImpl implements DeliverOrderState {
         DeliverOrderShop orderShopEdit=new DeliverOrderShop();
         orderShopEdit.setStatus(DeliverOrderShopServiceI.STATUS_ACCEPTED);
         deliverOrderShop = deliverOrderShopService.editStatus(deliverOrderShop,orderShopEdit);
+
+        //添加骑手订单
+        DriverOrderShop driverOrderShop = new DriverOrderShop();
+        driverOrderShop.setShopId(deliverOrder.getShopId());
+
+        DeliverOrderShop deliverOrderShopQuery= new DeliverOrderShop();
+        deliverOrderShopQuery.setShopId(deliverOrder.getShopId());
+        deliverOrderShopQuery.setDeliverOrderId(deliverOrder.getId());
+        deliverOrderShopQuery.setStatus(DeliverOrderShopServiceI.STATUS_ACCEPTED);
+        List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(deliverOrderShopQuery);
+        if (CollectionUtils.isEmpty(deliverOrderShops)) {
+            throw new ServiceException(String.format("订单ID:%1s未被门店接单", deliverOrder.getId()));
+        }
+
+        driverOrderShop.setDeliverOrderShopId(deliverOrderShops.get(0).getId());
+//        driverOrderShop.setRemark(remark);
+        driverOrderShop.setStatus(DriverOrderShopServiceI.PAY_STATUS_NOT_PAY);
+        driverOrderShopService.transform(driverOrderShop);
 
     //修改门店运单支付状态
 //        DeliverOrderShopPay deliverOrderShopPay = new DeliverOrderShopPay();

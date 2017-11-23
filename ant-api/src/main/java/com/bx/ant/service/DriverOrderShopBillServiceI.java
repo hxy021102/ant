@@ -13,6 +13,7 @@ import com.mobian.pageModel.PageHelper;
  */
 public interface DriverOrderShopBillServiceI {
 
+
 	/**
 	 * 获取DriverOrderShopBill数据表格
 	 * 
@@ -62,7 +63,7 @@ public interface DriverOrderShopBillServiceI {
 	 * @param driverOrderShopBillView
 	 * @return
 	 */
-	String addDriverOrderShopBillandPay(DriverOrderShopBillView driverOrderShopBillView);
+	String updateDriverOrderShopBillandPay(DriverOrderShopBillView driverOrderShopBillView);
 
 	/**
 	 * 骑手账单审核通过过后进行支付操作，改变账单状态和运单状态，以及修改骑手余额和添加余额日志

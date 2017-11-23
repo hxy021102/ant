@@ -221,7 +221,7 @@ public class DriverOrderShopBillController extends BaseController {
 	@ResponseBody
 	public Json addDriverOrderBill(@RequestBody DriverOrderShopBillView driverOrderShopBillView) {
 		Json j = new Json();
-		String result=driverOrderShopBillService.addDriverOrderShopBillandPay(driverOrderShopBillView);
+		String result=driverOrderShopBillService.updateDriverOrderShopBillandPay(driverOrderShopBillView);
 		if(F.empty(result)) {
 			j.setSuccess(true);
 			j.setMsg("创建骑手账单成功！");

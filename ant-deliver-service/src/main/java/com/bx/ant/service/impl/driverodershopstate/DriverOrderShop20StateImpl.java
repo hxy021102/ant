@@ -33,6 +33,9 @@ public class DriverOrderShop20StateImpl implements DriverOrderShopState {
         orderShop.setStatus(prefix + getStateName());
         driverOrderShopSerivce.edit(orderShop);
 
+        //将门店运单状态更改为配送完成
+
+
     }
 
     @Override

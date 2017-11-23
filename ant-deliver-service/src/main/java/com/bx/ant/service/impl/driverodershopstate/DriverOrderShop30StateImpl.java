@@ -1,6 +1,7 @@
 package com.bx.ant.service.impl.driverodershopstate;
 
 import com.bx.ant.pageModel.DriverOrderShop;
+import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.bx.ant.service.DriverOrderShopServiceI;
 import com.bx.ant.service.DriverOrderShopState;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,9 @@ public class DriverOrderShop30StateImpl implements DriverOrderShopState {
     @Resource
     private DriverOrderShopServiceI driverOrderShopSerivce;
 
+    @Resource
+    private DriverOrderShopServiceI driverOrderShopService;
+
 
     @Override
     public String getStateName() {
@@ -27,9 +31,9 @@ public class DriverOrderShop30StateImpl implements DriverOrderShopState {
 
     @Override
     public void handle(DriverOrderShop driverOrderShop) {
-        DriverOrderShop orderShop = new DriverOrderShop();
-        orderShop.setStatus(prefix + getStateName());
-        driverOrderShopSerivce.edit(orderShop);
+        //修改运单状态
+        driverOrderShopService.editStatusByHql(driverOrderShop.getId(), "DHS02");
+
      }
 
     @Override

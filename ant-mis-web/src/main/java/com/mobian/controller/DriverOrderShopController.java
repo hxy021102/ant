@@ -231,18 +231,6 @@ public class DriverOrderShopController extends BaseController {
 					driverOrderShopView.setDriverAccountId(driverAccountList.get(0).getId());
 				}
 			}
-			DriverOrderPay driverOrderPay = new DriverOrderPay();
-			//获取运单支付状态为待支付或者已支付
-			driverOrderPay.setStatus("DDPS01,DDPS02");
-			List<DriverOrderPay> driverOrderPayList = driverOrderPayService.query(driverOrderPay);
-			if (CollectionUtils.isNotEmpty(driverOrderPayList)) {
-				Long[] notInIds = new Long[driverOrderPayList.size()];
-				int i = 0;
-				for (DriverOrderPay orderPay : driverOrderPayList) {
-					notInIds[i++] = orderPay.getDriverOrderShopId();
-				}
-				driverOrderShopView.setNotInIds(notInIds);
-			}
 			//已送达且未支付的
 			driverOrderShopView.setStatus("DDSS20");
 			driverOrderShopView.setPayStatus("DDPS01");

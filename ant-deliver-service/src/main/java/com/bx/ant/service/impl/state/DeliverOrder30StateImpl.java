@@ -25,8 +25,6 @@ public class DeliverOrder30StateImpl implements DeliverOrderState {
     private DeliverOrderServiceI deliverOrderService;
 
     @Autowired
-    private DeliverOrderLogServiceI deliverOrderLogService;
-    @Autowired
     private DeliverOrderShopServiceI deliverOrderShopService;
 
     @Override

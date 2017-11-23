@@ -106,6 +106,13 @@ public class DriverOrderPayServiceImpl extends BaseServiceImpl<DriverOrderPay> i
 		//t.setId(jb.absx.UUID.uuid());
 		t.setIsdeleted(false);
 		driverOrderPayDao.save(t);
+		driverOrderPay.setId(t.getId());
+	}
+
+	@Override
+	public DriverOrderPay update(DriverOrderPay driverOrderPay) {
+		add(driverOrderPay);
+		return driverOrderPay;
 	}
 
 	@Override
