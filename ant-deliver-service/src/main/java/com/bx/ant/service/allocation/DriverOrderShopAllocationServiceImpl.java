@@ -50,7 +50,7 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
         //1. 获取待分配的订单
         DriverOrderShop request = new DriverOrderShop();
         PageHelper ph = new PageHelper();
-        request.setStatus(DriverOrderShopServiceI.STATUS_STANDBY);
+        request.setStatus(DriverOrderShopServiceI.STATUS_STANDBY + "," + DriverOrderShopServiceI.STATUS_ALLOCATION);
         List<DriverOrderShopView> driverOrderShopViews = driverOrderShopService.dataGridView(request, ph).getRows();
         for (DriverOrderShopView driverOrderShopView : driverOrderShopViews) {
             try{

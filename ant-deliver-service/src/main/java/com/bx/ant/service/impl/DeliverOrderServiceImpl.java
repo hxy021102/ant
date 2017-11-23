@@ -670,7 +670,6 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		edit(order);
 	}
 
-
 	@Override
 	public List<DeliverOrder> query(DeliverOrder deliverOrder) {
 		List<DeliverOrder> ol = new ArrayList<DeliverOrder>();

@@ -15,9 +15,6 @@ import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.PageHelper;
 import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.mobian.service.MbShopServiceI;
-import com.mobian.thirdpart.redis.Key;
-import com.mobian.thirdpart.redis.Namespace;
-import com.mobian.thirdpart.redis.RedisUtil;
 import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.DateUtil;
 import com.mobian.util.MyBeanUtils;
@@ -409,8 +406,7 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		}
 
 		//3. 对账单进行添加并进行结算
-		for (Map.Entry entry : deliverOrderMap.entrySet()) {
-			ShopOrderBillQuery shopOrderBillQuery = (ShopOrderBillQuery) entry.getValue();
+		for (ShopOrderBillQuery shopOrderBillQuery : deliverOrderMap.values()) {
 			shopOrderBillService.addAndPayShopOrderBillAndShopPay(shopOrderBillQuery);
 			List<DeliverOrderShop> orderShopList = shopOrderBillQuery.getDeliverOrderShopList();
 			DefaultTransactionDefinition def = new DefaultTransactionDefinition();

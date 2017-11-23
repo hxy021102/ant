@@ -48,23 +48,7 @@ public class DeliverOrder25StateImpl implements DeliverOrderState {
         orderNew.setDeliveryStatus(DeliverOrderServiceI.DELIVER_STATUS_DELIVERING);
         deliverOrderService.editAndAddLog(orderNew, DeliverOrderLogServiceI.TYPE_DELIVERING_DELIVER_ORDER, "运单发货");
 
-        //添加骑手订单
-        DriverOrderShop driverOrderShop = new DriverOrderShop();
-        driverOrderShop.setShopId(deliverOrder.getShopId());
 
-        DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
-        deliverOrderShop.setShopId(deliverOrder.getShopId());
-        deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
-        deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_ACCEPTED);
-        List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(deliverOrderShop);
-        if (CollectionUtils.isEmpty(deliverOrderShops)) {
-            throw new ServiceException(String.format("订单ID:%1s未被门店接单", deliverOrder.getId()));
-        }
-
-        driverOrderShop.setDeliverOrderShopId(deliverOrderShops.get(0).getId());
-//        driverOrderShop.setRemark(remark);
-        driverOrderShop.setStatus(DriverOrderShopServiceI.PAY_STATUS_NOT_PAY);
-        driverOrderShopService.transform(driverOrderShop);
 
 
         //修改门店运单状态

@@ -1,6 +1,8 @@
 package com.mobian.service;
 
+import com.bx.ant.pageModel.DriverOrderShopBill;
 import com.bx.ant.service.DriverOrderShopAllocationServiceI;
+import com.bx.ant.service.DriverOrderShopBillServiceI;
 import com.bx.ant.service.DriverOrderShopServiceI;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +16,14 @@ public class DriverOrderShopTaskService {
     @Resource
      private DriverOrderShopAllocationServiceI driverOrderShopAllocationService;
 
+    @Resource
+    private DriverOrderShopBillServiceI driverOrderShopBillService;
+
     public void orderAllocation(){
         driverOrderShopAllocationService.orderAllocation();
     }
 
     public void addPayOperation() {
+        driverOrderShopBillService.addPayOperation();
     }
 }

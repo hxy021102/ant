@@ -11,6 +11,7 @@ import com.mobian.pageModel.PageHelper;
 import com.bx.ant.pageModel.SupplierItemRelation;
 import com.bx.ant.service.SupplierItemRelationServiceI;
 import com.mobian.service.MbItemServiceI;
+import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.MyBeanUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,8 +146,13 @@ public class SupplierItemRelationServiceImpl extends BaseServiceImpl<SupplierIte
 		if (!F.empty(view.getItemId())) {;
 			MbItem item = mbItemService.getFromCache(view.getItemId());
 			if (item != null) {
-				if (item.getWeight() == null) throw new ServiceException(String.format("商品ID%1s:%2s无重量数据", item.getId(), item.getName()));
-				view.setWeight(item.getWeight());
+				//填充重量信息
+				if (item.getWeight() == null) {
+					view.setWeight(Integer.parseInt(ConvertNameUtil.getString("DDSV103","1000")));
+//					throw new ServiceException(String.format("商品ID%1s:%2s无重量数据", item.getId(), item.getName()));
+				}else {
+					view.setWeight(item.getWeight());
+				}
 			}
 		}
 	}
