@@ -2,9 +2,10 @@ package com.mobian.controller;
 
 
 import com.alibaba.fastjson.JSON;
+import com.bx.ant.pageModel.DeliverOrderShop;
 import com.bx.ant.pageModel.ShopDeliverApply;
 import com.bx.ant.pageModel.DeliverOrder;
-import com.bx.ant.pageModel.ShopDeliverApply;
+import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.*;
@@ -50,7 +51,8 @@ public class MbShopController extends BaseController {
     private ShopDeliverApplyServiceI shopDeliverApplyService;
     @Autowired
     private UserServiceI userService;
-
+    @Resource
+    private DeliverOrderShopServiceI deliverOrderShopService;
 
     /**
      * 跳转到MbShop管理页面
@@ -546,5 +548,37 @@ public class MbShopController extends BaseController {
             }
         }
         return lt;
+    }
+
+    /**
+     * 获取已接运单且未配送商品的门店
+     * @param deliverOrderShop
+     * @param ph
+     * @return
+     */
+    @RequestMapping("/dataGridDeliverOrderShop")
+    @ResponseBody
+    public DataGrid dataGridDeliverOrderShop(DeliverOrderShop deliverOrderShop, PageHelper ph, Date startDate, Date endDate) {
+        deliverOrderShop.setAddtimeBegin(startDate);
+        deliverOrderShop.setAddtimeEnd(endDate);
+        deliverOrderShop.setOrderId(null);
+        deliverOrderShop.setStatus("DSS02,DSS04,DSS06");
+        List<DeliverOrderShop> deliverOrderShopList = deliverOrderShopService.query(deliverOrderShop);
+        if (CollectionUtils.isNotEmpty(deliverOrderShopList)) {
+            Integer[] shopIdArray = new Integer[deliverOrderShopList.size()];
+            int i = 0;
+            for (DeliverOrderShop orderShop : deliverOrderShopList) {
+                shopIdArray[i++] = orderShop.getShopId();
+            }
+            MbShop mbShop = new MbShop();
+            mbShop.setIds(shopIdArray);
+            List<MbShop> mbShopList = mbShopService.query(mbShop);
+            if (CollectionUtils.isNotEmpty(mbShopList)) {
+                DataGrid dataGrid = new DataGrid();
+                dataGrid.setRows(mbShopList);
+                return dataGrid;
+            }
+        }
+        return null;
     }
 }

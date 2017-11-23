@@ -92,12 +92,7 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 			}
 			if (!F.empty(deliverOrderShop.getStatus())) {
 				whereHql += " and t.status in(:status)";
-				if (deliverOrderShop.getStatus().split(",") != null && deliverOrderShop.getStatus().split(",").length > 0) {
-					params.put("status", deliverOrderShop.getStatus().split(","));
-					if (params.get("status") == null || " ".equals(params.get("status"))) {
-						params.put("status", deliverOrderShop.getStatus());
-					}
-				}
+				params.put("status", deliverOrderShop.getStatus().split(","));
 			}		
 			if (!F.empty(deliverOrderShop.getAmount())) {
 				whereHql += " and t.amount = :amount";
@@ -136,6 +131,9 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 					params.put("endDate", ext.getEndDate());
 
 				}
+			}
+			if (F.empty(deliverOrderShop.getOrderId())) {
+				whereHql += " and t.orderId is null";
 			}
 		}	
 		return whereHql;
