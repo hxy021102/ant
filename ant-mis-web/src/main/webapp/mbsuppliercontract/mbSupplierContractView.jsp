@@ -88,6 +88,53 @@
         });
     })
 
+
+   function loadmbSupitemDataGrid() {
+	        return mbsupitemDataGrid= $('#mbsupitemDataGrid').datagrid({
+            url : '${pageContext.request.contextPath}/mbSupplierContractItemController/dataGrid?supplierContractId='+${mbSupplierContract.id},
+            fit : true,
+            fitColumns : true,
+            border : false,
+            pagination : true,
+            idField : 'id',
+            pageSize : 10,
+            pageList : [ 10, 20, 30, 40, 50 ],
+            sortName : 'id',
+            sortOrder : 'desc',
+            checkOnSelect : false,
+            selectOnCheck : false,
+            nowrap : true,
+            striped : true,
+            rownumbers : true,
+            singleSelect : true,
+            columns : [ [ {
+                field : 'id',
+                title : '编号',
+                width : 150,
+                hidden : true
+            }, {
+                field : 'itemName',
+                title : '<%=TmbSupplierContractItem.ALIAS_ITEM_NAME%>',
+                width : 100
+            }, {
+                field : 'price',
+                title : '<%=TmbSupplierContractItem.ALIAS_PRICE%>',
+                width : 30,
+                align: "right",
+                formatter:function(value){
+                    return $.formatMoney(value);
+                }
+            }] ],
+            toolbar : '#supitemtoolbar',
+            onLoadSuccess : function() {
+                $('#mbsupitemSearchForm table').show();
+                parent.$.messager.progress('close');
+
+                $(this).datagrid('tooltip');
+            }
+        });
+    }
+
     function deleteFun(id) {
         if (id == undefined) {
             var rows = contractClauseDataGrid.datagrid('getSelections');
@@ -179,6 +226,27 @@
             }
         });
     }
+    var gridMap = {};
+    $(function() {
+        gridMap = {
+            handle:function(obj,clallback){
+                if (obj.grid == null) {
+                    obj.grid = clallback();
+                } else {
+                    obj.grid.datagrid('reload');
+                }
+            }, 1: {
+                invoke: function () {
+                    gridMap.handle(this,loadmbSupitemDataGrid());
+                }, grid: null
+            },
+        };
+        $('#supplier_contract_view_tabs').tabs({
+            onSelect: function (title, index) {
+                gridMap[index].invoke();
+            }
+        });
+    });
 </script>
 </head>
 <div class="easyui-layout" data-options="fit:true,border:false">
@@ -235,9 +303,12 @@
 		</table>
 	</div>
 	  <div data-options="region:'center',border:false">
-		<div id="order_view_tabs" class="easyui-tabs" data-options="fit : true,border:false">
+		<div id="supplier_contract_view_tabs" class="easyui-tabs" data-options="fit : true,border:false">
 			<div title="合同条款">
 				<table id="contractClauseDataGrid"></table>
+			</div>
+			<div title="合同商品信息">
+				<table id="mbsupitemDataGrid"></table>
 			</div>
 		</div>
 	  </div>
