@@ -40,7 +40,7 @@ public interface DriverOrderPayServiceI {
 	 * @param id
 	 * @return
 	 */
-	public DriverOrderPay get(Integer id);
+	public DriverOrderPay get(Long id);
 
 	/**
 	 * 修改DriverOrderPay
@@ -54,7 +54,7 @@ public interface DriverOrderPayServiceI {
 	 * 
 	 * @param id
 	 */
-	public void delete(Integer id);
+	public void delete(Long id);
 
 	/**
 	 * 获取DeliverOrderPay集合
