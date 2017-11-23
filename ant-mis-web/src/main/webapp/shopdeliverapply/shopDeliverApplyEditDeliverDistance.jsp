@@ -79,6 +79,10 @@
                     <jb:select name="deliveryType" dataType="DAT" required="true" value="${shopDeliverApply.deliveryType}"></jb:select>
                     </td>
                 </tr>
+                    <th>配送方式</th>
+					<td>
+                        <jb:select dataType="DAW" name="deliveryWay" required="true" value="${shopDeliverApply.deliveryWay}"></jb:select>
+					</td>
                 <tr>
                     <th>冻结状态</th>
                     <td>

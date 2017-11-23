@@ -8,10 +8,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bx.ant.dao.DriverOrderShopDaoI;
 import com.bx.ant.model.TdriverOrderShop;
 import com.bx.ant.pageModel.*;
-import com.bx.ant.service.DeliverOrderShopServiceI;
-import com.bx.ant.service.DriverAccountServiceI;
-import com.bx.ant.service.DriverOrderShopServiceI;
-import com.bx.ant.service.DriverOrderShopState;
+import com.bx.ant.service.*;
 import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.DataGrid;
@@ -49,6 +46,9 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 
 	@Resource
 	private DriverAccountServiceI driverAccountService;
+
+	@Autowired
+	private DriverOrderPayServiceI driverOrderPayService;
 
 	@Override
 	public DataGrid dataGrid(DriverOrderShop driverOrderShop, PageHelper ph) {
@@ -177,6 +177,15 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 			fillShopInfo(driverOrderShopView);
 		}
 		return driverOrderShopView;
+	}
+
+	@Override
+	public DriverOrderShop getByPayId(Integer driverOrderPayId) {
+		DriverOrderPay driverOrderPay = driverOrderPayService.get(driverOrderPayId);
+		if (driverOrderPay != null) {
+			return getView(driverOrderPay.getDriverOrderShopId());
+		}
+		return null;
 	}
 
 	@Override

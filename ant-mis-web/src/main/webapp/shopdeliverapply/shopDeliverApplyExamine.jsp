@@ -81,6 +81,12 @@
 					</td>
 				</tr>
 				<tr>
+					<th>配送方式</th>
+					<td>
+						<jb:select name="deliveryWay" dataType="DAW" required="true" value="${shopDeliverApply.deliveryWay}"></jb:select>
+					</td>
+				</tr>
+				<tr>
 					<th>冻结状态</th>
 					<td>
 						<select class="easyui-combobox" name="frozen" data-options="width:140,height:29,editable:false,panelHeight:'auto'">

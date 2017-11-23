@@ -76,6 +76,13 @@ public interface DriverOrderShopServiceI {
     DriverOrderShopView getView(Long id);
 
 	/**
+	 * 通过DriverOrderPayId找到DriverOrderShop
+	 * @param driverOrderPayId
+	 * @return
+	 */
+	DriverOrderShop getByPayId(Integer driverOrderPayId);
+
+    /**
 	 * dataGrid.DriverOrderShopView
 	 * @param driverOrderShop
 	 * @param pageHelper
@@ -142,6 +149,7 @@ public interface DriverOrderShopServiceI {
 	 * @param driverOrderShop
 	 */
 	void refuseOrder(DriverOrderShop driverOrderShop);
+
 
     DataGrid listTodayOrderByAccountId(Integer driverAccountId);
 }
