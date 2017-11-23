@@ -182,7 +182,7 @@
 </script>
 </head>
 <div class="easyui-layout" data-options="fit:true,border:false">
-	<div data-options="region:'north',title:'基本信息',border:false" style="height: 160px; overflow: hidden;">
+	<div data-options="region:'north',title:'基本信息',border:false" style="height: 130px; overflow: hidden;">
 		<table class="table table-hover table-condensed">
 				<tr>	
 					<th><%=TmbSupplierContract.ALIAS_CODE%></th>	
@@ -193,8 +193,6 @@
 					<td>
 						${mbSupplierContract.name}
 					</td>
-				</tr>
-				<tr>
 					<th><%=TmbSupplierContract.ALIAS_SUPPLIER_NAME%></th>
 					<td>
 						${mbSupplierContract.supplierName}
@@ -213,10 +211,24 @@
 					<td>
 						${mbSupplierContract.valid ==true? "是":"否"}
 					</td>
+					<th><%=TmbSupplierContract.ALIAS_RATE%>
+					</th>
+					<td>
+						<c:if test="${mbSupplierContract.rate!=null}">
+							${mbSupplierContract.rate}%
+						</c:if>
+					</td>
+					<th><%=TmbSupplierContract.ALIAS_PAYMENT_DAYS%>
+					</th>
+					<td>
+						<c:if test="${mbSupplierContract.paymentDays!=null}">
+							${mbSupplierContract.paymentDays}天
+						</c:if>
+					</td>
 				</tr>
 				<tr>
 					<th><%=TmbSupplierContract.ALIAS_ATTACHMENT%></th>
-					<td colspan="4">
+					<td colspan="7">
 						${mbSupplierContract.attachment}
 					</td>
 				</tr>
