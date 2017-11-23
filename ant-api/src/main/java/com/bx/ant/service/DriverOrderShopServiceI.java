@@ -80,7 +80,7 @@ public interface DriverOrderShopServiceI {
 	 * @param driverOrderPayId
 	 * @return
 	 */
-	DriverOrderShop getByPayId(Integer driverOrderPayId);
+	DriverOrderShop getByPayId(Long driverOrderPayId);
 
     /**
 	 * dataGrid.DriverOrderShopView

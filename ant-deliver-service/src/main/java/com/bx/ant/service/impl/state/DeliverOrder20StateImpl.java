@@ -2,6 +2,7 @@ package com.bx.ant.service.impl.state;
 
 import com.bx.ant.pageModel.*;
 import com.bx.ant.service.*;
+import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,6 +67,9 @@ public class DeliverOrder20StateImpl implements DeliverOrderState {
         orderShopEdit.setStatus(DeliverOrderShopServiceI.STATUS_ACCEPTED);
         deliverOrderShop = deliverOrderShopService.editStatus(deliverOrderShop,orderShopEdit);
 
+        if (!F.empty(deliverOrder.getShopId())) {
+
+        }
         //添加骑手订单
         DriverOrderShop driverOrderShop = new DriverOrderShop();
         driverOrderShop.setShopId(deliverOrder.getShopId());
@@ -80,7 +84,6 @@ public class DeliverOrder20StateImpl implements DeliverOrderState {
         }
 
         driverOrderShop.setDeliverOrderShopId(deliverOrderShops.get(0).getId());
-//        driverOrderShop.setRemark(remark);
         driverOrderShop.setStatus(DriverOrderShopServiceI.PAY_STATUS_NOT_PAY);
         driverOrderShopService.transform(driverOrderShop);
 

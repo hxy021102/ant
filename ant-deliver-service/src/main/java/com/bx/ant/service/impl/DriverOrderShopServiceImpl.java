@@ -180,7 +180,7 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 	}
 
 	@Override
-	public DriverOrderShop getByPayId(Integer driverOrderPayId) {
+	public DriverOrderShop getByPayId(Long driverOrderPayId) {
 		DriverOrderPay driverOrderPay = driverOrderPayService.get(driverOrderPayId);
 		if (driverOrderPay != null) {
 			return getView(driverOrderPay.getDriverOrderShopId());

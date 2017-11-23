@@ -116,7 +116,7 @@ public class DriverOrderPayServiceImpl extends BaseServiceImpl<DriverOrderPay> i
 	}
 
 	@Override
-	public DriverOrderPay get(Integer id) {
+	public DriverOrderPay get(Long id) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
 		TdriverOrderPay t = driverOrderPayDao.get("from TdriverOrderPay t  where t.id = :id", params);
@@ -134,7 +134,7 @@ public class DriverOrderPayServiceImpl extends BaseServiceImpl<DriverOrderPay> i
 	}
 
 	@Override
-	public void delete(Integer id) {
+	public void delete(Long id) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
 		driverOrderPayDao.executeHql("update TdriverOrderPay t set t.isdeleted = 1 where t.id = :id",params);
