@@ -33,9 +33,9 @@
 			fit : true,
 			fitColumns : true,
 			border : false,
-			pagination : true,
+			pagination : false,
 			idField : 'id',
-			pageSize : 10,
+			//pageSize : 10,
 			pageList : [ 100, 500, 1000, 2000, 5000 ],
 			sortName : 'addtime',
 			sortOrder : 'desc',
@@ -141,7 +141,7 @@
 	        	$.extend(param, $.serializeObject($('#searchForm')));
 	        	param.downloadFields = columsStr;
 	        	param.page = options.pageNumber;
-	        	param.rows = options.pageSize;
+	        	//param.rows = options.pageSize;
 	        	
        	 }
         }); 
