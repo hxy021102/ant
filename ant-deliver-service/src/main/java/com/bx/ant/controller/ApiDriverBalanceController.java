@@ -67,7 +67,7 @@ public class ApiDriverBalanceController extends BaseController {
     public Json viewBanlanceLogDetial(MbBalanceLog balanceLog) {
         Json json = new Json();
         if ("BT150".equals(balanceLog.getRefType()) ||"BT151".equals(balanceLog.getRefType()) ) {
-            DriverOrderShop driverOrderShop= driverOrderPShopService.getView(Long.parseLong(balanceLog.getRefId()));
+            DriverOrderShop driverOrderShop= driverOrderPShopService.getByPayId(Integer.parseInt(balanceLog.getRefId()));
             json.setObj(driverOrderShop);
         }
         json.setMsg("u know");
