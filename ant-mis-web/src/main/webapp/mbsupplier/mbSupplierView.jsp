@@ -408,27 +408,32 @@
 					<td>
 						${mbSupplier.updatetime}
 					</td>
-				</tr>		
-				<tr>	
-
-				<tr>	
-					<th><%=TmbSupplier.ALIAS_NAME%></th>	
+					<th><%=TmbSupplier.ALIAS_NAME%></th>
 					<td>
-						${mbSupplier.name}							
+						${mbSupplier.name}
 					</td>
 					<th><%=TmbSupplier.ALIAS_SUPPLIER_CODE%></th>
 					<td>
 						${mbSupplier.supplierCode}
 					</td>
+				</tr>
 				</tr>		
-				<tr>	
-					<th><%=TmbSupplier.ALIAS_ADDRESS%></th>	
+				<tr>
+					<th><%=TmbSupplier.ALIAS_WAREHOUSE_ID%></th>
 					<td>
-						${mbSupplier.address}							
+						${mbSupplier.warehouseName}
 					</td>
-					<th>钱包</th>
+					<th>余额</th>
+					<td class="money_input">
+						${mbSupplier.balanceAmount+mbSupplier.unPayBalanceAmount}
+					</td>
+					<th>实际余额</th>
 					<td>
 						<a href="javascript:void(0);" onclick="viewBalance('${mbSupplier.id}')" class="money_input">${mbSupplier.balanceAmount}</a>
+					</td>
+					<th>应付金额</th>
+					<td class="money_input">
+						${mbSupplier.unPayBalanceAmount}
 					</td>
 				</tr>		
 				<tr>	
@@ -440,13 +445,9 @@
 					<td>
 						${mbSupplier.contactPhone}
 					</td>
-				</tr>
-				<tr>
 					<th><%=TmbSupplier.ALIAS_FINANCIAL_CONTACT%></th>
 					<td>
-
-							${mbSupplier.financialContact}
-
+						${mbSupplier.financialContact}
 					</td>
 					<th><%=TmbSupplier.ALIAS_FINANCIAL_CONTACT_PHONE%></th>
 					<td>
@@ -458,14 +459,10 @@
 					<td>
 						${mbSupplier.regionName}
 					</td>
-					<th><%=TmbSupplier.ALIAS_WAREHOUSE_ID%></th>	
-					<td colspan="3">
-						${mbSupplier.warehouseName}
+					<th><%=TmbSupplier.ALIAS_ADDRESS%></th>
+					<td colspan="5">
+						${mbSupplier.address}
 					</td>
-					<%--<th><%=TmbSupplier.ALIAS_CERTIFICATE_LIST%></th>
-					<td>
-						${mbSupplier.certificateList}
-					</td>			--%>
 				</tr>		
 		</table>
 	</div>
