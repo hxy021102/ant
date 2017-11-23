@@ -106,7 +106,7 @@ public class DriverOrderPayController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/view")
-	public String view(HttpServletRequest request, Integer id) {
+	public String view(HttpServletRequest request, Long id) {
 		DriverOrderPay driverOrderPay = driverOrderPayService.get(id);
 		request.setAttribute("driverOrderPay", driverOrderPay);
 		return "/driverorderpay/driverOrderPayView";
@@ -118,7 +118,7 @@ public class DriverOrderPayController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/editPage")
-	public String editPage(HttpServletRequest request, Integer id) {
+	public String editPage(HttpServletRequest request, Long id) {
 		DriverOrderPay driverOrderPay = driverOrderPayService.get(id);
 		request.setAttribute("driverOrderPay", driverOrderPay);
 		return "/driverorderpay/driverOrderPayEdit";
@@ -148,7 +148,7 @@ public class DriverOrderPayController extends BaseController {
 	 */
 	@RequestMapping("/delete")
 	@ResponseBody
-	public Json delete(Integer id) {
+	public Json delete(Long id) {
 		Json j = new Json();
 		driverOrderPayService.delete(id);
 		j.setMsg("删除成功！");
