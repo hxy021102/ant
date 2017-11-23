@@ -29,6 +29,8 @@ public class MbSupplierStockInItemServiceImpl extends BaseServiceImpl<MbSupplier
 	private MbSupplierOrderServiceI mbSupplierOrderService;
 	@Autowired
 	private MbSupplierServiceI mbSupplierService;
+	@Autowired
+	private MbSupplierContractServiceI mbSupplierContractService;
 
 	@Override
 	public DataGrid dataGrid(MbSupplierStockInItem mbSupplierStockInItem, PageHelper ph) {
@@ -192,6 +194,11 @@ public class MbSupplierStockInItemServiceImpl extends BaseServiceImpl<MbSupplier
 					MbSupplierOrder mbSupplierOrder = mbSupplierOrderService.get(mbSupplierStockIn.getSupplierOrderId());
 					MbSupplier mbSupplier = mbSupplierService.get(mbSupplierOrder.getSupplierId());
 					o.setSupplierName(mbSupplier.getName());
+					if(!F.empty(mbSupplierOrder.getSupplierContractId())) {
+						MbSupplierContract mbSupplierContract = mbSupplierContractService.get(mbSupplierOrder.getSupplierContractId());
+						if (mbSupplierContract != null)
+							o.setRate(mbSupplierContract.getRate());
+					}
 				}
 				if(o.getItemId() != null) {
 					MbItem mbItem = mbItemService.getFromCache(o.getItemId());
