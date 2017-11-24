@@ -41,10 +41,11 @@ public class DriverOrderShop10StateImpl implements DriverOrderShopState {
         orderShop.setStatus(prefix + getStateName());
         driverOrderShopSerivce.edit(orderShop);
 
+        orderShop = driverOrderShopSerivce.get(orderShop.getId());
+
         //将门店运单状态更改为已发货
         DeliverOrder deliverOrder = new DeliverOrder();
-        DeliverOrderShop deliverOrderShop = deliverOrderShopSerivce.get(driverOrderShop.getDeliverOrderShopId());
-
+        DeliverOrderShop deliverOrderShop = deliverOrderShopSerivce.get(orderShop.getDeliverOrderShopId());
         deliverOrder.setId(deliverOrderShop.getDeliverOrderId());
         deliverOrder.setStatus(DeliverOrderServiceI.STATUS_DELIVERING);
         deliverOrder.setShopId(deliverOrderShop.getShopId());
