@@ -52,10 +52,8 @@ public class ApiDriverOrderShopController extends BaseController {
         Json json = new Json();
 
         //获取accountId
-// TODO 正式使用将使用uid
-//        TokenWrap token = getTokenWrap(request);
-//        Integer accountId  = Integer.parseInt(token.getUid());
-        Integer accountId = 2;
+        TokenWrap token = getTokenWrap(request);
+        Integer accountId  = Integer.parseInt(token.getUid());
         driverOrderShop.setDriverAccountId(accountId);
 
         if (F.empty(pageHelper.getSort())) {
@@ -164,20 +162,16 @@ public class ApiDriverOrderShopController extends BaseController {
     /**
      * 运单发货
      * @param request
-     * @param id
+     * @param driverOrderShop
      * @return
      */
     @RequestMapping("/editOrderSendOut")
     @ResponseBody
-    public Json sendOutOrder(HttpServletRequest request, Long id){
+    public Json sendOutOrder(HttpServletRequest request, DriverOrderShop driverOrderShop){
         Json json = new Json();
 
-// TODO 正式使用将使用uid
-//        TokenWrap token = getTokenWrap(request);
-//        Integer accountId  = Integer.parseInt(token.getUid());
-        Integer accountId = 2;
-        DriverOrderShop driverOrderShop = new DriverOrderShop();
-        driverOrderShop.setId(id);
+        TokenWrap token = getTokenWrap(request);
+        Integer accountId  = Integer.parseInt(token.getUid());
         driverOrderShop.setDriverAccountId(accountId);
         driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_DELVIERING);
 
@@ -197,10 +191,8 @@ public class ApiDriverOrderShopController extends BaseController {
     public Json completeOrder(HttpServletRequest request, DriverOrderShop driverOrderShop ){
         Json json = new Json();
 
-// TODO 正式使用将使用uid
-//        TokenWrap token = getTokenWrap(request);
-//        Integer accountId  = Integer.parseInt(token.getUid());
-        Integer accountId = 2;
+        TokenWrap token = getTokenWrap(request);
+        Integer accountId  = Integer.parseInt(token.getUid());
         driverOrderShop.setDriverAccountId(accountId);
         driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_DELIVERED);
 
@@ -237,9 +229,8 @@ public class ApiDriverOrderShopController extends BaseController {
     public  Json countNewAllocationOrder(HttpServletRequest request){
         Json json = new Json();
 
-//        TokenWrap token = getTokenWrap(request);
-//        Integer accountId  = Integer.parseInt(token.getUid());
-        Integer accountId = 2;
+        TokenWrap token = getTokenWrap(request);
+        Integer accountId  = Integer.parseInt(token.getUid());
 
         json.setObj(driverOrderShopService.clearAllocationOrderRedis(accountId));
         json.setMsg("u know");
@@ -250,11 +241,9 @@ public class ApiDriverOrderShopController extends BaseController {
     @ResponseBody
     public Json getTodayOrders(HttpServletRequest request) {
         Json json = new Json();
-        //TODO
         //获取accountId
-//        TokenWrap token = getTokenWrap(request);
-//        Integer accountId = Integer.parseInt(token.getUid());
-        Integer accountId = 2;
+        TokenWrap token = getTokenWrap(request);
+        Integer accountId = Integer.parseInt(token.getUid());
         DataGrid dataGrid = driverOrderShopService.listTodayOrderByAccountId(accountId);
         json.setMsg("u know");
         json.setObj(dataGrid);
