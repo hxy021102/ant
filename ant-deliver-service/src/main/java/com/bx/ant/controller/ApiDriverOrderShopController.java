@@ -162,16 +162,17 @@ public class ApiDriverOrderShopController extends BaseController {
     /**
      * 运单发货
      * @param request
-     * @param driverOrderShop
+     * @param
      * @return
      */
     @RequestMapping("/editOrderSendOut")
     @ResponseBody
-    public Json sendOutOrder(HttpServletRequest request, DriverOrderShop driverOrderShop){
+    public Json sendOutOrder(HttpServletRequest request, Long id){
         Json json = new Json();
 
         TokenWrap token = getTokenWrap(request);
         Integer accountId  = Integer.parseInt(token.getUid());
+        DriverOrderShop driverOrderShop = new DriverOrderShop();
         driverOrderShop.setDriverAccountId(accountId);
         driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_DELVIERING);
 
