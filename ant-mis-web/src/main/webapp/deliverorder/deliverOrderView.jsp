@@ -393,6 +393,10 @@
 			<tr>
 				<th>商品总重</th>
 				<td>${deliverOrder.weight}克</td>
+				<th>配送方式</th>
+				<td>${deliverOrder.deliveryWayName}</td>
+			</tr>
+			<tr>
 				<th>备注</th>
 				<td colspan="3">
 					${deliverOrder.remark}

@@ -24,6 +24,7 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -113,8 +114,11 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
                     shop.getLongitude().doubleValue(), shop.getLatitude().doubleValue());
             //6. 分配订单
             if (distance < maxDistance) {
+                //若在拒绝集合里则不再分单
                 String key = driverAccountService.buildAllocationOrderKey(account.getId());
-                if (redisUtil.addSet(key, driverOrderShop.getId().toString())) {
+                String refuseKey = driverAccountService.buildRefuseOrderKey(account.getId());
+                Set<Long> refuseSet = redisUtil.getAllSet(refuseKey);
+                if (!refuseSet.contains(driverOrderShop.getId().toString()) && redisUtil.addSet(key, driverOrderShop.getId().toString())) {
                     redisUtil.expire(key, Integer.parseInt(ConvertNameUtil.getString("DDSV101","48")), TimeUnit.HOURS);
                     driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_ALLOCATION);
                     driverOrderShop.setDriverAccountId(account.getId());

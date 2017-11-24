@@ -36,6 +36,7 @@ public class DeliverOrder implements java.io.Serializable {
     private String deliverOrderLogType;
 	private Integer weight;
 
+	private String deliveryWay;
 	private String deliveryType; // 派单类型
 	private Long orderShopId;
 	private String  orderLogRemark;
@@ -263,5 +264,13 @@ public class DeliverOrder implements java.io.Serializable {
 
 	public void setOrderLogRemark(String orderLogRemark) {
 		this.orderLogRemark = orderLogRemark;
+	}
+
+	public String getDeliveryWay() {
+		return deliveryWay;
+	}
+
+	public void setDeliveryWay(String deliveryWay) {
+		this.deliveryWay = deliveryWay;
 	}
 }

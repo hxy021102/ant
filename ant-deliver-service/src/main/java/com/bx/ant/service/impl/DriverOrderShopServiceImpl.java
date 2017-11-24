@@ -18,6 +18,7 @@ import com.mobian.service.MbShopServiceI;
 import com.mobian.thirdpart.redis.Key;
 import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.thirdpart.redis.RedisUtil;
+import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
@@ -348,8 +349,14 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 	@Override
 	public void refuseOrder(DriverOrderShop driverOrderShop) {
 	    String key = driverAccountService.buildAllocationOrderKey(driverOrderShop.getDriverAccountId());
+	    String refuseKey = driverAccountService.buildRefuseOrderKey(driverOrderShop.getDriverAccountId());
+	    //拒绝订单清除该记录
 		redisUtil.removeSet(key, driverOrderShop.getId().toString());
 		reduseAllocationOrderRedis(driverOrderShop.getDriverAccountId());
+
+		//添加redis拒绝订单记录
+		redisUtil.addSet(refuseKey, driverOrderShop.getId());
+		redisUtil.expire(refuseKey, Integer.parseInt(ConvertNameUtil.getString("DDSV104", "48")), TimeUnit.HOURS);
 	}
 
 	@Override

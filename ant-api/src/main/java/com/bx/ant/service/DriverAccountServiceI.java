@@ -97,4 +97,6 @@ public interface DriverAccountServiceI {
 	List<DriverAccount> query(DriverAccount driverAccount);
 
     String buildAllocationOrderKey(Integer id);
+
+    String buildRefuseOrderKey(Integer accountId);
 }

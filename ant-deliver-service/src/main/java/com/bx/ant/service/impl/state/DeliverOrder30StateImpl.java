@@ -36,13 +36,13 @@ public class DeliverOrder30StateImpl implements DeliverOrderState {
     public void handle(DeliverOrder deliverOrder) {
 
         //修改运单状态
-        DeliverOrder orderNew = new DeliverOrder();
-        orderNew.setId(deliverOrder.getId());
-        orderNew.setStatus(prefix + getStateName());
-        orderNew.setDeliveryStatus(DeliverOrderServiceI.DELIVER_STATUS_DELIVERED);
-        orderNew.setCompleteImages(deliverOrder.getCompleteImages());
-        orderNew.setCompleteRemark(deliverOrder.getCompleteRemark());
-        deliverOrderService.editAndAddLog(orderNew, DeliverOrderLogServiceI.TYPE_DELIVERED_DELIVER_ORDER, "运单已被派送至目的地");
+        DeliverOrder orderEdit = new DeliverOrder();
+        orderEdit.setId(deliverOrder.getId());
+        orderEdit.setStatus(prefix + getStateName());
+        orderEdit.setDeliveryStatus(DeliverOrderServiceI.DELIVER_STATUS_DELIVERED);
+        orderEdit.setCompleteImages(deliverOrder.getCompleteImages());
+        orderEdit.setCompleteRemark(deliverOrder.getCompleteRemark());
+        deliverOrderService.editAndAddLog(orderEdit, DeliverOrderLogServiceI.TYPE_DELIVERED_DELIVER_ORDER, "运单已被派送至目的地");
 
         //门店订单状态
         DeliverOrderShop deliverOrderShop = new DeliverOrderShop();

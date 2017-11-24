@@ -195,15 +195,13 @@ public class ApiDriverOrderShopController extends BaseController {
      */
     @RequestMapping("/editOrderComplete")
     @ResponseBody
-    public Json completeOrder(HttpServletRequest request, Long id ){
+    public Json completeOrder(HttpServletRequest request, DriverOrderShop driverOrderShop ){
         Json json = new Json();
 
 // TODO 正式使用将使用uid
 //        TokenWrap token = getTokenWrap(request);
 //        Integer accountId  = Integer.parseInt(token.getUid());
         Integer accountId = 2;
-        DriverOrderShop driverOrderShop = new DriverOrderShop();
-        driverOrderShop.setId(id);
         driverOrderShop.setDriverAccountId(accountId);
         driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_DELIVERED);
 

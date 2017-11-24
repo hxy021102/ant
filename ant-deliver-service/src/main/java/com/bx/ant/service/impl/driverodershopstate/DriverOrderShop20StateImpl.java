@@ -31,6 +31,10 @@ public class DriverOrderShop20StateImpl implements DriverOrderShopState {
         DriverOrderShop orderShop = new DriverOrderShop();
         orderShop.setId(driverOrderShop.getId());
         orderShop.setStatus(prefix + getStateName());
+        orderShop.setCompleteImages(driverOrderShop.getCompleteImages());
+        orderShop.setCompleteRemark(driverOrderShop.getCompleteRemark());
+
+
         driverOrderShopSerivce.edit(orderShop);
 
         //将门店运单状态更改为配送完成

@@ -27,12 +27,6 @@ public class DeliverOrder25StateImpl implements DeliverOrderState {
     private DeliverOrderServiceI deliverOrderService;
 
 
-    @Autowired
-    private DriverOrderShopServiceI driverOrderShopService;
-
-    @Autowired
-    private DeliverOrderShopServiceI deliverOrderShopService;
-
     @Override
     public String getStateName() {
         return "25";
