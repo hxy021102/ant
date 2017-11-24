@@ -355,7 +355,7 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 		reduseAllocationOrderRedis(driverOrderShop.getDriverAccountId());
 
 		//添加redis拒绝订单记录
-		redisUtil.addSet(refuseKey, driverOrderShop.getId());
+		redisUtil.addSet(refuseKey, driverOrderShop.getId().toString());
 		redisUtil.expire(refuseKey, Integer.parseInt(ConvertNameUtil.getString("DDSV104", "48")), TimeUnit.HOURS);
 	}
 
@@ -384,6 +384,14 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 				+ DriverOrderShopServiceI.STATUS_SETTLEED );
 		DataGrid dataGrid = dataGridView(driverOrderShopView, ph);
 		return dataGrid;
+	}
+
+	@Override
+	public void editOrderAccept(DriverOrderShop driverOrderShop) {
+		//检测
+
+		driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_ACCEPTED);
+		transform(driverOrderShop);
 	}
 }
 
