@@ -101,6 +101,7 @@ public class TdeliverOrder implements java.io.Serializable,IEntity{
 	private String completeImages;
 	private String completeRemark;
 
+	private String deliveryWay;
 
 		public TdeliverOrder(){
 		}
@@ -336,6 +337,15 @@ public class TdeliverOrder implements java.io.Serializable,IEntity{
 
 	public void setWeight(Integer weight) {
 		this.weight = weight;
+	}
+
+	@Column(name = "delivery_way", unique = false, nullable = true, insertable = true, updatable = true, length = 11)
+	public String getDeliveryWay() {
+		return deliveryWay;
+	}
+
+	public void setDeliveryWay(String deliveryWay) {
+		this.deliveryWay = deliveryWay;
 	}
 
 	/*

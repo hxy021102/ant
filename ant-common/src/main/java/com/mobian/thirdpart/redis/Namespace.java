@@ -27,4 +27,5 @@ public interface Namespace {
     String DRIVER_REALTIME_LOCATION = "driver_realtime_location";
     String DRIVER_ORDER_SHOP_CACHE  = "driver_order_shop_cache";
     String DRIVER_ORDER_SHOP_NEW_ASSIGNMENT_COUNT = "driver_order_shop_new_assignment_count";
+    String DRIVER_ORDER_SHOP_REFUSE_CACHE = "driver_order_shop_refuse_cache";
 }

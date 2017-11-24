@@ -46,7 +46,8 @@ public class DriverOrderShop10StateImpl implements DriverOrderShopState {
         DeliverOrderShop deliverOrderShop = deliverOrderShopSerivce.get(driverOrderShop.getDeliverOrderShopId());
 
         deliverOrder.setId(deliverOrderShop.getDeliverOrderId());
-        deliverOrderShop.setStatus(DeliverOrderServiceI.STATUS_DELIVERING);
+        deliverOrder.setStatus(DeliverOrderServiceI.STATUS_DELIVERING);
+        deliverOrder.setShopId(deliverOrderShop.getShopId());
         deliverOrderService.transform(deliverOrder);
     }
 

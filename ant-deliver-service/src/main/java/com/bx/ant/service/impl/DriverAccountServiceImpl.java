@@ -240,6 +240,7 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 			return ol;
 		}
 
+		//去除已经接单或在配送中的骑手
 		DriverOrderShop driverOrderShop = new DriverOrderShop();
 		driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_DELVIERING + DriverOrderShopServiceI.STATUS_ACCEPTED);
 		List<DriverOrderShop> driverOrderShops = driverOrderShopService.dataGrid(driverOrderShop, new PageHelper()).getRows();
@@ -288,8 +289,20 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 	}
 
 	@Override
-	public String buildAllocationOrderKey(Integer id) {
-		Calendar today = Calendar.getInstance();
-		return Key.build(Namespace.DRIVER_ORDER_SHOP_CACHE, id + ":" + today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-" + today.get(Calendar.DAY_OF_MONTH));
+	public String buildAllocationOrderKey(Integer accountId) {
+		return buildOrderKey(Namespace.DRIVER_ORDER_SHOP_CACHE, accountId);
 	}
+
+
+	@Override
+	public String buildRefuseOrderKey(Integer accountId) {
+	    return buildOrderKey(Namespace.DRIVER_ORDER_SHOP_REFUSE_CACHE, accountId);
+	}
+
+
+	protected String buildOrderKey(String nameSpace, Integer accountId) {
+		Calendar today = Calendar.getInstance();
+		return Key.build(nameSpace, accountId + ":" + today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-" + today.get(Calendar.DAY_OF_MONTH));
+	}
+
 }

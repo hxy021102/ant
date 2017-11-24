@@ -70,6 +70,10 @@ public class TdriverOrderShop implements java.io.Serializable,IEntity{
 	private String remark;
 	//columns END
 
+	private String completeRemark;
+
+	private String completeImages;
+
 
 		public TdriverOrderShop(){
 		}
@@ -196,6 +200,24 @@ public class TdriverOrderShop implements java.io.Serializable,IEntity{
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+@Column(name = "complete_images", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
+	public String getCompleteImages() {
+		return completeImages;
+	}
+
+	public void setCompleteImages(String completeImages) {
+		this.completeImages = completeImages;
+	}
+
+	@Column(name = "complete_remark", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
+	public String getCompleteRemark() {
+		return completeRemark;
+	}
+
+	public void setCompleteRemark(String completeRemark) {
+		this.completeRemark = completeRemark;
 	}
 	
 	

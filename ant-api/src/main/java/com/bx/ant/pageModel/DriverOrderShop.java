@@ -20,6 +20,8 @@ public class DriverOrderShop implements java.io.Serializable {
 	private Long driverOrderShopBillId;
 	private Integer driverAccountId;
 	private String remark;
+	private String completeRemark;
+	private String completeImages;
 
 
 	
@@ -118,5 +120,21 @@ public class DriverOrderShop implements java.io.Serializable {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public String getCompleteRemark() {
+		return completeRemark;
+	}
+
+	public void setCompleteRemark(String completeRemark) {
+		this.completeRemark = completeRemark;
+	}
+
+	public String getCompleteImages() {
+		return completeImages;
+	}
+
+	public void setCompleteImages(String completeImages) {
+		this.completeImages = completeImages;
 	}
 }
