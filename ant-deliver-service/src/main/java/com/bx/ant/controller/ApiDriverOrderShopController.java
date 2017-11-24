@@ -131,9 +131,8 @@ public class ApiDriverOrderShopController extends BaseController {
         DriverOrderShop driverOrderShop = new DriverOrderShop();
         driverOrderShop.setId(id);
         driverOrderShop.setDriverAccountId(accountId);
-        driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_ACCEPTED);
+       driverOrderShopService.editOrderAccept(driverOrderShop);
 
-        driverOrderShopService.transform(driverOrderShop);
         json.setMsg("u know");
         json.setSuccess(true);
         return json;

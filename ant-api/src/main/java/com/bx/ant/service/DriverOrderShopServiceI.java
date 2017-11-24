@@ -152,4 +152,6 @@ public interface DriverOrderShopServiceI {
 
 
     DataGrid listTodayOrderByAccountId(Integer driverAccountId);
+
+    void editOrderAccept(DriverOrderShop driverOrderShop);
 }
