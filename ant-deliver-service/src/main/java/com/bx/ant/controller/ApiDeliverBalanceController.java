@@ -74,11 +74,6 @@ public class ApiDeliverBalanceController extends BaseController {
      * @param mbBalanceLog
      * @return
      */
-    @RequestMapping("/viewDeliverBanlanceLogList")
-    @ResponseBody
-    public Json viewDeliverBanlanceLogList(MbBalanceLog mbBalanceLog){
-        return viewDeliverBalanceLogList(mbBalanceLog);
-    }
     @RequestMapping("/viewDeliverBalanceLogList")
     @ResponseBody
     public Json viewDeliverBalanceLogList(MbBalanceLog mbBalanceLog){
@@ -95,11 +90,6 @@ public class ApiDeliverBalanceController extends BaseController {
      * @param  balanceLog
      * @return
      */
-    @RequestMapping("/viewDeliverBanlanceLogDetial")
-    @ResponseBody
-    public Json viewDeliverBanlanceLogDetial(MbBalanceLog balanceLog) {
-        return viewDeliverBalanceLogDetail(balanceLog);
-    }
     @RequestMapping("/viewDeliverBalanceLogDetail")
     @ResponseBody
     public Json viewDeliverBalanceLogDetail(MbBalanceLog balanceLog) {
@@ -123,11 +113,6 @@ public class ApiDeliverBalanceController extends BaseController {
      * @param pageHelper
      * @return
      */
-    @RequestMapping("/viewDeliverBanlanceLogDataGrid")
-    @ResponseBody
-    public Json viewDeliverBanlanceLogDataGrid(String date,PageHelper pageHelper, HttpServletRequest request) {
-        return viewDeliverBalanceLogDataGrid(date, pageHelper, request);
-    }
     @RequestMapping("/viewDeliverBalanceLogDataGrid")
     @ResponseBody
     public Json viewDeliverBalanceLogDataGrid(String date,PageHelper pageHelper, HttpServletRequest request) {
@@ -227,11 +212,6 @@ public class ApiDeliverBalanceController extends BaseController {
      * @param request
      * @return
      */
-    @RequestMapping("/transformAmountDeliverToBalance")
-    @ResponseBody
-    public Json transformAmountDeliverToBalance(HttpServletRequest request, Integer amount, String vcode) {
-        return updateAmountDeliverToBalance(request, amount, vcode);
-    }
     @RequestMapping("/updateAmountDeliverToBalance")
     @ResponseBody
     public Json updateAmountDeliverToBalance(HttpServletRequest request, Integer amount, String vcode) {
@@ -261,11 +241,6 @@ public class ApiDeliverBalanceController extends BaseController {
      * @param request
      * @return
      */
-    @RequestMapping("/transformAmountBalanceToDeliver")
-    @ResponseBody
-    public Json transformAmountBalanceToDeliver(HttpServletRequest request, Integer amount, String vcode) {
-        return updateAmountBalanceToDeliver(request, amount, vcode);
-    }
     @RequestMapping("/updateAmountBalanceToDeliver")
     @ResponseBody
     public Json updateAmountBalanceToDeliver(HttpServletRequest request, Integer amount, String vcode) {
@@ -334,11 +309,6 @@ public class ApiDeliverBalanceController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping("/withdraw")
-    public Json withdraw(HttpServletRequest request, MbWithdrawLog withdrawLog, String vcode) {
-        return updateWithdraw(request, withdrawLog, vcode);
-    }
-    @ResponseBody
     @RequestMapping("/updateWithdraw")
     public Json updateWithdraw(HttpServletRequest request, MbWithdrawLog withdrawLog, String vcode){
         Json json = new Json();
@@ -406,11 +376,6 @@ public class ApiDeliverBalanceController extends BaseController {
      * @param date
      * @return
      */
-    @RequestMapping("/withdrawDataGrid")
-    @ResponseBody
-    public Json withdrawDataGrid(HttpServletRequest request, PageHelper pageHelper, String date) {
-        return getWithdrawDataGrid(request, pageHelper, date);
-    }
     @RequestMapping("/getWithdrawDataGrid")
     @ResponseBody
     public Json getWithdrawDataGrid(HttpServletRequest request, PageHelper pageHelper, String date) {
@@ -469,11 +434,6 @@ public class ApiDeliverBalanceController extends BaseController {
      * @param request
      * @return
      */
-    @RequestMapping("/totalBalanceByMonth")
-    @ResponseBody
-    public Json totalBalanceByMonth(HttpServletRequest request, String date) {
-        return getTotalBalanceByMonth(request, date);
-    }
     @RequestMapping("/getTotalBalanceByMonth")
     @ResponseBody
     public Json getTotalBalanceByMonth(HttpServletRequest request, String date) {
