@@ -173,6 +173,7 @@ public class ApiDriverOrderShopController extends BaseController {
         TokenWrap token = getTokenWrap(request);
         Integer accountId  = Integer.parseInt(token.getUid());
         DriverOrderShop driverOrderShop = new DriverOrderShop();
+        driverOrderShop.setId(id);
         driverOrderShop.setDriverAccountId(accountId);
         driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_DELVIERING);
 
