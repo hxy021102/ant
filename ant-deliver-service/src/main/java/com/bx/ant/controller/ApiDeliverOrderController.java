@@ -473,7 +473,8 @@ public class ApiDeliverOrderController extends BaseController {
         deliverOrderShopQuery.setStatus(DeliverOrderShopServiceI.STATUS_ACCEPTED);
         List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(deliverOrderShopQuery);
         if(CollectionUtils.isNotEmpty(deliverOrderShops)) {
-            // TODO
+            // TODO are you sure?
+            driverOrderShop = driverOrderShopService.getByDeliverOrderShopId(deliverOrderShops.get(0).getId());
         }
 
         json.setSuccess(true);
