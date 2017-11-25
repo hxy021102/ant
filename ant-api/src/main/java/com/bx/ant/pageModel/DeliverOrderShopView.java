@@ -20,8 +20,6 @@ public class DeliverOrderShopView extends DeliverOrderShop {
     private String deliverAddress;
     private Date deliverRequireTime;
     private MbShop shop;
-    private String completeImages;
-    private String completeRemark;
 
     public DeliverOrder getDelvierOrder() {
         return delvierOrder;
@@ -93,21 +91,5 @@ public class DeliverOrderShopView extends DeliverOrderShop {
 
     public void setShop(MbShop shop) {
         this.shop = shop;
-    }
-
-    public String getCompleteImages() {
-        return completeImages;
-    }
-
-    public void setCompleteImages(String completeImages) {
-        this.completeImages = completeImages;
-    }
-
-    public String getCompleteRemark() {
-        return completeRemark;
-    }
-
-    public void setCompleteRemark(String completeRemark) {
-        this.completeRemark = completeRemark;
     }
 }

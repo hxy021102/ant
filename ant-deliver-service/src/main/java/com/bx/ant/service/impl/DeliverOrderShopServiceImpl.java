@@ -348,15 +348,11 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 			DeliverOrder deliverOrder = deliverOrderService.get(deliverOrderShopView.getDeliverOrderId());
 			if (deliverOrder != null) {
 				deliverOrderShopView.setContactPeople(deliverOrder.getContactPeople());
-
-
 				deliverOrderShopView.setContactPhone(deliverOrder.getContactPhone());
 				deliverOrderShopView.setDeliverAddress(deliverOrder.getDeliveryAddress());
 				deliverOrderShopView.setDeliverRequireTime(deliverOrder.getDeliveryRequireTime());
 				deliverOrderShopView.setLongitude(deliverOrder.getLongitude());
 				deliverOrderShopView.setLatitude(deliverOrder.getLatitude());
-				deliverOrderShopView.setCompleteImages(deliverOrder.getCompleteImages());
-				deliverOrderShopView.setCompleteRemark(deliverOrder.getCompleteRemark());
 			}
 		}
 	}
