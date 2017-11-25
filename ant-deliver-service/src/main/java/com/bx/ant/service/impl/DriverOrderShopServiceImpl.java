@@ -1,9 +1,5 @@
 package com.bx.ant.service.impl;
 
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-
-
 import com.alibaba.fastjson.JSONObject;
 import com.bx.ant.dao.DriverOrderShopDaoI;
 import com.bx.ant.model.TdriverOrderShop;
@@ -26,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop> implements DriverOrderShopServiceI {
@@ -157,6 +155,7 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 		TdriverOrderShop t = driverOrderShopDao.get(TdriverOrderShop.class, driverOrderShop.getId());
 		if (t != null) {
 			MyBeanUtils.copyProperties(driverOrderShop, t, new String[] { "id" , "addtime", "isdeleted","updatetime" },true);
+			driverOrderShop.setDeliverOrderShopId(t.getDeliverOrderShopId());
 		}
 	}
 
@@ -392,6 +391,21 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 
 		driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_ACCEPTED);
 		transform(driverOrderShop);
+	}
+
+	@Override
+	public DriverOrderShop getByDeliverOrderShopId(Long deliverOrderShopId) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("deliverOrderShopId", deliverOrderShopId);
+		TdriverOrderShop t = driverOrderShopDao.get("from TdriverOrderShop t  where t.deliverOrderShopId = :deliverOrderShopId", params);
+		DriverOrderShop o = null;
+		if(t != null) {
+			o = new DriverOrderShop();
+			BeanUtils.copyProperties(t, o);
+
+		}
+
+		return o;
 	}
 }
 

@@ -400,11 +400,6 @@ public class ApiDeliverOrderController extends BaseController {
      * @param request
      * @return
      */
-    @RequestMapping("/countNewAllocationOrder")
-    @ResponseBody
-    public Json countNewAllocationOrder(HttpServletRequest request) {
-        return getNewAllocationOrderQuantity(request);
-    }
     @RequestMapping("/getNewAllocationOrderQuantity")
     @ResponseBody
     public  Json getNewAllocationOrderQuantity(HttpServletRequest request) {
@@ -427,11 +422,6 @@ public class ApiDeliverOrderController extends BaseController {
      * @param request
      * @return
      */
-    @RequestMapping("/todayOrders")
-    @ResponseBody
-    public Json todayOrders(HttpServletRequest request) {
-        return getTodayOrders(request);
-    }
     @RequestMapping("/getTodayOrders")
     @ResponseBody
     public Json getTodayOrders(HttpServletRequest request) {
@@ -461,6 +451,35 @@ public class ApiDeliverOrderController extends BaseController {
         json.setMsg("u know");
         json.setObj(ol);
         json.setSuccess(true);
+        return json;
+    }
+
+    /**
+     * 获取骑车运单信息
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getDriverOrder")
+    @ResponseBody
+    public  Json getDriverOrder(HttpServletRequest request, Long id) {
+        Json json = new Json();
+        DriverOrderShop driverOrderShop  = new DriverOrderShop();
+        //获取shopId
+        TokenWrap token = getTokenWrap(request);
+        Integer shopId = token.getShopId();
+        DeliverOrderShop deliverOrderShopQuery = new DeliverOrderShop();
+        deliverOrderShopQuery.setShopId(shopId);
+        deliverOrderShopQuery.setDeliverOrderId(id);
+        deliverOrderShopQuery.setStatus(DeliverOrderShopServiceI.STATUS_ACCEPTED);
+        List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(deliverOrderShopQuery);
+        if(CollectionUtils.isNotEmpty(deliverOrderShops)) {
+            // TODO are you sure?
+            driverOrderShop = driverOrderShopService.getByDeliverOrderShopId(deliverOrderShops.get(0).getId());
+        }
+
+        json.setSuccess(true);
+        json.setMsg("u know");
+        json.setObj(driverOrderShop);
         return json;
     }
 
