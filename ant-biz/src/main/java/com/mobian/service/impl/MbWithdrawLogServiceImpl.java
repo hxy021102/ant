@@ -14,6 +14,7 @@ import com.mobian.thirdpart.wx.HttpUtil;
 import com.mobian.thirdpart.wx.PayCommonUtil;
 import com.mobian.thirdpart.wx.WeixinUtil;
 import com.mobian.thirdpart.wx.XMLUtil;
+import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.IpUtil;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -194,6 +195,7 @@ public class MbWithdrawLogServiceImpl extends BaseServiceImpl<MbWithdrawLog> imp
 			params.put("partner_trade_no", withdrawLog.getId());
 //			params.put("re_user_name", withdrawLog.getReceiver());
 			params.put("spbill_create_ip", IpUtil.getIp(request));
+			params.put("appid", "BT101".equals(withdrawLog.getRefType()) ? ConvertNameUtil.getString(WeixinUtil.APPLET_APPID) : ConvertNameUtil.getString(WeixinUtil.APPLET_DRIVER_APPID));
 
 			try {
 				//3. 扣款
