@@ -290,8 +290,8 @@ public class ApiDriverAccountController extends BaseController {
         Json j = new Json();
         try{
             TokenWrap token = tokenService.getToken(request);
-//            Integer accountId = Integer.parseInt(token.getUid());
-            Integer accountId = 2;
+            Integer accountId = Integer.parseInt(token.getUid());
+//            Integer accountId = 2;
             if(!F.empty(token.getUid())) {
                 apply.setId(accountId);
                 driverAccountService.edit(apply);

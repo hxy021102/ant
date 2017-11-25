@@ -289,5 +289,5 @@ public interface DeliverOrderServiceI {
 	 */
 	DeliverOrderExt getBanlanceLogDetial(DeliverOrderShop deliverOrderShop);
 
-	DeliverOrderExt getDetail(Integer id);
+    DeliverOrderExt getDetail(Long id);
 }
