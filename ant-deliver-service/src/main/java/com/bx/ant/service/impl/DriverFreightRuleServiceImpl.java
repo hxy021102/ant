@@ -178,6 +178,7 @@ public class DriverFreightRuleServiceImpl extends BaseServiceImpl<DriverFreightR
                 //若无法获取运费规则,计算运费规则为
                 //起始运费(分) + 重量(千克) * 运费因子(分/千克)
                 if (amount == null) {
+
                     amount = Integer.parseInt(ConvertNameUtil.getString("DDSV105", "1000")) +
                             order.getWeight() / 1000 * Integer.parseInt(ConvertNameUtil.getString("DDSV106", "50"));
                 }
