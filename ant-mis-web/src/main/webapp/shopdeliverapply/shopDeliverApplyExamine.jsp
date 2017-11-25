@@ -41,7 +41,7 @@
 				<tr>
 					<th style="width: 80px">最大配送距离</th>
 					<td>
-						<input name="maxDeliveryDistance" type="text" class="span2"><font color="red">(单位：&nbsp;&nbsp;米)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;默认5000米</font>
+						<input name="maxDeliveryDistance" type="text" class="span2"><font color="red"><font color="red">(单位：米)默认5000米,-1不限制</font>
 					</td>
 				</tr>
 				<tr>
