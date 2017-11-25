@@ -143,7 +143,7 @@ public class SupplierItemRelationServiceImpl extends BaseServiceImpl<SupplierIte
 	}
 
 	protected void fillItemInfo(SupplierItemRelationView view) {
-		if (!F.empty(view.getItemId())) {;
+		if (!F.empty(view.getItemId())) {
 			MbItem item = mbItemService.getFromCache(view.getItemId());
 			if (item != null) {
 				//填充重量信息
