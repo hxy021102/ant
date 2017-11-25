@@ -98,7 +98,7 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
             }
         }
         //4. 距离
-        double maxDistance = Double.valueOf(ConvertNameUtil.getString("DDSV001", "5000"));;
+        double maxDistance = Double.valueOf(ConvertNameUtil.getString("DDSV001", "5000"));
 
         //5. 筛选出符合条件的骑手
         for (DriverAccount account : driverAccounts) {
@@ -113,7 +113,7 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
             double distance = GeoUtil.getDistance(driverLongtitude, driverLatitude,
                     shop.getLongitude().doubleValue(), shop.getLatitude().doubleValue());
             //6. 分配订单
-            if (distance < maxDistance) {
+            if (maxDistance == -1 || distance <= maxDistance) {
                 //若在拒绝集合里则不再分单
                 String key = driverAccountService.buildAllocationOrderKey(account.getId());
                 String refuseKey = driverAccountService.buildRefuseOrderKey(account.getId());
