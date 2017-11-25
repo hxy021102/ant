@@ -52,7 +52,7 @@ public class GeoUtil {
         return result;
     }*/
     public static BigDecimal[] getPosition(String address) {
-        address = address.replaceAll(" ", "");
+        address = address.replaceAll(" ", "").replaceAll("[\r\n]", "");
         String ak = ConvertNameUtil.getDesc("AK001");
         String akey = null;
         String[] aks = ak.split(";");

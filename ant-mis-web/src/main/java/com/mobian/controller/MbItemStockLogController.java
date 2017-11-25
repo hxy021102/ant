@@ -7,6 +7,7 @@ import com.mobian.pageModel.*;
 import com.mobian.service.MbItemServiceI;
 import com.mobian.service.MbItemStockLogServiceI;
 import com.mobian.service.MbItemStockServiceI;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -165,11 +166,97 @@ public class MbItemStockLogController extends BaseController {
 	 * 获取MbItemStockLog数据表格excel
 	 */
 	@RequestMapping("/download")
-	public void download(MbItemStockLog mbItemStockLog, PageHelper ph,String downloadFields,HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException{
-		DataGrid dg = dataGrid(mbItemStockLog,ph);
+	public void download(MbItemStockLog mbItemStockLog, PageHelper ph,String downloadFields,HttpServletResponse response,Integer itemId) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException{
+		DataGrid dg = dataGridReport(mbItemStockLog,ph,itemId);
+		List<MbItemStockLogExport> mbItemStockLogExportList = dg.getRows();
+		if (CollectionUtils.isNotEmpty(mbItemStockLogExportList)) {
+			for (MbItemStockLogExport mbItemStockLogExport : mbItemStockLogExportList) {
+				if (!F.empty(mbItemStockLogExport.getInitPrice())) {
+					mbItemStockLogExport.setInitPriceElement(mbItemStockLogExport.getInitPrice() / 100.0);
+				}
+				if (!F.empty(mbItemStockLogExport.getInitAmount())){
+					mbItemStockLogExport.setInitAmountElement(mbItemStockLogExport.getInitAmount() / 100.0);
+				}
+				if (!F.empty(mbItemStockLogExport.getInPrice())) {
+					mbItemStockLogExport.setInPriceElement(mbItemStockLogExport.getInPrice() / 100.0);
+				}
+				if (!F.empty(mbItemStockLogExport.getInAmount())) {
+					mbItemStockLogExport.setInAmountElement(mbItemStockLogExport.getInAmount() / 100.0);
+				}
+				if (!F.empty(mbItemStockLogExport.getOutPrice())) {
+					mbItemStockLogExport.setOutPriceElement(mbItemStockLogExport.getOutPrice() / 100.0);
+				}
+				if (!F.empty(mbItemStockLogExport.getOutAmount())) {
+					mbItemStockLogExport.setOutAmountElement(mbItemStockLogExport.getOutAmount() / 100.0);
+				}
+				if (!F.empty(mbItemStockLogExport.getCostPrice())) {
+					mbItemStockLogExport.setCostPriceElement(mbItemStockLogExport.getCostPrice() / 100.0);
+				}
+				if (!F.empty(mbItemStockLogExport.getEndQuantity())&&!F.empty(mbItemStockLogExport.getCostPrice())) {
+					mbItemStockLogExport.setCostAmountElement((mbItemStockLogExport.getEndQuantity()*mbItemStockLogExport.getCostPrice())/ 100.0);
+				}
+			}
+
+			MbItemStockLogExport footer = (MbItemStockLogExport)dg.getFooter().get(0);
+			footer.setInPriceElement(footer.getInPrice() / 100.0);
+			footer.setInAmountElement(footer.getInAmount() / 100.0);
+			footer.setOutPriceElement(footer.getOutPrice() / 100.0);
+			footer.setOutAmountElement(footer.getOutAmount() / 100.0);
+		}
 		downloadFields = downloadFields.replace("&quot;", "\"");
 		downloadFields = downloadFields.substring(1,downloadFields.length()-1);
+		downloadFields =downloadFields.replace("{\"colspan\":3,\"title\":\"期初结存\"},{\"colspan\":3,\"title\":\"本期进货\"},{\"colspan\":3,\"title\":\"本期出货\"},{\"colspan\":3,\"title\":\"期末结存\"}],[","");
 		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
+		if (CollectionUtils.isNotEmpty(colums)) {
+			for (Colum colum : colums) {
+				switch (colum.getField()) {
+					case "initQuantity":
+						colum.setTitle("(期初)数量");
+						break;
+					case "initPrice":
+						colum.setTitle("(期初)进价");
+						colum.setField("initPriceElement");
+						break;
+					case "initAmount":
+						colum.setTitle("(期初)金额");
+						colum.setField("initAmountElement");
+						break;
+					case "inQuantity":
+						colum.setTitle("(进货)数量");
+						break;
+					case "inPrice":
+						colum.setTitle("(进货)进价");
+						colum.setField("inPriceElement");
+						break;
+					case "inAmount":
+						colum.setTitle("(进货)金额");
+						colum.setField("inAmountElement");
+						break;
+					case "outQuantity":
+						colum.setTitle("(出货)数量");
+						break;
+					case "outPrice":
+						colum.setTitle("(出货)进价");
+						colum.setField("outPriceElement");
+						break;
+					case "outAmount":
+						colum.setTitle("(出货)金额");
+						colum.setField("outAmountElement");
+						break;
+					case "endQuantity":
+						colum.setTitle("(期末)数量");
+						break;
+					case "costPrice":
+						colum.setTitle("(期末)进价");
+						colum.setField("costPriceElement");
+						break;
+					case "costAmount":
+						colum.setTitle("(期末)金额");
+						colum.setField("costAmountElement");
+						break;
+				}
+			}
+		}
 		downloadTable(colums, dg, response);
 	}
 	/**

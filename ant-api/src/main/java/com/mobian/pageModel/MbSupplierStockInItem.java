@@ -27,6 +27,11 @@ public class MbSupplierStockInItem implements java.io.Serializable {
     private Integer supplierOrderId;
     private String  supplierName;
     private Double  totalPrice;
+    private Integer[] supplierStockInIdArray;
+    /**
+     * 费率
+     */
+    private Integer rate;
 
     public String getSupplierName() {
         return supplierName;
@@ -171,5 +176,21 @@ public class MbSupplierStockInItem implements java.io.Serializable {
 
     public void setTotalPrice(Double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public Integer[] getSupplierStockInIdArray() {
+        return supplierStockInIdArray;
+    }
+
+    public void setSupplierStockInIdArray(Integer[] supplierStockInIdArray) {
+        this.supplierStockInIdArray = supplierStockInIdArray;
+    }
+
+    public Integer getRate() {
+        return rate;
+    }
+
+    public void setRate(Integer rate) {
+        this.rate = rate;
     }
 }

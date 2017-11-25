@@ -141,6 +141,23 @@ public interface MbBalanceServiceI {
 	void transform(Integer amount, MbBalance balanceSource, MbBalance balanceTarget);
 
 	/**
+	 * 通用创建与获取供应商钱包信息
+	 * @param refId
+	 * @param refType
+	 * @param initAmount
+	 * @return
+	 */
+	MbBalance addOrGetSupplierMbBalance(Integer refId, Integer refType, Integer initAmount);
+
+	/**
+	 * 通过供应商id,获取供应商钱包信息
+	 * @param supplierId
+	 * @return
+	 */
+	MbBalance addOrGetSupplierMbBalance(Integer supplierId);
+
+
+	/**
 	 * 获取骑手账户
 	 * @param driverAccountId
 	 * @return

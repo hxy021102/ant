@@ -49,7 +49,7 @@
                     width: 150,
                     hidden: true
                 }, {
-                    field : 'updatetime',
+                    field : 'addtime',
                     title : '<%=TmbBalanceLog.ALIAS_TIME%>',
                     width : 100
                 }, {
