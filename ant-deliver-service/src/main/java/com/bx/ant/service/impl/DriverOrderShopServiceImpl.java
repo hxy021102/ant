@@ -155,6 +155,7 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 		TdriverOrderShop t = driverOrderShopDao.get(TdriverOrderShop.class, driverOrderShop.getId());
 		if (t != null) {
 			MyBeanUtils.copyProperties(driverOrderShop, t, new String[] { "id" , "addtime", "isdeleted","updatetime" },true);
+			driverOrderShop.setDeliverOrderShopId(t.getDeliverOrderShopId());
 		}
 	}
 

@@ -1,8 +1,13 @@
 package com.bx.ant.service.impl.driverodershopstate;
 
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderShop;
 import com.bx.ant.pageModel.DriverOrderShop;
+import com.bx.ant.service.DeliverOrderServiceI;
+import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.bx.ant.service.DriverOrderShopServiceI;
 import com.bx.ant.service.DriverOrderShopState;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -19,6 +24,12 @@ public class DriverOrderShop20StateImpl implements DriverOrderShopState {
 
     @Resource
     private DriverOrderShopServiceI driverOrderShopSerivce;
+
+    @Autowired
+    private DeliverOrderServiceI deliverOrderService;
+
+    @Autowired
+    private DeliverOrderShopServiceI deliverOrderShopSerivce;
 
 
     @Override
@@ -37,8 +48,13 @@ public class DriverOrderShop20StateImpl implements DriverOrderShopState {
 
         driverOrderShopSerivce.edit(orderShop);
 
-        //将门店运单状态更改为配送完成
-
+        // 将门店运单状态更改为配送完成
+        DeliverOrder deliverOrder = new DeliverOrder();
+        DeliverOrderShop deliverOrderShop = deliverOrderShopSerivce.get(orderShop.getDeliverOrderShopId());
+        deliverOrder.setId(deliverOrderShop.getDeliverOrderId());
+        deliverOrder.setStatus(DeliverOrderServiceI.STATUS_DRIVER_DELIVERING);
+        deliverOrder.setShopId(deliverOrderShop.getShopId());
+        deliverOrderService.transform(deliverOrder);
 
     }
 
