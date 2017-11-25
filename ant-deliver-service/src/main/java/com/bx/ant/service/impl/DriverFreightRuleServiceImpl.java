@@ -176,11 +176,12 @@ public class DriverFreightRuleServiceImpl extends BaseServiceImpl<DriverFreightR
                     amount = rule.getFreight();
                 }
                 //若无法获取运费规则,计算运费规则为
-                //起始运费(分) + 重量(千克) * 运费因子(分/千克)
+                //起始运费[分] + (重量[克] - 起点重量[克]) / 1000 * 运费因子[分/千克])
                 if (amount == null) {
-
+                    Integer leftWeight =  order.getWeight() - Integer.parseInt(ConvertNameUtil.getString("DDSV107", "5000"));
+                    leftWeight = leftWeight < 0 ? 0 : leftWeight;
                     amount = Integer.parseInt(ConvertNameUtil.getString("DDSV105", "1000")) +
-                            order.getWeight() / 1000 * Integer.parseInt(ConvertNameUtil.getString("DDSV106", "50"));
+                            leftWeight / 1000 * Integer.parseInt(ConvertNameUtil.getString("DDSV106", "50"));
                 }
             }
         }
