@@ -71,6 +71,11 @@
             $.editShopItemPrice = true;
         </script>
     </c:if>
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/mbItemStockLogController/view')}">
+        <script type="text/javascript">
+            $.viewBucketHistory = true;
+        </script>
+    </c:if>
     <script type="text/javascript">
         var gridMap = {};
         $(function () {
@@ -480,7 +485,14 @@
                 }, {
                     field : 'warehouseCode',
                     title : '<%=TmbItemStock.ALIAS_WAREHOUSE_CODE%>',
-                    width : 20
+                    width : 20,
+                    formatter : function (value, row, index) {
+                        if ($.viewBucketHistory){
+                            return '<a onclick="viewBucketHistory(' + row.id + ')">' + row.warehouseCode + '</a>';
+                        }else {
+                            return row.warehouseCode;
+                        }
+                    }
                 }, {
                     field : 'warehouseName',
                     title : '<%=TmbItemStock.ALIAS_WAREHOUSE_NAME%>',
@@ -1055,6 +1067,20 @@
             });
 
         }
+        //空桶变更历史
+        function viewBucketHistory(id) {
+            if (id == undefined) {
+                var rows = dataGrid.datagrid('getSelections');
+                id = rows[0].id;
+            }
+            parent.$.modalDialog({
+                title : '库存变更日志',
+                width : 780,
+                height : 500,
+                href : '${pageContext.request.contextPath}/mbItemStockLogController/view?id=' + id
+            });
+        }
+
     </script>
 </head>
 <body>

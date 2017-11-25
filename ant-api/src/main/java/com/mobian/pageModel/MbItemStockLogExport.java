@@ -31,6 +31,17 @@ public class MbItemStockLogExport extends MbItemStockLog {
 
 	private String itemCode;
 
+	private Integer costAmount;
+    //导出显示元设置属性
+	private double initPriceElement;
+	private double initAmountElement;
+	private double inPriceElement;
+	private double inAmountElement;
+	private double outPriceElement;
+	private double outAmountElement;
+	private double costPriceElement;
+	private double costAmountElement;
+
 	public String getRefTypeName() {
 		return refTypeName;
 	}
@@ -135,5 +146,77 @@ public class MbItemStockLogExport extends MbItemStockLog {
 
 	public void setOutAmount(Integer outAmount) {
 		this.outAmount = outAmount;
+	}
+
+	public Integer getCostAmount() {
+		return costAmount;
+	}
+
+	public void setCostAmount(Integer costAmount) {
+		this.costAmount = costAmount;
+	}
+
+	public double getInitPriceElement() {
+		return initPriceElement;
+	}
+
+	public void setInitPriceElement(double initPriceElement) {
+		this.initPriceElement = initPriceElement;
+	}
+
+	public double getInitAmountElement() {
+		return initAmountElement;
+	}
+
+	public void setInitAmountElement(double initAmountElement) {
+		this.initAmountElement = initAmountElement;
+	}
+
+	public double getInPriceElement() {
+		return inPriceElement;
+	}
+
+	public void setInPriceElement(double inPriceElement) {
+		this.inPriceElement = inPriceElement;
+	}
+
+	public double getInAmountElement() {
+		return inAmountElement;
+	}
+
+	public void setInAmountElement(double inAmountElement) {
+		this.inAmountElement = inAmountElement;
+	}
+
+	public double getOutPriceElement() {
+		return outPriceElement;
+	}
+
+	public void setOutPriceElement(double outPriceElement) {
+		this.outPriceElement = outPriceElement;
+	}
+
+	public double getOutAmountElement() {
+		return outAmountElement;
+	}
+
+	public void setOutAmountElement(double outAmountElement) {
+		this.outAmountElement = outAmountElement;
+	}
+
+	public double getCostPriceElement() {
+		return costPriceElement;
+	}
+
+	public void setCostPriceElement(double costPriceElement) {
+		this.costPriceElement = costPriceElement;
+	}
+
+	public double getCostAmountElement() {
+		return costAmountElement;
+	}
+
+	public void setCostAmountElement(double costAmountElement) {
+		this.costAmountElement = costAmountElement;
 	}
 }
