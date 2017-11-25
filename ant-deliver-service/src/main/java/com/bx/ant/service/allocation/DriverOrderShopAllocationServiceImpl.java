@@ -118,6 +118,7 @@ public class DriverOrderShopAllocationServiceImpl implements DriverOrderShopAllo
                 String key = driverAccountService.buildAllocationOrderKey(account.getId());
                 String refuseKey = driverAccountService.buildRefuseOrderKey(account.getId());
                 Set<Long> refuseSet = redisUtil.getAllSet(refuseKey);
+                Set<Long> driverOrderSet = redisUtil.getAllSet(key);
                 if (!refuseSet.contains(driverOrderShop.getId().toString()) && redisUtil.addSet(key, driverOrderShop.getId().toString())) {
                     redisUtil.expire(key, Integer.parseInt(ConvertNameUtil.getString("DDSV101","48")), TimeUnit.HOURS);
                     driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_ALLOCATION);

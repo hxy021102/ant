@@ -28,14 +28,6 @@ public class DeliverOrder20StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderShopServiceI deliverOrderShopService;
 
-    @Autowired
-    private DeliverOrderItemServiceI deliverOrderItemService;
-
-    @Autowired
-    private DeliverOrderShopItemServiceI deliverOrderShopItemService;
-
-    @Autowired
-    private DeliverOrderShopPayServiceI deliverOrderShopPayService;
 
     @Autowired
     private DeliverOrderLogServiceI deliverOrderLogService;

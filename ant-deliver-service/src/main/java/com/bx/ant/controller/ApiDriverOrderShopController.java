@@ -1,12 +1,15 @@
 package com.bx.ant.controller;
 
 import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderShop;
 import com.bx.ant.pageModel.DriverOrderShop;
 import com.bx.ant.pageModel.DriverOrderShopView;
 import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.DeliverOrderServiceI;
+import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.bx.ant.service.DriverAccountServiceI;
 import com.bx.ant.service.DriverOrderShopServiceI;
+import com.bx.ant.service.impl.DeliverOrderServiceImpl;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
@@ -14,7 +17,9 @@ import com.mobian.pageModel.PageHelper;
 import com.mobian.thirdpart.redis.Key;
 import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.thirdpart.redis.RedisUtil;
+import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.GeoUtil;
+import jdk.nashorn.internal.objects.AccessorPropertyDescriptor;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,6 +50,7 @@ public class ApiDriverOrderShopController extends BaseController {
 
     @Autowired
     private DriverAccountServiceI driverAccountService;
+
 
     @RequestMapping("/dataGrid")
     @ResponseBody
@@ -287,4 +293,19 @@ public class ApiDriverOrderShopController extends BaseController {
         return json;
     }
 
+
+    @RequestMapping("/getDetail")
+    @ResponseBody
+    public Json getDetail(Long id) {
+        Json j = new Json();
+        try {
+            j.setMsg("u know");
+            j.setObj(driverOrderShopService.getView(id));
+            j.setSuccess(true);
+        } catch (Exception e) {
+            j.setMsg(ConvertNameUtil.getString(EX_0001));
+            logger.error("获取订单详情接口异常", e);
+        }
+        return j;
+    }
 }

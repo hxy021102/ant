@@ -73,18 +73,19 @@ public class ApiDeliverOrderController extends BaseController {
 
     /**
      * 获取订单详情
+     *
      * @param id
      * @return
      */
     @RequestMapping("/getDetail")
     @ResponseBody
-    public Json getDetail(Integer id) {
+    public Json getDetail(Long id) {
         Json j = new Json();
-        try{
+        try {
             j.setMsg("u know");
             j.setObj(deliverOrderService.getDetail(id));
             j.setSuccess(true);
-        }catch(Exception e){
+        } catch (Exception e) {
             j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("获取订单详情接口异常", e);
         }
@@ -350,13 +351,14 @@ public class ApiDeliverOrderController extends BaseController {
 
     /**
      * 门店接受新运单
+     *
      * @param request
      * @param id
      * @return
      */
     @RequestMapping("/editOrderTakeByUser")
     @ResponseBody
-    public Json editOrderTakeByUser(HttpServletRequest request, Long id){
+    public Json editOrderTakeByUser(HttpServletRequest request, Long id) {
         Json json = new Json();
 
         //获取shopId
@@ -380,7 +382,6 @@ public class ApiDeliverOrderController extends BaseController {
     }
 
     /**
-     *
      * @param shopId
      * @param status
      * @return
@@ -397,12 +398,13 @@ public class ApiDeliverOrderController extends BaseController {
 
     /**
      * 获取新订单数量
+     *
      * @param request
      * @return
      */
     @RequestMapping("/getNewAllocationOrderQuantity")
     @ResponseBody
-    public  Json getNewAllocationOrderQuantity(HttpServletRequest request) {
+    public Json getNewAllocationOrderQuantity(HttpServletRequest request) {
         Json json = new Json();
 
         //获取shopId
@@ -456,14 +458,15 @@ public class ApiDeliverOrderController extends BaseController {
 
     /**
      * 获取骑车运单信息
+     *
      * @param request
      * @return
      */
     @RequestMapping("/getDriverOrder")
     @ResponseBody
-    public  Json getDriverOrder(HttpServletRequest request, Long id) {
+    public Json getDriverOrder(HttpServletRequest request, Long id) {
         Json json = new Json();
-        DriverOrderShop driverOrderShop  = new DriverOrderShop();
+        DriverOrderShop driverOrderShop = new DriverOrderShop();
         //获取shopId
         TokenWrap token = getTokenWrap(request);
         Integer shopId = token.getShopId();
@@ -472,7 +475,7 @@ public class ApiDeliverOrderController extends BaseController {
         deliverOrderShopQuery.setDeliverOrderId(id);
         deliverOrderShopQuery.setStatus(DeliverOrderShopServiceI.STATUS_ACCEPTED);
         List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(deliverOrderShopQuery);
-        if(CollectionUtils.isNotEmpty(deliverOrderShops)) {
+        if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
             // TODO are you sure?
             driverOrderShop = driverOrderShopService.getByDeliverOrderShopId(deliverOrderShops.get(0).getId());
         }
@@ -482,39 +485,5 @@ public class ApiDeliverOrderController extends BaseController {
         json.setObj(driverOrderShop);
         return json;
     }
-
-    //TODO 功能需要添加至小程序
-
-    /**
-     * 选择配送方式为骑手
-     * @param deliverOrderShop
-     * @param deliverWay
-     * @param remark
-     * @param request
-     * @return
-     */
-    @RequestMapping("/addDeliverWay")
-    @ResponseBody
-    public Json addDeliverWay(DeliverOrderShop deliverOrderShop, String deliverWay, String remark, HttpServletRequest request) {
-        Json json = new Json();
-//      TODO 調試時
-//        TokenWrap tokenWrap = getTokenWrap(request);
-//        Integer shopId = tokenWrap.getShopId();
-        Integer shopId = 119;
-        if ("driver".equals(deliverWay)) {
-            DriverOrderShop driverOrderShop = new DriverOrderShop();
-            driverOrderShop.setShopId(shopId);
-            driverOrderShop.setDeliverOrderShopId(deliverOrderShop.getId());
-            driverOrderShop.setRemark(remark);
-            driverOrderShop.setStatus(DriverOrderShopServiceI.PAY_STATUS_NOT_PAY);
-
-
-//            deliverOrderShop.setAmount(deliverOrderShop.getId());
-            driverOrderShopService.transform(driverOrderShop);
-        }
-        return json;
-
-    }
-
-
 }
+
