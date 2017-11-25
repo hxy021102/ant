@@ -348,6 +348,8 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 			DeliverOrder deliverOrder = deliverOrderService.get(deliverOrderShopView.getDeliverOrderId());
 			if (deliverOrder != null) {
 				deliverOrderShopView.setContactPeople(deliverOrder.getContactPeople());
+
+
 				deliverOrderShopView.setContactPhone(deliverOrder.getContactPhone());
 				deliverOrderShopView.setDeliverAddress(deliverOrder.getDeliveryAddress());
 				deliverOrderShopView.setDeliverRequireTime(deliverOrder.getDeliveryRequireTime());
