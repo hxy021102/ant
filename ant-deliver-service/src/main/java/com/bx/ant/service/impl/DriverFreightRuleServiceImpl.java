@@ -19,6 +19,7 @@ import com.mobian.pageModel.PageHelper;
 
 import com.mobian.service.DiveRegionServiceI;
 import com.mobian.service.MbShopServiceI;
+import com.mobian.util.ConvertNameUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,6 +174,12 @@ public class DriverFreightRuleServiceImpl extends BaseServiceImpl<DriverFreightR
                 if (CollectionUtils.isNotEmpty(driverFreightRules)) {
                     DriverFreightRule rule = driverFreightRules.get(0);
                     amount = rule.getFreight();
+                }
+                //若无法获取运费规则,计算运费规则为
+                //起始运费(分) + 重量(千克) * 运费因子(分/千克)
+                if (amount == null) {
+                    amount = Integer.parseInt(ConvertNameUtil.getString("DDSV105", "1000")) +
+                            order.getWeight() / 1000 * Integer.parseInt(ConvertNameUtil.getString("DDSV106", "50"));
                 }
             }
         }
