@@ -23,6 +23,9 @@ public class DeliverOrder25StateImpl implements DeliverOrderState {
     @Resource(name = "deliverOrder30StateImpl")
     private DeliverOrderState deliverOrderState30;
 
+    @Resource(name = "deliverOrder50StateImpl")
+    private DeliverOrderState deliverOrderState50;
+
     @Autowired
     private DeliverOrderServiceI deliverOrderService;
 
@@ -58,6 +61,8 @@ public class DeliverOrder25StateImpl implements DeliverOrderState {
     public DeliverOrderState next(DeliverOrder deliverOrder) {
         if ((prefix + "30").equals(deliverOrder.getStatus())) {
             return deliverOrderState30;
+        } else if((prefix + "50").equals(deliverOrder.getStatus())) {
+            return deliverOrderState50;
         }
         return null;
     }
