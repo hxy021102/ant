@@ -117,10 +117,9 @@ public class ApiDriverBalanceController extends BaseController {
 
         //TODO 测试时设置shop ID值,若
         // 真正使用从token中获取
-//        TokenWrap token = getTokenWrap(request);
+        TokenWrap token = getTokenWrap(request);
 
-//        Integer accountId = Integer.parseInt(token.getUid());
-        Integer accountId = 2;
+        Integer accountId = Integer.parseInt(token.getUid());
         mbBalanceLogDriver.setAccountId(accountId);
         dataGrid = mbBalanceLogService.updateDriverBalanceLogDataGrid(mbBalanceLogDriver, pageHelper);
         j.setObj(dataGrid);
