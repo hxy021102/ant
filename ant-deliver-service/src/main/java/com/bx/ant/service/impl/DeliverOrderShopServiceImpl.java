@@ -131,6 +131,15 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 					params.put("endDate", ext.getEndDate());
 
 				}
+				if (ext.getDeliverOrderShopIds() != null) {
+					Long[] orderShopIds = new Long[ext.getDeliverOrderShopIds().split(",").length];
+					int i = 0;
+					for (String orderShopId : ext.getDeliverOrderShopIds().split(",")) {
+						orderShopIds[i++] = Long.valueOf(orderShopId).longValue();
+					}
+					whereHql += " and t.id in(:ids)";
+					params.put("ids", orderShopIds);
+				}
 			}
 			if (F.empty(deliverOrderShop.getOrderId())) {
 				whereHql += " and t.orderId is null";
@@ -421,6 +430,13 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		PageHelper ph = new PageHelper();
 		ph.setHiddenTotal(true);
 		return dataGrid(deliverOrderShop, ph).getRows();
+	}
+
+	@Override
+	public List<DeliverOrderShop> queryByDeliverOrderShopIds(String deliverOrderShopIds) {
+		DeliverOrderShopQuery deliverOrderShop = new DeliverOrderShopQuery();
+		deliverOrderShop.setDeliverOrderShopIds(deliverOrderShopIds);
+		return query(deliverOrderShop);
 	}
 
 }

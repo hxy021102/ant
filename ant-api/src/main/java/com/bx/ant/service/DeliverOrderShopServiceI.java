@@ -126,4 +126,12 @@ public interface DeliverOrderShopServiceI {
 	void editStatusByHql(DeliverOrderShop deliverOrderShop,String status,String shopPayStatus);
 
 	List<DeliverOrderShop> queryTodayOrdersByShopId(Integer shopId);
+
+	/**
+	 * 通过订单deliverOrderShopIds获取订单列表
+	 *
+	 * @param deliverOrderShopIds
+	 * @return
+	 */
+	List<DeliverOrderShop> queryByDeliverOrderShopIds(String deliverOrderShopIds);
 }

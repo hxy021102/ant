@@ -77,7 +77,7 @@ public class MbOrder implements java.io.Serializable {
 
 	private Date deliveryTimeBegin;//订单发货时间
 	private Date deliveryTimeEnd;
-
+    private String deliverOrderShopIds;
 	public Date getDeliveryTimeBegin() {
 		return deliveryTimeBegin;
 	}
@@ -525,5 +525,13 @@ public class MbOrder implements java.io.Serializable {
 
 	public void setDeliveryCost(Integer deliveryCost) {
 		this.deliveryCost = deliveryCost;
+	}
+
+	public String getDeliverOrderShopIds() {
+		return deliverOrderShopIds;
+	}
+
+	public void setDeliverOrderShopIds(String deliverOrderShopIds) {
+		this.deliverOrderShopIds = deliverOrderShopIds;
 	}
 }

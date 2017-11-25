@@ -90,6 +90,13 @@ public class MbContractItemServiceImpl extends BaseServiceImpl<MbContractItem> i
                 whereHql += " and t.price = :price";
                 params.put("price", mbContractItem.getPrice());
             }
+            if (mbContractItem instanceof MbContractItemQuery) {
+                MbContractItemQuery mbContractItemQuery = (MbContractItemQuery) mbContractItem;
+                if (mbContractItemQuery.getItemIds() != null && mbContractItemQuery.getItemIds().length > 0) {
+                    whereHql += " and t.itemId in(:itemIds)";
+                    params.put("itemIds", mbContractItemQuery.getItemIds());
+                }
+            }
         }
         return whereHql;
     }
@@ -214,4 +221,20 @@ public class MbContractItemServiceImpl extends BaseServiceImpl<MbContractItem> i
         return mbContractItemDao.find("from TmbContractItem t where t.isdeleted = 0 and t.contractId =" + contractId);
     }
 
+    @Override
+    public List<MbContractItem> query(MbContractItem mbContractItem) {
+        List<MbContractItem> ol = new ArrayList<MbContractItem>();
+        String hql = " from TmbContractItem t ";
+        Map<String, Object> params = new HashMap<String, Object>();
+        String where = whereHql(mbContractItem, params);
+        List<TmbContractItem> l = mbContractItemDao.find(hql + where, params);
+        if (CollectionUtils.isNotEmpty(l)) {
+            for (TmbContractItem t : l) {
+                MbContractItem o = new MbContractItem();
+                BeanUtils.copyProperties(t, o);
+                ol.add(o);
+            }
+        }
+        return ol;
+    }
 }

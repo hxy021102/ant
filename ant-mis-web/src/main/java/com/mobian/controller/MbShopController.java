@@ -559,26 +559,28 @@ public class MbShopController extends BaseController {
     @RequestMapping("/dataGridDeliverOrderShop")
     @ResponseBody
     public DataGrid dataGridDeliverOrderShop(DeliverOrderShop deliverOrderShop, PageHelper ph, Date startDate, Date endDate) {
-        deliverOrderShop.setAddtimeBegin(startDate);
-        deliverOrderShop.setAddtimeEnd(endDate);
-        deliverOrderShop.setOrderId(null);
-        deliverOrderShop.setStatus("DSS02,DSS04,DSS06");
-        List<DeliverOrderShop> deliverOrderShopList = deliverOrderShopService.query(deliverOrderShop);
-        if (CollectionUtils.isNotEmpty(deliverOrderShopList)) {
-            Integer[] shopIdArray = new Integer[deliverOrderShopList.size()];
-            int i = 0;
-            for (DeliverOrderShop orderShop : deliverOrderShopList) {
-                shopIdArray[i++] = orderShop.getShopId();
-            }
-            MbShop mbShop = new MbShop();
-            mbShop.setIds(shopIdArray);
-            List<MbShop> mbShopList = mbShopService.query(mbShop);
-            if (CollectionUtils.isNotEmpty(mbShopList)) {
-                DataGrid dataGrid = new DataGrid();
-                dataGrid.setRows(mbShopList);
-                return dataGrid;
+        if (startDate != null && endDate != null) {
+            deliverOrderShop.setAddtimeBegin(startDate);
+            deliverOrderShop.setAddtimeEnd(endDate);
+            deliverOrderShop.setOrderId(null);
+            deliverOrderShop.setStatus("DSS02,DSS04,DSS06");
+            List<DeliverOrderShop> deliverOrderShopList = deliverOrderShopService.query(deliverOrderShop);
+            if (CollectionUtils.isNotEmpty(deliverOrderShopList)) {
+                Integer[] shopIdArray = new Integer[deliverOrderShopList.size()];
+                int i = 0;
+                for (DeliverOrderShop orderShop : deliverOrderShopList) {
+                    shopIdArray[i++] = orderShop.getShopId();
+                }
+                MbShop mbShop = new MbShop();
+                mbShop.setIds(shopIdArray);
+                List<MbShop> mbShopList = mbShopService.query(mbShop);
+                if (CollectionUtils.isNotEmpty(mbShopList)) {
+                    DataGrid dataGrid = new DataGrid();
+                    dataGrid.setRows(mbShopList);
+                    return dataGrid;
+                }
             }
         }
-        return null;
+        return new DataGrid();
     }
 }

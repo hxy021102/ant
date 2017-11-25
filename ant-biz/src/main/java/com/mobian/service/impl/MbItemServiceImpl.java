@@ -1,9 +1,13 @@
 package com.mobian.service.impl;
 
+import com.bx.ant.pageModel.DeliverOrderShopItem;
+import com.bx.ant.service.DeliverOrderShopItemServiceI;
 import com.mobian.absx.F;
 import com.mobian.dao.MbItemDaoI;
 import com.mobian.model.TmbItem;
 import com.mobian.pageModel.*;
+import com.mobian.service.MbContractItemServiceI;
+import com.mobian.service.MbContractServiceI;
 import com.mobian.service.MbItemCategoryServiceI;
 import com.mobian.service.MbItemServiceI;
 import com.mobian.util.MyBeanUtils;
@@ -26,6 +30,13 @@ public class MbItemServiceImpl extends BaseServiceImpl<MbItem> implements MbItem
 
 	@Resource
 	private MbItemCategoryServiceI categoryService;
+
+	@Resource
+	private DeliverOrderShopItemServiceI deliverOrderShopItemService;
+	@Resource
+	private MbContractServiceI mbContractService;
+	@Resource
+	private MbContractItemServiceI mbContractItemService;
 
 	@Override
 	public DataGrid dataGrid(MbItem mbItem, PageHelper ph) {
@@ -187,6 +198,62 @@ public class MbItemServiceImpl extends BaseServiceImpl<MbItem> implements MbItem
 			}
 		}
 		return ol;
+	}
+
+	@Override
+	public DataGrid dataGridWidthDeliverOrderShop(MbItemQuery mbItemQuery, PageHelper ph) {
+		Map<Integer, DeliverOrderShopItem> deliverOrderShopItemMap = deliverOrderShopItemService.queryOrderShopItem(mbItemQuery.getDeliverOrderShopIds());
+		if (CollectionUtils.isNotEmpty(deliverOrderShopItemMap.values())) {
+			Integer[] itemIds = new Integer[new ArrayList<DeliverOrderShopItem>(deliverOrderShopItemMap.values()).size()];
+			int i = 0;
+			for (DeliverOrderShopItem deliverOrderShopItem : new ArrayList<DeliverOrderShopItem>(deliverOrderShopItemMap.values())) {
+				itemIds[i++] = deliverOrderShopItem.getItemId();
+			}
+			mbItemQuery.setItemIds(itemIds);
+			//获取所对应的商品列表
+			List<MbItem> mbItemList = query(mbItemQuery);
+			if (CollectionUtils.isNotEmpty(mbItemList)) {
+				Map<Integer, MbContractItem> map = new HashMap<Integer, MbContractItem>();
+				MbContract mbContract = mbContractService.getNewMbContract(mbItemQuery.getShopId());
+				if (mbContract != null) {
+					MbContractItemQuery mbContractItemQuery = new MbContractItemQuery();
+					mbContractItemQuery.setItemIds(itemIds);
+					mbContractItemQuery.setContractId(mbContract.getId());
+					if (mbContract != null) {
+						List<MbContractItem> mbContractItemList = mbContractItemService.query(mbContractItemQuery);
+						if (CollectionUtils.isNotEmpty(mbContractItemList)) {
+							for (MbContractItem mbContractItem : mbContractItemList) {
+								map.put(mbContractItem.getItemId(), mbContractItem);
+							}
+						}
+					}
+				}
+				//如果门店跟公司签订了合同价，怎按合同价格设置购买价格，否则设置为市场价格
+				List<MbItemView> mbItemViewList = new ArrayList<MbItemView>();
+				for (MbItem mbItem : mbItemList) {
+					MbItemView mbItemView = new MbItemView();
+					BeanUtils.copyProperties(mbItem, mbItemView);
+					if (map.get(mbItemView.getId()) != null) {
+						mbItemView.setBuyPrice(map.get(mbItem.getId()).getPrice());
+					} else {
+						mbItemView.setBuyPrice(mbItem.getMarketPrice());
+					}
+					mbItemViewList.add(mbItemView);
+				}
+				//设置购买数量
+				if (CollectionUtils.isNotEmpty(mbItemViewList)) {
+					for (MbItemView mbItem : mbItemViewList) {
+						mbItem.setQuantity(deliverOrderShopItemMap.get(mbItem.getId()).getQuantity());
+						mbItem.setItemId(mbItem.getId());
+						mbItem.setId(null);
+					}
+				}
+				DataGrid dataGrid = new DataGrid();
+				dataGrid.setRows(mbItemViewList);
+				return dataGrid;
+			}
+		}
+		return new DataGrid();
 	}
 
 }
