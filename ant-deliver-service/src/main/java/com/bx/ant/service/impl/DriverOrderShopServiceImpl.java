@@ -386,11 +386,16 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 	}
 
 	@Override
-	public void editOrderAccept(DriverOrderShop driverOrderShop) {
-		//检测
-
-		driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_ACCEPTED);
-		transform(driverOrderShop);
+	public Boolean editOrderAccept(DriverOrderShop driverOrderShop) {
+		Boolean b = false;
+		//检测是否已经被接单
+		Set<Long> orderSet = redisUtil.getAllSet(driverAccountService.buildAllocationOrderKey(driverOrderShop.getDriverAccountId()));
+		if (orderSet.contains(driverOrderShop.getId())){
+			driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_ACCEPTED);
+			transform(driverOrderShop);
+			b = true;
+		}
+		return b;
 	}
 
 	@Override

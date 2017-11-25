@@ -35,6 +35,9 @@ public class DriverOrderShop05StateImpl implements DriverOrderShopState {
 
     @Override
     public void handle(DriverOrderShop driverOrderShop) {
+        //清除redis
+        driverOrderShopAllocationService.editClearOrderAllocation(driverOrderShop.getId());
+
         //1. 绑定骑手并编辑状态
         if (F.empty(driverOrderShop.getDriverAccountId())) {
             throw new ServiceException("DriverOrderShopState05状态缺少必要数据:driverOrderShop.driverAccountId");
@@ -47,7 +50,7 @@ public class DriverOrderShop05StateImpl implements DriverOrderShopState {
 
         //2. 删除redis中所有订单记录
 
-       driverOrderShopAllocationService.editClearOrderAllocation(driverOrderShop.getId());
+
 
 
 

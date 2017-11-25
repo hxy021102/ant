@@ -75,6 +75,13 @@ public interface DriverAccountServiceI {
 	 */
 	DataGrid dataGridView(DriverAccountQuery driverAccountQuery, PageHelper pageHelper);
 
+	/**
+	 * 通过微信信息获取骑手
+	 * @param refId
+	 * @param refType
+	 * @param handleStatus
+	 * @return
+	 */
     DriverAccount getByRef(String refId, String refType, String handleStatus);
 
     /**
@@ -85,9 +92,18 @@ public interface DriverAccountServiceI {
 	 */
     DriverAccount getByRef(String refId, String refType);
 
-    List<DriverAccount> getAvilableAndWorkDriver();
+	/**
+	 * 获取有效骑手
+	 * @return
+	 */
+	List<DriverAccount> getAvilableAndWorkDriver();
 
-    boolean checkUserName(String userName);
+	/**
+	 *
+	 * @param userName
+	 * @return
+	 */
+	boolean checkUserName(String userName);
 
 	/**
 	 * 查询DriverAccount的集合
@@ -96,7 +112,17 @@ public interface DriverAccountServiceI {
 	 */
 	List<DriverAccount> query(DriverAccount driverAccount);
 
+	/**
+	 * 创建骑手所分配的订单在redis中的表名
+	 * @param id
+	 * @return
+	 */
     String buildAllocationOrderKey(Integer id);
 
-    String buildRefuseOrderKey(Integer accountId);
+	/**
+	 * 创建骑手拒绝的订单在redis中的表名
+	 * @param accountId
+	 * @return
+	 */
+	String buildRefuseOrderKey(Integer accountId);
 }

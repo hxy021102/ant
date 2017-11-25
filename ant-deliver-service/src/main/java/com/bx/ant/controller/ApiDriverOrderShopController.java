@@ -76,7 +76,6 @@ public class ApiDriverOrderShopController extends BaseController {
         List<DriverOrderShop> ol = new ArrayList<DriverOrderShop>();
 
         //获取accountId
-        //TODO 需修改为正常
         TokenWrap token = getTokenWrap(request);
         String accountId = token.getUid();
 
@@ -123,17 +122,19 @@ public class ApiDriverOrderShopController extends BaseController {
     @ResponseBody
     public Json takeOrder(HttpServletRequest request, Long id){
         Json json = new Json();
-// TODO 正式使用将使用uid
         TokenWrap token = getTokenWrap(request);
        Integer accountId  = Integer.parseInt(token.getUid());
 
         DriverOrderShop driverOrderShop = new DriverOrderShop();
         driverOrderShop.setId(id);
         driverOrderShop.setDriverAccountId(accountId);
-       driverOrderShopService.editOrderAccept(driverOrderShop);
-
-        json.setMsg("u know");
-        json.setSuccess(true);
+        Boolean b;
+        if (b = driverOrderShopService.editOrderAccept(driverOrderShop)) {
+            json.setMsg("u know");
+        } else {
+            json.setMsg("订单已失效,请刷新页面");
+        }
+        json.setSuccess(b);
         return json;
     }
 
@@ -147,7 +148,6 @@ public class ApiDriverOrderShopController extends BaseController {
     public Json editOrderRefuse(HttpServletRequest request, Long id ){
         Json json = new Json();
 
-// TODO 正式使用将使用uid
         TokenWrap token = getTokenWrap(request);
         Integer accountId  = Integer.parseInt(token.getUid());
 

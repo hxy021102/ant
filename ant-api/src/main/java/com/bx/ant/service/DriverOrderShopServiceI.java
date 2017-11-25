@@ -150,10 +150,24 @@ public interface DriverOrderShopServiceI {
 	 */
 	void refuseOrder(DriverOrderShop driverOrderShop);
 
-
+	/**
+	 * 今日有效订单
+	 * @param driverAccountId
+	 * @return
+	 */
     DataGrid listTodayOrderByAccountId(Integer driverAccountId);
 
-    void editOrderAccept(DriverOrderShop driverOrderShop);
+	/**
+	 * 接单
+	 * @param driverOrderShop
+	 * @return
+	 */
+	Boolean editOrderAccept(DriverOrderShop driverOrderShop);
 
+	/**
+	 * 获取骑手订单
+	 * @param deliverOrderShopId
+	 * @return
+	 */
 	DriverOrderShop getByDeliverOrderShopId(Long deliverOrderShopId);
 }
