@@ -8,6 +8,8 @@ import com.mobian.service.impl.MbWarehouseServiceImpl;
 import com.mobian.util.ConfigUtil;
 import com.mobian.util.Constants;
 import com.mobian.util.DateUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,8 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -60,7 +61,9 @@ public class MbSupplierStockInController extends BaseController {
      * @return
      */
     @RequestMapping("/manager")
-    public String manager(HttpServletRequest request) {
+    public String manager(HttpServletRequest request,Integer supplierId,String payStatus) {
+        request.setAttribute("supplierId",supplierId);
+        request.setAttribute("payStatus",payStatus);
         return "/mbsupplierstockin/mbSupplierStockIn";
     }
 
@@ -83,7 +86,45 @@ public class MbSupplierStockInController extends BaseController {
             }
             mbSupplierStockIn.setSupplierOrderIdList(orderIds);
         }
-        return mbSupplierStockInService.dataGrid(mbSupplierStockIn, ph);
+        DataGrid dataGrid = mbSupplierStockInService.dataGrid(mbSupplierStockIn, ph);
+        List<MbSupplierStockIn> mbSupplierStockInList = dataGrid.getRows();
+        MbSupplierStockInView footer = new MbSupplierStockInView();
+        footer.setTotalAmount(0);
+        footer.setSupplierName("合计");
+        if (CollectionUtils.isNotEmpty(mbSupplierStockInList)) {
+            Integer[] mbSupplierStockIns = new Integer[mbSupplierStockInList.size()];
+            int i = 0;
+            List<MbSupplierStockInView> mbSupplierStockInViewList = new ArrayList<MbSupplierStockInView>();
+            for (MbSupplierStockIn supplierStockIn : mbSupplierStockInList) {
+                mbSupplierStockIns[i++] = supplierStockIn.getId();
+                MbSupplierStockInView mbSupplierStockInView = new MbSupplierStockInView();
+                BeanUtils.copyProperties(supplierStockIn, mbSupplierStockInView);
+                mbSupplierStockInViewList.add(mbSupplierStockInView);
+            }
+            MbSupplierStockInItem mbSupplierStockInItem = new MbSupplierStockInItem();
+            mbSupplierStockInItem.setSupplierStockInIdArray(mbSupplierStockIns);
+            List<MbSupplierStockInItem> mbSupplierStockInItemList = mbSupplierStockInItemService.query(mbSupplierStockInItem);
+            if (CollectionUtils.isNotEmpty(mbSupplierStockInItemList)) {
+                Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+                for (MbSupplierStockInItem supplierStockInItem : mbSupplierStockInItemList) {
+                    Integer price = supplierStockInItem.getQuantity() * supplierStockInItem.getPrice();
+                    footer.setTotalAmount(footer.getTotalAmount() + price);
+                    Integer key = supplierStockInItem.getSupplierStockInId();
+                    Integer totalPrice = map.get(key);
+                    if (totalPrice == null) {
+                        map.put(key, price);
+                    } else {
+                        map.put(key, totalPrice += price);
+                    }
+                }
+                for (MbSupplierStockInView mbSupplierStockInView : mbSupplierStockInViewList) {
+                    mbSupplierStockInView.setTotalAmount(map.get(mbSupplierStockInView.getId()));
+                }
+                dataGrid.setRows(mbSupplierStockInViewList);
+            }
+        }
+        dataGrid.setFooter(Arrays.asList(footer));
+        return dataGrid;
 
     }
 
