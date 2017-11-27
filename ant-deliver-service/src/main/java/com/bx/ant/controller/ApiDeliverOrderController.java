@@ -285,6 +285,36 @@ public class ApiDeliverOrderController extends BaseController {
     }
 
     /**
+     * 门店运单骑手接货
+     *
+     * @param request
+     * @param id
+     * @return
+     */
+    @RequestMapping("/editOrderDriverTakeItem")
+    @ResponseBody
+    public Json editOrderDriverTakeItem(HttpServletRequest request, Long id) {
+        Json json = new Json();
+
+        //获取shopId
+        TokenWrap token = getTokenWrap(request);
+        Integer shopId = token.getShopId();
+
+        //配置deliverOrder
+        DeliverOrder deliverOrder = new DeliverOrder();
+        deliverOrder.setId(id);
+        deliverOrder.setShopId(shopId);
+        deliverOrder.setStatus(DeliverOrderServiceI.STATUS_DRIVER_TOKEN);
+
+        //状态翻转
+        deliverOrderService.transform(deliverOrder);
+        json.setMsg("u know");
+        json.setSuccess(true);
+        return json;
+    }
+
+
+    /**
      * 门店运单发货
      *
      * @param request

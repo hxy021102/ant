@@ -19,6 +19,7 @@ public interface DriverOrderShopServiceI {
 	String STATUS_ALLOCATION = "DDSS03";//分配中
 	String STATUS_ACCEPTED = "DDSS05"; //已接单
 	String STATUS_DELVIERING = "DDSS10"; //派送中
+	String STATUS_DELIVERED_AUDIT = "DDSS15"; //派送完成等待門店審核
 	String STATUS_DELIVERED= "DDSS20"; //已送达
 	String STATUS_SETTLEED = "DDSS30"; //已结算
 

@@ -33,6 +33,7 @@ public interface DeliverOrderServiceI {
 	String STATUS_SHOP_ALLOCATION= "DOS10"; //已分配，待门店接
 	String STATUS_SHOP_REFUSE = "DOS15"; //门店拒绝接单
 	String STATUS_SHOP_ACCEPT = "DOS20"; //已接单
+	String STATUS_DRIVER_TOKEN = "DOS22"; //骑手接货
 	String STATUS_DELIVERING = "DOS25"; //已发货
 	String STATUS_DELIVERY_COMPLETE = "DOS30"; //已配送完成,等待用户确认状态
 	String STATUS_CLOSED = "DOS40"; //订单完成

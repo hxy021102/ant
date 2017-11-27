@@ -1,10 +1,9 @@
 package com.bx.ant.service.impl.state;
 
 import com.bx.ant.pageModel.DeliverOrderShop;
-import com.bx.ant.service.DeliverOrderLogServiceI;
-import com.bx.ant.service.DeliverOrderServiceI;
-import com.bx.ant.service.DeliverOrderShopServiceI;
-import com.bx.ant.service.DeliverOrderState;
+import com.bx.ant.pageModel.DriverOrderShop;
+import com.bx.ant.pageModel.ShopDeliverApply;
+import com.bx.ant.service.*;
 import com.bx.ant.pageModel.DeliverOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +25,9 @@ public class DeliverOrder30StateImpl implements DeliverOrderState {
 
     @Autowired
     private DeliverOrderShopServiceI deliverOrderShopService;
+
+    @Autowired
+    private DriverOrderShopServiceI driverOrderShopService;
 
     @Override
     public String getStateName() {
@@ -51,6 +53,16 @@ public class DeliverOrder30StateImpl implements DeliverOrderState {
         DeliverOrderShop orderShopEdit = new DeliverOrderShop();
         orderShopEdit.setStatus(DeliverOrderShopServiceI.STAUS_SERVICE);
         deliverOrderShop = deliverOrderShopService.editStatus(deliverOrderShop,orderShopEdit);
+
+        //騎手訂單狀態
+        DeliverOrder order = deliverOrderService.get(deliverOrder.getId());
+        if (ShopDeliverApplyServiceI.DELIVER_WAY_DRIVER.equals(order.getDeliveryWay())) {
+            DriverOrderShop driverOrderShop = driverOrderShopService.getByDeliverOrderShopId(deliverOrderShop.getId());
+            if (driverOrderShop != null) {
+                driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_DELIVERED);
+                driverOrderShopService.transform(driverOrderShop);
+            }
+        }
     }
 
     @Override

@@ -19,8 +19,8 @@ import java.util.List;
 @Service("deliverOrder20StateImpl")
 public class DeliverOrder20StateImpl implements DeliverOrderState {
 
-    @Resource(name = "deliverOrder25StateImpl")
-    private DeliverOrderState deliverOrderState25;
+    @Resource(name = "deliverOrder22StateImpl")
+    private DeliverOrderState deliverOrderState22;
 
     @Autowired
     private DeliverOrderServiceI deliverOrderService;
@@ -41,7 +41,7 @@ public class DeliverOrder20StateImpl implements DeliverOrderState {
 
     @Override
     public String getStateName() {
-        return "20";
+        return "22";
     }
 
     @Override
@@ -125,8 +125,8 @@ public class DeliverOrder20StateImpl implements DeliverOrderState {
 
     @Override
     public DeliverOrderState next(DeliverOrder deliverOrder) {
-        if ((prefix + "25").equals(deliverOrder.getStatus())) {
-            return deliverOrderState25;
+        if ((prefix + "22").equals(deliverOrder.getStatus())) {
+            return deliverOrderState22;
         }
         return null;
     }

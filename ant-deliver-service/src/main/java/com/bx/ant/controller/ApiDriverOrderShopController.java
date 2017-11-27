@@ -197,7 +197,7 @@ public class ApiDriverOrderShopController extends BaseController {
         TokenWrap token = getTokenWrap(request);
         Integer accountId  = Integer.parseInt(token.getUid());
         driverOrderShop.setDriverAccountId(accountId);
-        driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_DELIVERED);
+        driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_DELIVERED_AUDIT);
 
         driverOrderShopService.transform(driverOrderShop);
         json.setMsg("u know");
