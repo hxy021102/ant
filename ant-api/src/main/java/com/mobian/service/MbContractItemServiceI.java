@@ -1,9 +1,7 @@
 package com.mobian.service;
 
 import com.mobian.model.TmbContractItem;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.MbContractItem;
-import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.*;
 
 import java.util.List;
 
@@ -92,4 +90,12 @@ public interface MbContractItemServiceI {
      * @return
      */
     List<MbContractItem> query(MbContractItem mbContractItem);
+
+    /**
+     * 获取商品列表与数量和合同价格
+     * @param DeliverOrderShopIds
+     * @param shopId
+     * @return
+     */
+    List<MbItemView> getItemListWidthPriceAndQuantity(String DeliverOrderShopIds,Integer shopId);
 }

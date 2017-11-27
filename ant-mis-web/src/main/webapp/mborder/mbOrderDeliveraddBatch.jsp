@@ -10,12 +10,11 @@
 <head>
 <title>MbOrder管理</title>
 <jsp:include page="../inc.jsp"></jsp:include>
-<c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderController/editPage')}">
+<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/view')}">
 	<script type="text/javascript">
-		$.canEdit = true;
+        $.canView = true;
 	</script>
 </c:if>
-
 <script type="text/javascript">
     var dataGrid,deliverOrderShopDataGrid;
     $(function () {
@@ -92,9 +91,14 @@
                 title : '分配时间',
                 width : 60,
             },{
-                field : 'shopId',
-                title : '门店ID',
+                field : 'id',
+                title : '门店运单ID',
                 width : 30,
+                formatter: function (value, row, index) {
+                    if ($.canView)
+                        return '<a onclick="viewFun(' + row.deliverOrderId + ')">' + row.id + '</a>';
+                    return value;
+                }
             },{
                 field : 'shopName',
                 title : '门店名称',
@@ -192,6 +196,15 @@
             }
         });
     });
+
+    function viewFun(id) {
+        var href = '${pageContext.request.contextPath}/deliverOrderController/view?id=' + id;
+        parent.$("#index_tabs").tabs('add', {
+            title : '运单详情-' + id,
+            content : '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            closable : true
+        });
+    }
 
 
     function cleanFun() {
