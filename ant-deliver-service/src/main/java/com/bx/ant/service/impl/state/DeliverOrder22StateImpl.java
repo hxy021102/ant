@@ -56,7 +56,7 @@ public class DeliverOrder22StateImpl implements DeliverOrderState {
                 deliverOrderShop = deliverOrderShops.get(0);
                 DriverOrderShop driverOrderShop = driverOrderShopService.getByDeliverOrderShopId(deliverOrderShop.getId());
                 if (driverOrderShop != null) {
-                    driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_ITEM_TAKEN_);
+                    driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_ITEM_TAKEN);
                     driverOrderShopService.transform(driverOrderShop);
                 }
             }
