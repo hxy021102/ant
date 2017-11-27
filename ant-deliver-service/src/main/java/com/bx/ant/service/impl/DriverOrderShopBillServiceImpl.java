@@ -294,7 +294,7 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 		driverOrderShopView.setPayStatus(DriverOrderShopServiceI.PAY_STATUS_NOT_PAY);
 		driverOrderShopView.setStatus(DriverOrderShopServiceI.STATUS_DELIVERED);
 
-		Date expireDate = DateUtil.addDayToDate(new Date(), -Integer.valueOf(ConvertNameUtil.getString("DDSV102", "1")));
+		Date expireDate = DateUtil.addHourToDate(new Date(), -Integer.valueOf(ConvertNameUtil.getString("DDSV102", "168")));
 		driverOrderShopView.setAddtimeEnd(expireDate);
 
 		//2.获取数据
