@@ -437,11 +437,14 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		String[] statusArray = {"DSS01", "DSS02", "DSS04", "DSS05", "DSS06"};
 		orderShopQuery.setStatusList(statusArray);
 		orderShopQuery.setDeliverOrderId(ox.getId());
-		DeliverOrderShop deliverOrderShop = deliverOrderShopService.query(orderShopQuery).get(0);
-		ox.setOrderShopId(deliverOrderShop.getId());
-		fillDeliverOrderShopItemInfo(ox);
-		ox.setOrderShopId(null);
-		fillDeliverOrderShopInfo(ox);
+		List<DeliverOrderShop> deliverOrderShops =  deliverOrderShopService.query(orderShopQuery);
+		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
+			DeliverOrderShop deliverOrderShop =deliverOrderShops.get(0);
+			ox.setOrderShopId(deliverOrderShop.getId());
+			fillDeliverOrderShopItemInfo(ox);
+			ox.setOrderShopId(null);
+			fillDeliverOrderShopInfo(ox);
+		}
 	}
 
 	@Override
