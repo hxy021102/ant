@@ -4,25 +4,25 @@ import com.bx.ant.pageModel.DriverOrderShop;
 import com.bx.ant.service.DriverOrderShopServiceI;
 import com.bx.ant.service.DriverOrderShopState;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.Resource;
 
 /**
- * 已送达
+ * 骑手已经取货
  * Created by w9777 on 2017/11/6.
  */
-@Service(value = "driverOrderShop20StateImpl")
-public class DriverOrderShop20StateImpl implements DriverOrderShopState {
+@Service(value = "driverOrderShop08StateImpl")
+public class DriverOrderShop08StateImpl implements DriverOrderShopState {
 
-    @Resource(name = "driverOrderShop30StateImpl")
-    private DriverOrderShopState driverOrderShopState30;
+    @Resource(name = "driverOrderShop10StateImpl")
+    private DriverOrderShopState driverOrderShopState10;
 
     @Resource
     private DriverOrderShopServiceI driverOrderShopSerivce;
 
-
     @Override
     public String getStateName() {
-        return "20";
+        return "08";
     }
 
     @Override
@@ -30,14 +30,13 @@ public class DriverOrderShop20StateImpl implements DriverOrderShopState {
         DriverOrderShop orderShop = new DriverOrderShop();
         orderShop.setId(driverOrderShop.getId());
         orderShop.setStatus(prefix + getStateName());
-
         driverOrderShopSerivce.edit(orderShop);
     }
 
     @Override
     public DriverOrderShopState next(DriverOrderShop driverOrderShop) {
-        if ( (prefix  + "30").equals(driverOrderShop.getStatus())) {
-            return driverOrderShopState30;
+        if ( (prefix  + "10").equals(driverOrderShop.getStatus())) {
+            return driverOrderShopState10;
         }
         return null;
     }

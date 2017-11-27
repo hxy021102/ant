@@ -1,9 +1,10 @@
 package com.bx.ant.service.impl.driverodershopstate;
 
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderShop;
 import com.bx.ant.pageModel.DriverOrderShop;
-import com.bx.ant.service.DriverOrderShopAllocationServiceI;
-import com.bx.ant.service.DriverOrderShopServiceI;
-import com.bx.ant.service.DriverOrderShopState;
+import com.bx.ant.service.*;
+import com.bx.ant.service.impl.DeliverOrderServiceImpl;
 import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,12 @@ public class DriverOrderShop05StateImpl implements DriverOrderShopState {
     @Autowired
     private DriverOrderShopAllocationServiceI driverOrderShopAllocationService;
 
+    @Autowired
+    private DeliverOrderShopServiceI deliverOrderShopSerivce;
+
+    @Autowired
+    private DeliverOrderServiceImpl deliverOrderService;
+
 
     @Override
     public String getStateName() {
@@ -35,10 +42,11 @@ public class DriverOrderShop05StateImpl implements DriverOrderShopState {
 
     @Override
     public void handle(DriverOrderShop driverOrderShop) {
-        //清除redis
+        //1. 删除redis中所有订单记录
+
         driverOrderShopAllocationService.editClearOrderAllocation(driverOrderShop.getId());
 
-        //1. 绑定骑手并编辑状态
+        //2. 绑定骑手并编辑状态
         if (F.empty(driverOrderShop.getDriverAccountId())) {
             throw new ServiceException("DriverOrderShopState05状态缺少必要数据:driverOrderShop.driverAccountId");
         }
@@ -48,12 +56,15 @@ public class DriverOrderShop05StateImpl implements DriverOrderShopState {
         orderShop.setDriverAccountId(driverOrderShop.getDriverAccountId());
         driverOrderShopSerivce.edit(orderShop);
 
-        //2. 删除redis中所有订单记录
 
-
-
-
-
+        //修改门店派单状态为已被骑手接单
+        //修改为DOS21
+        DeliverOrder deliverOrder = new DeliverOrder();
+        DeliverOrderShop deliverOrderShop = deliverOrderShopSerivce.get(orderShop.getDeliverOrderShopId());
+        deliverOrder.setId(deliverOrderShop.getDeliverOrderId());
+        deliverOrder.setStatus(DeliverOrderServiceI.STATUS_CHECK_DRIVER_TAKE);
+        deliverOrder.setShopId(deliverOrderShop.getShopId());
+        deliverOrderService.transform(deliverOrder);
 
     }
 

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
 /**
- * 已配送完成,等待用户确认状态
+ * 已配送完成,
  * Created by wanxp on 17-9-26.
  */
 @Service("deliverOrder30StateImpl")
@@ -54,7 +54,7 @@ public class DeliverOrder30StateImpl implements DeliverOrderState {
         orderShopEdit.setStatus(DeliverOrderShopServiceI.STAUS_SERVICE);
         deliverOrderShop = deliverOrderShopService.editStatus(deliverOrderShop,orderShopEdit);
 
-        //騎手訂單狀態
+        //修改骑手运单状态为已确认送达
         DeliverOrder order = deliverOrderService.get(deliverOrder.getId());
         if (ShopDeliverApplyServiceI.DELIVER_WAY_DRIVER.equals(order.getDeliveryWay())) {
             DriverOrderShop driverOrderShop = driverOrderShopService.getByDeliverOrderShopId(deliverOrderShop.getId());

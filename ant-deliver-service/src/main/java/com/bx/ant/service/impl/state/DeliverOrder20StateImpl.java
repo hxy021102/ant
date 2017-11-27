@@ -13,14 +13,14 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * 已接单,正在配送状态
+ * 已接单,等待骑手接单
  * Created by wanxp on 17-9-26.
  */
 @Service("deliverOrder20StateImpl")
 public class DeliverOrder20StateImpl implements DeliverOrderState {
 
-    @Resource(name = "deliverOrder22StateImpl")
-    private DeliverOrderState deliverOrderState22;
+    @Resource(name = "deliverOrder21StateImpl")
+    private DeliverOrderState deliverOrderState21;
 
     @Autowired
     private DeliverOrderServiceI deliverOrderService;
@@ -41,7 +41,7 @@ public class DeliverOrder20StateImpl implements DeliverOrderState {
 
     @Override
     public String getStateName() {
-        return "22";
+        return "20";
     }
 
     @Override
@@ -104,29 +104,12 @@ public class DeliverOrder20StateImpl implements DeliverOrderState {
 
         }
 
-
-    //修改门店运单支付状态
-//        DeliverOrderShopPay deliverOrderShopPay = new DeliverOrderShopPay();
-//        deliverOrderShopPay.setDeliverOrderId(orderNew.getId());
-//        deliverOrderShopPay.setShopId(deliverOrder.getShopId());
-//        deliverOrderShopPayService.editStatus(deliverOrderShopPay, DeliverOrderServiceI.PAY_STATUS_NOT_PAY);
-        
-
-//        DeliverOrder order = new DeliverOrder();
-//        order = deliverOrderService.get(deliverOrder.getId());
-//        order.setShopId(deliverOrder.getShopId());
-//        DeliverOrderShop deliverOrderShop = deliverOrderShopService.addByDeliverOrder(order);
-        //添加门店运单明细
-//        DeliverOrderItem deliverOrderItem = new DeliverOrderItem();
-//        deliverOrderItem.setDeliverOrderId(deliverOrder.getId());
-//        List<DeliverOrderItem> deliverOrderItems = deliverOrderItemService.list(deliverOrderItem);
-//        deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItems, deliverOrderShop);
     }
 
     @Override
     public DeliverOrderState next(DeliverOrder deliverOrder) {
-        if ((prefix + "22").equals(deliverOrder.getStatus())) {
-            return deliverOrderState22;
+        if ((prefix + "21").equals(deliverOrder.getStatus())) {
+            return deliverOrderState21;
         }
         return null;
     }

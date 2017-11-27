@@ -285,15 +285,15 @@ public class ApiDeliverOrderController extends BaseController {
     }
 
     /**
-     * 门店运单骑手接货
+     * 门店确认骑手接货
      *
      * @param request
      * @param id
      * @return
      */
-    @RequestMapping("/editOrderDriverTakeItem")
+    @RequestMapping("/editConfirmItemTokenByDriver")
     @ResponseBody
-    public Json editOrderDriverTakeItem(HttpServletRequest request, Long id) {
+    public Json editConfirmItemTokenByDriver(HttpServletRequest request, Long id) {
         Json json = new Json();
 
         //获取shopId

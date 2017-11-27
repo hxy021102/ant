@@ -1,7 +1,6 @@
 package com.bx.ant.service.impl.driverodershopstate;
 
 import com.bx.ant.pageModel.DriverOrderShop;
-import com.bx.ant.service.DriverOrderShopAllocationServiceI;
 import com.bx.ant.service.DriverOrderShopServiceI;
 import com.bx.ant.service.DriverOrderShopState;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,6 @@ public class DriverOrderShop03StateImpl implements DriverOrderShopState {
     public void handle(DriverOrderShop driverOrderShop) {
         DriverOrderShop orderShop = new DriverOrderShop();
         orderShop.setId(driverOrderShop.getId());
-//        orderShop.setDriverAccountId(driverOrderShop.getDriverAccountId());
         orderShop.setStatus(prefix + getStateName());
         driverOrderShopSerivce.edit(orderShop);
 

@@ -1,20 +1,13 @@
 package com.bx.ant.service.impl.state;
 
-import com.bx.ant.pageModel.DriverOrderShop;
 import com.bx.ant.service.*;
 import com.bx.ant.pageModel.DeliverOrder;
-import com.bx.ant.pageModel.DeliverOrderShop;
-import com.mobian.absx.F;
-import com.mobian.exception.ServiceException;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
- * 门店已发货状态
+ * 门店已发货状态,
  * Created by wanxp on 17-9-26.
  */
 @Service("deliverOrder25StateImpl")

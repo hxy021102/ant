@@ -48,7 +48,7 @@ public class DriverOrderShop15StateImpl implements DriverOrderShopState {
 
         driverOrderShopSerivce.edit(orderShop);
 
-        // 将门店运单状态更改为配送完成
+        // 将门店运单状态更改为配送完成/审核状态
         DeliverOrder deliverOrder = new DeliverOrder();
         DeliverOrderShop deliverOrderShop = deliverOrderShopSerivce.get(orderShop.getDeliverOrderShopId());
         deliverOrder.setId(deliverOrderShop.getDeliverOrderId());
