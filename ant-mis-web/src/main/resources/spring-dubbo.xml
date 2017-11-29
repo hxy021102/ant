@@ -11,7 +11,7 @@
 
     <!-- 扫描注解包路径，多个包用逗号分隔，不填pacakge表示扫描当前ApplicationContext中所有的类 -->
     <!--<dubbo:annotation package="com.bx.ant.controller" />-->
-    <dubbo:consumer check="false" />
+    <dubbo:consumer check="false" timeout="6000"/>
     <dubbo:reference id="shopDeliverAccountService" interface="com.bx.ant.service.ShopDeliverAccountServiceI" url="${dubbo.direct.url}"/>
     <dubbo:reference id="shopDeliverApplyService" interface="com.bx.ant.service.ShopDeliverApplyServiceI" url="${dubbo.direct.url}"/>
     <dubbo:reference id="deliverOrderService" interface="com.bx.ant.service.DeliverOrderServiceI" url="${dubbo.direct.url}"/>
