@@ -399,8 +399,9 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 		+ DriverOrderShopServiceI.STATUS_ITEM_TAKEN + ","
 		+ DriverOrderShopServiceI.STATUS_DELVIERING + ","
 		+ DriverOrderShopServiceI.STATUS_DELIVERED_AUDIT);
+		orderShop.setDriverAccountId(driverOrderShop.getDriverAccountId());
 
-		List<DriverOrderShop> driverOrderShops = query(driverOrderShop);
+		List<DriverOrderShop> driverOrderShops = query(orderShop);
 
 		if (orderSet.contains(driverOrderShop.getId().toString())
 				&& (CollectionUtils.isEmpty(driverOrderShops)
