@@ -304,7 +304,7 @@
 </head>
 <body>
 <div class="easyui-layout" data-options="fit : true,border:false">
-	<div data-options="region:'north',title:'基本信息',border:false" style="height: 270px; overflow: hidden;">
+	<div data-options="region:'north',title:'基本信息',border:false" style="height: 290px; overflow: hidden;">
 		<table class="table">
 			<tr>
 				<th>运单ID</th>
