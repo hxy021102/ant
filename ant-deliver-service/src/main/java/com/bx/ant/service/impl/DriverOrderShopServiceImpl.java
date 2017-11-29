@@ -391,8 +391,21 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 	public Boolean editOrderAccept(DriverOrderShop driverOrderShop) {
 		Boolean b = false;
 		//检测是否已经被接单
+		DriverAccount driverAccount = driverAccountService.get(driverOrderShop.getDriverAccountId());
 		Set<String> orderSet = redisUtil.getAllSet(driverAccountService.buildAllocationOrderKey(driverOrderShop.getDriverAccountId()));
-		if (orderSet.contains(driverOrderShop.getId().toString())){
+
+		DriverOrderShop orderShop = new DriverOrderShop();
+		orderShop.setStatus(DriverOrderShopServiceI.STATUS_ACCEPTED + ","
+		+ DriverOrderShopServiceI.STATUS_ITEM_TAKEN + ","
+		+ DriverOrderShopServiceI.STATUS_DELVIERING + ","
+		+ DriverOrderShopServiceI.STATUS_DELIVERED_AUDIT);
+
+		List<DriverOrderShop> driverOrderShops = query(driverOrderShop);
+
+		if (orderSet.contains(driverOrderShop.getId().toString())
+				&& (CollectionUtils.isEmpty(driverOrderShops)
+				|| driverOrderShops.size()
+				< (driverAccount.getOrderQuantity() == null ? 0 : driverAccount.getOrderQuantity()))){
 			driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_ACCEPTED);
 			transform(driverOrderShop);
 			b = true;

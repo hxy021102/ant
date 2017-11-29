@@ -50,9 +50,17 @@
 							</c:if>
 						</select>
 					</td>
+				</tr>
+				<tr>
 					<th>类型</th>
 					<td>
 						<jb:select dataType="DATP" name="type" value="${driverAccount.type}"></jb:select>
+					</td>
+				</tr>
+				<tr>
+					<th>接单数量上限</th>
+					<td>
+						<input name="orderQuantity" type="number" value="${driverAccount.orderQuantity}"/>
 					</td>
 				</tr>
 			</table>				
