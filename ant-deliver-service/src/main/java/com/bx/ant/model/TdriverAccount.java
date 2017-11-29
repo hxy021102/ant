@@ -84,6 +84,9 @@ public class TdriverAccount implements java.io.Serializable,IEntity{
 
 	private Boolean online;
 
+
+	private Integer orderQuantity;
+
 	private Boolean auto_pay;
 	//columns END
 
@@ -260,6 +263,17 @@ public class TdriverAccount implements java.io.Serializable,IEntity{
 	public void setOnline(Boolean online) {
 		this.online = online;
 	}
+
+	@Column(name = "order_quantity", unique = false, nullable = false, insertable = true, updatable = true, length = 11)
+	public Integer getOrderQuantity() {
+		return orderQuantity;
+	}
+
+	public void setOrderQuantity(Integer orderQuantity) {
+		this.orderQuantity = orderQuantity;
+	}
+
+	
 
 	@Column(name = "auto_pay", unique = false, nullable = false, insertable = true, updatable = true, length = 0)
 

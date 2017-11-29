@@ -8,7 +8,7 @@
        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
        <dubbo:application name="deliver-service" />
        <dubbo:registry address="${dubbo.registry.address}" check="false" register="${dubbo.registry.registry}"/>
-       <dubbo:consumer check="false" />
+       <dubbo:consumer check="false" timeout="6000"/>
 
        <!-- 扫描注解包路径，多个包用逗号分隔，不填pacakge表示扫描当前ApplicationContext中所有的类 -->
        <!--<dubbo:annotation package="com.bx.ant.controller" />-->

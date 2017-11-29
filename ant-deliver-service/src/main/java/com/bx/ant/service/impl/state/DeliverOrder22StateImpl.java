@@ -41,7 +41,7 @@ public class DeliverOrder22StateImpl implements DeliverOrderState {
         DeliverOrder orderNew = new DeliverOrder();
         orderNew.setId(deliverOrder.getId());
         orderNew.setStatus(prefix + getStateName());
-        orderNew.setDeliveryStatus(DeliverOrderServiceI.STATUS_DRIVER_TOKEN);
+        orderNew.setDeliveryStatus(DeliverOrderServiceI.DELIVER_STATUS_DELIVERING);
         deliverOrderService.editAndAddLog(orderNew, DeliverOrderLogServiceI.TYPE_DRIVER_TAKE_ITEM, "骑手已取货");
 
         //骑手订单状态为骑手已经取货

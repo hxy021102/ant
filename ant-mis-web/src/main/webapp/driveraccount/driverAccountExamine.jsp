@@ -50,6 +50,12 @@
 						<textarea name="handleRemark" style="width: 97%" rows="3"    class="easyui-validatebox"    > </textarea>
 					</td>
 				</tr>
+				<tr>
+					<th>接单数量上限</th>
+					<td>
+						<input name="orderQuantity" type="number" value="${driverAccount.orderQuantity}"/>
+					</td>
+				</tr>
 			</table>				
 		</form>
 	</div>

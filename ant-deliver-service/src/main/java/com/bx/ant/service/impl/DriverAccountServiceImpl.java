@@ -116,6 +116,10 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 				whereHql += " and t.online = :online";
 				params.put("online", driverAccount.getOnline());
 			}
+			if (!F.empty(driverAccount.getOrderQuantity())) {
+				whereHql += " and t.orderQuantity = :orderQuantity";
+				params.put("orderQuantity", driverAccount.getOrderQuantity());
+			}
 			if (driverAccount instanceof DriverAccountQuery) {
 				DriverAccountQuery accountQuery = (DriverAccountQuery) driverAccount;
 				if (accountQuery.getAddtimeBegin() != null) {

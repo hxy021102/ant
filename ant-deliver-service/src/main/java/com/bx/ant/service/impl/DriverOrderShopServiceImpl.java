@@ -169,10 +169,15 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 
 	@Override
 	public DriverOrderShopView getView(Long id) {
-		DriverOrderShop driverOrderShop = get(id);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", id);
+		TdriverOrderShop t = driverOrderShopDao.get("from TdriverOrderShop t  where t.id = :id", params);
+		if (t == null) throw new ServiceException("数据库中不存在该订单");
+		DriverOrderShop o = new DriverOrderShop();
+		BeanUtils.copyProperties(t, o);
 		DriverOrderShopView driverOrderShopView = new DriverOrderShopView();
-		if (driverOrderShop != null) {
-			BeanUtils.copyProperties(driverOrderShop, driverOrderShopView);
+		if (o != null) {
+			BeanUtils.copyProperties(o, driverOrderShopView);
 			fillDeliverOrderShopInfo(driverOrderShopView);
 			fillShopInfo(driverOrderShopView);
 		}
@@ -391,8 +396,22 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 	public Boolean editOrderAccept(DriverOrderShop driverOrderShop) {
 		Boolean b = false;
 		//检测是否已经被接单
+		DriverAccount driverAccount = driverAccountService.get(driverOrderShop.getDriverAccountId());
 		Set<String> orderSet = redisUtil.getAllSet(driverAccountService.buildAllocationOrderKey(driverOrderShop.getDriverAccountId()));
-		if (orderSet.contains(driverOrderShop.getId().toString())){
+
+		DriverOrderShop orderShop = new DriverOrderShop();
+		orderShop.setStatus(DriverOrderShopServiceI.STATUS_ACCEPTED + ","
+		+ DriverOrderShopServiceI.STATUS_ITEM_TAKEN + ","
+		+ DriverOrderShopServiceI.STATUS_DELVIERING + ","
+		+ DriverOrderShopServiceI.STATUS_DELIVERED_AUDIT);
+		orderShop.setDriverAccountId(driverOrderShop.getDriverAccountId());
+
+		List<DriverOrderShop> driverOrderShops = query(orderShop);
+
+		if (orderSet.contains(driverOrderShop.getId().toString())
+				&& (CollectionUtils.isEmpty(driverOrderShops)
+				|| driverOrderShops.size()
+				< (driverAccount.getOrderQuantity() == null ? 0 : driverAccount.getOrderQuantity()))){
 			driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_ACCEPTED);
 			transform(driverOrderShop);
 			b = true;

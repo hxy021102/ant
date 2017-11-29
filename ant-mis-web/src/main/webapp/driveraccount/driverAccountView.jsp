@@ -82,6 +82,10 @@
                 </td>
             </tr>
             <tr>
+                <th>可接订单数量</th>
+                <td>${driverAccount.orderQuantity}</td>
+            </tr>
+            <tr>
                 <th>审核意见</th>
                 <td colspan="3">
                     ${driverAccount.handleRemark}

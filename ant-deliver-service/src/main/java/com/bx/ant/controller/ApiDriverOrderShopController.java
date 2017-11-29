@@ -4,8 +4,10 @@ import com.bx.ant.pageModel.DriverOrderShop;
 import com.bx.ant.pageModel.DriverOrderShopView;
 import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.DriverAccountServiceI;
+import com.bx.ant.service.DriverOrderShopAllocationServiceI;
 import com.bx.ant.service.DriverOrderShopServiceI;
 import com.mobian.absx.F;
+import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
 import com.mobian.pageModel.PageHelper;
@@ -16,6 +18,7 @@ import com.mobian.util.ConvertNameUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -45,6 +48,9 @@ public class ApiDriverOrderShopController extends BaseController {
 
     @Autowired
     private DriverAccountServiceI driverAccountService;
+
+    @Autowired
+    private DriverOrderShopAllocationServiceI driverOrderShopAllocationService;
 
 
     @RequestMapping("/dataGrid")
@@ -97,10 +103,17 @@ public class ApiDriverOrderShopController extends BaseController {
 
             if (CollectionUtils.isNotEmpty(orderIdSet)) {
                 for (String orderId : orderIdSet) {
-                    DriverOrderShopView o = driverOrderShopService.getView(Long.parseLong(orderId));
-                    if (o != null && DriverOrderShopServiceI.STATUS_ALLOCATION.equals(o.getStatus())) {
-                        ol.add(o);
+                    try {
+                        DriverOrderShopView o = driverOrderShopService.getView(Long.parseLong(orderId));
+                        if (o != null && DriverOrderShopServiceI.STATUS_ALLOCATION.equals(o.getStatus())) {
+                            ol.add(o);
+                        }
+                    } catch (ServiceException e){
+                        driverOrderShopAllocationService.editClearOrderAllocation(Long.parseLong(orderId));
+                        continue;
                     }
+
+
                 }
                 dataGrid.setRows(ol);
             }

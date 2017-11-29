@@ -27,7 +27,8 @@ public class DriverAccount implements java.io.Serializable {
 	private Boolean online;
 	private Boolean autoPay;
 
-	
+	private Integer orderQuantity;
+
 
 	public void setId(Integer value) {
 		this.id = value;
@@ -157,6 +158,14 @@ public class DriverAccount implements java.io.Serializable {
 
 	public void setOnline(Boolean online) {
 		this.online = online;
+	}
+
+	public Integer getOrderQuantity() {
+		return orderQuantity;
+	}
+
+	public void setOrderQuantity(Integer orderQuantity) {
+		this.orderQuantity = orderQuantity;
 	}
 
 	public Boolean getAutoPay() {
