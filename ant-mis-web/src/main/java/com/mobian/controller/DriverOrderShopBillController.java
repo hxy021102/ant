@@ -242,7 +242,7 @@ public class DriverOrderShopBillController extends BaseController {
 	public String examinePage(HttpServletRequest request, Long id) {
 		DriverOrderShopBill driverOrderShopBill = driverOrderShopBillService.get(id);
 		if(driverOrderShopBill!=null){
-			DriverAccount driverAccount =driverAccountService.get(driverOrderShopBill.getDriverAccountId());
+			DriverAccount driverAccount =driverAccountService.getFromCache(driverOrderShopBill.getDriverAccountId());
 			DriverOrderShopBillView driverOrderShopBillView = new DriverOrderShopBillView();
 			BeanUtils.copyProperties(driverOrderShopBill,driverOrderShopBillView);
 			driverOrderShopBillView.setUserName(driverAccount.getUserName());

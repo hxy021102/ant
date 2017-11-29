@@ -33,7 +33,7 @@ public class DeliverOrder21StateImpl implements DeliverOrderState {
         DeliverOrder orderNew = new DeliverOrder();
         orderNew.setId(deliverOrder.getId());
         orderNew.setStatus(prefix + getStateName());
-        orderNew.setDeliveryStatus(DeliverOrderServiceI.STATUS_DRIVER_TOKEN);
+        orderNew.setDeliveryStatus(DeliverOrderServiceI.DELIVER_STATUS_HANDLEING);
         deliverOrderService.editAndAddLog(orderNew, DeliverOrderLogServiceI.TYPE_DRIVER_TAKE_ORDER, "骑手已接单,等待骑手取货");
     }
 

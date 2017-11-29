@@ -341,7 +341,7 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 	public void fillDriverAccountInfo(DriverOrderShopView driverOrderShopView) {
 		if (!F.empty(driverOrderShopView.getDriverAccountId())) {
 			//TODO  账户加入到缓存
-			DriverAccount driverAccount = driverAccountService.get(driverOrderShopView.getDriverAccountId());
+			DriverAccount driverAccount = driverAccountService.getFromCache(driverOrderShopView.getDriverAccountId());
 			if (driverAccount != null) {
 				driverOrderShopView.setUserName(driverAccount.getUserName());
 			}
@@ -396,7 +396,7 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 	public Boolean editOrderAccept(DriverOrderShop driverOrderShop) {
 		Boolean b = false;
 		//检测是否已经被接单
-		DriverAccount driverAccount = driverAccountService.get(driverOrderShop.getDriverAccountId());
+		DriverAccount driverAccount = driverAccountService.getFromCache(driverOrderShop.getDriverAccountId());
 		Set<String> orderSet = redisUtil.getAllSet(driverAccountService.buildAllocationOrderKey(driverOrderShop.getDriverAccountId()));
 
 		DriverOrderShop orderShop = new DriverOrderShop();

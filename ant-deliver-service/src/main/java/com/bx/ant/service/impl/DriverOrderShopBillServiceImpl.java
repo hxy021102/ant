@@ -175,7 +175,7 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 			for (int i = 0; i < size; i++) {
 				DriverOrderShopBillView o = new DriverOrderShopBillView();
 				BeanUtils.copyProperties(driverOrderShopBills.get(i), o);
-				DriverAccount driverAccount = driverAccountService.get(o.getDriverAccountId());
+				DriverAccount driverAccount = driverAccountService.getFromCache(o.getDriverAccountId());
 				o.setUserName(driverAccount.getUserName());
 				fillUserInfo(o);
 				ol.add(o);

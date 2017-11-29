@@ -156,7 +156,18 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 	}
 
 	@Override
+	public DriverAccount getFromCache(Integer id) {
+		DriverAccount target = new DriverAccount();
+		TdriverAccount source = driverAccountDao.getById(id);
+		if (source != null) {
+			BeanUtils.copyProperties(source, target);
+		}
+		return target;
+	}
+
+	@Override
 	public void edit(DriverAccount driverAccount) {
+		driverAccountDao.clearShopCache(driverAccount.getId());
 		TdriverAccount t = driverAccountDao.get(TdriverAccount.class, driverAccount.getId());
 		if (t != null) {
 			MyBeanUtils.copyProperties(driverAccount, t, new String[] { "id" , "addtime", "isdeleted","updatetime" },true);
@@ -165,6 +176,7 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 
 	@Override
 	public void delete(Integer id) {
+		driverAccountDao.clearShopCache(id);
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
 		driverAccountDao.executeHql("update TdriverAccount t set t.isdeleted = 1 where t.id = :id",params);
@@ -173,7 +185,7 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 
 	@Override
 	public DriverAccountView getView(Integer id) {
-		DriverAccount driverAccount = get(id);
+		DriverAccount driverAccount = getFromCache(id);
 		DriverAccountView driverAccountView = new DriverAccountView();
 		if (driverAccount != null) {
 			BeanUtils.copyProperties(driverAccount, driverAccountView);

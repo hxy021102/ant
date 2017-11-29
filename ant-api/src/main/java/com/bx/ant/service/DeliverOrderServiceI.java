@@ -42,6 +42,7 @@ public interface DeliverOrderServiceI {
 
 	//配送状态
 	String DELIVER_STATUS_STANDBY = "DDS01"; //待处理
+	String DELIVER_STATUS_HANDLEING = "DDS05"; //chuhuozhong
 	String DELIVER_STATUS_DELIVERING = "DDS02"; //配送中
 //	String DELIVER_STATUS_USER_CHECK = "DDS03"; //用户确认
 	String DELIVER_STATUS_DELIVERED = "DDS04"; //已配送

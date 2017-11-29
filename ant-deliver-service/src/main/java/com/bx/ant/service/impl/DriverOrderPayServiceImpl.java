@@ -167,7 +167,7 @@ public class DriverOrderPayServiceImpl extends BaseServiceImpl<DriverOrderPay> i
 			for (DriverOrderPay orderPay : driverOrderPayList) {
 				DriverOrderPayView driverOrderPayView = new DriverOrderPayView();
 				BeanUtils.copyProperties(orderPay, driverOrderPayView);
-				DriverAccount driverAccount = driverAccountService.get(orderPay.getDriverAccountId());
+				DriverAccount driverAccount = driverAccountService.getFromCache(orderPay.getDriverAccountId());
 				driverOrderPayView.setUserName(driverAccount.getUserName());
 				driverOrderPayView.setPayWayName(orderPay.getPayWay());
 				driverOrderPayView.setStatusName(orderPay.getStatus());
