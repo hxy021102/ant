@@ -72,7 +72,12 @@
             }, {
                 field : 'amount',
                 title : '运费',
-                width : 30
+                width : 30,
+                formatter: function (value) {
+                    if (value == null)
+                        return "";
+                    return $.formatMoney(value);
+                }
             }, {
                 field : 'statusName',
                 title : '支付状态',

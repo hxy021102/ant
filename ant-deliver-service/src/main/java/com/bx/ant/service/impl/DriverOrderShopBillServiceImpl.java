@@ -198,7 +198,7 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 	public String updateDriverOrderShopBillandPay(DriverOrderShopBillView driverOrderShopBillView) {
 		DriverOrderPayQuery driverOrderPayQuery = new DriverOrderPayQuery();
 		//判断骑手运单所对应的账单是否重复创建， 通过所选择的运单id和driverOrderPay的状态进行查询
-		driverOrderPayQuery.setDriverOrderShopIds(driverOrderPayQuery.getDriverOrderShopIds());
+		driverOrderPayQuery.setDriverOrderShopIds(driverOrderShopBillView.getOrderShopIds());
 		String[] statusArray = {"DDPS01", "DDPS02", "DDPS03"};
 		driverOrderPayQuery.setStatusArray(statusArray);
 		List<DriverOrderPay> driverOrderPayList = driverOrderPayService.query(driverOrderPayQuery);
