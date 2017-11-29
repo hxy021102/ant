@@ -83,6 +83,8 @@ public class TdriverAccount implements java.io.Serializable,IEntity{
 	private String handleRemark;
 
 	private Boolean online;
+
+	private Boolean auto_pay;
 	//columns END
 
 
@@ -258,8 +260,16 @@ public class TdriverAccount implements java.io.Serializable,IEntity{
 	public void setOnline(Boolean online) {
 		this.online = online;
 	}
-	
-	
+
+	@Column(name = "auto_pay", unique = false, nullable = false, insertable = true, updatable = true, length = 0)
+
+	public Boolean getAuto_pay() {
+		return auto_pay;
+	}
+
+	public void setAuto_pay(Boolean auto_pay) {
+		this.auto_pay = auto_pay;
+	}
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

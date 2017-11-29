@@ -54,6 +54,13 @@
 					<td>
 						<jb:select dataType="DATP" name="type" value="${driverAccount.type}"></jb:select>
 					</td>
+					<th>是否自动结算</th>
+					<td>
+						<select name="autoPay" class="easyui-combobox" data-options="width:140,height:29">
+							<option value="1">是</option>
+							<option value="0">否</option>
+						</select>
+					</td>
 				</tr>
 			</table>				
 		</form>
