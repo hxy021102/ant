@@ -380,8 +380,8 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 		driverOrderShopView.setStatus(DriverOrderShopServiceI.STATUS_ACCEPTED + ","
 				+ 	DriverOrderShopServiceI.STATUS_DELVIERING + ","
 				+ DriverOrderShopServiceI.STATUS_DELIVERED + ","
-				+ DriverOrderShopServiceI.STATUS_ITEM_TAKEN +""
-				+ DriverOrderShopServiceI.STATUS_DELIVERED_AUDIT +""
+				+ DriverOrderShopServiceI.STATUS_ITEM_TAKEN +","
+				+ DriverOrderShopServiceI.STATUS_DELIVERED_AUDIT +","
 				+ DriverOrderShopServiceI.STATUS_SETTLEED );
 		DataGrid dataGrid = dataGridView(driverOrderShopView, ph);
 		return dataGrid;
