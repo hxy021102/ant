@@ -169,10 +169,15 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 
 	@Override
 	public DriverOrderShopView getView(Long id) {
-		DriverOrderShop driverOrderShop = get(id);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", id);
+		TdriverOrderShop t = driverOrderShopDao.get("from TdriverOrderShop t  where t.id = :id", params);
+		if (t == null) throw new ServiceException("数据库中不存在该订单");
+		DriverOrderShop o = new DriverOrderShop();
+		BeanUtils.copyProperties(t, o);
 		DriverOrderShopView driverOrderShopView = new DriverOrderShopView();
-		if (driverOrderShop != null) {
-			BeanUtils.copyProperties(driverOrderShop, driverOrderShopView);
+		if (o != null) {
+			BeanUtils.copyProperties(o, driverOrderShopView);
 			fillDeliverOrderShopInfo(driverOrderShopView);
 			fillShopInfo(driverOrderShopView);
 		}
