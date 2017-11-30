@@ -1,5 +1,6 @@
 package com.bx.ant.controller;
 
+import com.bx.ant.service.qimen.QimenRequestService;
 import com.bx.ant.service.qimen.QimenService;
 import com.bx.ant.util.SpiUtils;
 import com.mobian.pageModel.Json;
@@ -35,11 +36,10 @@ public class ApiQimenController {
 
     @RequestMapping("/service")
     public void service(String method, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String targetAppSecret = ConvertNameUtil.getString("A", "sandbox73191330f66ff9ac337012771");
+        String targetAppSecret = ConvertNameUtil.getString(QimenRequestService.QIM_02, "sandbox73191330f66ff9ac337012771");
         CheckResult result = SpiUtils.checkSignForBx(request, targetAppSecret); //这里执行验签逻辑
         method = "taobao.qimen." + method;
         QimenService qimenService = qimenServiceMap.get(method);
-        QimenResponse qimenResponse = null;
         if (!result.isSuccess() || qimenService == null) {
             qimenService = qimenErrorServiceImpl;
         }
