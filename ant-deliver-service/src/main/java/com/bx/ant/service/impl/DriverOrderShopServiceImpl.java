@@ -367,15 +367,16 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 	public DataGrid listTodayOrderByAccountId(Integer driverAccountId){
 		Calendar today = Calendar.getInstance();
 		DriverOrderShopView driverOrderShopView = new DriverOrderShopView();
-		today.set(Calendar.HOUR, 0);
+		today.set(Calendar.HOUR_OF_DAY, 0);
 		today.set(Calendar.MINUTE, 0);
 		today.set(Calendar.SECOND, 0);
+		today.set(Calendar.MILLISECOND,0);
 		driverOrderShopView.setAddtimeBegin(today.getTime());
-
-		today.set(Calendar.HOUR, 23);
-		today.set(Calendar.HOUR, 59);
-		today.set(Calendar.SECOND, 59);
-		driverOrderShopView.setAddtimeEnd(today.getTime());
+		Calendar endDay = Calendar.getInstance();
+		endDay.set(Calendar.HOUR_OF_DAY, 23);
+		endDay.set(Calendar.MINUTE, 59);
+		endDay.set(Calendar.SECOND, 59);
+		driverOrderShopView.setAddtimeEnd(endDay.getTime());
 
 		PageHelper ph = new  PageHelper();
 //		ph.setOrder("desc");
