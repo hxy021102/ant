@@ -36,7 +36,6 @@ public class DriverOrderShop50StateImpl implements DriverOrderShopState {
 
     @Override
     public DriverOrderShopState next(DriverOrderShop driverOrderShop) {
-        //
         if ( (prefix  + "01").equals(driverOrderShop.getStatus())) {
             return driverOrderShopState01;
         }
