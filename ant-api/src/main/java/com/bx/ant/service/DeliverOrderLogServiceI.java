@@ -21,6 +21,9 @@ public interface DeliverOrderLogServiceI {
 	String TYPE_COMPLETE_DELIVER_ORDER = "DLT07";//运单完成
 	String TYPE_TIME_OUT_REFUSE_DELIVER_ORDER = "DLT08";//超时未接单
 	String TYPE_ASSIGN_SHOP_DELIVER_ORDER = "DLT09";//指派运单
+	String TYPE_DRIVER_DELIVERED_DELIVER_ORDER = "DLT10";// 骑手已配送
+	String TYPE_DRIVER_TAKE_ORDER= "DLT11";// 骑手已接单
+	String TYPE_DRIVER_TAKE_ITEM = "DLT12";// 骑手已取货
 
 	/**
 	 * 获取DeliverOrderLog数据表格

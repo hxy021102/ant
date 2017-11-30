@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,9 +52,6 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	private DeliverOrderItemServiceI deliverOrderItemService;
 
 	@Autowired
-	private DeliverOrderItemDaoI deliverOrderItemDao;
-
-	@Autowired
 	private DeliverOrderShopItemServiceI deliverOrderShopItemService;
 
 	@Autowired
@@ -74,11 +72,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 
 	@javax.annotation.Resource
 	private SupplierItemRelationServiceI supplierItemRelationService;
-	@Resource
-	private TokenServiceI tokenService;
 
-	@Autowired
-	private ShopOrderBillServiceI shopOrderBillService;
 	@Autowired
 	private ShopItemServiceI shopItemService;
 
@@ -180,6 +174,10 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			if (!F.empty(deliverOrder.getShopId())) {
 				whereHql += " and t.shopId = :shopId";
 				params.put("shopId", deliverOrder.getShopId());
+			}
+			if (!F.empty(deliverOrder.getDeliveryWay())) {
+				whereHql += " t.deliveryWay = :deliveryWay";
+				params.put("devlieryWay", deliverOrder.getDeliveryWay());
 			}
 			if (deliverOrder instanceof DeliverOrderQuery) {
 				DeliverOrderQuery orderQuery = (DeliverOrderQuery) deliverOrder;
@@ -439,11 +437,14 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		String[] statusArray = {"DSS01", "DSS02", "DSS04", "DSS05", "DSS06"};
 		orderShopQuery.setStatusList(statusArray);
 		orderShopQuery.setDeliverOrderId(ox.getId());
-		DeliverOrderShop deliverOrderShop = deliverOrderShopService.query(orderShopQuery).get(0);
-		ox.setOrderShopId(deliverOrderShop.getId());
-		fillDeliverOrderShopItemInfo(ox);
-		ox.setOrderShopId(null);
-		fillDeliverOrderShopInfo(ox);
+		List<DeliverOrderShop> deliverOrderShops =  deliverOrderShopService.query(orderShopQuery);
+		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
+			DeliverOrderShop deliverOrderShop =deliverOrderShops.get(0);
+			ox.setOrderShopId(deliverOrderShop.getId());
+			fillDeliverOrderShopItemInfo(ox);
+			ox.setOrderShopId(null);
+			fillDeliverOrderShopInfo(ox);
+		}
 	}
 
 	@Override
@@ -647,6 +648,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	@Override
 	public void addAndItems(DeliverOrder deliverOrder, List<SupplierItemRelationView> items){
 		int amount = 0 ;
+		int weight = 0 ;
 		transform(deliverOrder);
 		for (SupplierItemRelationView item : items) {
 			DeliverOrderItem orderItem = new DeliverOrderItem();
@@ -658,19 +660,22 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			supplierItemRelation.setSupplierId(deliverOrder.getSupplierId());
 			supplierItemRelation.setItemId(item.getItemId());
 			supplierItemRelation.setOnline(true);
-			List<SupplierItemRelation> supplierItemRelations = supplierItemRelationService.dataGrid(supplierItemRelation, new PageHelper()).getRows();
-			if (CollectionUtils.isNotEmpty(supplierItemRelations)) {
-				supplierItemRelation = supplierItemRelations.get(0);
-				amount += supplierItemRelation.getPrice() * item.getQuantity();
+			PageHelper ph = new PageHelper();
+			ph.setHiddenTotal(true);
+			List<SupplierItemRelationView> supplierItemRelationViews = supplierItemRelationService.dataGridView(supplierItemRelation, ph).getRows();
+			if (CollectionUtils.isNotEmpty(supplierItemRelationViews)) {
+				SupplierItemRelationView supplierItemRelationView = supplierItemRelationViews.get(0);
+				amount += supplierItemRelationView.getPrice() * item.getQuantity();
+				weight += supplierItemRelationView.getWeight() * item.getQuantity();
 			}
 			deliverOrderItemService.addAndFill(orderItem,deliverOrder);
 		}
 		DeliverOrder order = new DeliverOrder();
 		order.setId(deliverOrder.getId());
 		order.setAmount(amount);
+		order.setWeight(weight);
 		edit(order);
 	}
-
 
 	@Override
 	public List<DeliverOrder> query(DeliverOrder deliverOrder) {
@@ -726,7 +731,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		return updateAllocationOrderRedis(shopId, 1);
 	}
 
-	@Override
+//	@Override
 	public Integer reduseAllocationOrderRedis(Integer shopId) {
 		return updateAllocationOrderRedis(shopId, -1);
 	}
@@ -829,7 +834,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			DeliverOrder order = get(deliverOrder.getId());
 			MbShop mbShop = mbShopService.getFromCache(deliverOrder.getShopId());
 			double distance = GeoUtil.getDistance(order.getLongitude().doubleValue(), order.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
-			deliverOrder.setShopDistance(distance);
+			deliverOrder.setShopDistance(BigDecimal.valueOf(distance));
 			deliverOrder.setSupplierId(order.getSupplierId());
 			deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_ALLOCATION);
 			deliverOrder.setDeliverOrderLogType(DeliverOrderLogServiceI.TYPE_ASSIGN_SHOP_DELIVER_ORDER);
@@ -917,12 +922,13 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
         deliverOrderExt.setDistance(orderShop.getDistance());
         deliverOrderExt.setAmount(orderShop.getAmount());
 		return deliverOrderExt;
+
 	}
 
 
 	@Override
-	public DeliverOrderExt getDetail(Integer id) {
-		DeliverOrder o = get(id.longValue());
+	public DeliverOrderExt getDetail(Long id) {
+		DeliverOrder o = get(id);
 		if(o != null) {
 			DeliverOrderExt ox = new DeliverOrderExt();
 			BeanUtils.copyProperties(o, ox);

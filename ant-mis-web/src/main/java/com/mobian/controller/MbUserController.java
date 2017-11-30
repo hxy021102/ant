@@ -123,13 +123,16 @@ public class MbUserController extends BaseController {
 	}
 
 	@RequestMapping("/viewBalance")
-    public String viewBalance(HttpServletRequest request,Integer id,Integer shopId,Integer realShopId,Integer balanceId,Integer supplierId) {
+    public String viewBalance(HttpServletRequest request,Integer id,Integer shopId,Integer realShopId,Integer driverAccountId,Integer supplierId, Integer balanceId) {
 		MbBalance mbBalance = null;
 		if(!F.empty(id)) {
 			MbUser mbUser = mbUserService.get(id);
 			mbBalance = mbBalanceService.queryByShopId(mbUser.getShopId());
 		}else if(!F.empty(realShopId)){
 			mbBalance = mbBalanceService.queryByRealShopId(realShopId);
+			request.setAttribute("readOnly", true);
+		} else if(!F.empty(driverAccountId)){
+			mbBalance =mbBalanceService.addOrGetMbBalance(driverAccountId,50,0);
 			request.setAttribute("readOnly", true);
 		} else if (!F.empty(balanceId)) {
 			mbBalance = mbBalanceService.get(balanceId);

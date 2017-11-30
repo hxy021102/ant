@@ -1,5 +1,6 @@
 package com.mobian.pageModel;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -20,7 +21,7 @@ public class Tree implements java.io.Serializable {
 	private String iconCls;
 	private String pid;
 	private String parentName;
-	private double distance;
+	private BigDecimal distance;
 
 	public String getId() {
 		return id;
@@ -94,11 +95,11 @@ public class Tree implements java.io.Serializable {
 		this.parentName = parentName;
 	}
 
-	public double getDistance() {
+	public BigDecimal getDistance() {
 		return distance;
 	}
 
-	public void setDistance(double distance) {
+	public void setDistance(BigDecimal distance) {
 		this.distance = distance;
 	}
 }

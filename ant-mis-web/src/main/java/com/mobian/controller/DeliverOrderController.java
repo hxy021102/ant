@@ -1,6 +1,9 @@
 package com.mobian.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.bx.ant.pageModel.*;
+import com.bx.ant.service.*;
+import com.mobian.absx.F;
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.DeliverOrderPay;
 import com.bx.ant.pageModel.DeliverOrderQuery;
@@ -59,6 +62,8 @@ public class DeliverOrderController extends BaseController {
 	private SupplierItemRelationServiceI supplierItemRelationService;
     @Autowired
 	private BasedataServiceI basedataService;
+    @Resource
+	private DeliverOrderShopServiceI deliverOrderShopService;
 
 	/**
 	 * 跳转到DeliverOrder管理页面
@@ -225,7 +230,13 @@ public class DeliverOrderController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/view")
-	public String view(HttpServletRequest request, Long id) {
+	public String view(HttpServletRequest request, Long id,Long deliverOrderShopId) {
+		if (!F.empty(deliverOrderShopId)) {
+			DeliverOrderShop deliverOrderShop = deliverOrderShopService.get(deliverOrderShopId);
+			if (deliverOrderShop != null) {
+				id = deliverOrderShop.getDeliverOrderId();
+			}
+		}
 		DeliverOrderQuery deliverOrderQuery = deliverOrderService.getDeliverOrderView(id);
 		request.setAttribute("deliverOrder", deliverOrderQuery);
 		return "deliverorder/deliverOrderView";

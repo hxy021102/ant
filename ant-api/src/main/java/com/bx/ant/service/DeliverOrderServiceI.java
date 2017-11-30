@@ -32,13 +32,17 @@ public interface DeliverOrderServiceI {
 	String STATUS_NOT_ALLOCATION = "DOS01"; //待分配
 	String STATUS_SHOP_ALLOCATION= "DOS10"; //已分配，待门店接
 	String STATUS_SHOP_REFUSE = "DOS15"; //门店拒绝接单
-	String STATUS_SHOP_ACCEPT = "DOS20"; //已接单
+	String STATUS_SHOP_ACCEPT = "DOS20"; //门店已接单
+    String STATUS_CHECK_DRIVER_TAKE ="DOS21"; //骑手已接单,等待骑手取货
+	String STATUS_DRIVER_TOKEN = "DOS22"; //骑手已取货
 	String STATUS_DELIVERING = "DOS25"; //已发货
-	String STATUS_DELIVERY_COMPLETE = "DOS30"; //已配送完成,等待用户确认状态
+	String STATUS_DELIVERY_COMPLETE = "DOS30"; //已配送完成
 	String STATUS_CLOSED = "DOS40"; //订单完成
+	String STATUS_DRIVER_DELIVERING = "DOS50"; // 骑手已配送，等待门店确认
 
 	//配送状态
 	String DELIVER_STATUS_STANDBY = "DDS01"; //待处理
+	String DELIVER_STATUS_HANDLEING = "DDS05"; //chuhuozhong
 	String DELIVER_STATUS_DELIVERING = "DDS02"; //配送中
 //	String DELIVER_STATUS_USER_CHECK = "DDS03"; //用户确认
 	String DELIVER_STATUS_DELIVERED = "DDS04"; //已配送
@@ -288,5 +292,5 @@ public interface DeliverOrderServiceI {
 	 */
 	DeliverOrderExt getBanlanceLogDetial(DeliverOrderShop deliverOrderShop);
 
-	DeliverOrderExt getDetail(Integer id);
+    DeliverOrderExt getDetail(Long id);
 }

@@ -21,6 +21,10 @@ public interface ShopDeliverApplyServiceI {
 	String DAS_02 = "DAS02"; //审核通过
 	String DAS_03 = "DAS03"; //审核拒绝
 
+	String  DELIVER_WAY_SHOP = "DAW01";
+	String DELIVER_WAY_CUSTOMER = "DAW02";
+	String DELIVER_WAY_DRIVER = "DAW03";
+
 	/**
 	 * 获取ShopDeliverApply数据表格
 	 * 

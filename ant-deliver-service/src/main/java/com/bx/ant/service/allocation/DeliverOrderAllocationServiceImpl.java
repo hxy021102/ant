@@ -93,7 +93,6 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                     logger.error("保存经纬度失败", e);
                 }
             }
-
         }
         //4、计算最近距离点
 //        MbShop minMbShop = null;
@@ -121,9 +120,10 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
             if(shopDeliverApply.getMaxDeliveryDistance() != null) {
                 maxDistance = shopDeliverApply.getMaxDeliveryDistance().doubleValue();
             }
-            if(distance > maxDistance) continue;
+            // maxDistance=-1距离不限
+            if(maxDistance != -1 && distance > maxDistance) continue;
 
-            shopDeliverApply.setDistance(distance);
+            shopDeliverApply.setDistance(BigDecimal.valueOf(distance));
             includeShop.add(shopDeliverApply);
 
 //            if (distance < minDistance || minDistance == 0) {
@@ -201,6 +201,5 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
 
             }
         }
-
     }
 }
