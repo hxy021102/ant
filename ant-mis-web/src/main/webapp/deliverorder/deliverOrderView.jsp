@@ -304,7 +304,7 @@
 </head>
 <body>
 <div class="easyui-layout" data-options="fit : true,border:false">
-	<div data-options="region:'north',title:'基本信息',border:false" style="height: 290px; overflow: hidden;">
+	<div data-options="region:'north',title:'基本信息',border:false" style="height: 295px; overflow: hidden;">
 		<table class="table">
 			<tr>
 				<th>运单ID</th>
@@ -379,7 +379,7 @@
 				</c:choose>
 				<th>回单</th>
 				<c:forEach items="${deliverOrder.image}" var="image">
-					<td rowspan="2">
+					<td rowspan="5" >
 					 <img src="${image}" width="80px" height="80px" />
 					</td>
 				</c:forEach>

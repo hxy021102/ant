@@ -88,18 +88,18 @@ public class DeliverOrder20StateImpl implements DeliverOrderState {
                 if (ShopDeliverApplyServiceI.DELIVER_WAY_DRIVER.equals(apply.getDeliveryWay())) {
                     //添加骑手订单
                     DriverOrderShop driverOrderShop = new DriverOrderShop();
-                    driverOrderShop.setShopId(deliverOrder.getShopId());
+//                    driverOrderShop.setShopId(deliverOrder.getShopId());
+//
+//                    DeliverOrderShop deliverOrderShopQuery = new DeliverOrderShop();
+//                    deliverOrderShopQuery.setShopId(deliverOrder.getShopId());
+//                    deliverOrderShopQuery.setDeliverOrderId(deliverOrder.getId());
+//                    deliverOrderShopQuery.setStatus(DeliverOrderShopServiceI.STATUS_ACCEPTED);
+//                    List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(deliverOrderShopQuery);
+//                    if (CollectionUtils.isEmpty(deliverOrderShops)) {
+//                        throw new ServiceException(String.format("订单ID:%1s未被门店接单", deliverOrder.getId()));
+//                    }
 
-                    DeliverOrderShop deliverOrderShopQuery = new DeliverOrderShop();
-                    deliverOrderShopQuery.setShopId(deliverOrder.getShopId());
-                    deliverOrderShopQuery.setDeliverOrderId(deliverOrder.getId());
-                    deliverOrderShopQuery.setStatus(DeliverOrderShopServiceI.STATUS_ACCEPTED);
-                    List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(deliverOrderShopQuery);
-                    if (CollectionUtils.isEmpty(deliverOrderShops)) {
-                        throw new ServiceException(String.format("订单ID:%1s未被门店接单", deliverOrder.getId()));
-                    }
-
-                    driverOrderShop.setDeliverOrderShopId(deliverOrderShops.get(0).getId());
+                    driverOrderShop.setDeliverOrderShopId(deliverOrderShop.getId());
                     driverOrderShop.setStatus(DriverOrderShopServiceI.PAY_STATUS_NOT_PAY);
                     driverOrderShopService.transform(driverOrderShop);
                 }

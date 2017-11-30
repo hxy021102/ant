@@ -51,6 +51,7 @@ public class DriverOrderShop03StateImpl implements DriverOrderShopState {
         if ( (prefix  + "03").equals(driverOrderShop.getStatus())) {
             return driverOrderShopState03;
         }
+
         return null;
     }
 }

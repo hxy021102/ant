@@ -31,7 +31,7 @@
 		<!---->
 		<!--<task:scheduled ref="driverOrderShopTaskService" method="orderAllocation" cron="0/5 * * * * ? "/>-->
 		<!---->
-		<task:scheduled ref="driverOrderShopTaskService" method="addPayOperation" cron="0/5 * * * * ? "/>
+		<!--<task:scheduled ref="driverOrderShopTaskService" method="addPayOperation" cron="0/5 * * * * ? "/>-->
 	</task:scheduled-tasks>
 
 </beans>
