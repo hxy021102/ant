@@ -22,6 +22,11 @@ public class QimenDeliveryOrderCreateServiceImpl extends AbstrcatQimenService {
 
     @Override
     public Class getParserRequestClass() {
-        return null;
+        return DeliveryorderCreateRequest.class;
+    }
+
+    @Override
+    public Class getParserResponseClass() {
+        return DeliveryorderCreateResponse.class;
     }
 }

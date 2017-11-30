@@ -25,4 +25,9 @@ public class QimenSingleitemQimenServiceImpl extends AbstrcatQimenService {
     public Class getParserRequestClass() {
         return SingleitemSynchronizeRequest.class;
     }
+
+    @Override
+    public Class getParserResponseClass() {
+        return null;
+    }
 }

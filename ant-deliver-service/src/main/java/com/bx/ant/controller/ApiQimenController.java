@@ -27,7 +27,6 @@ import java.util.Map;
 @RequestMapping("/api/qimen")
 public class ApiQimenController {
 
-    public static final String RESPONSE = "response";
     @Resource
     private Map<String,QimenService> qimenServiceMap;
 
@@ -45,21 +44,7 @@ public class ApiQimenController {
         }else{
             qimenResponse = qimenService.handle(method, result.getRequestBody());
         }
-        XmlWriter writer = new XmlWriter(true, RESPONSE, QimenResponse.class);
-        String text = writer.write(qimenResponse);
-        response.setContentType("text/xml");
-        PrintWriter out = null;
-        try {
-            out = response.getWriter();
-            out.print(text);
-            out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (out != null) {
-                out.close();
-            }
-        }
+
     }
 
 
