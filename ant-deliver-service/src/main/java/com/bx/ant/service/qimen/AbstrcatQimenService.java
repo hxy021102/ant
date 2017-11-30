@@ -20,10 +20,10 @@ public abstract class AbstrcatQimenService implements QimenService {
 
     @Override
     public QimenResponse handle(String method, String body) {
-
         QimenRequest request = parserRequest(body);
-
-        return execute(request);
+        QimenResponse response = execute(request);
+        print(response);
+        return response;
     }
 
     public abstract QimenResponse execute(QimenRequest request);
