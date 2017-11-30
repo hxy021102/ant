@@ -175,6 +175,7 @@ public class ApiDriverAccountController extends BaseController {
             account.setNickName(Util.filterEmoji(account.getNickName()));
             account.setHandleStatus(DriverAccountServiceI.HANDLE_STATUS_ADUIT);
             account.setOnline(false);
+            account.setAutoPay(false);
             account.setOrderQuantity(Integer.parseInt(ConvertNameUtil.getString("DDSV200","1")));
 
             driverAccountService.add(account);
