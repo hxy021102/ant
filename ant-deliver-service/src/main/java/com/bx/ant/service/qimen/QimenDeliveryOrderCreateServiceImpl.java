@@ -4,6 +4,7 @@ import com.qimen.api.QimenRequest;
 import com.qimen.api.QimenResponse;
 import com.qimen.api.request.DeliveryorderCreateRequest;
 import com.qimen.api.response.DeliveryorderCreateResponse;
+import com.taobao.api.internal.util.XmlWriter;
 import org.springframework.stereotype.Service;
 
 /**
@@ -23,10 +24,5 @@ public class QimenDeliveryOrderCreateServiceImpl extends AbstrcatQimenService {
     @Override
     public Class getParserRequestClass() {
         return DeliveryorderCreateRequest.class;
-    }
-
-    @Override
-    public Class getParserResponseClass() {
-        return DeliveryorderCreateResponse.class;
     }
 }

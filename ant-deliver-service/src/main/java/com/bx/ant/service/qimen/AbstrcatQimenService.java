@@ -6,7 +6,7 @@ import com.taobao.api.ApiException;
 import com.taobao.api.internal.parser.xml.XmlConverter;
 import com.taobao.api.internal.util.XmlWriter;
 import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -30,8 +30,6 @@ public abstract class AbstrcatQimenService implements QimenService {
 
     public abstract Class getParserRequestClass();
 
-    public abstract Class getParserResponseClass();
-
     private <T> T parserRequest(String body) {
         XmlConverter converter = new XmlConverter();
         T request = null;
@@ -44,9 +42,9 @@ public abstract class AbstrcatQimenService implements QimenService {
         return request;
     }
 
-    private void print(QimenResponse qimenResponse){
-        HttpServletResponse response = ((ServletWebRequest) RequestContextHolder.getRequestAttributes()).getResponse();
-        XmlWriter writer = new XmlWriter(true, RESPONSE, getParserResponseClass());
+    protected void print(QimenResponse qimenResponse) {
+        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+        XmlWriter writer = new XmlWriter(true, RESPONSE, Object.class);
         String text = writer.write(qimenResponse);
         response.setContentType("text/xml");
         PrintWriter out = null;

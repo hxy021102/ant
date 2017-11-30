@@ -28,8 +28,4 @@ public class QimenItemsQimenServiceImpl extends QimenSingleitemQimenServiceImpl 
         return ItemsSynchronizeRequest.class;
     }
 
-    @Override
-    public Class getParserResponseClass() {
-        return null;
-    }
 }

@@ -42,7 +42,7 @@ public class ApiQimenController {
             qimenResponse.setFlag("failure");
             qimenResponse.setCode("500");
         }else{
-            qimenResponse = qimenService.handle(method, result.getRequestBody());
+            qimenService.handle(method, result.getRequestBody());
         }
 
     }

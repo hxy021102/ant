@@ -25,8 +25,4 @@ public class QimenStockOutCreateServiceImpl extends AbstrcatQimenService {
         return StockoutCreateRequest.class;
     }
 
-    @Override
-    public Class getParserResponseClass() {
-        return null;
-    }
 }
