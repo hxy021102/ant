@@ -289,84 +289,92 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 
 	@Override
 	public void addPayOperation() {
-		DriverOrderShopView driverOrderShopView = new DriverOrderShopView();
-		//1.自动结算的订单条件
-		driverOrderShopView.setPayStatus(DriverOrderShopServiceI.PAY_STATUS_NOT_PAY);
-		driverOrderShopView.setStatus(DriverOrderShopServiceI.STATUS_DELIVERED);
+		if (Integer.valueOf(ConvertNameUtil.getString("DDSV102")) != -1) {
+			DriverOrderShopView driverOrderShopView = new DriverOrderShopView();
+			//1.自动结算的订单条件
+			driverOrderShopView.setPayStatus(DriverOrderShopServiceI.PAY_STATUS_NOT_PAY);
+			driverOrderShopView.setStatus(DriverOrderShopServiceI.STATUS_DELIVERED);
 
-		Date expireDate = DateUtil.addHourToDate(new Date(), -Integer.valueOf(ConvertNameUtil.getString("DDSV102", "168")));
-		driverOrderShopView.setAddtimeEnd(expireDate);
+			Date expireDate = DateUtil.addDayToDate(new Date(), -Integer.valueOf(ConvertNameUtil.getString("DDSV102", "1")));
+			driverOrderShopView.setAddtimeEnd(expireDate);
+			//2.获取数据
+			PageHelper ph = new PageHelper();
+			ph.setHiddenTotal(true);
+			List<DriverOrderShop> driverOrderShops = driverOrderShopService.dataGrid(driverOrderShopView, ph).getRows();
+			if (CollectionUtils.isNotEmpty(driverOrderShops)) {
+				//3根据骑手对订单进行分类
+				Map<Integer, DriverOrderShopBillView> driverOrderShopBillMap = new HashMap<Integer, DriverOrderShopBillView>();
+				for (DriverOrderShop driverOrderShop : driverOrderShops) {
+					//获取骑手配置信息
+					DriverOrderShopBillView driverOrderShopBillView = new DriverOrderShopBillView();
+					//2.1初始化一个账单
+					if (!driverOrderShopBillMap.containsKey(driverOrderShop.getDriverAccountId())) {
+						List<DriverOrderShop> l = new ArrayList<DriverOrderShop>();
+						l.add(driverOrderShop);
+						driverOrderShopBillView.setAmount(driverOrderShop.getAmount());
+						driverOrderShopBillView.setDriverAccountId(driverOrderShop.getDriverAccountId());
+						driverOrderShopBillView.setPayWay("DPW01");
+						driverOrderShopBillView.setHandleStatus("DHS02");
+						driverOrderShopBillView.setDriverOrderShopList(l);
+						driverOrderShopBillView.setEndDate(expireDate);
+						//2.2 填充账单
+					} else {
+						driverOrderShopBillView = driverOrderShopBillMap.get(driverOrderShop.getDriverAccountId());
+						//2.2.1 计算金额并填充信息
+						driverOrderShopBillView.setAmount(driverOrderShop.getAmount() + driverOrderShopBillView.getAmount());
+						driverOrderShopBillView.getDriverOrderShopList().add(driverOrderShop);
+					}
+					driverOrderShopBillMap.put(driverOrderShop.getDriverAccountId(), driverOrderShopBillView);
 
-		//2.获取数据
-		PageHelper ph = new PageHelper();
-		ph.setHiddenTotal(true);
-		List<DriverOrderShop> driverOrderShops = driverOrderShopService.dataGrid(driverOrderShopView, ph).getRows();
-		if (CollectionUtils.isNotEmpty(driverOrderShops)) {
-			//3根据骑手对订单进行分类
-			Map<Integer, DriverOrderShopBillView> driverOrderShopBillMap = new HashMap<Integer, DriverOrderShopBillView>();
-			for (DriverOrderShop driverOrderShop : driverOrderShops) {
-				DriverOrderShopBillView driverOrderShopBillView = new DriverOrderShopBillView();
-				//2.1初始化一个账单
-				if (!driverOrderShopBillMap.containsKey(driverOrderShop.getDriverAccountId())) {
-					List<DriverOrderShop> l = new ArrayList<DriverOrderShop>();
-					l.add(driverOrderShop);
-					driverOrderShopBillView.setAmount(driverOrderShop.getAmount());
-					driverOrderShopBillView.setDriverAccountId(driverOrderShop.getDriverAccountId());
-					driverOrderShopBillView.setPayWay("DPW01");
-					driverOrderShopBillView.setDriverOrderShopList(l);
-					driverOrderShopBillView.setEndDate(expireDate);
-					//2.2 填充账单
-				} else {
-					driverOrderShopBillView = driverOrderShopBillMap.get(driverOrderShop.getDriverAccountId());
-					//2.2.1 计算金额并填充信息
-					driverOrderShopBillView.setAmount(driverOrderShop.getAmount() + driverOrderShopBillView.getAmount());
-					driverOrderShopBillView.getDriverOrderShopList().add(driverOrderShop);
 				}
-				driverOrderShopBillMap.put(driverOrderShop.getDriverAccountId(), driverOrderShopBillView);
-			}
 
-			//获取符合支付要求的运单列表
-			for (DriverOrderShopBillView v : driverOrderShopBillMap.values()) {
-				if (CollectionUtils.isEmpty(v.getDriverOrderShopList())) continue;
-				DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-				def.setPropagationBehavior(DefaultTransactionDefinition.PROPAGATION_REQUIRES_NEW);
-				TransactionStatus status = transactionManager.getTransaction(def);
-				try{
-				//创建骑手运单bill
-				add(v);
-				for (DriverOrderShop driverOrderShop : v.getDriverOrderShopList()) {
-					//创建骑手运单所对应的pay
-					DriverOrderPay orderPay = new DriverOrderPay();
-					orderPay.setAmount(driverOrderShop.getAmount());
-					orderPay.setDriverAccountId(driverOrderShop.getDriverAccountId());
-					orderPay.setStatus("DDPS02");
-					orderPay.setPayWay("DDPW04");
-					orderPay.setDriverOrderShopBillId(v.getId());
-					orderPay.setDeliverOrderShopId(driverOrderShop.getDeliverOrderShopId());
-					orderPay.setDriverOrderShopId(driverOrderShop.getId());
-					orderPay =  driverOrderPayService.update(orderPay);
+				//获取符合支付要求的运单列表
+				for (DriverOrderShopBillView v : driverOrderShopBillMap.values()) {
+					//先判断骑手是否配置为自动结算，否则跳出自动结算环节
+					DriverAccount driverAccount = driverAccountService.get(v.getDriverAccountId());
+					if (!driverAccount.getAutoPay()) continue;
+					if (CollectionUtils.isEmpty(v.getDriverOrderShopList())) continue;
+						DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+						def.setPropagationBehavior(DefaultTransactionDefinition.PROPAGATION_REQUIRES_NEW);
+						TransactionStatus status = transactionManager.getTransaction(def);
+						try {
+							//创建骑手运单bill
+							add(v);
+							for (DriverOrderShop driverOrderShop : v.getDriverOrderShopList()) {
+								//创建骑手运单所对应的pay
+								DriverOrderPay orderPay = new DriverOrderPay();
+								orderPay.setAmount(driverOrderShop.getAmount());
+								orderPay.setDriverAccountId(driverOrderShop.getDriverAccountId());
+								orderPay.setStatus("DDPS02");
+								orderPay.setPayWay("DDPW04");
+								orderPay.setDriverOrderShopBillId(v.getId());
+								orderPay.setDeliverOrderShopId(driverOrderShop.getDeliverOrderShopId());
+								orderPay.setDriverOrderShopId(driverOrderShop.getId());
+								orderPay = driverOrderPayService.update(orderPay);
 
-					//状态翻转
-					driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_SETTLEED);
-					driverOrderShopService.transform(driverOrderShop);
+								//状态翻转
+								driverOrderShop.setStatus(DriverOrderShopServiceI.STATUS_SETTLEED);
+								driverOrderShopService.transform(driverOrderShop);
 
-					MbBalance mbBalance = mbBalanceService.addOrGetDriverBalance(orderPay.getDriverAccountId());
-					MbBalanceLog mbBalanceLog = new MbBalanceLog();
-					mbBalanceLog.setBalanceId(mbBalance.getId());
-					//余额日志类型id 为运单的id
-					mbBalanceLog.setRefId(orderPay.getId() + "");
-					//门店自动结算
-					mbBalanceLog.setRefType("BT150");
-					mbBalanceLog.setAmount(orderPay.getAmount());
-					mbBalanceLog.setReason(String.format("骑手[ID:%1$s]完成运单[ID:%2$s]结算转入", orderPay.getDriverAccountId(), orderPay.getDriverOrderShopId()));
-					mbBalanceLogService.addAndUpdateBalance(mbBalanceLog);
-					transactionManager.commit(status);
+								MbBalance mbBalance = mbBalanceService.addOrGetDriverBalance(orderPay.getDriverAccountId());
+								MbBalanceLog mbBalanceLog = new MbBalanceLog();
+								mbBalanceLog.setBalanceId(mbBalance.getId());
+								//余额日志类型id 为运单的id
+								mbBalanceLog.setRefId(orderPay.getId() + "");
+								//门店自动结算
+								mbBalanceLog.setRefType("BT150");
+								mbBalanceLog.setAmount(orderPay.getAmount());
+								mbBalanceLog.setReason(String.format("骑手[ID:%1$s]完成运单[ID:%2$s]结算转入", orderPay.getDriverAccountId(), orderPay.getDriverOrderShopId()));
+								mbBalanceLogService.addAndUpdateBalance(mbBalanceLog);
+								transactionManager.commit(status);
+							}
+						} catch (Exception e) {
+							transactionManager.rollback(status);
+							continue;
+						}
+					}
 				}
-				}catch (Exception e) {
-				    transactionManager.rollback(status);
-				    continue;
-				}
-			}
+
 		}
 	}
 }

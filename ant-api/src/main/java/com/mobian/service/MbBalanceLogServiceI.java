@@ -1,5 +1,6 @@
 package com.mobian.service;
 
+import com.bx.ant.pageModel.MbBalanceLogDriver;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbBalanceLog;
 import com.mobian.pageModel.PageHelper;
@@ -92,4 +93,8 @@ public interface MbBalanceLogServiceI {
 	DataGrid dataGridBalanceLogDownload(MbBalanceLog mbBalanceLog, PageHelper ph);
 
 	Map<String,Integer> totalBalanceByMonth(MbBalanceLog mbBalanceLog);
+	/**
+	 * 骑手按月计算支出
+	 */
+	Map<String,Integer> totalBalanceByMonthDriver(MbBalanceLogDriver mbBalanceLogDriver);
 }
