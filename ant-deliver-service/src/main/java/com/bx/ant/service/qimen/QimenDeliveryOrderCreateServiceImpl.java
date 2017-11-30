@@ -2,6 +2,8 @@ package com.bx.ant.service.qimen;
 
 import com.qimen.api.QimenRequest;
 import com.qimen.api.QimenResponse;
+import com.qimen.api.request.DeliveryorderCreateRequest;
+import com.qimen.api.response.DeliveryorderCreateResponse;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,7 +14,10 @@ import org.springframework.stereotype.Service;
 public class QimenDeliveryOrderCreateServiceImpl extends AbstrcatQimenService {
     @Override
     public QimenResponse execute(QimenRequest request) {
-        return null;
+        DeliveryorderCreateRequest req = (DeliveryorderCreateRequest)request;
+        DeliveryorderCreateResponse response = new DeliveryorderCreateResponse();
+        response.setFlag("success");
+        return response;
     }
 
     @Override
