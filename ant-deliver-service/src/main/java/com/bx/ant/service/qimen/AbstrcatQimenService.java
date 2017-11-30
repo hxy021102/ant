@@ -30,7 +30,7 @@ public abstract class AbstrcatQimenService implements QimenService {
 
     public abstract Class getParserRequestClass();
 
-    private <T> T parserRequest(String body) {
+    protected <T> T parserRequest(String body) {
         XmlConverter converter = new XmlConverter();
         T request = null;
         Class<T> _class = getParserRequestClass();

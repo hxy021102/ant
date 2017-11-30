@@ -30,6 +30,9 @@ public class ApiQimenController {
     @Resource
     private Map<String, QimenService> qimenServiceMap;
 
+    @Resource(name = "qimenErrorServiceImpl")
+    private QimenService qimenErrorServiceImpl;
+
     @RequestMapping("/service")
     public void service(String method, HttpServletRequest request, HttpServletResponse response) throws IOException {
         String targetAppSecret = ConvertNameUtil.getString("A", "sandbox73191330f66ff9ac337012771");
@@ -38,12 +41,9 @@ public class ApiQimenController {
         QimenService qimenService = qimenServiceMap.get(method);
         QimenResponse qimenResponse = null;
         if (!result.isSuccess() || qimenService == null) {
-            qimenResponse = new StockoutCreateResponse();
-            qimenResponse.setFlag("failure");
-            qimenResponse.setCode("500");
-        } else {
-            qimenService.handle(method, result.getRequestBody());
+            qimenService = qimenErrorServiceImpl;
         }
+        qimenService.handle(method, result.getRequestBody());
 
     }
 
