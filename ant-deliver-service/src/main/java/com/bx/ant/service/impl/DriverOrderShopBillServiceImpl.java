@@ -327,36 +327,6 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 					driverOrderShopBillMap.put(driverOrderShop.getDriverAccountId(), driverOrderShopBillView);
 
 				}
-		Date expireDate = DateUtil.addHourToDate(new Date(), -Integer.valueOf(ConvertNameUtil.getString("DDSV102", "168")));
-		driverOrderShopView.setAddtimeEnd(expireDate);
-
-		//2.获取数据
-		PageHelper ph = new PageHelper();
-		ph.setHiddenTotal(true);
-		List<DriverOrderShop> driverOrderShops = driverOrderShopService.dataGrid(driverOrderShopView, ph).getRows();
-		if (CollectionUtils.isNotEmpty(driverOrderShops)) {
-			//3根据骑手对订单进行分类
-			Map<Integer, DriverOrderShopBillView> driverOrderShopBillMap = new HashMap<Integer, DriverOrderShopBillView>();
-			for (DriverOrderShop driverOrderShop : driverOrderShops) {
-				DriverOrderShopBillView driverOrderShopBillView = new DriverOrderShopBillView();
-				//2.1初始化一个账单
-				if (!driverOrderShopBillMap.containsKey(driverOrderShop.getDriverAccountId())) {
-					List<DriverOrderShop> l = new ArrayList<DriverOrderShop>();
-					l.add(driverOrderShop);
-					driverOrderShopBillView.setAmount(driverOrderShop.getAmount());
-					driverOrderShopBillView.setDriverAccountId(driverOrderShop.getDriverAccountId());
-					driverOrderShopBillView.setPayWay("DPW01");
-					driverOrderShopBillView.setDriverOrderShopList(l);
-					driverOrderShopBillView.setEndDate(expireDate);
-					//2.2 填充账单
-				} else {
-					driverOrderShopBillView = driverOrderShopBillMap.get(driverOrderShop.getDriverAccountId());
-					//2.2.1 计算金额并填充信息
-					driverOrderShopBillView.setAmount(driverOrderShop.getAmount() + driverOrderShopBillView.getAmount());
-					driverOrderShopBillView.getDriverOrderShopList().add(driverOrderShop);
-				}
-				driverOrderShopBillMap.put(driverOrderShop.getDriverAccountId(), driverOrderShopBillView);
-			}
 
 				//获取符合支付要求的运单列表
 				for (DriverOrderShopBillView v : driverOrderShopBillMap.values()) {

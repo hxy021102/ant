@@ -87,6 +87,15 @@
                     return "否"
                 }
                 },{
+			    field : 'autoPay',
+				title : '是否自动结算',
+				width : 40,
+				formatter : function (value,row,index) {
+			        if(value == true) return "是";
+			        return "否"
+				}
+
+				},{
                 field : 'balanceAmount',
                 title : '金额',
                 width : 30,

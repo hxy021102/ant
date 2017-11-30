@@ -50,26 +50,31 @@
 							</c:if>
 						</select>
 					</td>
+					<th>是否自动结算</th>
+					<td>
+						<select name="autoPay" value="${driverAccount.autoPay}" class="easyui-combobox" data-options="width:140,height:29">
+							<c:if test="${driverAccount.autoPay == false}">
+								<option value="1">是</option>
+								<option value="0" selected="selected">否</option>
+							</c:if>
+							<c:if test="${driverAccount.autoPay  == true}">
+								<option value="1" selected="selected">是</option>
+								<option value="0">否</option>
+							</c:if>
+						</select>
+					</td>
 				</tr>
 				<tr>
 					<th>类型</th>
 					<td>
 						<jb:select dataType="DATP" name="type" value="${driverAccount.type}"></jb:select>
 					</td>
-					<th>是否自动结算</th>
-					<td>
-						<select name="autoPay" class="easyui-combobox" data-options="width:140,height:29">
-							<option value="1">是</option>
-							<option value="0">否</option>
-						</select>
-					</td>
-				</tr>
-				<tr>
 					<th>接单数量上限</th>
 					<td>
-						<input name="orderQuantity" type="number" value="${driverAccount.orderQuantity}"/>
+						<input name="orderQuantity" type="number" value="${driverAccount.orderQuantity}" class="span2"/>
 					</td>
 				</tr>
+
 			</table>				
 		</form>
 	</div>
