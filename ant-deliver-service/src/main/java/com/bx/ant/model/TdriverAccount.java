@@ -275,7 +275,7 @@ public class TdriverAccount implements java.io.Serializable,IEntity{
 
 	
 
-	@Column(name = "auto_pay", unique = false, nullable = false, insertable = true, updatable = true, length = 0)
+	@Column(name = "auto_pay", unique = false, nullable = true, insertable = true, updatable = true, length = 0)
 
 	public Boolean getAutoPay() {
 		return autoPay;
