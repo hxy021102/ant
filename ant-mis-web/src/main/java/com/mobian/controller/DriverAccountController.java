@@ -145,7 +145,7 @@ public class DriverAccountController extends BaseController {
 	 */
 	@RequestMapping("/editPage")
 	public String editPage(HttpServletRequest request, Integer id) {
-		DriverAccount driverAccount = driverAccountService.get(id);
+		DriverAccount driverAccount = driverAccountService.getFromCache(id);
 		DriverAccountView driverAccountView =new DriverAccountView();
 		BeanUtils.copyProperties(driverAccount,driverAccountView);
 		request.setAttribute("driverAccount", driverAccountView);
@@ -192,7 +192,7 @@ public class DriverAccountController extends BaseController {
 	 */
 	@RequestMapping("/examinePage")
 	public String examinePage(HttpServletRequest request, Integer id) {
-		DriverAccount driverAccount = driverAccountService.get(id);
+		DriverAccount driverAccount = driverAccountService.getFromCache(id);
 		request.setAttribute("driverAccount", driverAccount);
 		return "/driveraccount/driverAccountExamine";
 	}

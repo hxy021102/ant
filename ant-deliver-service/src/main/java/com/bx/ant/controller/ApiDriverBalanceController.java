@@ -279,7 +279,7 @@ public class ApiDriverBalanceController extends BaseController {
         }
 
         //2. 填充数据
-       DriverAccount account = driverAccountService.get(Integer.parseInt(accountId));
+       DriverAccount account = driverAccountService.getFromCache(Integer.parseInt(accountId));
         if (account != null) {
             withdrawLog.setBalanceId(balance.getId());
             withdrawLog.setApplyLoginId(accountId);

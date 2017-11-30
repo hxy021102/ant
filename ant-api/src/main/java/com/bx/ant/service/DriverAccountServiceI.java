@@ -46,7 +46,9 @@ public interface DriverAccountServiceI {
 	 */
 	public DriverAccount get(Integer id);
 
-	/**
+    DriverAccount getFromCache(Integer id);
+
+    /**
 	 * 修改DriverAccount
 	 * 
 	 * @param driverAccount

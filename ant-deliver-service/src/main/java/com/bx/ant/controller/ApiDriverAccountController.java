@@ -210,7 +210,7 @@ public class ApiDriverAccountController extends BaseController {
             TokenWrap token = tokenService.getToken(request);
             if(!F.empty(token.getUid())) {
                 Integer accountId = Integer.valueOf(token.getUid());
-                DriverAccount account = driverAccountService.get(accountId);
+                DriverAccount account = driverAccountService.getFromCache(accountId);
                 Integer todayAmount = new Integer(0) ;
                 //获取有效订单数量
                 Integer todayQuantity = new Integer(0);
@@ -350,9 +350,13 @@ public class ApiDriverAccountController extends BaseController {
      */
     @RequestMapping("/info")
     @ResponseBody
-    public Json getInfo(){
+    public Json getInfo(String accountId){
         Json json = new Json();
+        String location = (String) redisUtil.getString(Key.build(Namespace.DRIVER_REALTIME_LOCATION, accountId));
+        json.setMsg(location);
+        json.setSuccess(true);
         return json;
     }
+
 
 }
