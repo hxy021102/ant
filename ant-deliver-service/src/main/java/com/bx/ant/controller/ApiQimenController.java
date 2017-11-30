@@ -28,20 +28,20 @@ import java.util.Map;
 public class ApiQimenController {
 
     @Resource
-    private Map<String,QimenService> qimenServiceMap;
+    private Map<String, QimenService> qimenServiceMap;
 
     @RequestMapping("/service")
-    public void service(String method,HttpServletRequest request,HttpServletResponse response) throws IOException {
-        String targetAppSecret = ConvertNameUtil.getString("A","sandbox73191330f66ff9ac337012771");
+    public void service(String method, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String targetAppSecret = ConvertNameUtil.getString("A", "sandbox73191330f66ff9ac337012771");
         CheckResult result = SpiUtils.checkSignForBx(request, targetAppSecret); //这里执行验签逻辑
-        method = "taobao.qimen."+method;
+        method = "taobao.qimen." + method;
         QimenService qimenService = qimenServiceMap.get(method);
         QimenResponse qimenResponse = null;
-        if(!result.isSuccess()) {
+        if (!result.isSuccess() || qimenService == null) {
             qimenResponse = new StockoutCreateResponse();
             qimenResponse.setFlag("failure");
             qimenResponse.setCode("500");
-        }else{
+        } else {
             qimenService.handle(method, result.getRequestBody());
         }
 
