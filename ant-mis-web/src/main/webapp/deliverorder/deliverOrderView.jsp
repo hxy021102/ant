@@ -379,7 +379,7 @@
 				</c:choose>
 				<th>回单</th>
 				<c:forEach items="${deliverOrder.image}" var="image">
-					<td rowspan="5" colspan="4">
+					<td rowspan="5" >
 					 <img src="${image}" width="80px" height="80px" />
 					</td>
 				</c:forEach>
