@@ -11,7 +11,7 @@ import javax.annotation.Resource;
  * Created by wanxp on 17-9-26.
  */
 @Service("deliverOrder25StateImpl")
-public class DeliverOrder25StateImpl implements DeliverOrderState {
+public class DeliverOrder25StateImpl extends AbstractDeliverOrderState {
 
     @Resource(name = "deliverOrder30StateImpl")
     private DeliverOrderState deliverOrderState30;
@@ -29,7 +29,7 @@ public class DeliverOrder25StateImpl implements DeliverOrderState {
     }
 
     @Override
-    public void handle(DeliverOrder deliverOrder) {
+    public void execute(DeliverOrder deliverOrder) {
 
         //修改运单状态
         DeliverOrder orderNew = new DeliverOrder();

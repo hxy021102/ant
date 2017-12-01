@@ -20,7 +20,7 @@ import java.util.List;
  * Created by wanxp on 17-9-26.
  */
 @Service("deliverOrder10StateImpl")
-public class DeliverOrder10StateImpl implements DeliverOrderState {
+public class DeliverOrder10StateImpl extends AbstractDeliverOrderState {
 
     @Resource(name = "deliverOrder20StateImpl")
     private DeliverOrderState deliverOrderState20;
@@ -56,7 +56,7 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
     }
 
     @Override
-    public void handle(DeliverOrder deliverOrder) {
+    public void execute(DeliverOrder deliverOrder) {
         DeliverOrder oldDeliverOrder = DeliverOrderState.deliverOrder.get();
 
         if (DeliverOrderServiceI.STATUS_SHOP_ALLOCATION.equals(oldDeliverOrder.getStatus())) {

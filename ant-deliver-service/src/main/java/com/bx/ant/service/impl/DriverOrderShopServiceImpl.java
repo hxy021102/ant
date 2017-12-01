@@ -138,6 +138,7 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 		//t.setId(jb.absx.UUID.uuid());
 		t.setIsdeleted(false);
 		driverOrderShopDao.save(t);
+		driverOrderShop.setId(t.getId());
 	}
 
 	@Override
@@ -157,6 +158,17 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 			MyBeanUtils.copyProperties(driverOrderShop, t, new String[] { "id" , "addtime", "isdeleted","updatetime" },true);
 			driverOrderShop.setDeliverOrderShopId(t.getDeliverOrderShopId());
 		}
+	}
+
+	@Override
+	public DriverOrderShop update(DriverOrderShop driverOrderShop) {
+		if (!F.empty(driverOrderShop.getId())) {
+			edit(driverOrderShop);
+		}else {
+			add(driverOrderShop);
+
+		}
+		return driverOrderShop;
 	}
 
 	@Override
@@ -434,6 +446,7 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 
 		return o;
 	}
+
 }
 
 

@@ -13,7 +13,7 @@ import javax.annotation.Resource;
  * Created by wanxp on 17-9-26.
  */
 @Service("deliverOrder15StateImpl")
-public class DeliverOrder15StateImpl implements DeliverOrderState {
+public class DeliverOrder15StateImpl extends AbstractDeliverOrderState {
 
 
     @Resource(name = "deliverOrder10StateImpl")
@@ -36,7 +36,7 @@ public class DeliverOrder15StateImpl implements DeliverOrderState {
     }
 
     @Override
-    public void handle(DeliverOrder deliverOrder) {
+    public void execute(DeliverOrder deliverOrder) {
 
         //修改运单状态
         DeliverOrder orderNew = new  DeliverOrder();
