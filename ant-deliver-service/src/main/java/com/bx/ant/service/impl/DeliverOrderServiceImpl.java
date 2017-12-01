@@ -658,7 +658,9 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			supplierItemRelation.setSupplierId(deliverOrder.getSupplierId());
 			supplierItemRelation.setItemId(item.getItemId());
 			supplierItemRelation.setOnline(true);
-			List<SupplierItemRelation> supplierItemRelations = supplierItemRelationService.dataGrid(supplierItemRelation, new PageHelper()).getRows();
+			PageHelper pageHelper = new PageHelper();
+			pageHelper.setHiddenTotal(true);
+			List<SupplierItemRelation> supplierItemRelations = supplierItemRelationService.dataGrid(supplierItemRelation, pageHelper).getRows();
 			if (CollectionUtils.isNotEmpty(supplierItemRelations)) {
 				supplierItemRelation = supplierItemRelations.get(0);
 				amount += supplierItemRelation.getPrice() * item.getQuantity();

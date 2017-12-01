@@ -5,6 +5,7 @@ import com.mobian.util.ConvertNameUtil;
 import com.qimen.api.DefaultQimenClient;
 import com.qimen.api.QimenRequest;
 import com.qimen.api.request.DeliveryorderConfirmRequest;
+import com.qimen.api.request.OrderprocessReportRequest;
 import com.qimen.api.response.DeliveryorderConfirmResponse;
 import com.taobao.api.ApiException;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,13 @@ public class QimenRequestServiceImpl implements QimenRequestService {
         DeliveryorderConfirmRequest request = new DeliveryorderConfirmRequest();
 
         //TODO 拼request Info
+
+        DeliveryorderConfirmResponse response = execute(request);
+    }
+
+    @Override
+    public void updateOrderProcessReportRequest() {
+        OrderprocessReportRequest request = new OrderprocessReportRequest();
 
         DeliveryorderConfirmResponse response = execute(request);
     }
