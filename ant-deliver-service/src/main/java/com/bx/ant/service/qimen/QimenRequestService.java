@@ -1,5 +1,7 @@
 package com.bx.ant.service.qimen;
 
+import com.bx.ant.pageModel.DeliverOrder;
+
 /**
  * Created by john on 17/11/30.
  */
@@ -13,11 +15,15 @@ public interface QimenRequestService {
     String QIM_07 = "QIM07";
     String QIM_08 = "QIM08";
     String QIM_09 = "QIM09";
+    String QIM_10 = "QIM10";
+
+
+    String JYCK = "JYCK";//一般交易出库单
     /**
      * 发货单确认接口
      */
-    void updateDeliveryOrderConfirm();
+    void updateDeliveryOrderConfirm(DeliverOrder deliverOrder);
 
 
-    void updateOrderProcessReportRequest();
+    void updateOrderProcessReportRequest(String status,DeliverOrder deliverOrder);
 }
