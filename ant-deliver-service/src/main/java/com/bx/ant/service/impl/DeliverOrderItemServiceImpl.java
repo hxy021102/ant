@@ -31,7 +31,7 @@ public class DeliverOrderItemServiceImpl extends BaseServiceImpl<DeliverOrderIte
 	private MbItemServiceI mbItemService;
 
 	@Resource
-	private SupplierItemRelationServiceI suplierItemRelations;
+	private SupplierItemRelationServiceI supplierItemRelationService;
 
 	@Override
 	public DataGrid dataGrid(DeliverOrderItem deliverOrderItem, PageHelper ph) {
@@ -206,8 +206,9 @@ public class DeliverOrderItemServiceImpl extends BaseServiceImpl<DeliverOrderIte
 			itemRelation.setOnline(true);
 
 			//获取供应商item信息
-
-			List<SupplierItemRelation> itemRelations = suplierItemRelations.dataGrid(itemRelation, new PageHelper()).getRows();
+			PageHelper ph = new PageHelper();
+			ph.setHiddenTotal(true);
+			List<SupplierItemRelation> itemRelations = supplierItemRelationService.dataGrid(itemRelation, ph).getRows();
 			if (CollectionUtils.isNotEmpty(itemRelations)) {
 				itemRelation = itemRelations.get(0);
 				orderItem.setPrice(itemRelation.getPrice());

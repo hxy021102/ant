@@ -11,6 +11,8 @@ public interface QimenRequestService {
     String QIM_05 = "QIM05";
     String QIM_06 = "QIM06";
     String QIM_07 = "QIM07";
+    String QIM_08 = "QIM08";
+    String QIM_09 = "QIM09";
     /**
      * 发货单确认接口
      */

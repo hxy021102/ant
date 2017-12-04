@@ -1,5 +1,6 @@
 package com.bx.ant.service.qimen;
 
+import com.mobian.absx.Objectx;
 import com.qimen.api.QimenRequest;
 import com.qimen.api.QimenResponse;
 import com.taobao.api.ApiException;
@@ -15,7 +16,7 @@ import java.io.PrintWriter;
 /**
  * Created by john on 17/11/28.
  */
-public abstract class AbstrcatQimenService implements QimenService {
+public abstract class AbstrcatQimenService extends Objectx implements QimenService {
     public static final String RESPONSE = "response";
 
     @Override

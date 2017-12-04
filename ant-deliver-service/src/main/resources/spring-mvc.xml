@@ -58,7 +58,7 @@
 						<value>/api/deliver/account/getVCode</value><!-- 获取短信验证码 -->
 						<value>/api/deliver/apiCommon/error</value><!-- token过期错误返回 -->
 						<value>/api/deliver/deliverOrder/uploadImage</value><!-- 送达完成上传图片 -->
-						<value>/api/qimen/service</value>
+						<value>/api/deliver/qimen/service</value>
 					</list>
 				</property>
 				<property name="tokenService" ref="tokenServiceImpl" />
