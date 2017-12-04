@@ -156,4 +156,11 @@ public interface MbBalanceServiceI {
 	 */
 	MbBalance addOrGetSupplierMbBalance(Integer supplierId);
 
+
+	/**
+	 * 获取骑手账户
+	 * @param driverAccountId
+	 * @return
+	 */
+	MbBalance addOrGetDriverBalance(Integer driverAccountId);
 }

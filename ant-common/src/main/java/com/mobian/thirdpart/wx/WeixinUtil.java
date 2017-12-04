@@ -36,6 +36,10 @@ public class WeixinUtil {
 	public final static String APPLET_APPID = "WA001";
 	public final static String APPLET_APPSECRET = "WA002";
 
+
+	public final static String APPLET_DRIVER_APPID = "WA010";
+	public final static String APPLET_DRIVER_APPSECRET = "WA011";
+
 	private static RedisUtil redisUtil = BeanUtil.getBean(RedisUtil.class);
 
 	/**
@@ -366,6 +370,15 @@ public class WeixinUtil {
 		String authorize_url = WXAPP_JSCODE2SESSION
 				.replace("APPID", ConvertNameUtil.getString(APPLET_APPID))
 				.replace("SECRET", ConvertNameUtil.getString(APPLET_APPSECRET))
+				.replace("JSCODE", code);
+		return authorize_url;
+	}
+
+
+	public static String getJscode2sessionUrlByDriver(String code) {
+		String authorize_url = WXAPP_JSCODE2SESSION
+				.replace("APPID", ConvertNameUtil.getString(APPLET_DRIVER_APPID))
+				.replace("SECRET", ConvertNameUtil.getString(APPLET_DRIVER_APPSECRET))
 				.replace("JSCODE", code);
 		return authorize_url;
 	}

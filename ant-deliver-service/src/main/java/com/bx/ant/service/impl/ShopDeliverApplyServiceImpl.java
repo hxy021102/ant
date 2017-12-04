@@ -240,7 +240,7 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 				if (distance > maxDistance.doubleValue()) continue;
 				MbAssignShop mbAssignShop = new MbAssignShop();
 				BeanUtils.copyProperties(mbShop, mbAssignShop);
-				mbAssignShop.setDistance(distance);
+				mbAssignShop.setDistance(BigDecimal.valueOf(distance));
 				mbAssignShopArrayList.add(mbAssignShop);
 			}
 		}
@@ -253,7 +253,7 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 				BeanUtils.copyProperties(mbShop, mbAssignShop);
 				double distance = GeoUtil.getDistance(deliverOrder.getLongitude().doubleValue(), deliverOrder.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
 				mbAssignShop.setContactPhone("<font color='red'>" + mbShop.getContactPhone() + "</font>");
-				mbAssignShop.setDistance(distance);
+				mbAssignShop.setDistance(BigDecimal.valueOf(distance));
 				mbAssignShopArrayList.add(mbAssignShop);
 			}
 		}

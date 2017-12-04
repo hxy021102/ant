@@ -40,7 +40,7 @@
                 <tr>
                     <th style="width: 100px;">最大配送距离</th>
                     <td>
-                        <input name="maxDeliveryDistance" type="text" class="span2" value="${shopDeliverApply.maxDeliveryDistance}"><font color="red">(单位：&nbsp;&nbsp;米)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;默认5000米</font>
+                        <input name="maxDeliveryDistance" type="text" class="span2" value="${shopDeliverApply.maxDeliveryDistance}"><font color="red">(单位：米)默认5000米,-1不限制</font>
                     </td>
                 </tr>
                 <tr>
@@ -79,6 +79,10 @@
                     <jb:select name="deliveryType" dataType="DAT" required="true" value="${shopDeliverApply.deliveryType}"></jb:select>
                     </td>
                 </tr>
+                    <th>配送方式</th>
+					<td>
+                        <jb:select dataType="DAW" name="deliveryWay" required="true" value="${shopDeliverApply.deliveryWay}"></jb:select>
+					</td>
                 <tr>
                     <th>冻结状态</th>
                     <td>

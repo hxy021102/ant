@@ -50,8 +50,6 @@ public class DeliverOrderItemServiceImpl extends BaseServiceImpl<DeliverOrderIte
 		dg.setRows(ol);
 		return dg;
 	}
-	
-
 	protected String whereHql(DeliverOrderItem deliverOrderItem, Map<String, Object> params) {
 		String whereHql = "";	
 		if (deliverOrderItem != null) {
