@@ -304,7 +304,7 @@
 </head>
 <body>
 <div class="easyui-layout" data-options="fit : true,border:false">
-	<div data-options="region:'north',title:'基本信息',border:false" style="height: 295px; overflow: hidden;">
+	<div data-options="region:'north',title:'基本信息',border:false" style="height: 325px; overflow: hidden;">
 		<table class="table">
 			<tr>
 				<th>运单ID</th>
@@ -354,13 +354,13 @@
 				<td>
 					${deliverOrder.deliveryAddress}
 				</td>
-				<th>配送地区</th>
-				<td>
-					${deliverOrder.deliveryRegion}
-				</td>
 				<th>送达时间</th>
 				<td>
 					<fmt:formatDate value="${deliverOrder.deliveryRequireTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
+				</td>
+				<th>平台接单状态</th>
+				<td>
+					${deliverOrder.originalOrderStatus}
 				</td>
 			</tr>
 			<tr>
@@ -383,6 +383,12 @@
 					 <img src="${image}" width="80px" height="80px" />
 					</td>
 				</c:forEach>
+			</tr>
+			<tr>
+				<th>店铺</th>
+				<td>${deliverOrder.originalShop}</td>
+				<th>订单号</th>
+				<td>${deliverOrder.originalOrderId}</td>
 			</tr>
 			<tr>
 				<th>送达备注</th>

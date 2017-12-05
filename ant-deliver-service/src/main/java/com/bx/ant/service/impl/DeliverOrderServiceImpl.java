@@ -176,8 +176,16 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 				params.put("shopId", deliverOrder.getShopId());
 			}
 			if (!F.empty(deliverOrder.getDeliveryWay())) {
-				whereHql += " t.deliveryWay = :deliveryWay";
+				whereHql += " and t.deliveryWay = :deliveryWay";
 				params.put("devlieryWay", deliverOrder.getDeliveryWay());
+			}
+			if (!F.empty(deliverOrder.getOriginalShop())) {
+				whereHql += " and t.originalShop = :originalShop";
+				params.put("originalShop", deliverOrder.getOriginalShop());
+			}
+			if (!F.empty(deliverOrder.getOriginalOrderStatus())) {
+				whereHql += " and t.originalOrderStatus = :originalOrderStatus";
+				params.put("originalOrderStatus", deliverOrder.getOriginalOrderStatus());
 			}
 			if (deliverOrder instanceof DeliverOrderQuery) {
 				DeliverOrderQuery orderQuery = (DeliverOrderQuery) deliverOrder;
@@ -497,6 +505,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 					deliverOrderQuery.setShopPayStatusName(order.getShopPayStatus());
 					deliverOrderQuery.setDeliveryStatusName(order.getDeliveryStatus());
 					deliverOrderQuery.setPayStatusName(order.getPayStatus());
+					deliverOrderQuery.setOriginalOrderStatusName(order.getOriginalOrderStatus());
 					deliverOrderQueries.add(deliverOrderQuery);
 				}
 				DataGrid dg = new DataGrid();

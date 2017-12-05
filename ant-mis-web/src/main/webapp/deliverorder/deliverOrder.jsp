@@ -76,11 +76,11 @@
 				},  {
                 field : 'addtime',
                 title : '创建时间',
-                width : 50
+                width : 55
                 },{
                 field : 'updatetime',
                 title : '修改时间',
-                width : 50
+                width : 55
                 }, {
                 field : 'supplierOrderId',
                 title : '订单ID',
@@ -88,20 +88,20 @@
 				},{
 				field : 'supplierId',
 				title : '供应商ID',
-				width : 30
+				width : 25
 				}, {
                 field : 'supplierName',
                 title : '供应商名称',
-                width : 65
+                width : 50
                 }, {
                 field : 'shopName',
                 title : '门店名称',
-                width : 65
+                width : 50
                 }, {
 				field : 'amount',
 				title : '总金额',
 				align:"right",
-				width : 25	,
+				width : 20	,
                 formatter: function (value) {
                     if (value == null)
                         return "";
@@ -110,27 +110,35 @@
 				}, {
 				field : 'statusName',
 				title : '订单状态',
-				width : 30
+				width : 25
 				}, {
 				field : 'deliveryStatusName',
 				title : '配送状态',
-				width : 30
+				width : 25
 				},{
                 field : 'contactPeople',
                 title : '收货人',
-                width : 30
+                width : 25
                 }, {
                 field : 'deliveryRequireTime',
                 title : '要求送达时间',
-                width : 50
+                width : 55
                 }, {
 				field : 'shopPayStatusName',
 				title : '门店结算',
-				width : 30
+				width : 25
 				}, {
                 field : 'payStatusName',
                 title : '供应商结算',
-                width : 30
+                width : 29
+                },{
+                field : 'originalShop',
+                title : '店铺',
+                width : 50
+                }, {
+                field : 'originalOrderId',
+                title : '订单号',
+                width : 35
             }] ],
 			toolbar : '#toolbar',
 			onLoadSuccess : function() {
@@ -168,11 +176,11 @@
                 },  {
                     field : 'addtime',
                     title : '创建时间',
-                    width : 50
+                    width : 55
                 },{
                     field : 'updatetime',
                     title : '修改时间',
-                    width : 50
+                    width : 55
                 }, {
                     field : 'supplierOrderId',
                     title : '订单ID',
@@ -180,20 +188,20 @@
                 },{
                     field : 'supplierId',
                     title : '供应商ID',
-                    width : 30
+                    width : 25
                 }, {
                     field : 'supplierName',
                     title : '供应商名称',
-                    width : 65
+                    width : 50
                 }, {
                     field : 'shopName',
                     title : '门店名称',
-                    width : 65
+                    width : 50
                 }, {
                     field : 'amount',
                     title : '总金额',
                     align:"right",
-                    width : 25	,
+                    width : 20	,
                     formatter: function (value) {
                         if (value == null)
                             return "";
@@ -202,27 +210,35 @@
                 }, {
                     field : 'statusName',
                     title : '订单状态',
-                    width : 30
+                    width : 25
                 }, {
                     field : 'deliveryStatusName',
                     title : '配送状态',
-                    width : 30
+                    width : 25
                 },{
                     field : 'contactPeople',
                     title : '收货人',
-                    width : 30
+                    width : 25
                 }, {
                     field : 'deliveryRequireTime',
                     title : '要求送达时间',
-                    width : 50
+                    width : 55
                 }, {
                     field : 'shopPayStatusName',
                     title : '门店结算',
-                    width : 30
+                    width : 25
                 }, {
                     field : 'payStatusName',
                     title : '供应商结算',
-                    width : 30
+                    width : 29
+                },{
+                    field : 'originalShop',
+                    title : '店铺',
+                    width : 50
+                }, {
+                    field : 'originalOrderId',
+                    title : '订单号',
+                    width : 35
                 }] ],
                 toolbar : '#toolbar',
                 onLoadSuccess : function() {
@@ -254,35 +270,39 @@
             columns : [ [ {
                 field : 'id',
                 title : '运单ID',
-                width : 30,
+                width : 20,
                 formatter : function (value, row, index) {
                     return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
                 }
             },  {
                 field : 'addtime',
                 title : '创建时间',
-                width : 50
+                width : 55
             },{
                 field : 'updatetime',
                 title : '修改时间',
-                width : 50
+                width : 55
             }, {
                 field : 'supplierOrderId',
                 title : '订单ID',
-                width : 50
+                width : 20
             },{
                 field : 'supplierId',
                 title : '供应商ID',
-                width : 30
+                width : 25
             }, {
                 field : 'supplierName',
                 title : '供应商名称',
-                width : 80
+                width : 50
+            }, {
+                field : 'shopName',
+                title : '门店名称',
+                width : 50
             }, {
                 field : 'amount',
                 title : '总金额',
                 align:"right",
-                width : 30	,
+                width : 20	,
                 formatter: function (value) {
                     if (value == null)
                         return "";
@@ -291,26 +311,34 @@
             }, {
                 field : 'statusName',
                 title : '订单状态',
-                width : 35
+                width : 25
             }, {
                 field : 'deliveryStatusName',
                 title : '配送状态',
-                width : 40
+                width : 25
             },{
                 field : 'contactPeople',
                 title : '收货人',
-                width : 30
+                width : 25
             }, {
                 field : 'deliveryRequireTime',
                 title : '要求送达时间',
-                width : 50
+                width : 55
             }, {
                 field : 'shopPayStatusName',
                 title : '门店结算',
-                width : 35
+                width : 25
             }, {
                 field : 'payStatusName',
                 title : '供应商结算',
+                width : 29
+            },{
+                field : 'originalShop',
+                title : '店铺',
+                width : 50
+            }, {
+                field : 'originalOrderId',
+                title : '订单号',
                 width : 35
             }] ],
             toolbar : '#toolbar',
@@ -450,7 +478,7 @@
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit : true,border : false">
-		<div data-options="region:'north',title:'查询条件',border:false" style="height: 120px; overflow: hidden;">
+		<div data-options="region:'north',title:'查询条件',border:false" style="height: 165px; overflow: hidden;">
 			<form id="searchForm">
 				<table class="table table-hover table-condensed" style="display: none;">
 					<tr>
@@ -480,14 +508,24 @@
 						<td >
 							<jb:select dataType="DDS" name="deliveryStatus"></jb:select>
 						</td>
-						<th >订单时间</th>
-						<td >
-							<input type="text" class="span2 easyui-validatebox" data-options="required:false" onclick="WdatePicker({dateFmt:'<%=TmbSupplierOrderItem.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'endDate\',{M:-1});}',maxDate:'#F{$dp.$D(\'endDate\',{d:-1});}'})" id="startDate" name="startDate"/>
-							至	<input type="text" class="span2 easyui-validatebox" data-options="required:false" onclick="WdatePicker({dateFmt:'<%=TmbSupplierOrderItem.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'startDate\',{d:1});}',maxDate:'#F{$dp.$D(\'startDate\',{M:1});}'})" id="endDate" name="endDate"/>
-						</td>
 						<th>订单ID</th>
 						<td >
 							<input type="text" name="supplierOrderId" maxlength="10" class="span2"/>
+						</td>
+						<th>店铺</th>
+						<td >
+							<input type="text" name="originalShop" maxlength="10" class="span2"/>
+						</td>
+					</tr>
+					<tr>
+						<th>订单号</th>
+						<td >
+							<input type="text" name="originalOrderId" maxlength="10" class="span2"/>
+						</td>
+						<th >订单时间</th>
+						<td colspan="10">
+							<input type="text" class="span2 easyui-validatebox" data-options="required:false" onclick="WdatePicker({dateFmt:'<%=TmbSupplierOrderItem.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'endDate\',{M:-1});}',maxDate:'#F{$dp.$D(\'endDate\',{d:-1});}'})" id="startDate" name="startDate"/>
+							至	<input type="text" class="span2 easyui-validatebox" data-options="required:false" onclick="WdatePicker({dateFmt:'<%=TmbSupplierOrderItem.FORMAT_UPDATETIME%>',minDate:'#F{$dp.$D(\'startDate\',{d:1});}',maxDate:'#F{$dp.$D(\'startDate\',{M:1});}'})" id="endDate" name="endDate"/>
 						</td>
 					</tr>
 				</table>

@@ -25,6 +25,7 @@ public class DeliverOrderQuery extends DeliverOrder {
     private List<String> image;
     private String showTime;
     private String deliveryWayName;
+    private String originalOrderStatusName;
 
 
     public String getStatusName() {
@@ -153,5 +154,13 @@ public class DeliverOrderQuery extends DeliverOrder {
 
     public void setDeliveryWayName(String deliveryWayName) {
         this.deliveryWayName = deliveryWayName;
+    }
+
+    public String getOriginalOrderStatusName() {
+        return ConvertNameUtil.getString(super.getOriginalOrderStatus()) ;
+    }
+
+    public void setOriginalOrderStatusName(String originalOrderStatusName) {
+        this.originalOrderStatusName = originalOrderStatusName;
     }
 }
