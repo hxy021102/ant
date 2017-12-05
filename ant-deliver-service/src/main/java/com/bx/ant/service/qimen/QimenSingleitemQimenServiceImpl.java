@@ -45,6 +45,7 @@ public class QimenSingleitemQimenServiceImpl extends AbstrcatQimenService {
             mbItem.setIsShelves(false);
             mbItemService.add(mbItem);
         } else {
+            mbItem.setId(mbItemList.get(0).getId());
             mbItemService.edit(mbItem);
         }
         Integer supplierId = Integer.parseInt(ConvertNameUtil.getString(QimenRequestService.QIM_06));
