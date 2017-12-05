@@ -2,6 +2,7 @@ package com.bx.ant.service.qimen;
 
 import com.bx.ant.pageModel.SupplierItemRelation;
 import com.bx.ant.service.SupplierItemRelationServiceI;
+import com.mobian.absx.F;
 import com.mobian.pageModel.MbItem;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.MbItemServiceI;
@@ -62,6 +63,9 @@ public class QimenSingleitemQimenServiceImpl extends AbstrcatQimenService {
                 itemId = mbItemList.get(0).getId();
             }
             supplierItemRelation.setItemId(itemId);
+            if(F.empty(item.getCostPrice())){
+                item.setCostPrice("0");
+            }
             Double costPrice = new Double(item.getCostPrice()) * 100;
             supplierItemRelation.setInPrice(costPrice.intValue());//成本价
             supplierItemRelation.setFreight(Integer.parseInt(ConvertNameUtil.getString(QimenRequestService.QIM_07)));//运费
