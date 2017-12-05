@@ -37,8 +37,11 @@ public class QimenSingleitemQimenServiceImpl extends AbstrcatQimenService {
         mbItem.setIspack(false);           //是否包装瓶
         mbItem.setCarton(item.getPcs()); //箱规
         mbItem.setBarCode(item.getBarCode());//条形码
-        boolean flag = mbItemService.isItemExists(mbItem);
-        if (!flag) {
+        MbItem itemReq = new MbItem();
+        itemReq.setCode(item.getItemCode());
+        //item.getIsValid()
+        List<MbItem> mbItemList = mbItemService.query(itemReq);
+        if (CollectionUtils.isEmpty(mbItemList)) {
             mbItem.setIsShelves(false);
             mbItemService.add(mbItem);
         } else {
@@ -53,9 +56,6 @@ public class QimenSingleitemQimenServiceImpl extends AbstrcatQimenService {
         pageHelper.setHiddenTotal(true);
         List<SupplierItemRelation> supplierItemRelations = supplierItemRelationService.dataGrid(supplierItemRelation, pageHelper).getRows();
         if (CollectionUtils.isEmpty(supplierItemRelations)) {
-            MbItem itemReq = new MbItem();
-            itemReq.setCode(item.getItemCode());
-            List<MbItem> mbItemList = mbItemService.query(itemReq);
             Integer itemId = -1;
             if (CollectionUtils.isNotEmpty(mbItemList)) {
                 itemId = mbItemList.get(0).getId();
