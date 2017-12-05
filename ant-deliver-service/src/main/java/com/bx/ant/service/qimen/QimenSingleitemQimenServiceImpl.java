@@ -42,6 +42,7 @@ public class QimenSingleitemQimenServiceImpl extends AbstrcatQimenService {
         itemReq.setCode(item.getItemCode());
         //item.getIsValid()
         List<MbItem> mbItemList = mbItemService.query(itemReq);
+        Integer itemId = null;
         if (CollectionUtils.isEmpty(mbItemList)) {
             mbItem.setIsShelves(false);
             if(F.empty(item.getPrice())){
@@ -51,7 +52,8 @@ public class QimenSingleitemQimenServiceImpl extends AbstrcatQimenService {
             mbItem.setMarketPrice(price.intValue());
             mbItemService.add(mbItem);
         } else {
-            mbItem.setId(mbItemList.get(0).getId());
+            itemId = mbItemList.get(0).getId();
+            mbItem.setId(itemId);
             mbItemService.edit(mbItem);
         }
         Integer supplierId = Integer.parseInt(ConvertNameUtil.getString(QimenRequestService.QIM_06));
@@ -63,8 +65,9 @@ public class QimenSingleitemQimenServiceImpl extends AbstrcatQimenService {
         pageHelper.setHiddenTotal(true);
         List<SupplierItemRelation> supplierItemRelations = supplierItemRelationService.dataGrid(supplierItemRelation, pageHelper).getRows();
         if (CollectionUtils.isEmpty(supplierItemRelations)) {
-            Integer itemId = -1;
-            if (CollectionUtils.isNotEmpty(mbItemList)) {
+
+            if (CollectionUtils.isEmpty(mbItemList)) {
+                mbItemList = mbItemService.query(itemReq);
                 itemId = mbItemList.get(0).getId();
             }
             supplierItemRelation.setItemId(itemId);
