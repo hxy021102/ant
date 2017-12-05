@@ -2,9 +2,7 @@ package com.bx.ant.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.mns.model.TopicMessage;
-import com.bx.ant.pageModel.DeliverOrderShopQuery;
 import com.bx.ant.pageModel.session.TokenWrap;
-import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.bx.ant.service.ShopDeliverAccountServiceI;
 import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.bx.ant.service.impl.DeliverOrderShopServiceImpl;
@@ -15,7 +13,6 @@ import com.mobian.pageModel.*;
 import com.bx.ant.pageModel.DeliverOrderShop;
 import com.bx.ant.pageModel.ShopDeliverAccount;
 import com.bx.ant.pageModel.ShopDeliverApply;
-import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.thirdpart.mns.MNSTemplate;
 import com.mobian.thirdpart.mns.MNSUtil;
@@ -223,9 +220,9 @@ public class ApiAccountController extends BaseController {
                 if (CollectionUtils.isNotEmpty(deliverOrderShopList)) {
                     todayQuantity = deliverOrderShopList.size();
                     for (DeliverOrderShop o : deliverOrderShopList) {
-                        if (DeliverOrderShopServiceI.STATUS_COMPLETE.equals(o.getStatus())) {
+                       /* if (DeliverOrderShopServiceI.STATUS_COMPLETE.equals(o.getStatus())||DeliverOrderShopServiceI.STAUS_SERVICE.equals(o.getStatus())) {*/
                             todayAmount += o.getAmount();
-                        }
+                      /*  }*/
                     }
                 }
 

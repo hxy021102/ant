@@ -937,4 +937,18 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		}
 		return null;
 	}
+
+	@Override
+	public List<DeliverOrder> queryTodayProfitOrdersByShopId(Integer shopId) {
+		List<DeliverOrder> deliverOrderList = new ArrayList<DeliverOrder>();
+		List<DeliverOrderShop> deliverOrderShopList = deliverOrderShopService.queryTodayOrdersByShopId(shopId);
+		if (CollectionUtils.isNotEmpty(deliverOrderShopList)) {
+			for (DeliverOrderShop orderShop : deliverOrderShopList) {
+				if (!F.empty(orderShop.getDeliverOrderId())) {
+					deliverOrderList.add(getDeliverOrderExt(orderShop));
+				}
+			}
+		}
+		return deliverOrderList;
+	}
 }
