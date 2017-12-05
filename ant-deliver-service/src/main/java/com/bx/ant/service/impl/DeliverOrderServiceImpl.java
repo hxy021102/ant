@@ -180,12 +180,12 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 				params.put("devlieryWay", deliverOrder.getDeliveryWay());
 			}
 			if (!F.empty(deliverOrder.getOriginalShop())) {
-				whereHql += " and t.originalShop = :originalShop";
-				params.put("originalShop", deliverOrder.getOriginalShop());
+				whereHql += " and t.originalShop LIKE :originalShop";
+				params.put("originalShop", "%" + deliverOrder.getOriginalShop() + "%");
 			}
-			if (!F.empty(deliverOrder.getOriginalOrderStatus())) {
-				whereHql += " and t.originalOrderStatus = :originalOrderStatus";
-				params.put("originalOrderStatus", deliverOrder.getOriginalOrderStatus());
+			if (!F.empty(deliverOrder.getOriginalOrderId())) {
+				whereHql += " and t.originalOrderId = :originalOrderId";
+				params.put("originalOrderId", deliverOrder.getOriginalOrderId());
 			}
 			if (deliverOrder instanceof DeliverOrderQuery) {
 				DeliverOrderQuery orderQuery = (DeliverOrderQuery) deliverOrder;
@@ -505,7 +505,6 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 					deliverOrderQuery.setShopPayStatusName(order.getShopPayStatus());
 					deliverOrderQuery.setDeliveryStatusName(order.getDeliveryStatus());
 					deliverOrderQuery.setPayStatusName(order.getPayStatus());
-					deliverOrderQuery.setOriginalOrderStatusName(order.getOriginalOrderStatus());
 					deliverOrderQueries.add(deliverOrderQuery);
 				}
 				DataGrid dg = new DataGrid();
@@ -527,6 +526,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		deliverOrderQuery.setStatusName(deliverOrder.getStatus());
 		deliverOrderQuery.setShopPayStatusName(deliverOrder.getShopPayStatus());
 		deliverOrderQuery.setDeliveryStatusName(deliverOrder.getDeliveryStatus());
+		deliverOrderQuery.setOriginalOrderStatusName(deliverOrder.getOriginalOrderStatus());
 		if (!F.empty(deliverOrderQuery.getCompleteImages())) {
 			String[] imageArray = deliverOrderQuery.getCompleteImages().split(";");
 			List<String> imageList = new ArrayList<String>();

@@ -302,6 +302,11 @@
 
 	 </script>
 </head>
+<style type="text/css">
+	div img:hover {
+		transform: scale(1.5);
+	}
+</style>
 <body>
 <div class="easyui-layout" data-options="fit : true,border:false">
 	<div data-options="region:'north',title:'基本信息',border:false" style="height: 325px; overflow: hidden;">
@@ -360,7 +365,7 @@
 				</td>
 				<th>平台接单状态</th>
 				<td>
-					${deliverOrder.originalOrderStatus}
+					${deliverOrder.originalOrderStatusName}
 				</td>
 			</tr>
 			<tr>
