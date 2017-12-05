@@ -44,6 +44,11 @@ public class QimenSingleitemQimenServiceImpl extends AbstrcatQimenService {
         List<MbItem> mbItemList = mbItemService.query(itemReq);
         if (CollectionUtils.isEmpty(mbItemList)) {
             mbItem.setIsShelves(false);
+            if(F.empty(item.getPrice())){
+                item.setPrice("0");
+            }
+            Double price = new Double(item.getPrice()) * 100;
+            mbItem.setMarketPrice(price.intValue());
             mbItemService.add(mbItem);
         } else {
             mbItem.setId(mbItemList.get(0).getId());
