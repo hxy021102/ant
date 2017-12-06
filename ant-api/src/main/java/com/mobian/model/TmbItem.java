@@ -280,7 +280,7 @@ public class TmbItem implements java.io.Serializable,IEntity{
 	public Integer getPurchasePrice() { return purchasePrice; }
 	public void setPurchasePrice(Integer purchasePrice) { this.purchasePrice = purchasePrice;}
 
-	@Column(name = "standard", unique = false, nullable = false, insertable = true, updatable = true, length = 128)
+	@Column(name = "standard", unique = false, nullable = true, insertable = true, updatable = true, length = 128)
 	public String getStandard() {
 		return standard;
 	}
@@ -289,7 +289,7 @@ public class TmbItem implements java.io.Serializable,IEntity{
 		this.standard = standard;
 	}
 
-	@Column(name = "bar_code", unique = false, nullable = false, insertable = true, updatable = true, length = 128)
+	@Column(name = "bar_code", unique = false, nullable = true, insertable = true, updatable = true, length = 128)
 	public String getBarCode() {
 		return barCode;
 	}
@@ -298,7 +298,7 @@ public class TmbItem implements java.io.Serializable,IEntity{
 		this.barCode = barCode;
 	}
 
-	@Column(name = "carton", unique = false, nullable = false, insertable = true, updatable = true, length = 128)
+	@Column(name = "carton", unique = false, nullable = true, insertable = true, updatable = true, length = 128)
 	public String getCarton() {
 		return carton;
 	}
