@@ -2,8 +2,13 @@ package com.bx.ant.service.qimen;
 
 import com.alibaba.fastjson.JSON;
 import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderItem;
+import com.bx.ant.service.DeliverOrderItemServiceI;
+import com.bx.ant.service.DeliverOrderServiceI;
 import com.mobian.absx.Objectx;
 import com.mobian.exception.ServiceException;
+import com.mobian.pageModel.MbItem;
+import com.mobian.service.MbItemServiceI;
 import com.mobian.util.ConvertNameUtil;
 import com.qimen.api.DefaultQimenClient;
 import com.qimen.api.QimenRequest;
@@ -12,8 +17,12 @@ import com.qimen.api.request.OrderprocessReportRequest;
 import com.qimen.api.response.DeliveryorderConfirmResponse;
 import com.qimen.api.response.OrderprocessReportResponse;
 import com.taobao.api.ApiException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,6 +31,11 @@ import java.util.Map;
 @Service
 public class QimenRequestServiceImpl extends Objectx implements QimenRequestService {
 
+    @Autowired
+    private DeliverOrderItemServiceI deliverOrderItemService;
+
+    @Resource
+    private MbItemServiceI mbItemService;
 
     @Override
     public void updateDeliveryOrderConfirm(DeliverOrder deliverOrder) {
@@ -35,6 +49,23 @@ public class QimenRequestServiceImpl extends Objectx implements QimenRequestServ
             order.setDeliveryOrderId(deliverOrder.getId() + "");
             order.setOrderType(QimenRequestService.JYCK);
             request.setDeliveryOrder(order);
+            List<DeliveryorderConfirmRequest.Package> packages = new ArrayList<DeliveryorderConfirmRequest.Package>();
+            DeliveryorderConfirmRequest.Package _package = new DeliveryorderConfirmRequest.Package();
+            packages.add(_package);
+            _package.setLogisticsCode("OTHER");
+            _package.setExpressCode(deliverOrder.getId()+"");
+            request.setPackages(packages);
+            List<DeliverOrderItem> deliverOrderItemList = deliverOrderItemService.getDeliverOrderItemList(deliverOrder.getId());
+            List<DeliveryorderConfirmRequest.Item> items = new ArrayList<DeliveryorderConfirmRequest.Item>();
+            for (DeliverOrderItem deliverOrderItem : deliverOrderItemList) {
+                DeliveryorderConfirmRequest.Item item = new DeliveryorderConfirmRequest.Item();
+                MbItem mbItem = mbItemService.getFromCache(deliverOrderItem.getItemId());
+                item.setItemCode(mbItem.getCode());
+                item.setPlanQty(deliverOrderItem.getQuantity()+"");
+                item.setActualQty(item.getPlanQty());
+                items.add(item);
+            }
+            _package.setItems(items);
             DeliveryorderConfirmResponse response = execute(request);
             logger.info(JSON.toJSONString(response));
         }
