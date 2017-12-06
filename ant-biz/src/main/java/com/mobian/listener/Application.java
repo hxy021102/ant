@@ -29,8 +29,8 @@ public class Application implements ServletContextListener {
 		// 启动刷新微信access_token
 		com.mobian.thirdpart.wx.AccessTokenInstance.getInstance();
 		// 启动刷新有赞access_token
-		if("2".equals(ConvertNameUtil.getString(Constants.SYSTEM_PUBLISH_SETTING)))
-			com.mobian.thirdpart.youzan.AccessTokenInstance.getInstance();
+		com.mobian.thirdpart.youzan.AccessTokenInstance.getInstance();
+
 		FileUtil.updateCommonJs();
 	}
 

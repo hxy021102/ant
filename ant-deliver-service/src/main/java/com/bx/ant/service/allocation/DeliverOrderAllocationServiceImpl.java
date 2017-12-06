@@ -65,11 +65,21 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
         DataGrid dataGrid = deliverOrderService.dataGrid(request, ph);
         List<DeliverOrder> deliverOrderList = dataGrid.getRows();
 
+        // 1.1、获取万里牛未处理订单
+        request = new DeliverOrderExt();
+        request.setIsdeleted(true);
+        request.setOriginalOrderStatus(DeliverOrderServiceI.ORIGINAL_ORDER_STATUS_OTS01);
+        dataGrid = deliverOrderService.dataGrid(request, ph);
+        if(CollectionUtils.isNotEmpty(dataGrid.getRows())) {
+            deliverOrderList.addAll(dataGrid.getRows());
+        }
+
         for (DeliverOrder deliverOrder : deliverOrderList) {
             try{
                 allocationOrderOwnerShopId(deliverOrder);
             }catch(Exception e){
                 logger.error("分单失败", e);
+
             }
         }
     }
@@ -125,13 +135,6 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
 
             shopDeliverApply.setDistance(BigDecimal.valueOf(distance));
             includeShop.add(shopDeliverApply);
-
-//            if (distance < minDistance || minDistance == 0) {
-//                minMbShop = mbShop;
-//                minDistance = distance;
-//
-//                if(distance == 0) break; // 解决同一个地址不分配的问题
-//            }
         }
 
         if(CollectionUtils.isNotEmpty(includeShop)) {
@@ -160,6 +163,13 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                     deliverOrder.setShopId(mbShop.getId());
                     deliverOrder.setShopDistance(shopDeliverApply.getDistance());
                     deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_ALLOCATION);
+
+                    // 分配万里牛平台订单
+                    if(deliverOrder.getIsdeleted()) {
+                        deliverOrder.setIsdeleted(false);
+                        deliverOrder.setOriginalOrderStatus(DeliverOrderServiceI.ORIGINAL_ORDER_STATUS_OTS02);
+                    }
+
                     deliverOrderService.transform(deliverOrder);
 
                     // 自动接单
@@ -196,6 +206,12 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                 }catch(Exception e){
                     transactionManager.rollback(status);
                     logger.error("分单失败", e);
+
+                    // 万里牛订单不满足处理
+                    if(e instanceof ServiceException && deliverOrder.getIsdeleted()) {
+                        deliverOrder.setOriginalOrderStatus(DeliverOrderServiceI.ORIGINAL_ORDER_STATUS_OTS03);
+                        deliverOrderService.edit(deliverOrder);
+                    }
                     continue;
                 }
 

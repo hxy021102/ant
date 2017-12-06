@@ -99,7 +99,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	protected String whereHql(DeliverOrder deliverOrder, Map<String, Object> params) {
 		String whereHql = "";
 		if (deliverOrder != null) {
-			whereHql += " where t.isdeleted = 0 ";
+			whereHql += " where 1=1 ";
 			if (!F.empty(deliverOrder.getTenantId())) {
 				whereHql += " and t.tenantId = :tenantId";
 				params.put("tenantId", deliverOrder.getTenantId());
@@ -107,6 +107,8 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			if (!F.empty(deliverOrder.getIsdeleted())) {
 				whereHql += " and t.isdeleted = :isdeleted";
 				params.put("isdeleted", deliverOrder.getIsdeleted());
+			} else {
+				whereHql += " and t.isdeleted = 0";
 			}
 			if (!F.empty(deliverOrder.getSupplierId())) {
 				whereHql += " and t.supplierId = :supplierId";

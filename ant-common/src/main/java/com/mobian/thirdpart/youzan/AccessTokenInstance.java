@@ -4,6 +4,7 @@ import com.mobian.thirdpart.redis.Key;
 import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.thirdpart.redis.RedisUtil;
 import com.mobian.util.BeanUtil;
+import com.mobian.util.ConvertNameUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,21 +43,24 @@ public class AccessTokenInstance {
             public void run() {
                 while (true) {
                     try {
-                        AccessToken accessToken = YouzanUtil.getAccessToken();
-                        if (null != accessToken) {
-                            log.info("获取有赞access_token成功，有效时长{}秒 token:{}", accessToken.getExpiresIn(), accessToken.getToken());
-                            System.out.println("获取有赞access_token成功，有效时长{}秒 token:{}" + " " + accessToken.getExpiresIn() + " " + accessToken.getToken());
+                        if("1".equals(ConvertNameUtil.getString(YouzanUtil.TOKEN_SWITCH, "0"))){
+                            AccessToken accessToken = YouzanUtil.getAccessToken();
+                            if (null != accessToken) {
+                                log.info("获取有赞access_token成功，有效时长{}秒 token:{}", accessToken.getExpiresIn(), accessToken.getToken());
+                                System.out.println("获取有赞access_token成功，有效时长{}秒 token:{}" + " " + accessToken.getExpiresIn() + " " + accessToken.getToken());
 
-                            RedisUtil redisUtil = BeanUtil.getBean(RedisUtil.class);
-                            redisUtil.set(Key.build(Namespace.YOUZAN_CONFIG, "youzan_access_token"), accessToken.getToken(), accessToken.getExpiresIn(), TimeUnit.SECONDS);
+                                RedisUtil redisUtil = BeanUtil.getBean(RedisUtil.class);
+                                redisUtil.set(Key.build(Namespace.YOUZAN_CONFIG, "youzan_access_token"), accessToken.getToken(), accessToken.getExpiresIn(), TimeUnit.SECONDS);
 
-                            // 休眠600000秒
-                            Thread.sleep(((long) accessToken.getExpiresIn() - 4800) * 1000);
+                                // 休眠600000秒
+                                Thread.sleep(((long) accessToken.getExpiresIn() - 4800) * 1000);
+                            } else {
+                                // 如果access_token为null，60秒后再获取
+                                Thread.sleep(60 * 1000);
+                            }
                         } else {
-                            // 如果access_token为null，60秒后再获取
                             Thread.sleep(60 * 1000);
                         }
-
                     } catch (InterruptedException e) {
                         log.error("刷有赞token线程中断了", e);
                         break;
