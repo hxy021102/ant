@@ -67,6 +67,17 @@ public class QimenRequestServiceImpl extends Objectx implements QimenRequestServ
                 items.add(item);
             }
             _package.setItems(items);
+
+            List<DeliveryorderConfirmRequest.OrderLine> orderLines = new ArrayList<DeliveryorderConfirmRequest.OrderLine>();
+            for (DeliveryorderConfirmRequest.Item item : items) {
+                DeliveryorderConfirmRequest.OrderLine orderLine = new DeliveryorderConfirmRequest.OrderLine();
+                orderLine.setItemCode(item.getItemCode());
+                orderLine.setPlanQty(item.getQuantity()+"");
+                orderLine.setActualQty(orderLine.getPlanQty());
+                orderLine.setQuantity(orderLine.getPlanQty());
+                orderLines.add(orderLine);
+            }
+            request.setOrderLines(orderLines);
             DeliveryorderConfirmResponse response = execute(request);
             logger.info(JSON.toJSONString(response));
         }
