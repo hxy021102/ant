@@ -221,6 +221,13 @@
             <version>2.0.2</version>
         </dependency>
 
+        <!--奇门sdk-->
+        <dependency>
+            <groupId>qimen-sdk</groupId>
+            <artifactId>qimen-sdk</artifactId>
+            <version>1499048884298-20171127</version>
+        </dependency>
+
         <!--极光推送-->
         <dependency>
             <groupId>cn.jpush.api</groupId>

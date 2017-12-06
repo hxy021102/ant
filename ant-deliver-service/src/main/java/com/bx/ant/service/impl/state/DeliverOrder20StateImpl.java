@@ -2,6 +2,7 @@ package com.bx.ant.service.impl.state;
 
 import com.bx.ant.pageModel.*;
 import com.bx.ant.service.*;
+import com.bx.ant.service.qimen.QimenRequestService;
 import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.PageHelper;
@@ -40,6 +41,9 @@ public class DeliverOrder20StateImpl extends AbstractDeliverOrderState{
 
     @Autowired
     private ShopDeliverApplyServiceI shopDeliverApplyService;
+
+    @Autowired
+    private QimenRequestService qimenRequestService;
 
 
     @Override
@@ -90,8 +94,10 @@ public class DeliverOrder20StateImpl extends AbstractDeliverOrderState{
                     driverOrderShop.setStatus(DriverOrderShopServiceI.PAY_STATUS_NOT_PAY);
                     driverOrderShopService.transform(driverOrderShop);
                 }
-            }
 
+                DeliverOrder deliverOrderOld = DeliverOrderState.deliverOrder.get();
+                qimenRequestService.updateOrderProcessReportRequest(prefix + getStateName(),deliverOrderOld);
+            }
         }
 
     }

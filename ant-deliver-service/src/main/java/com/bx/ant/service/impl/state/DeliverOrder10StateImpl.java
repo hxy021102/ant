@@ -5,6 +5,7 @@ import com.bx.ant.pageModel.DeliverOrderItem;
 import com.bx.ant.pageModel.DeliverOrderShop;
 import com.bx.ant.pageModel.Supplier;
 import com.bx.ant.service.*;
+import com.bx.ant.service.qimen.QimenRequestService;
 import com.mobian.thirdpart.youzan.YouzanUtil;
 import com.mobian.util.ConvertNameUtil;
 import com.mobian.absx.F;
@@ -49,6 +50,9 @@ public class DeliverOrder10StateImpl extends AbstractDeliverOrderState {
 
     @Resource
     private DeliverOrderYouzanServiceI deliverOrderYouzanService;
+
+    @Autowired
+    private QimenRequestService qimenRequestService;
 
     @Override
     public String getStateName() {
@@ -102,6 +106,11 @@ public class DeliverOrder10StateImpl extends AbstractDeliverOrderState {
             String content = deliverOrder.getOrderLogRemark() == null ? "指派订单给门店" : "指派订单给门店【" + deliverOrder.getOrderLogRemark() + "】";
             deliverOrderService.editAndAddLog(deliverOrder, deliverOrder.getDeliverOrderLogType(), content);
         }
+
+
+        DeliverOrder deliverOrderOld = DeliverOrderState.deliverOrder.get();
+        qimenRequestService.updateOrderProcessReportRequest(prefix + getStateName(),deliverOrderOld);
+
     }
 
     @Override
