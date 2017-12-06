@@ -63,6 +63,7 @@ public class QimenRequestServiceImpl extends Objectx implements QimenRequestServ
                 item.setItemCode(mbItem.getCode());
                 item.setPlanQty(deliverOrderItem.getQuantity()+"");
                 item.setActualQty(item.getPlanQty());
+                item.setQuantity(new Long(deliverOrderItem.getQuantity()));
                 items.add(item);
             }
             _package.setItems(items);
