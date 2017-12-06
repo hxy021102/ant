@@ -10,6 +10,7 @@ import com.qimen.api.QimenRequest;
 import com.qimen.api.request.DeliveryorderConfirmRequest;
 import com.qimen.api.request.OrderprocessReportRequest;
 import com.qimen.api.response.DeliveryorderConfirmResponse;
+import com.qimen.api.response.OrderprocessReportResponse;
 import com.taobao.api.ApiException;
 import org.springframework.stereotype.Service;
 
@@ -58,7 +59,7 @@ public class QimenRequestServiceImpl extends Objectx implements QimenRequestServ
             if (status != null) {
                 process.setProcessStatus(status);
                 request.setProcess(process);
-                DeliveryorderConfirmResponse response = execute(request);
+                OrderprocessReportResponse response = execute(request);
                 logger.info(JSON.toJSONString(response));
             }
         }
@@ -68,6 +69,7 @@ public class QimenRequestServiceImpl extends Objectx implements QimenRequestServ
         request.setVersion(ConvertNameUtil.getString(QIM_05));
         request.setCustomerId(ConvertNameUtil.getString(QIM_04));
         try {
+            logger.info("开始发起奇门请求："+JSON.toJSONString(request));
             return (T) getClient().execute(request);
         } catch (ApiException e) {
             throw new ServiceException("调用奇门接口异常", e);
