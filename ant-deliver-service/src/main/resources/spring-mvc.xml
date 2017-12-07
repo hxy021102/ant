@@ -62,6 +62,7 @@
 						<value>/api/driver/account/register</value><!-- 注册 -->
 						<value>/api/driver/account/getVCode</value><!-- 获取短信验证码 -->
 						<value>/api/driver/orderShop/uploadImage</value><!-- 送达完成上传图片 -->
+						<value>/api/deliver/qimen/service</value>
 					</list>
 				</property>
 				<property name="tokenService" ref="tokenServiceImpl" />

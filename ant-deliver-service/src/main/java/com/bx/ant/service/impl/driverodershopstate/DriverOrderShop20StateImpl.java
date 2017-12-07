@@ -17,7 +17,7 @@ public class DriverOrderShop20StateImpl implements DriverOrderShopState {
     private DriverOrderShopState driverOrderShopState30;
 
     @Resource
-    private DriverOrderShopServiceI driverOrderShopSerivce;
+    private DriverOrderShopServiceI driverOrderShopService;
 
 
     @Override
@@ -31,7 +31,7 @@ public class DriverOrderShop20StateImpl implements DriverOrderShopState {
         orderShop.setId(driverOrderShop.getId());
         orderShop.setStatus(prefix + getStateName());
 
-        driverOrderShopSerivce.edit(orderShop);
+        driverOrderShopService.edit(orderShop);
     }
 
     @Override
