@@ -93,10 +93,10 @@
             // 直接打印，不弹出打印机设置对话框
             var jcp = getJCP();
             if (how == '打印预览') {
-                //document.getElementById("jatoolsPrinter").printPreview(myDoc, false);
+              //  document.getElementById("jatoolsPrinter").printPreview(myDoc, false);
                  jcp.printPreview(myDoc, false); // 打印预览
             } else if (how == "打印") {
-                //document.getElementById("jatoolsPrinter").print(myDoc,true);
+               //  document.getElementById("jatoolsPrinter").print(myDoc,true);
                 jcp.print(myDoc, true); // 打印前弹出打印设置对话框
             }
         }
@@ -202,6 +202,9 @@
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
+            <c:if test="${status.count==10}">
+                </div><div id='page2' class="breakable" style='width: 100%; margin: 0px; padding: 0; background-color: white;'>
+            </c:if>
         </c:forEach>
         <tr>
             <td colspan="7">总计</td>
