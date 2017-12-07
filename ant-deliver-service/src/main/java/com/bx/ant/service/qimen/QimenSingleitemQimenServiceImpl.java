@@ -2,6 +2,7 @@ package com.bx.ant.service.qimen;
 
 import com.bx.ant.pageModel.SupplierItemRelation;
 import com.bx.ant.service.SupplierItemRelationServiceI;
+import com.mobian.absx.F;
 import com.mobian.pageModel.MbItem;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.MbItemServiceI;
@@ -37,11 +38,22 @@ public class QimenSingleitemQimenServiceImpl extends AbstrcatQimenService {
         mbItem.setIspack(false);           //是否包装瓶
         mbItem.setCarton(item.getPcs()); //箱规
         mbItem.setBarCode(item.getBarCode());//条形码
-        boolean flag = mbItemService.isItemExists(mbItem);
-        if (!flag) {
+        MbItem itemReq = new MbItem();
+        itemReq.setCode(item.getItemCode());
+        //item.getIsValid()
+        List<MbItem> mbItemList = mbItemService.query(itemReq);
+        Integer itemId = null;
+        if (CollectionUtils.isEmpty(mbItemList)) {
             mbItem.setIsShelves(false);
+            if(F.empty(item.getPrice())){
+                item.setPrice("0");
+            }
+            Double price = new Double(item.getPrice()) * 100;
+            mbItem.setMarketPrice(price.intValue());
             mbItemService.add(mbItem);
         } else {
+            itemId = mbItemList.get(0).getId();
+            mbItem.setId(itemId);
             mbItemService.edit(mbItem);
         }
         Integer supplierId = Integer.parseInt(ConvertNameUtil.getString(QimenRequestService.QIM_06));
@@ -53,14 +65,15 @@ public class QimenSingleitemQimenServiceImpl extends AbstrcatQimenService {
         pageHelper.setHiddenTotal(true);
         List<SupplierItemRelation> supplierItemRelations = supplierItemRelationService.dataGrid(supplierItemRelation, pageHelper).getRows();
         if (CollectionUtils.isEmpty(supplierItemRelations)) {
-            MbItem itemReq = new MbItem();
-            itemReq.setCode(item.getItemCode());
-            List<MbItem> mbItemList = mbItemService.query(itemReq);
-            Integer itemId = -1;
-            if (CollectionUtils.isNotEmpty(mbItemList)) {
+
+            if (CollectionUtils.isEmpty(mbItemList)) {
+                mbItemList = mbItemService.query(itemReq);
                 itemId = mbItemList.get(0).getId();
             }
             supplierItemRelation.setItemId(itemId);
+            if(F.empty(item.getCostPrice())){
+                item.setCostPrice("0");
+            }
             Double costPrice = new Double(item.getCostPrice()) * 100;
             supplierItemRelation.setInPrice(costPrice.intValue());//成本价
             supplierItemRelation.setFreight(Integer.parseInt(ConvertNameUtil.getString(QimenRequestService.QIM_07)));//运费
