@@ -297,4 +297,8 @@ public interface DeliverOrderServiceI {
 	DeliverOrderExt getBanlanceLogDetial(DeliverOrderShop deliverOrderShop);
 
     DeliverOrderExt getDetail(Long id);
+	/**
+	 * 通过有赞的订单id 查找本地的订单
+	 */
+	DeliverOrder getOrderByYouZanTid(String tid);
 }
