@@ -18,6 +18,8 @@ import javax.annotation.Resource;
  */
 @Service(value = "driverOrderShop01StateImpl")
 public class DriverOrderShop01StateImpl implements DriverOrderShopState {
+    @Resource(name = "driverOrderShop50StateImpl")
+    private DriverOrderShopState driverOrderShopState50;
 
     @Resource(name = "driverOrderShop03StateImpl")
     private DriverOrderShopState driverOrderShopState03;
@@ -55,13 +57,16 @@ public class DriverOrderShop01StateImpl implements DriverOrderShopState {
             }
         }
 
-        driverOrderShopSerivce.add(driverOrderShop);
+        driverOrderShopSerivce.update(driverOrderShop);
     }
 
     @Override
     public DriverOrderShopState next(DriverOrderShop driverOrderShop) {
         if ( (prefix  + "03").equals(driverOrderShop.getStatus())) {
             return driverOrderShopState03;
+        }
+        if ((prefix + "50").equals(driverOrderShop.getStatus())) {
+            return driverOrderShopState50;
         }
         return null;
     }

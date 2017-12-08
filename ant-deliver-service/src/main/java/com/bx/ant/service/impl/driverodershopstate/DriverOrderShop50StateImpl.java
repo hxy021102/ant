@@ -5,6 +5,7 @@ import com.bx.ant.service.DriverOrderShopServiceI;
 import com.bx.ant.service.DriverOrderShopState;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
+import java.util.Map;
 
 /**
  * error
@@ -12,9 +13,8 @@ import javax.annotation.Resource;
  */
 @Service(value = "driverOrderShop50StateImpl")
 public class DriverOrderShop50StateImpl implements DriverOrderShopState {
-
-    @Resource(name = "driverOrderShop01StateImpl")
-    private DriverOrderShopState driverOrderShopState01;
+    @Resource
+    private Map<String, DriverOrderShopState> driverOrderShopStateFactory ;
 
     @Resource
     private DriverOrderShopServiceI driverOrderShopSerivce;
@@ -27,6 +27,7 @@ public class DriverOrderShop50StateImpl implements DriverOrderShopState {
 
     @Override
     public void handle(DriverOrderShop driverOrderShop) {
+
         DriverOrderShop orderShop = new DriverOrderShop();
         orderShop.setId(driverOrderShop.getId());
         orderShop.setStatus(prefix + getStateName());
@@ -36,10 +37,6 @@ public class DriverOrderShop50StateImpl implements DriverOrderShopState {
 
     @Override
     public DriverOrderShopState next(DriverOrderShop driverOrderShop) {
-        if ( (prefix  + "01").equals(driverOrderShop.getStatus())) {
-            return driverOrderShopState01;
-        }
-
-        return null;
+        return driverOrderShopStateFactory.get("driverOrderShop" + driverOrderShop.getStatus().substring(4) + "Impl");
     }
 }

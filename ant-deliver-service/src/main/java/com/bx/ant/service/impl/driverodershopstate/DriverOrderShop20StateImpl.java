@@ -12,12 +12,14 @@ import javax.annotation.Resource;
  */
 @Service(value = "driverOrderShop20StateImpl")
 public class DriverOrderShop20StateImpl implements DriverOrderShopState {
+    @Resource(name = "driverOrderShop50StateImpl")
+    private DriverOrderShopState driverOrderShopState50;
 
     @Resource(name = "driverOrderShop30StateImpl")
     private DriverOrderShopState driverOrderShopState30;
 
     @Resource
-    private DriverOrderShopServiceI driverOrderShopSerivce;
+    private DriverOrderShopServiceI driverOrderShopService;
 
 
     @Override
@@ -31,13 +33,16 @@ public class DriverOrderShop20StateImpl implements DriverOrderShopState {
         orderShop.setId(driverOrderShop.getId());
         orderShop.setStatus(prefix + getStateName());
 
-        driverOrderShopSerivce.edit(orderShop);
+        driverOrderShopService.edit(orderShop);
     }
 
     @Override
     public DriverOrderShopState next(DriverOrderShop driverOrderShop) {
         if ( (prefix  + "30").equals(driverOrderShop.getStatus())) {
             return driverOrderShopState30;
+        }
+        if ((prefix + "50").equals(driverOrderShop.getStatus())) {
+            return driverOrderShopState50;
         }
         return null;
     }
