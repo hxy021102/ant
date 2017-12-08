@@ -57,6 +57,10 @@ public interface DeliverOrderServiceI {
 	String DELIVER_TYPE_AUTO = "DAT02"; // 自动接单
 	String DELIVER_TYPE_FORCE = "DAT03"; // 强制接单
 
+	String ORIGINAL_ORDER_STATUS_OTS01 = "OTS01"; // 待处理
+	String ORIGINAL_ORDER_STATUS_OTS02 = "OTS02"; // 平台接单
+	String ORIGINAL_ORDER_STATUS_OTS03 = "OTS03"; // 平台不接单
+
 	//派单结算时间差
 	Long TIME_DIF_SHOP_PAY_SETTLED = new Long(1 * 1 * 1 * 60 * 1000) ;
 
@@ -293,4 +297,8 @@ public interface DeliverOrderServiceI {
 	DeliverOrderExt getBanlanceLogDetial(DeliverOrderShop deliverOrderShop);
 
     DeliverOrderExt getDetail(Long id);
+	/**
+	 * 通过有赞的订单id 查找本地的订单
+	 */
+	DeliverOrder getOrderByYouZanTid(String tid);
 }

@@ -55,7 +55,7 @@ public class Order01StateImpl implements OrderState {
             mbOrder.setShopId(mbUser.getShopId());
         }
 
-        validate(mbOrder);
+//        validate(mbOrder);
 
         orderService.add(mbOrder);
 
