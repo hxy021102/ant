@@ -578,6 +578,10 @@
                     width : 150,
                     hidden : true
                 }, {
+                    field : 'ck',
+                    checkbox:true,
+                    width : 150
+                }, {
                     field : 'itemId',
                     title : '商品ID',
                     width : 20,
@@ -658,7 +662,56 @@
                 } ] ],
             });
         }
-
+        //批量修改运费
+        function editFreightPrice() {
+            parent.$.modalDialog({
+                title : '批量修改运费',
+                width : 780,
+                height : 150,
+                href : '${pageContext.request.contextPath}/shopItemController/editFreightBatchPage',
+                buttons : [ {
+                    text : '编辑',
+                    handler : function() {
+                        parent.$.modalDialog.openner_dataGrid = deliverShopItemDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                        var rows =$('#deliverShopItemDataGrid').datagrid('getChecked');
+                        var f = parent.$.modalDialog.handler.find('#form');
+                        f.find("input[name= shopItemList]").val(JSON.stringify(rows));
+                        f.submit();
+                    }
+                } ]
+            });
+        }
+        function auditBatch() {
+            parent.$.modalDialog({
+                title : '商品审核',
+                width : 780,
+                height : 300,
+                href : '${pageContext.request.contextPath}/shopItemController/auditBatchPage',
+                buttons: [{
+                    text: '通过',
+                    handler: function () {
+                        parent.$.modalDialog.openner_dataGrid =  deliverShopItemDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                        var rows =$('#deliverShopItemDataGrid').datagrid('getChecked')
+                        var f = parent.$.modalDialog.handler.find('#form');
+                        f.find("input[name= shopItemList]").val(JSON.stringify(rows));
+                        f.find("input[name=status]").val("SIS02");
+                        f.submit();
+                    }
+                },
+                    {
+                        text: '拒绝',
+                        handler: function () {
+                            parent.$.modalDialog.openner_dataGrid =  deliverShopItemDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                            var rows =$('#deliverShopItemDataGrid').datagrid('getChecked')
+                            var f = parent.$.modalDialog.handler.find('#form');
+                            f.find("input[name= shopItemList]").val(JSON.stringify(rows));
+                            f.find("input[name=status]").val("SIS03");
+                            f.submit();
+                        }
+                    }
+                ]
+            });
+        }
         $(function () {
             parent.$.messager.progress('close');
 
@@ -1275,6 +1328,14 @@
     <c:if test="${fn:contains(sessionInfo.resourceList, '/shopItemController/addPage')}">
         <a onclick="addShopItemFun(' + ${mbShopExt.id}+ ');" href="javascript:void(0);" class="easyui-linkbutton"
            data-options="plain:true,iconCls:'pencil_add'">添加</a>
+    </c:if>
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/shopItemController/editFreightBatch')}">
+        <a onclick="editFreightPrice() ;" href="javascript:void(0);" class="easyui-linkbutton"
+           data-options="plain:true,iconCls:'pencil_add'">批量修改运费</a>
+    </c:if>
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/shopItemController/auditBatch')}">
+        <a onclick="auditBatch();" href="javascript:void(0);" class="easyui-linkbutton"
+           data-options="plain:true,iconCls:'pencil_add'">批量审核</a>
     </c:if>
 </div>
 </body>

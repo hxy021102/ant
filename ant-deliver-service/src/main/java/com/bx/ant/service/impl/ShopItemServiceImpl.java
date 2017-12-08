@@ -8,14 +8,12 @@ import com.bx.ant.pageModel.ShopItemQuery;
 import com.bx.ant.service.ShopItemServiceI;
 import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.MbItem;
-import com.mobian.pageModel.MbShop;
-import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.*;
 import com.bx.ant.pageModel.ShopItem;
 import com.mobian.service.MbItemServiceI;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.util.MyBeanUtils;
+import net.sf.json.JSONArray;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -431,6 +429,39 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 			}
 		} else {
 			throw new ServiceException("门店ID或数量不能为空");
+		}
+	}
+
+	@Override
+	public void updateBatchFright(String shopItemList, Integer freight) {
+		JSONArray json = JSONArray.fromObject(shopItemList);
+		if (!F.empty(shopItemList)) {
+			//把json字符串转换成对象
+			List<ShopItem> itemList = (List<ShopItem>) JSONArray.toCollection(json, ShopItem.class);
+			for (ShopItem shopItem : itemList) {
+				shopItem.setFreight(freight);
+				edit(shopItem);
+			}
+		}
+	}
+
+	@Override
+	public void editBatchAuditState(String shopItemList, String status,String reviewerId) {
+		JSONArray json = JSONArray.fromObject(shopItemList);
+		if (!F.empty(shopItemList)) {
+			//把json字符串转换成对象
+			List<ShopItem> itemList = (List<ShopItem>) JSONArray.toCollection(json, ShopItem.class);
+			for (ShopItem shopItem : itemList) {
+				if ("SIS02".equals(status)) {
+					shopItem.setOnline(true);
+					shopItem.setReviewerId(reviewerId);
+					shopItemService.edit(shopItem);
+				} else if ("SIS03".equals(status)) {
+					shopItemService.delete(shopItem.getId());
+				}
+				shopItem.setStatus(status);
+				edit(shopItem);
+			}
 		}
 	}
 }

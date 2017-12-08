@@ -19,6 +19,7 @@ import com.mobian.util.ConfigUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
@@ -205,6 +206,57 @@ public class ShopItemController extends BaseController {
 		}
 		j.setSuccess(true);
 		j.setMsg("编辑成功！");
+		return j;
+	}
+
+	/**
+	 * 跳转到批量修改运费页面
+	 * @return
+	 */
+	@RequestMapping("/editFreightBatchPage")
+	public String editFreightBatchPage(HttpServletRequest request) {
+		return "/delivershopitem/ShopItemBatchEditFreight";
+	}
+
+	/**
+	 * 执行批量修改运费
+	 * @param shopItemList
+	 * @param freight
+	 * @return
+	 */
+	@RequestMapping(value = "/editFreightBatch", method = RequestMethod.POST)
+	@ResponseBody
+	public Json editFreightBatch(String shopItemList, HttpSession session, Integer freight) {
+		shopItemService.updateBatchFright(shopItemList, freight);
+		Json j = new Json();
+		j.setSuccess(true);
+		j.setMsg("修改成功！");
+		return j;
+	}
+
+	/**
+	 * 跳转到批量审核页面
+	 * @return
+	 */
+	@RequestMapping("/auditBatchPage")
+	public String auditBatchPage() {
+		return "/delivershopitem/ShopItemBatchAudit";
+	}
+
+	/**
+	 * 执行批量审核
+	 * @param shopItemList
+	 * @param status
+	 * @return
+	 */
+	@RequestMapping(value = "/auditBatch", method = RequestMethod.POST)
+	@ResponseBody
+	public Json auditBatch(String shopItemList, String status,HttpSession session) {
+		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+		shopItemService.editBatchAuditState(shopItemList, status,sessionInfo.getId());
+		Json j = new Json();
+		j.setSuccess(true);
+		j.setMsg("修改成功！");
 		return j;
 	}
 }

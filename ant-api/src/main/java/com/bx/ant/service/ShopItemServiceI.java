@@ -164,4 +164,18 @@ public interface ShopItemServiceI {
 
 
     void updateQuantity(ShopItem shopItem);
+
+	/**
+	 * 批量修改运费
+	 * @param shopItemList
+	 * @param freight
+	 */
+    void updateBatchFright(String shopItemList,Integer freight);
+
+	/**
+	 * 批量修改审核状态
+	 * @param shopItemList
+	 * @param status
+	 */
+    void editBatchAuditState(String shopItemList,String status,String reviewerId);
 }
