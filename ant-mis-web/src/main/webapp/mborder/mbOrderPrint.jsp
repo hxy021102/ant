@@ -93,11 +93,11 @@
             // 直接打印，不弹出打印机设置对话框
             var jcp = getJCP();
             if (how == '打印预览') {
-              //  document.getElementById("jatoolsPrinter").printPreview(myDoc, false);
-                 jcp.printPreview(myDoc, false); // 打印预览
+                document.getElementById("jatoolsPrinter").printPreview(myDoc, false);
+               //  jcp.printPreview(myDoc, false); // 打印预览
             } else if (how == "打印") {
-               //  document.getElementById("jatoolsPrinter").print(myDoc,true);
-                jcp.print(myDoc, true); // 打印前弹出打印设置对话框
+                 document.getElementById("jatoolsPrinter").print(myDoc,true);
+                //jcp.print(myDoc, true); // 打印前弹出打印设置对话框
             }
         }
         function init(){
