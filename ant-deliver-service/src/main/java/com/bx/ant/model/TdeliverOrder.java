@@ -93,6 +93,7 @@ public class TdeliverOrder implements java.io.Serializable,IEntity{
 	//columns END
 
 	private String supplierOrderId;
+	private String supplierOrderType;
 
 	private BigDecimal longitude;
 
@@ -313,6 +314,15 @@ public class TdeliverOrder implements java.io.Serializable,IEntity{
 
 	public void setSupplierOrderId(String supplierOrderId) {
 		this.supplierOrderId = supplierOrderId;
+	}
+
+	@Column(name = "supplier_order_type", unique = false, nullable = true, insertable = true, updatable = true, scale = 18)
+	public String getSupplierOrderType() {
+		return supplierOrderType;
+	}
+
+	public void setSupplierOrderType(String supplierOrderType) {
+		this.supplierOrderType = supplierOrderType;
 	}
 
 	@Column(name = "complete_images", unique = false, nullable = true, insertable = true, updatable = true, length = 512)

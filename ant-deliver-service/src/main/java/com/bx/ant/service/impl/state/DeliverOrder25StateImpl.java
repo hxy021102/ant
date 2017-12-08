@@ -2,6 +2,7 @@ package com.bx.ant.service.impl.state;
 
 import com.bx.ant.service.*;
 import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.service.qimen.QimenRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
@@ -22,6 +23,9 @@ public class DeliverOrder25StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderServiceI deliverOrderService;
 
+    @Autowired
+    private QimenRequestService qimenRequestService;
+
 
     @Override
     public String getStateName() {
@@ -37,6 +41,10 @@ public class DeliverOrder25StateImpl implements DeliverOrderState {
         orderNew.setStatus(prefix + getStateName());
         orderNew.setDeliveryStatus(DeliverOrderServiceI.DELIVER_STATUS_DELIVERING);
         deliverOrderService.editAndAddLog(orderNew, DeliverOrderLogServiceI.TYPE_DELIVERING_DELIVER_ORDER, "运单发货");
+        DeliverOrder deliverOrderOld = DeliverOrderState.deliverOrder.get();
+        qimenRequestService.updateDeliveryOrderConfirm(deliverOrderOld);
+
+
     }
 
     @Override

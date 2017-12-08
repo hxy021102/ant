@@ -125,16 +125,21 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
         for (ShopDeliverApply shopDeliverApply : shopDeliverApplyList) {
             MbShop mbShop = shopDeliverApply.getMbShop();
             if (excludeShop.contains(mbShop.getId())) continue;
-            double distance = GeoUtil.getDistance(deliverOrder.getLongitude().doubleValue(), deliverOrder.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
-
             if(shopDeliverApply.getMaxDeliveryDistance() != null) {
                 maxDistance = shopDeliverApply.getMaxDeliveryDistance().doubleValue();
             }
-            // maxDistance=-1距离不限
-            if(maxDistance != -1 && distance > maxDistance) continue;
 
-            shopDeliverApply.setDistance(BigDecimal.valueOf(distance));
-            includeShop.add(shopDeliverApply);
+            if(deliverOrder.getLongitude() != null && deliverOrder.getLatitude() != null
+                    && deliverOrder.getLongitude().doubleValue() != -1 && deliverOrder.getLatitude().doubleValue() != -1) {
+                double distance = GeoUtil.getDistance(deliverOrder.getLongitude().doubleValue(), deliverOrder.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
+                // maxDistance=-1距离不限
+                if(maxDistance != -1 && distance > maxDistance) continue;
+
+                shopDeliverApply.setDistance(BigDecimal.valueOf(distance));
+                includeShop.add(shopDeliverApply);
+            } else {
+                if(maxDistance == -1) includeShop.add(shopDeliverApply);
+            }
         }
 
         if(CollectionUtils.isNotEmpty(includeShop)) {
