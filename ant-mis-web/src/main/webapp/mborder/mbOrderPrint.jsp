@@ -103,6 +103,8 @@
         function init(){
             if(parent&&parent.printComplete){
                 try {
+                    //alert(${fn:substring(((5+3)/4),0,fn:indexOf(((5+3)/4), '.'))})
+                   alert("${1==0?5:fn:substring(((5+3)/4+1),0,fn:indexOf((5.0), '.'))}")
                     doPrint("打印预览");
                 }catch(e){
 
@@ -125,7 +127,7 @@
 <body onload="init();">
 <input type="button" value="预览" onClick='doPrint("打印预览")' style="display: none;">&nbsp;<input type="button" value="打印" onClick='doPrint("打印")' style="display: none;">
 <div id='page1' class="breakable" style='width: 100%; margin: 0px; padding: 0; background-color: white;'>
-    <div id="Content">
+   <%-- <div id="Content">--%>
     <table width="100%" cellspacing="0" cellpadding="0"  border="0" id="table2">
     <tr>
             <td colspan="3"></td>
@@ -198,13 +200,14 @@
                 <td>
                     ${mbOrderItem.buyPrice * mbOrderItem.quantity/100.00}
                 </td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
             </tr>
-            <c:if test="${status.count==10}">
-                </div><div id='page2' class="breakable" style='width: 100%; margin: 0px; padding: 0; background-color: white;'>
-            </c:if>
+           <c:if test="${status.count==13||(status.count-13)%22==0}">
+           </table> </div><div id='page${(status.count-13)/22==0?2:fn:substring(((status.count-13)/22+2),0,fn:indexOf(((status.count-13)/22), '.'))}' class="breakable" style='width: 100%; margin: 0px; padding: 0; background-color: white;'>
+               <table id='sample' cellpadding="0" style="border-collapse: collapse" width="100%">
+           </c:if>
         </c:forEach>
         <tr>
             <td colspan="7">总计</td>
@@ -257,7 +260,7 @@
         </tr>
 
     </table>
-   </div>
+ <%--  </div>--%>
 </div>
 </body>
 </html>
