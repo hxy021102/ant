@@ -76,10 +76,10 @@ public class TokenInterceptor implements HandlerInterceptor {
 		}
 
 		String tokenId = request.getParameter(TokenServiceI.TOKEN_FIELD);
-		if(F.empty(tokenId) || !tokenService.validToken(tokenId)) {
-			request.getRequestDispatcher("/api/deliver/apiCommon/error").forward(request, response);
-			return false;
-		}
+//		if(F.empty(tokenId) || !tokenService.validToken(tokenId)) {
+//			request.getRequestDispatcher("/api/deliver/apiCommon/error").forward(request, response);
+//			return false;
+//		}
 
 		String param = "";
 		Map<String, String[]> paramMap = request.getParameterMap();
@@ -92,10 +92,10 @@ public class TokenInterceptor implements HandlerInterceptor {
 
 		//签名验证
 		String sign = request.getHeader("sign");
-		if (F.empty(sign) || !sign.equals(MD5Util.md5(URLEncoder.encode(param + tokenId, "UTF-8").replaceAll("[+]", "%20")))) {
-			request.getRequestDispatcher("/api/deliver/apiCommon/error").forward(request, response);
-			return false;
-		}
+//		if (F.empty(sign) || !sign.equals(MD5Util.md5(URLEncoder.encode(param + tokenId, "UTF-8").replaceAll("[+]", "%20")))) {
+//			request.getRequestDispatcher("/api/deliver/apiCommon/error").forward(request, response);
+//			return false;
+//		}
 
 		return true;
 	}

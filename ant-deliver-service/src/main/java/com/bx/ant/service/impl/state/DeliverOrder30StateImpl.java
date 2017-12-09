@@ -44,7 +44,7 @@ public class DeliverOrder30StateImpl extends AbstractDeliverOrderState {
         orderEdit.setDeliveryStatus(DeliverOrderServiceI.DELIVER_STATUS_DELIVERED);
         orderEdit.setCompleteImages(deliverOrder.getCompleteImages());
         orderEdit.setCompleteRemark(deliverOrder.getCompleteRemark());
-        deliverOrderService.editAndAddLog(orderEdit, DeliverOrderLogServiceI.TYPE_DELIVERED_DELIVER_ORDER, "运单已被派送至目的地");
+        deliverOrderService.editAndAddLog(orderEdit, deliverOrder.getDeliverOrderLogType(), "运单已被派送至目的地");
 
         //门店订单状态
         DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
@@ -64,7 +64,6 @@ public class DeliverOrder30StateImpl extends AbstractDeliverOrderState {
             }
         }
     }
-
     @Override
     public DeliverOrderState next(DeliverOrder deliverOrder) {
         if ((prefix + "40").equals(deliverOrder.getStatus())) {

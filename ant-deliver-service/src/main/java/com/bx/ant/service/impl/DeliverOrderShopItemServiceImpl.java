@@ -175,6 +175,7 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 				add(deliverOrderShopItem);
 
 				//计算总金额
+				//TODO 用户自提未作处理,现在只是统一到门店自己配送
 				amount += deliverOrderShopItem.getPrice() * deliverOrderShopItem.getQuantity();
 
 			}

@@ -2,13 +2,11 @@ package com.bx.ant.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderLog;
 import com.bx.ant.pageModel.DeliverOrderShop;
 import com.bx.ant.pageModel.DriverOrderShop;
 import com.bx.ant.pageModel.session.TokenWrap;
-import com.bx.ant.service.DeliverOrderServiceI;
-import com.bx.ant.service.DeliverOrderShopServiceI;
-import com.bx.ant.service.DeliverOrderYouzanServiceI;
-import com.bx.ant.service.DriverOrderShopServiceI;
+import com.bx.ant.service.*;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
@@ -360,6 +358,7 @@ public class ApiDeliverOrderController extends BaseController {
         Integer shopId = token.getShopId();
 
         deliverOrder.setShopId(shopId);
+        deliverOrder.setDeliverOrderLogType(DeliverOrderLogServiceI.TYPE_DELIVERED_DELIVER_ORDER);
         deliverOrder.setStatus(deliverOrderService.STATUS_DELIVERY_COMPLETE);
 
         deliverOrderService.transformByShopIdAndStatus(deliverOrder);
@@ -546,7 +545,8 @@ public class ApiDeliverOrderController extends BaseController {
         Integer shopId = token.getShopId();
         deliverOrder.setShopId(shopId);
         deliverOrder.setStatus(deliverOrderService.STATUS_DELIVERY_COMPLETE);
-        deliverOrderService.edit(deliverOrder);
+        deliverOrder.setDeliverOrderLogType(DeliverOrderLogServiceI.TYPE_USER_TAKE_ORDER);
+        deliverOrderService.transform(deliverOrder);
         json.setMsg("u know");
         json.setSuccess(true);
         return json;

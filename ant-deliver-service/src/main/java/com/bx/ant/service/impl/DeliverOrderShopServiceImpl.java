@@ -372,37 +372,37 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		Map<Integer, ShopOrderBillQuery> deliverOrderMap = new HashMap<Integer, ShopOrderBillQuery>();
 		int listSize = deliverOrderShopList.size();
 		for (int i = 0; i < listSize; i++) {
-			DeliverOrderShop order = deliverOrderShopList.get(i);
+			DeliverOrderShop orderShop = deliverOrderShopList.get(i);
 			ShopOrderBillQuery shopOrderBillQuery;
 			//2.1初始化一个账单
-			if (!deliverOrderMap.containsKey(order.getShopId())) {
+			if (!deliverOrderMap.containsKey(orderShop.getShopId())) {
 				shopOrderBillQuery = new ShopOrderBillQuery();
 				List<DeliverOrderShop> deliverOrderShops = new ArrayList<DeliverOrderShop>();
-				deliverOrderShops.add(order);
-				Long[] deliverOrderIds = {order.getId()};
-				shopOrderBillQuery.setAmount(order.getAmount());
-				shopOrderBillQuery.setShopId(order.getShopId());
+				deliverOrderShops.add(orderShop);
+				Long[] deliverOrderIds = {orderShop.getId()};
+				shopOrderBillQuery.setAmount(orderShop.getAmount());
+				shopOrderBillQuery.setShopId(orderShop.getShopId());
 				shopOrderBillQuery.setDeliverOrderIds(deliverOrderIds);
 				shopOrderBillQuery.setDeliverOrderShopList(deliverOrderShops);
 				shopOrderBillQuery.setPayWay("DPW01");
 
 				//2.2 填充账单
 			} else {
-				shopOrderBillQuery = deliverOrderMap.get(order.getShopId());
+				shopOrderBillQuery = deliverOrderMap.get(orderShop.getShopId());
 
 				//2.2.1 添加deliverOrderIds
 				int arrayLen = shopOrderBillQuery.getDeliverOrderIds().length;
 				Long[] deliverOrderIds = new Long[arrayLen + 1];
 				System.arraycopy(shopOrderBillQuery.getDeliverOrderIds(), 0, deliverOrderIds, 0, arrayLen);
-				deliverOrderIds[arrayLen] = order.getId();
+				deliverOrderIds[arrayLen] = orderShop.getId();
 				shopOrderBillQuery.setDeliverOrderIds(deliverOrderIds);
 
 				//2.2.2 计算金额并填充信息
-				shopOrderBillQuery.setAmount(order.getAmount() + shopOrderBillQuery.getAmount());
+				shopOrderBillQuery.setAmount(orderShop.getAmount() + shopOrderBillQuery.getAmount());
 				shopOrderBillQuery.setDeliverOrderIds(deliverOrderIds);
-				shopOrderBillQuery.getDeliverOrderShopList().add(order);
+				shopOrderBillQuery.getDeliverOrderShopList().add(orderShop);
 			}
-			deliverOrderMap.put(order.getShopId(), shopOrderBillQuery);
+			deliverOrderMap.put(orderShop.getShopId(), shopOrderBillQuery);
 		}
 
 		//3. 对账单进行添加并进行结算
@@ -422,8 +422,8 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 					orderExt.setStatus(DeliverOrderServiceI.STATUS_CLOSED);
 					orderExt.setOrderShopId(orderShop.getId());
 					deliverOrderService.transform(orderExt);
-					transactionManager.commit(status);
 				}
+				transactionManager.commit(status);
 			}catch (Exception e) {
 				transactionManager.rollback(status);
 				continue;

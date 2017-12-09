@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * 已接单,等待骑手接单
+ * 已接单,等待骑手接单/用户自取/门店自己配送
  * Created by wanxp on 17-9-26.
  */
 @Service("deliverOrder20StateImpl")
@@ -25,6 +25,9 @@ public class DeliverOrder20StateImpl extends AbstractDeliverOrderState{
 
     @Resource(name = "deliverOrder25StateImpl")
     private DeliverOrderState deliverOrderState25;
+
+    @Resource(name = "deliverOrder30StateImpl")
+    private DeliverOrderState deliverOrderState30;
 
     @Autowired
     private DeliverOrderServiceI deliverOrderService;
@@ -109,6 +112,9 @@ public class DeliverOrder20StateImpl extends AbstractDeliverOrderState{
         }
         if ((prefix + "25").equals(deliverOrder.getStatus())) {
             return deliverOrderState25;
+        }
+        if ((prefix + "30").equals(deliverOrder.getStatus())) {
+            return deliverOrderState30;
         }
         return null;
     }

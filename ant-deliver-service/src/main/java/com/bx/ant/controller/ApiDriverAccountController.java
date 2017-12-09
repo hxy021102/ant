@@ -6,6 +6,7 @@ import com.bx.ant.pageModel.DriverAccount;
 import com.bx.ant.pageModel.DriverOrderShop;
 import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.DriverAccountServiceI;
+import com.bx.ant.service.DriverOrderShopBillServiceI;
 import com.bx.ant.service.DriverOrderShopServiceI;
 import com.bx.ant.service.session.TokenServiceI;
 import com.mobian.absx.F;
@@ -58,6 +59,9 @@ public class ApiDriverAccountController extends BaseController {
 
     @Resource
     private DriverOrderShopServiceI driverOrderShopService;
+
+    @Resource
+    private DriverOrderShopBillServiceI driverOrderShopBillService;
 
 
     /**
@@ -341,7 +345,11 @@ public class ApiDriverAccountController extends BaseController {
     @ResponseBody
     public Json getShop(){
         Json json = new Json();
-        json.setObj(mbShopService.getFromCache(35));
+        json.setMsg("getIn");
+//        json.setObj(mbShopService.getFromCache(35));
+        driverOrderShopBillService.addPayOperation();
+        json.setMsg(json.getMsg() + " : getOut");
+        json.setSuccess(true);
         return json;
     }
 

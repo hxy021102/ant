@@ -27,7 +27,6 @@ public class DeliverOrderQuery extends DeliverOrder {
     private String deliveryWayName;
     private String originalOrderStatusName;
 
-
     public String getStatusName() {
         return ConvertNameUtil.getString(this.statusName);
     }
