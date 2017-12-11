@@ -70,4 +70,11 @@ public interface MbContractServiceI {
 	 */
 	List<TmbContract> queryAllMbContract();
 
+	/**
+	 * 获取合同列表数据
+	 * @param mbContract
+	 * @return
+	 */
+	List<MbContract> query(MbContract mbContract);
+
 }
