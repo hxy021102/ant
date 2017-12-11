@@ -5,6 +5,7 @@ import com.bx.ant.pageModel.DeliverOrderItem;
 import com.bx.ant.pageModel.DeliverOrderShop;
 import com.bx.ant.pageModel.Supplier;
 import com.bx.ant.service.*;
+import com.bx.ant.service.qimen.QimenRequestService;
 import com.mobian.thirdpart.youzan.YouzanUtil;
 import com.mobian.util.ConvertNameUtil;
 import com.mobian.absx.F;
@@ -33,14 +34,9 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderServiceI deliverOrderService;
 
-    @Autowired
-    private DeliverOrderPayServiceI deliverOrderPayService;
 
     @Autowired
     private DeliverOrderShopServiceI deliverOrderShopService;
-
-    @Autowired
-    private DeliverOrderLogServiceI deliverOrderLogService;
 
     @Autowired
     private DeliverOrderItemServiceI deliverOrderItemService;
@@ -48,14 +44,15 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderShopItemServiceI deliverOrderShopItemService;
 
-    @Autowired
-    private DeliverOrderShopPayServiceI deliverOrderShopPayService;
 
     @Resource
     private SupplierServiceI supplierService;
 
     @Resource
     private DeliverOrderYouzanServiceI deliverOrderYouzanService;
+
+    @Autowired
+    private QimenRequestService qimenRequestService;
 
     @Override
     public String getStateName() {
@@ -80,7 +77,7 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
         deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
         deliverOrderShop.setShopId(deliverOrder.getShopId());
         deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_AUDITING);
-        deliverOrderShop.setDistance(new BigDecimal(deliverOrder.getShopDistance()));
+        deliverOrderShop.setDistance(deliverOrder.getShopDistance());
         deliverOrderShopService.addAndGet(deliverOrderShop);
         List<DeliverOrderItem> deliverOrderItemList = deliverOrderItemService.getDeliverOrderItemList(deliverOrder.getId());
 
@@ -106,9 +103,17 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
         if(F.empty(deliverOrder.getDeliverOrderLogType())) {
             deliverOrderService.editAndAddLog(deliverOrder, DeliverOrderLogServiceI.TYPE_ASSIGN_DELIVER_ORDER, "系统自动分配订单");
         }else{
-            String content = deliverOrder.getOrderLogRemark() == null ? "指派订单给门店" : "指派订单给门店【" + deliverOrder.getOrderLogRemark() + "】";
+            String content = "指派订单给门店";
+            if (!F.empty(deliverOrder.getOrderLogRemark())) {
+                content = "指派订单给门店【" + deliverOrder.getOrderLogRemark() + "】";
+            }
             deliverOrderService.editAndAddLog(deliverOrder, deliverOrder.getDeliverOrderLogType(), content);
         }
+
+
+        DeliverOrder deliverOrderOld = DeliverOrderState.deliverOrder.get();
+        qimenRequestService.updateOrderProcessReportRequest(prefix + getStateName(),deliverOrderOld);
+
     }
 
     @Override

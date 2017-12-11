@@ -1,5 +1,6 @@
 package com.mobian.service;
 
+import com.mobian.model.TmbSupplierStockIn;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbSupplierStockIn;
 import com.mobian.pageModel.PageHelper;
@@ -40,7 +41,7 @@ public interface MbSupplierStockInServiceI {
      *
      * @param mbSupplierStockIn
      */
-    void edit(MbSupplierStockIn mbSupplierStockIn);
+    TmbSupplierStockIn edit(MbSupplierStockIn mbSupplierStockIn);
 
     /**
      * 删除MbSupplierStockIn
@@ -63,4 +64,11 @@ public interface MbSupplierStockInServiceI {
     List<MbSupplierStockIn> getListByOrderIds(Integer[] orderIds);
 
     List<MbSupplierStockIn> query(MbSupplierStockIn stockIn);
+
+    /**
+     * 获取已入库且未结算的库存价值
+     * @param supplierId
+     * @return
+     */
+    Integer getUnPayStockIn(Integer supplierId);
 }

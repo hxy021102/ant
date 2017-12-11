@@ -1,5 +1,6 @@
 package com.mobian.service.impl;
 
+import com.bx.ant.pageModel.MbBalanceLogDriver;
 import com.mobian.absx.F;
 import com.mobian.dao.MbBalanceDaoI;
 import com.mobian.dao.MbBalanceLogDaoI;
@@ -127,7 +128,7 @@ public class MbBalanceLogServiceImpl extends BaseServiceImpl<MbBalanceLog> imple
 				whereHql += " and t.balanceId in (:balanceIds) ";
 				params.put("balanceIds", mbBalanceLog.getBalanceIds());
 			}
-			if(mbBalanceLog.getRefTypes() !=null) {
+			if(!F.empty(mbBalanceLog.getRefTypes())) {
 				whereHql += " and t.refType in (:refTypes)";
 				params.put("refTypes", mbBalanceLog.getRefTypes().split(","));
 			}
@@ -274,6 +275,21 @@ public class MbBalanceLogServiceImpl extends BaseServiceImpl<MbBalanceLog> imple
 	}
 
 	@Override
+	public DataGrid updateDriverBalanceLogDataGrid(MbBalanceLog mbBalanceLog, PageHelper pageHelper) {
+		DataGrid dataGrid = new DataGrid();
+		if (mbBalanceLog instanceof MbBalanceLogDriver) {
+			MbBalanceLogDriver balanceLogDriver = (MbBalanceLogDriver) mbBalanceLog;
+			if (!F.empty(balanceLogDriver.getAccountId())) {
+				MbBalance mbBalance = mbBalanceService.addOrGetDriverBalance(balanceLogDriver.getAccountId());
+				mbBalanceLog.setBalanceId(mbBalance.getId());
+				dataGrid = dataGrid(mbBalanceLog, pageHelper);
+			}
+		}
+		return dataGrid;
+	}
+
+
+	@Override
 	public DataGrid dataGridBalanceLogDownload(MbBalanceLog mbBalanceLog, PageHelper ph) {
 		if (mbBalanceLog.getUpdatetimeBegin() == null || mbBalanceLog.getUpdatetimeEnd() == null) {
 			return new DataGrid();
@@ -329,5 +345,30 @@ public class MbBalanceLogServiceImpl extends BaseServiceImpl<MbBalanceLog> imple
 
 		return totalBalance;
 	}
+	@Override
+	public Map<String, Integer> totalBalanceByMonthDriver(MbBalanceLogDriver mbBalanceLogDriver) {
+		Map<String, Integer> totalBalance = new HashMap<String, Integer>();
+		if (!F.empty(mbBalanceLogDriver.getAccountId())) {
+			MbBalance mbBalance = mbBalanceService.addOrGetDriverBalance(mbBalanceLogDriver.getAccountId());
+			String sql = "select sum(case when t.amount > 0 then t.amount end) income, "
+					+ " sum(case when t.amount < 0 then t.amount end) expenditure "
+					+ " from mb_balance_log t "
+					+ " where t.isdeleted = 0 and t.balance_id = :balanceId and t.updatetime >= :updatetimeBegin and t.updatetime <= :updatetimeEnd";
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("balanceId", mbBalance.getId());
+			params.put("updatetimeBegin", mbBalanceLogDriver.getUpdatetimeBegin());
+			params.put("updatetimeEnd", mbBalanceLogDriver.getUpdatetimeEnd());
+			List<Map> l = mbBalanceLogDao.findBySql2Map(sql, params);
+			if(CollectionUtils.isNotEmpty(l)) {
+				Map map = l.get(0);
+				if(map.get("income") == null) totalBalance.put("income", 0);
+				else totalBalance.put("income", ((BigDecimal)map.get("income")).intValue());
 
+				if(map.get("expenditure") == null) totalBalance.put("expenditure", 0);
+				else totalBalance.put("expenditure", ((BigDecimal)map.get("expenditure")).intValue());
+			}
+		}
+
+		return totalBalance;
+	}
 }

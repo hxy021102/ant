@@ -20,6 +20,7 @@ public class MbContract implements java.io.Serializable {
 	private Date expiryDateEnd;			
 	private Boolean valid;
 	private String attachment;
+	private Integer[] shopIds;
 
 	public String getShopName() {
 		return shopName;
@@ -116,4 +117,11 @@ public class MbContract implements java.io.Serializable {
 		return this.attachment;
 	}
 
+	public Integer[] getShopIds() {
+		return shopIds;
+	}
+
+	public void setShopIds(Integer[] shopIds) {
+		this.shopIds = shopIds;
+	}
 }

@@ -206,6 +206,9 @@ public class MbSupplierOrderItemServiceImpl extends BaseServiceImpl<MbSupplierOr
             }
             for (MbSupplierOrderItem order : mbSupplierOrderItemList){
                 order.setSumPrice(order.getQuantity() * order.getPrice());
+                if (F.empty(order.getWarehouseQuantity()))
+                    order.setWarehouseQuantity(0);
+                order.setStockSumPrice(order.getWarehouseQuantity() * order.getPrice());
             }
         }
         return dataGrid;

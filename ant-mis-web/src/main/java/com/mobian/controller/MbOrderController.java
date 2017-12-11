@@ -309,11 +309,9 @@ public class MbOrderController extends BaseController {
 		boolean isCheck = "1".equals(ConvertNameUtil.getString("SV110")) && !MbShopServiceI.ST02.equals(mbShop.getShopType()) && ConvertNameUtil.getDesc("SV111", "").indexOf("|" + mbShop.getId() + "|") < 0;
 		Integer debt = mbOrderService.getOrderDebtMoney(mbShop.getId());
 		debt = debt == null ? 0 : debt;
-		Integer realBalance = mbBalance.getAmount() - totalPrice - debt;
+		Integer realBalance = mbBalance.getAmount() - debt;
 		if (isCheck) {
-			if (mbBalance.getAmount() >= 0 && debt <= 0) {
-				//这种情况可以发货
-			} else if (realBalance < 0) {
+			if (realBalance < 0) {
 				throw new ServiceException("存在欠款，不能发货，请联系财务");
 			}
 		}

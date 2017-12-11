@@ -2,9 +2,7 @@ package com.bx.ant.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.mns.model.TopicMessage;
-import com.bx.ant.pageModel.DeliverOrderShopQuery;
 import com.bx.ant.pageModel.session.TokenWrap;
-import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.bx.ant.service.ShopDeliverAccountServiceI;
 import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.bx.ant.service.impl.DeliverOrderShopServiceImpl;
@@ -15,7 +13,6 @@ import com.mobian.pageModel.*;
 import com.bx.ant.pageModel.DeliverOrderShop;
 import com.bx.ant.pageModel.ShopDeliverAccount;
 import com.bx.ant.pageModel.ShopDeliverApply;
-import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.thirdpart.mns.MNSTemplate;
 import com.mobian.thirdpart.mns.MNSUtil;
@@ -45,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 @Controller
 @RequestMapping("/api/deliver/account")
 public class ApiAccountController extends BaseController {
+
 
     @Resource
     private MbShopServiceI mbShopService;
@@ -215,14 +213,16 @@ public class ApiAccountController extends BaseController {
                 MbShop mbShop = mbShopService.getFromCache(shopDeliverApply.getShopId());
 
                 //  统计今日有效订单和今日营业额
-                Integer todayAmount = new Integer(0) ;
+                Integer todayAmount = new Integer(0);
                 //获取有效订单数量
                 Integer todayQuantity = new Integer(0);
                 List<DeliverOrderShop> deliverOrderShopList = deliverOrderShopService.queryTodayOrdersByShopId(shopDeliverApply.getShopId());
                 if (CollectionUtils.isNotEmpty(deliverOrderShopList)) {
                     todayQuantity = deliverOrderShopList.size();
                     for (DeliverOrderShop o : deliverOrderShopList) {
-                        todayAmount += o.getAmount();
+                       /* if (DeliverOrderShopServiceI.STATUS_COMPLETE.equals(o.getStatus())||DeliverOrderShopServiceI.STAUS_SERVICE.equals(o.getStatus())) {*/
+                            todayAmount += o.getAmount();
+                      /*  }*/
                     }
                 }
 

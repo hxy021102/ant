@@ -24,6 +24,7 @@ public class DeliverOrderQuery extends DeliverOrder {
     private Long[] ids;
     private List<String> image;
     private String showTime;
+    private String deliveryWayName;
 
 
     public String getStatusName() {
@@ -144,5 +145,13 @@ public class DeliverOrderQuery extends DeliverOrder {
 
     public void setShowTime(String showTime) {
         this.showTime = showTime;
+    }
+
+    public String getDeliveryWayName() {
+        return ConvertNameUtil.getString(super.getDeliveryWay());
+    }
+
+    public void setDeliveryWayName(String deliveryWayName) {
+        this.deliveryWayName = deliveryWayName;
     }
 }

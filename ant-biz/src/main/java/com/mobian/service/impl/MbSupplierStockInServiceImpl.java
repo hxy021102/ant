@@ -38,6 +38,10 @@ public class MbSupplierStockInServiceImpl extends BaseServiceImpl<MbSupplierStoc
     private MbSupplierServiceI mbSupplierService;
     @Autowired
     private MbSupplierContractServiceI mbSupplierContractService;
+    @Autowired
+    private MbBalanceServiceI mbBalanceService;
+    @Autowired
+    private MbBalanceLogServiceI mbBalanceLogService;
 
 
     @Override
@@ -139,15 +143,54 @@ public class MbSupplierStockInServiceImpl extends BaseServiceImpl<MbSupplierStoc
         MbSupplierStockIn mbSupplierStockIn = new MbSupplierStockIn();
         mbSupplierStockIn.setId(id);
         mbSupplierStockIn.setPayStatus("FS02");
-        edit(mbSupplierStockIn);
-        MbSupplierFinanceLog mbSupplierFinanceLog = new MbSupplierFinanceLog();
-        mbSupplierFinanceLog.setPayStatus(mbSupplierStockIn.getPayStatus());
-        mbSupplierFinanceLog.setPayLoginId(loginId);
-        mbSupplierFinanceLog.setSupplierStockInId(mbSupplierStockIn.getId());
-        mbSupplierFinanceLog.setPayRemark(remark);
-        mbSupplierFinanceLog.setInvoiceStatus(mbSupplierStockIn.getInvoiceStatus());
-        mbSupplierFinanceLogService.add(mbSupplierFinanceLog);
+        TmbSupplierStockIn tmbSupplierStockIn = edit(mbSupplierStockIn);
+        MbSupplierFinanceLog mbSupplierFinanceLog2 = getMbSupplierFinanceLog(mbSupplierStockIn.getId());
+        if (mbSupplierFinanceLog2 == null) {
+            MbSupplierFinanceLog mbSupplierFinanceLog = new MbSupplierFinanceLog();
+            mbSupplierFinanceLog.setPayStatus(mbSupplierStockIn.getPayStatus());
+            mbSupplierFinanceLog.setPayLoginId(loginId);
+            mbSupplierFinanceLog.setSupplierStockInId(mbSupplierStockIn.getId());
+            mbSupplierFinanceLog.setPayRemark(remark);
+            mbSupplierFinanceLog.setInvoiceStatus(mbSupplierStockIn.getInvoiceStatus());
+            mbSupplierFinanceLogService.add(mbSupplierFinanceLog);
+        } else {
+            MbSupplierFinanceLog mbSupplierFinanceLog = new MbSupplierFinanceLog();
+            mbSupplierFinanceLog.setPayStatus(mbSupplierStockIn.getPayStatus());
+            mbSupplierFinanceLog.setPayLoginId(loginId);
+            mbSupplierFinanceLog.setSupplierStockInId(mbSupplierStockIn.getId());
+            mbSupplierFinanceLog.setPayRemark(remark);
+            mbSupplierFinanceLog.setInvoiceStatus(mbSupplierStockIn.getInvoiceStatus());
+            mbSupplierFinanceLog.setId(mbSupplierFinanceLog2.getId());
+            mbSupplierFinanceLogService.edit(mbSupplierFinanceLog);
+        }
+        //添加钱包信息和钱包日志
+        MbSupplierOrder mbSupplierOrder = mbSupplierOrderService.get(tmbSupplierStockIn.getSupplierOrderId());
+        MbBalance mbBalance = mbBalanceService.addOrGetSupplierMbBalance(mbSupplierOrder.getSupplierId());
+        MbBalanceLog balanceLog = new MbBalanceLog();
+        balanceLog.setBalanceId(mbBalance.getId());
+        balanceLog.setRefId(id + "");
+        balanceLog.setRefType("BT070");
+        MbSupplierStockInItem supplierStockInItem = new MbSupplierStockInItem();
+        supplierStockInItem.setSupplierStockInId(id);
+        List<MbSupplierStockInItem> mbSupplierStockInItemList = mbSupplierStockInItemService.query(supplierStockInItem);
+        Integer totalAmount = 0;
+        for (MbSupplierStockInItem mbSupplierStockInItem : mbSupplierStockInItemList) {
+            totalAmount += mbSupplierStockInItem.getQuantity() * mbSupplierStockInItem.getPrice();
+        }
+        balanceLog.setAmount(totalAmount);
+        balanceLog.setReason(String.format("供应商[ID:%1$s]完成入库[ID:%2$s]结算转入", mbSupplierOrder.getSupplierId(), id));
+        mbBalanceLogService.addAndUpdateBalance(balanceLog);
+    }
 
+
+    private MbSupplierFinanceLog getMbSupplierFinanceLog(Integer stockInId){
+        MbSupplierFinanceLog mbSupplierFinanceLog = new MbSupplierFinanceLog();
+        mbSupplierFinanceLog.setSupplierStockInId(stockInId);
+        List<MbSupplierFinanceLog> list = mbSupplierFinanceLogService.query(mbSupplierFinanceLog);
+        if(CollectionUtils.isNotEmpty(list)){
+            return list.get(0);
+        }
+        return null;
     }
 
     @Override
@@ -156,15 +199,22 @@ public class MbSupplierStockInServiceImpl extends BaseServiceImpl<MbSupplierStoc
         mbSupplierStockIn.setId(id);
         mbSupplierStockIn.setInvoiceStatus("IS02");
         edit(mbSupplierStockIn);
-        MbSupplierFinanceLog mbSupplierFinanceLog = new MbSupplierFinanceLog();
-        mbSupplierFinanceLog.setSupplierStockInId(mbSupplierStockIn.getId());
-        List<MbSupplierFinanceLog> list = mbSupplierFinanceLogService.query(mbSupplierFinanceLog);
-        MbSupplierFinanceLog mbSupplierFinanceLog2 = list.get(0);
-        mbSupplierFinanceLog2.setInvoiceStatus(mbSupplierStockIn.getInvoiceStatus());
-        mbSupplierFinanceLog2.setInvoiceLoginId(loginId);
-        mbSupplierFinanceLog2.setInvoiceRemark(remark);
-        mbSupplierFinanceLog2.setInvoiceNo(invoiceNo);
-        mbSupplierFinanceLogService.edit(mbSupplierFinanceLog2);
+        MbSupplierFinanceLog mbSupplierFinanceLog2 = getMbSupplierFinanceLog(mbSupplierStockIn.getId());
+        if(mbSupplierFinanceLog2 == null) {
+            mbSupplierFinanceLog2 = new MbSupplierFinanceLog();
+            mbSupplierFinanceLog2.setSupplierStockInId(mbSupplierStockIn.getId());
+            mbSupplierFinanceLog2.setInvoiceStatus(mbSupplierStockIn.getInvoiceStatus());
+            mbSupplierFinanceLog2.setInvoiceLoginId(loginId);
+            mbSupplierFinanceLog2.setInvoiceRemark(remark);
+            mbSupplierFinanceLog2.setInvoiceNo(invoiceNo);
+            mbSupplierFinanceLogService.add(mbSupplierFinanceLog2);
+        }else{
+            mbSupplierFinanceLog2.setInvoiceStatus(mbSupplierStockIn.getInvoiceStatus());
+            mbSupplierFinanceLog2.setInvoiceLoginId(loginId);
+            mbSupplierFinanceLog2.setInvoiceRemark(remark);
+            mbSupplierFinanceLog2.setInvoiceNo(invoiceNo);
+            mbSupplierFinanceLogService.edit(mbSupplierFinanceLog2);
+        }
     }
 
     protected String whereHql(MbSupplierStockIn mbSupplierStockIn, Map<String, Object> params) {
@@ -263,11 +313,12 @@ public class MbSupplierStockInServiceImpl extends BaseServiceImpl<MbSupplierStoc
     }
 
     @Override
-    public void edit(MbSupplierStockIn mbSupplierStockIn) {
+    public TmbSupplierStockIn edit(MbSupplierStockIn mbSupplierStockIn) {
         TmbSupplierStockIn t = mbSupplierStockInDao.get(TmbSupplierStockIn.class, mbSupplierStockIn.getId());
         if (t != null) {
             MyBeanUtils.copyProperties(mbSupplierStockIn, t, new String[]{"id", "addtime", "isdeleted", "updatetime"}, true);
         }
+        return t;
     }
 
     @Override
@@ -313,5 +364,41 @@ public class MbSupplierStockInServiceImpl extends BaseServiceImpl<MbSupplierStoc
             }
         }
         return ol;
+    }
+
+    @Override
+    public Integer getUnPayStockIn(Integer supplierId) {
+        MbSupplierOrder mbSupplierOrder = new MbSupplierOrder();
+        mbSupplierOrder.setSupplierId(supplierId);
+        List<MbSupplierOrder> mbSupplierOrderList = mbSupplierOrderService.query(mbSupplierOrder);
+        if (CollectionUtils.isNotEmpty(mbSupplierOrderList)) {
+            Integer[] supplierOrderArray = new Integer[mbSupplierOrderList.size()];
+            int i = 0;
+            for (MbSupplierOrder supplierOrder : mbSupplierOrderList) {
+                supplierOrderArray[i++] = supplierOrder.getId();
+            }
+            //查询未结算的入库
+            MbSupplierStockIn mbSupplierStockIn = new MbSupplierStockIn();
+            mbSupplierStockIn.setSupplierOrderIdList(supplierOrderArray);
+            mbSupplierStockIn.setPayStatus("FS01");
+            List<MbSupplierStockIn> mbSupplierStockInList = query(mbSupplierStockIn);
+            if (CollectionUtils.isNotEmpty(mbSupplierStockInList)) {
+                Integer[] supplierStockInArray = new Integer[mbSupplierStockInList.size()];
+                int j = 0;
+                for (MbSupplierStockIn supplierStockIn : mbSupplierStockInList) {
+                    supplierStockInArray[j++] = supplierStockIn.getId();
+                }
+                //查询入库且未结算的商品信息
+                MbSupplierStockInItem mbSupplierStockInItem = new MbSupplierStockInItem();
+                mbSupplierStockInItem.setSupplierStockInIdArray(supplierStockInArray);
+                List<MbSupplierStockInItem> mbSupplierStockInItemList = mbSupplierStockInItemService.query(mbSupplierStockInItem);
+                Integer unPayMoney = 0;
+                for (MbSupplierStockInItem supplierStockInItem : mbSupplierStockInItemList) {
+                    unPayMoney += supplierStockInItem.getPrice() * supplierStockInItem.getQuantity();
+                }
+                return unPayMoney;
+            }
+        }
+        return 0;
     }
 }

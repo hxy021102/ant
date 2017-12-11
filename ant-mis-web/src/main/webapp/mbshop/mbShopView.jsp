@@ -71,6 +71,11 @@
             $.editShopItemPrice = true;
         </script>
     </c:if>
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/mbItemStockLogController/view')}">
+        <script type="text/javascript">
+            $.viewBucketHistory = true;
+        </script>
+    </c:if>
     <script type="text/javascript">
         var gridMap = {};
         $(function () {
@@ -480,7 +485,14 @@
                 }, {
                     field : 'warehouseCode',
                     title : '<%=TmbItemStock.ALIAS_WAREHOUSE_CODE%>',
-                    width : 20
+                    width : 20,
+                    formatter : function (value, row, index) {
+                        if ($.viewBucketHistory){
+                            return '<a onclick="viewBucketHistory(' + row.id + ')">' + row.warehouseCode + '</a>';
+                        }else {
+                            return row.warehouseCode;
+                        }
+                    }
                 }, {
                     field : 'warehouseName',
                     title : '<%=TmbItemStock.ALIAS_WAREHOUSE_NAME%>',
@@ -566,6 +578,10 @@
                     width : 150,
                     hidden : true
                 }, {
+                    field : 'ck',
+                    checkbox:true,
+                    width : 150
+                }, {
                     field : 'itemId',
                     title : '商品ID',
                     width : 20,
@@ -646,7 +662,66 @@
                 } ] ],
             });
         }
-
+        //批量修改运费
+        function editFreightPrice() {
+            var rows = $('#deliverShopItemDataGrid').datagrid('getChecked');
+            if(rows.length > 0) {
+            parent.$.modalDialog({
+                title : '批量修改运费',
+                width : 780,
+                height : 150,
+                href : '${pageContext.request.contextPath}/shopItemController/editFreightBatchPage',
+                buttons : [ {
+                    text : '编辑',
+                    handler : function() {
+                        parent.$.modalDialog.openner_dataGrid = deliverShopItemDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                        var rows =$('#deliverShopItemDataGrid').datagrid('getChecked');
+                        var f = parent.$.modalDialog.handler.find('#form');
+                        f.find("input[name= shopItemList]").val(JSON.stringify(rows));
+                        f.submit();
+                    }
+                } ]
+            });
+            } else {
+                parent.$.messager.alert("提示", "请选择要修改运费的商品！")
+            }
+        }
+        function auditBatch() {
+            var rows = $('#deliverShopItemDataGrid').datagrid('getChecked');
+            if(rows.length > 0) {
+            parent.$.modalDialog({
+                title : '商品审核',
+                width : 780,
+                height : 200,
+                href : '${pageContext.request.contextPath}/shopItemController/auditBatchPage',
+                buttons: [{
+                    text: '通过',
+                    handler: function () {
+                        parent.$.modalDialog.openner_dataGrid =  deliverShopItemDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                        var rows =$('#deliverShopItemDataGrid').datagrid('getChecked')
+                        var f = parent.$.modalDialog.handler.find('#form');
+                        f.find("input[name= shopItemList]").val(JSON.stringify(rows));
+                        f.find("input[name=status]").val("SIS02");
+                        f.submit();
+                    }
+                },
+                    {
+                        text: '拒绝',
+                        handler: function () {
+                            parent.$.modalDialog.openner_dataGrid =  deliverShopItemDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                            var rows =$('#deliverShopItemDataGrid').datagrid('getChecked')
+                            var f = parent.$.modalDialog.handler.find('#form');
+                            f.find("input[name= shopItemList]").val(JSON.stringify(rows));
+                            f.find("input[name=status]").val("SIS03");
+                            f.submit();
+                        }
+                    }
+                ]
+            });
+            }else{
+                parent.$.messager.alert("提示","请选择要审核的商品！")
+            }
+        }
         $(function () {
             parent.$.messager.progress('close');
 
@@ -1055,6 +1130,38 @@
             });
 
         }
+        //空桶变更历史
+        function viewBucketHistory(id) {
+            if (id == undefined) {
+                var rows = dataGrid.datagrid('getSelections');
+                id = rows[0].id;
+            }
+            parent.$.modalDialog({
+                title : '库存变更日志',
+                width : 780,
+                height : 500,
+                href : '${pageContext.request.contextPath}/mbItemStockLogController/view?id=' + id
+            });
+        }
+        function addShopItemFromContract(id) {
+            parent.$.messager.confirm('询问', '您是否要同步合同商品？', function (b) {
+                if (b) {
+                    parent.$.messager.progress({
+                        title: '提示',
+                        text: '数据处理中，请稍后....'
+                    });
+                    $.post('${pageContext.request.contextPath}/shopItemController/addShopItemFromContract', {
+                        shopId:   ${mbShopExt.id}
+                    }, function (result) {
+                        if (result.success) {
+                            parent.$.messager.alert('提示', result.msg, 'info');
+                            deliverShopItemDataGrid.datagrid('reload');
+                        }
+                        parent.$.messager.progress('close');
+                    }, 'JSON');
+                }
+            });
+        }
     </script>
 </head>
 <body>
@@ -1249,6 +1356,18 @@
     <c:if test="${fn:contains(sessionInfo.resourceList, '/shopItemController/addPage')}">
         <a onclick="addShopItemFun(' + ${mbShopExt.id}+ ');" href="javascript:void(0);" class="easyui-linkbutton"
            data-options="plain:true,iconCls:'pencil_add'">添加</a>
+    </c:if>
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/shopItemController/editFreightBatch')}">
+        <a onclick="editFreightPrice() ;" href="javascript:void(0);" class="easyui-linkbutton"
+           data-options="plain:true,iconCls:'pencil_add'">批量修改运费</a>
+    </c:if>
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/shopItemController/auditBatch')}">
+        <a onclick="auditBatch();" href="javascript:void(0);" class="easyui-linkbutton"
+           data-options="plain:true,iconCls:'pencil_add'">批量审核</a>
+    </c:if>
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/shopItemController/addShopItemFromContract')}">
+        <a onclick="addShopItemFromContract();" href="javascript:void(0);" class="easyui-linkbutton"
+           data-options="plain:true,iconCls:'pencil_add'">同步合同商品</a>
     </c:if>
 </div>
 </body>

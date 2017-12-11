@@ -42,7 +42,7 @@
 					<th>账号ID：</th>
 					<td>
 											<jb:selectGrid name="accountId" dataType="accountId"></jb:selectGrid>
-					</td>							
+					</td>
 					<th>配送方式</th>
 					<td>
 											<jb:select dataType="DAW" name="deliveryWay"></jb:select>	

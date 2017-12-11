@@ -16,8 +16,11 @@
     <title></title>
     <script src="${pageContext.request.contextPath}/jslib/jquery-1.8.3.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/jslib/jquery-barcode.min.js" charset="utf-8"></script>
-    <OBJECT  ID="jatoolsPrinter" CLASSID="CLSID:B43D3361-D075-4BE2-87FE-057188254255"
+     <OBJECT  ID="jatoolsPrinter" CLASSID="CLSID:B43D3361-D075-4BE2-87FE-057188254255"
              codebase="jatoolsPrinter.cab#version=8,6,0,0"></OBJECT>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/style/guide.css" />
+  <%--  <script type="text/javascript" src="${pageContext.request.contextPath}/web/js/jcp.js"></script>--%>
+
     <script>
 
         $(function(){
@@ -35,7 +38,7 @@
         })
 
         //参考api http://printfree.jatools.com/document.html
-        function doPrint() {
+        /*function doPrint() {
             var myDoc = {
                 settings:{
                     paperName:'BX6L',
@@ -44,21 +47,36 @@
                     //printer:'OKi5530',//设置到打印机 'OKi5530',如果不设置打印机，控件则输出到默认打印机
                     leftMargin:0,
                     bottomMargin:50,
-                    rightMargin:0/*,
+                    rightMargin:0/!*,
                     paperWidth:2100,
-                    paperHeight:1400*/
+                    paperHeight:1400*!/
                 },
                 documents: document,
-                /*
+                /!*
                  要打印的div 对象在本文档中，控件将从本文档中的 id 为 'page1' 的div对象，
-                 作为首页打印id 为'page2'的作为第二页打印            */
+                 作为首页打印id 为'page2'的作为第二页打印            *!/
                 copyrights: '杰创软件拥有版权  www.jatools.com' // 版权声明,必须
             };
-            document.getElementById("jatoolsPrinter").print(myDoc,false); // 直接打印，不弹出打印机设置对话框
-        }
-        function doPreview() {
+            var jcp = getJCP();
+            jcp.print(myDoc,true);
+
+          //  document.getElementById("jatoolsPrinter").print(myDoc,true); // 直接打印，不弹出打印机设置对话框
+        }*/
+        function doPrint(how) {
             var myDoc = {
-                settings:{
+                //		logPage : true,
+                //	xuc : "7",
+                settings: {
+                    paperName: 'BX6L',
+                    portrait: true,
+                    marginLeft: 15,
+                    marginTop: 15,
+                    marginRight: 15,
+                    marginBottom: 15
+                },
+                documents: document,
+                copyrights: '杰创软件拥有版权  www.jatools.com'
+                /*settings:{
                     paperName:'BX6L',
                     orientation:1,
                     topMargin:0,
@@ -66,18 +84,26 @@
                     bottomMargin:50,
                     rightMargin:0 },
                 documents: document,
-                /*
+                /!*
                  要打印的div 对象在本文档中，控件将从本文档中的 id 为 'page1' 的div对象，
-                 作为首页打印id 为'page2'的作为第二页打印            */
-                copyrights: '杰创软件拥有版权  www.jatools.com' // 版权声明,必须
+                 作为首页打印id 为'page2'的作为第二页打印            *!/
+                copyrights: '杰创软件拥有版权  www.jatools.com' // 版权声明,必须*/
             };
-            document.getElementById("jatoolsPrinter").printPreview(myDoc); // 直接打印，不弹出打印机设置对话框
+          /*  document.getElementById("jatoolsPrinter").printPreview(myDoc); */
+            // 直接打印，不弹出打印机设置对话框
+            if (how == '打印预览') {
+                document.getElementById("jatoolsPrinter").printPreview(myDoc, false);
+               //  jcp.printPreview(myDoc, false); // 打印预览
+            } else if (how == "打印") {
+                 document.getElementById("jatoolsPrinter").print(myDoc,true);
+                //jcp.print(myDoc, true); // 打印前弹出打印设置对话框
+            }
         }
         function init(){
             if(parent&&parent.printComplete){
                 try {
-                    doPrint();
-                }catch(e){
+                    doPrint("打印");
+                } catch (e) {
 
                 }
                 /*setTimeout(function(){
@@ -96,10 +122,11 @@
 
 </head>
 <body onload="init();">
-<input type="button" value="预览" onClick='doPreview()' style="display: none;">&nbsp;<input type="button" value="打印" onClick='doPrint()' style="display: none;">
-<div id='page1'>
-    <table width="100%" cellspacing="0" cellpadding="0">
-        <tr>
+<input type="button" value="预览" onClick='doPrint("打印预览")' style="display: none;">&nbsp;<input type="button" value="打印" onClick='doPrint("打印")' style="display: none;">
+<div id='page1' class="breakable" style='width: 100%; margin: 0px; padding: 0; background-color: white;'>
+   <%-- <div id="Content">--%>
+    <table width="100%" cellspacing="0" cellpadding="0"  border="0" id="table2">
+    <tr>
             <td colspan="3"></td>
             <td rowspan="2" align="center"><div id="bcTarget"></div></td>
         </tr>
@@ -126,7 +153,7 @@
             <td>客户名称</td>
             <td colspan="6">${mbOrder.shopName}</td>
             <td>电话</td>
-            <td colspan="3">${mbOrder.contactPhone}</td>
+            <td colspan="2">${mbOrder.contactPhone}</td>
         </tr>
         <tr>
             <td>配送地址</td>
@@ -170,10 +197,14 @@
                 <td>
                     ${mbOrderItem.buyPrice * mbOrderItem.quantity/100.00}
                 </td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
             </tr>
+           <c:if test="${status.count==9||(status.count-9)%18==0}">
+           </table> </div><div id='page${(status.count-9)/18==0?2:fn:substring(((status.count-9)/18+2),0,fn:indexOf(((status.count-9)/18), '.'))}' class="breakable" style='width: 100%; margin: 0px; padding: 0; background-color: white;'>
+               <table id='sample' cellpadding="0" style="border-collapse: collapse" width="100%">
+           </c:if>
         </c:forEach>
         <tr>
             <td colspan="7">总计</td>
@@ -188,7 +219,7 @@
         </tr>
         <tr>
             <td>付款方式</td>
-            <td colspan="3">${mbPayment.payWayName}</td>
+            <td  >${mbPayment.payWayName}</td>
 
             <td colspan="2">券票</td>
 
@@ -197,7 +228,7 @@
             <td colspan="2">累计欠桶量</td>
             <td>&nbsp;</td>
             <td>本单欠款</td>
-            <td>
+            <td colspan="3">
                 <c:if test="${mbOrder.payStatus=='PS01'}">
                     ${totalItemPrice/100.00}
                 </c:if>
@@ -205,7 +236,7 @@
         </tr>
         <tr>
             <td>${mbOrder.payStatusName}</td>
-            <td colspan="3">${mbPayment.amount/100.00}</td>
+            <td  >${mbPayment.amount/100.00}</td>
 
             <td colspan="2">&nbsp;</td>
             <td>&nbsp;</td>
@@ -213,7 +244,7 @@
             <td colspan="2">累计欠结</td>
             <td></td>
             <td>账户余额</td>
-            <td>${mbBalance.amount/100.00}</td>
+            <td colspan="3">${mbBalance.amount/100.00}</td>
         </tr>
     </table>
     <table width="100%" cellspacing="0" cellpadding="0">
@@ -226,6 +257,7 @@
         </tr>
 
     </table>
+ <%--  </div>--%>
 </div>
 </body>
 </html>

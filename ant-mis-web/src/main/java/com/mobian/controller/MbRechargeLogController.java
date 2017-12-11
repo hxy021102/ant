@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
-import com.mobian.service.BasedataServiceI;
-import com.mobian.service.MbBalanceServiceI;
-import com.mobian.service.MbRechargeLogServiceI;
-import com.mobian.service.MbShopServiceI;
+import com.mobian.service.*;
 import com.mobian.util.ConfigUtil;
 import com.mobian.util.ImportExcelUtil;
 import net.sf.json.JSONObject;
@@ -49,7 +46,8 @@ public class MbRechargeLogController extends BaseController {
     private MbShopServiceI mbShopService;
     @Autowired
     private BasedataServiceI basedataService;
-
+    @Autowired
+    private MbSupplierServiceI mbSupplierService;
 
     /**
      * 跳转到MbRechargeLog管理页面
@@ -453,4 +451,37 @@ public class MbRechargeLogController extends BaseController {
         return j;
     }
 
+    /**
+     * 供应商钱包充值
+     * @param request
+     * @param supplierId
+     * @return
+     */
+    @RequestMapping("/addSupplierChargePage")
+    public String addSupplierCashChargePage(HttpServletRequest request, Integer supplierId) {
+        MbSupplier mbSupplier=mbSupplierService.getFromCache(supplierId);
+        request.setAttribute("mbSupplier", mbSupplier);
+        return "mbuser/addSupplierCharge";
+    }
+
+    /**
+     * 供应商钱包充值
+     * @param session
+     * @param mbRechargeLog
+     * @return
+     */
+    @RequestMapping("/addSupplierCharge")
+    @ResponseBody
+    public Json addSupplierCharge(HttpSession session, MbRechargeLog mbRechargeLog,Integer supplierId) {
+        Json j = new Json();
+        SessionInfo sessionInfo = (SessionInfo) session.getAttribute("sessionInfo");
+        MbBalance mbBalance = mbBalanceService.addOrGetSupplierMbBalance(supplierId);
+        mbRechargeLog.setBalanceId(mbBalance.getId());
+        mbRechargeLog.setApplyLoginId(sessionInfo.getId());
+        mbRechargeLog.setHandleStatus(MbRechargeLogServiceI.HS02);
+        mbRechargeLogService.addAndUpdateBalance(mbRechargeLog);
+        j.setSuccess(true);
+        j.setMsg("添加成功！");
+        return j;
+    }
 }

@@ -22,7 +22,7 @@ public class MbSupplierOrderItem implements java.io.Serializable {
 	//已入库数量
 	private Integer warehouseQuantity;
 	private Integer sumPrice;
-
+    private Integer stockSumPrice;
 	public Integer getSumPrice() {
 		return sumPrice;
 	}
@@ -135,5 +135,13 @@ public class MbSupplierOrderItem implements java.io.Serializable {
 
 	public void setItemCode(String itemCode) {
 		this.itemCode = itemCode;
+	}
+
+	public Integer getStockSumPrice() {
+		return stockSumPrice;
+	}
+
+	public void setStockSumPrice(Integer stockSumPrice) {
+		this.stockSumPrice = stockSumPrice;
 	}
 }

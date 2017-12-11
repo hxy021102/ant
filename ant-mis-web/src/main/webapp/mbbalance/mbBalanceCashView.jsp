@@ -49,7 +49,7 @@
                     width: 150,
                     hidden: true
                 }, {
-                    field : 'updatetime',
+                    field : 'addtime',
                     title : '<%=TmbBalanceLog.ALIAS_TIME%>',
                     width : 100
                 }, {
@@ -224,7 +224,7 @@
                     </td>
                     <th style="width: 50px">业务类型</th>
                     <td>
-                     <jb:select  dataType="BT" name="refTypes" multiple="true"></jb:select>
+                     <jb:select  dataType="BT" name="refTypes" multiple="true" ></jb:select>
                     </td>
                 </tr>
             </table>

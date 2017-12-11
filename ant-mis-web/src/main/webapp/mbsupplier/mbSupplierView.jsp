@@ -379,11 +379,34 @@
             }
         });
     }
+    //获取供应商钱包日志
+    function viewBalance(id) {
+        var href = '${pageContext.request.contextPath}/mbUserController/viewBalance?supplierId=' + id;
+        parent.$("#index_tabs").tabs('add', {
+            title: '余额-' + id,
+            content: '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            closable: true
+        });
+    }
+    //获取供应商未付款入库列表及其汇总
+    function viewMbSupplierStockIn(id) {
+        var href = '${pageContext.request.contextPath}/mbSupplierStockInController/manager?supplierId=' + id+"&payStatus='FS01'";
+        parent.$("#index_tabs").tabs('add', {
+            title: '供应商入库应付款列表' ,
+            content: '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            closable: true
+        });
+    }
+    $(function () {
+        $('.money_input').each(function () {
+            $(this).text($.formatMoney($(this).text().trim()));
+        });
+    });
 </script>
 </head>
 <body>
 <div class="easyui-layout" data-options="fit:true,border:false">
-	<div data-options="region:'north',border:false">
+	<div data-options="region:'north',border:false" style="height: 180px; overflow: hidden;">
 		<table class="table table-hover table-condensed">
 				<tr>
 					<th><%=TmbSupplier.ALIAS_ADDTIME%></th>
@@ -394,25 +417,33 @@
 					<td>
 						${mbSupplier.updatetime}
 					</td>
-				</tr>		
-				<tr>	
-
-				<tr>	
-					<th><%=TmbSupplier.ALIAS_NAME%></th>	
+					<th><%=TmbSupplier.ALIAS_NAME%></th>
 					<td>
-						${mbSupplier.name}							
+						${mbSupplier.name}
 					</td>
 					<th><%=TmbSupplier.ALIAS_SUPPLIER_CODE%></th>
 					<td>
 						${mbSupplier.supplierCode}
 					</td>
+				</tr>
 				</tr>		
-				<tr>	
-					<th><%=TmbSupplier.ALIAS_ADDRESS%></th>	
-					<td colspan="3">
-						${mbSupplier.address}							
-					</td>							
-
+				<tr>
+					<th><%=TmbSupplier.ALIAS_WAREHOUSE_ID%></th>
+					<td>
+						${mbSupplier.warehouseName}
+					</td>
+					<th>余额</th>
+					<td class="money_input">
+						${mbSupplier.balanceAmount+mbSupplier.unPayBalanceAmount}
+					</td>
+					<th>实际余额</th>
+					<td>
+						<a href="javascript:void(0);" onclick="viewBalance('${mbSupplier.id}')" class="money_input">${mbSupplier.balanceAmount}</a>
+					</td>
+					<th>应付金额</th>
+					<td>
+						<a href="javascript:void(0);" onclick="viewMbSupplierStockIn('${mbSupplier.id}')" class="money_input">${mbSupplier.unPayBalanceAmount}</a>
+					</td>
 				</tr>		
 				<tr>	
 					<th><%=TmbSupplier.ALIAS_CONTACT_PEOPLE%></th>	
@@ -423,13 +454,9 @@
 					<td>
 						${mbSupplier.contactPhone}
 					</td>
-				</tr>
-				<tr>
 					<th><%=TmbSupplier.ALIAS_FINANCIAL_CONTACT%></th>
 					<td>
-
-							${mbSupplier.financialContact}
-
+						${mbSupplier.financialContact}
 					</td>
 					<th><%=TmbSupplier.ALIAS_FINANCIAL_CONTACT_PHONE%></th>
 					<td>
@@ -441,14 +468,10 @@
 					<td>
 						${mbSupplier.regionName}
 					</td>
-					<th><%=TmbSupplier.ALIAS_WAREHOUSE_ID%></th>	
-					<td colspan="3">
-						${mbSupplier.warehouseName}
+					<th><%=TmbSupplier.ALIAS_ADDRESS%></th>
+					<td colspan="5">
+						${mbSupplier.address}
 					</td>
-					<%--<th><%=TmbSupplier.ALIAS_CERTIFICATE_LIST%></th>
-					<td>
-						${mbSupplier.certificateList}
-					</td>			--%>
 				</tr>		
 		</table>
 	</div>

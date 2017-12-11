@@ -85,8 +85,14 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
             if(point != null) {
                 deliverOrder.setLongitude(point[0]);
                 deliverOrder.setLatitude(point[1]);
-            }
 
+                // 保存经纬度，防止重复获取,不影响分单逻辑
+                try{
+                    deliverOrderService.edit(deliverOrder);
+                }catch(Exception e){
+                    logger.error("保存经纬度失败", e);
+                }
+            }
         }
         //4、计算最近距离点
 //        MbShop minMbShop = null;
@@ -114,9 +120,10 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
             if(shopDeliverApply.getMaxDeliveryDistance() != null) {
                 maxDistance = shopDeliverApply.getMaxDeliveryDistance().doubleValue();
             }
-            if(distance > maxDistance) continue;
+            // maxDistance=-1距离不限
+            if(maxDistance != -1 && distance > maxDistance) continue;
 
-            shopDeliverApply.setDistance(distance);
+            shopDeliverApply.setDistance(BigDecimal.valueOf(distance));
             includeShop.add(shopDeliverApply);
 
 //            if (distance < minDistance || minDistance == 0) {
@@ -194,6 +201,5 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
 
             }
         }
-
     }
 }
