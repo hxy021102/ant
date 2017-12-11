@@ -259,4 +259,19 @@ public class ShopItemController extends BaseController {
 		j.setMsg("修改成功！");
 		return j;
 	}
+
+	/**
+	 * 同步合同商品
+	 * @param shopId
+	 * @return
+	 */
+	@RequestMapping("/addShopItemFromContract")
+	@ResponseBody
+	public Json addShopItemFromContract(Integer shopId) {
+		shopItemService.addShoItemFromContract(shopId);
+		Json j = new Json();
+		j.setSuccess(true);
+		j.setMsg("同步合同商品成功！");
+		return j;
+	}
 }

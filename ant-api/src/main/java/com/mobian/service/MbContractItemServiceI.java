@@ -85,4 +85,11 @@ public interface MbContractItemServiceI {
      * @param newPrice
      */
     public void updateBatchContractPrice(String mbContractItemList, Integer newPrice);
+
+    /**
+     * 查询合同商品信息
+     * @param mbContractItem
+     * @return
+     */
+    List<MbContractItem> query(MbContractItem mbContractItem);
 }

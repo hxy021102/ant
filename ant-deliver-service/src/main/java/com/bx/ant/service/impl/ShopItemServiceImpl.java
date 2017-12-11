@@ -10,6 +10,8 @@ import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
 import com.bx.ant.pageModel.ShopItem;
+import com.mobian.service.MbContractItemServiceI;
+import com.mobian.service.MbContractServiceI;
 import com.mobian.service.MbItemServiceI;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.util.MyBeanUtils;
@@ -20,10 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements ShopItemServiceI {
@@ -40,6 +39,11 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 	private ShopItemServiceImpl shopItemService;
 	@Resource
 	private MbShopServiceI mbShopService;
+
+	@Resource
+	private MbContractServiceI mbContractService;
+	@Resource
+	private MbContractItemServiceI mbContractItemService;
 
 	@Override
 	public DataGrid dataGrid(ShopItem shopItem, PageHelper ph) {
@@ -440,6 +444,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 			List<ShopItem> itemList = (List<ShopItem>) JSONArray.toCollection(json, ShopItem.class);
 			for (ShopItem shopItem : itemList) {
 				shopItem.setFreight(freight);
+				shopItem.setPrice(shopItem.getInPrice()+freight);
 				edit(shopItem);
 			}
 		}
@@ -452,15 +457,137 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 			//把json字符串转换成对象
 			List<ShopItem> itemList = (List<ShopItem>) JSONArray.toCollection(json, ShopItem.class);
 			for (ShopItem shopItem : itemList) {
-				if ("SIS02".equals(status)) {
-					shopItem.setOnline(true);
-					shopItem.setReviewerId(reviewerId);
-					shopItemService.edit(shopItem);
-				} else if ("SIS03".equals(status)) {
-					shopItemService.delete(shopItem.getId());
+				if (shopItem.getOnline() != true) {
+					if ("SIS02".equals(status)) {
+						shopItem.setOnline(true);
+						shopItem.setReviewerId(reviewerId);
+						shopItemService.edit(shopItem);
+					} else if ("SIS03".equals(status)) {
+						shopItemService.delete(shopItem.getId());
+					}
+					shopItem.setStatus(status);
+					edit(shopItem);
 				}
-				shopItem.setStatus(status);
-				edit(shopItem);
+			}
+		}
+	}
+
+	@Override
+	public void addShopItemAllocation() {
+		/*
+		 * 依赖于一个门店只允许出现一份有效合同,
+		 * 1、查询门店商品中的门店（s）
+		 * 2、通过存在门店商品的门店查询合同(s)，
+		 * 3、通过合同查询合同商品,
+		 * Map<Integer, List<Integer>> shopItemMap = new HashMap<Integer, List<Integer>>() ，key为shopId,value为门店所对应的所有商品
+		 * Map<Integer, List<MbContractItem>> mbContractItemMap = new HashMap<Integer, List<MbContractItem>>(),key为contractId,value为门店所对应的所有商品
+		 * 4、遍历查询出来的合同，通过contractId取List<MbContractItem>作为mbContractMap的value，对应的shopId作为mbContractMap的键
+		 * Map<Integer, List<MbContractItem>> mbContractMap = new HashMap<Integer, List<MbContractItem>>()，key为shopId，value为门店所对应的所有商品
+		 */
+		ShopItem shopItemQuery = new ShopItem();
+		List<ShopItem> shopItemList = query(shopItemQuery);
+		if (CollectionUtils.isNotEmpty(shopItemList)) {
+			Map<Integer, List<Integer>> shopItemMap = new HashMap<Integer, List<Integer>>();
+			for (ShopItem shopItem : shopItemList) {
+				List<Integer> list = shopItemMap.get(shopItem.getShopId());
+				if (list == null) {
+					list = new ArrayList<Integer>();
+					list.add(shopItem.getItemId());
+					shopItemMap.put(shopItem.getShopId(), list);
+				} else {
+					list.add(shopItem.getItemId());
+					shopItemMap.put(shopItem.getShopId(), list);
+				}
+			}
+			Integer[] shopIds = new Integer[shopItemMap.size()];
+			Integer i = 0;
+			for (Integer key : shopItemMap.keySet()) {
+				shopIds[i++] = key;
+			}
+			//根据门店id获取已签订合同的商品信息
+			MbContract mbContract = new MbContract();
+			mbContract.setValid(true);
+			mbContract.setShopIds(shopIds);
+			List<MbContract> mbContractList = mbContractService.query(mbContract);
+			if (CollectionUtils.isNotEmpty(mbContractList)) {
+				Integer[] contractIds = new Integer[mbContractList.size()];
+				int j = 0;
+				for (MbContract contract : mbContractList) {
+					contractIds[j++] = contract.getId();
+				}
+				MbContractItem mbContractItem = new MbContractItem();
+				mbContractItem.setContractIds(contractIds);
+				List<MbContractItem> mbContractItemList = mbContractItemService.query(mbContractItem);
+				if (CollectionUtils.isNotEmpty(mbContractItemList)) {
+					Map<Integer, List<MbContractItem>> mbContractItemMap = new HashMap<Integer, List<MbContractItem>>();
+					for (MbContractItem contractItem : mbContractItemList) {
+						List<MbContractItem> list = mbContractItemMap.get(contractItem.getContractId());
+						if (list == null) {
+							list = new ArrayList<MbContractItem>();
+							list.add(contractItem);
+							mbContractItemMap.put(contractItem.getContractId(), list);
+						} else {
+							list.add(contractItem);
+							mbContractItemMap.put(contractItem.getContractId(), list);
+						}
+					}
+					Map<Integer, List<MbContractItem>> mbContractMap = new HashMap<Integer, List<MbContractItem>>();
+					for (MbContract contract : mbContractList) {
+						mbContractMap.put(contract.getShopId(), mbContractItemMap.get(contract.getId()));
+					}
+					//若门店已签订的商品，门店商品中不存在，则进行新增
+					for (Integer key : shopItemMap.keySet()) {
+						List<Integer> itemIds = shopItemMap.get(key);
+						if (mbContractMap.get(key) != null) {
+							for (MbContractItem contractItem : mbContractMap.get(key)) {
+								if (!itemIds.contains(contractItem.getItemId())) {
+									ShopItem shopItem = new ShopItem();
+									shopItem.setShopId(key);
+									shopItem.setItemId(contractItem.getItemId());
+									shopItem.setFreight(0);
+									shopItem.setInPrice(contractItem.getPrice());
+									shopItem.setPrice(shopItem.getInPrice());
+									add(shopItem);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	@Override
+	public void addShoItemFromContract(Integer shopId) {
+		ShopItem shopItem = new ShopItem();
+		shopItem.setShopId(shopId);
+		List<ShopItem> shopItemList = query(shopItem);
+		if (CollectionUtils.isNotEmpty(shopItemList)) {
+			List<Integer> itemIds = new ArrayList<Integer>();
+			for (ShopItem item : shopItemList) {
+				itemIds.add(item.getItemId());
+			}
+			MbContract mbContract = new MbContract();
+			mbContract.setShopId(shopId);
+			List<MbContract> mbContractList = mbContractService.query(mbContract);
+			if (CollectionUtils.isNotEmpty(mbContractList)) {
+				MbContract contract = mbContractList.get(0);
+				MbContractItem mbContractItem = new MbContractItem();
+				mbContractItem.setContractId(contract.getId());
+				List<MbContractItem> mbContractItemList = mbContractItemService.query(mbContractItem);
+				if (CollectionUtils.isNotEmpty(mbContractItemList)) {
+					for (MbContractItem contractItem : mbContractItemList) {
+						if (!itemIds.contains(contractItem.getItemId())) {
+							ShopItem shopItemNew = new ShopItem();
+							shopItemNew.setShopId(shopId);
+							shopItemNew.setFreight(0);
+							shopItemNew.setItemId(contractItem.getItemId());
+							shopItemNew.setInPrice(contractItem.getPrice());
+							shopItemNew.setPrice(shopItemNew.getInPrice());
+							add(shopItemNew);
+						}
+					}
+				}
 			}
 		}
 	}

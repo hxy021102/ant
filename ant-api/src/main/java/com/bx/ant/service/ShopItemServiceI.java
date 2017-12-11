@@ -178,4 +178,15 @@ public interface ShopItemServiceI {
 	 * @param status
 	 */
     void editBatchAuditState(String shopItemList,String status,String reviewerId);
+
+	/**
+	 * 通过查询门店商品合同，自动添加门店商品
+	 */
+	void addShopItemAllocation();
+
+	/**
+	 * 从合同商品一键同步门店商品
+	 * @param shopId
+	 */
+	void addShoItemFromContract(Integer shopId);
 }
