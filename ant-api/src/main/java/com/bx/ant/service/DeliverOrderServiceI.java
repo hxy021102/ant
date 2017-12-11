@@ -293,4 +293,11 @@ public interface DeliverOrderServiceI {
 	DeliverOrderExt getBanlanceLogDetial(DeliverOrderShop deliverOrderShop);
 
     DeliverOrderExt getDetail(Long id);
+
+	/**
+	 * 通过门店id获取今日营业额订单列表
+	 * @param shopId
+	 * @return
+	 */
+	List<DeliverOrder> queryTodayProfitOrdersByShopId(Integer shopId);
 }
