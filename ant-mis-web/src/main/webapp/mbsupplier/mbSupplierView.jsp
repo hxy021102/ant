@@ -388,6 +388,15 @@
             closable: true
         });
     }
+    //获取供应商未付款入库列表及其汇总
+    function viewMbSupplierStockIn(id) {
+        var href = '${pageContext.request.contextPath}/mbSupplierStockInController/manager?supplierId=' + id+"&payStatus='FS01'";
+        parent.$("#index_tabs").tabs('add', {
+            title: '供应商入库应付款列表' ,
+            content: '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            closable: true
+        });
+    }
     $(function () {
         $('.money_input').each(function () {
             $(this).text($.formatMoney($(this).text().trim()));
@@ -432,8 +441,8 @@
 						<a href="javascript:void(0);" onclick="viewBalance('${mbSupplier.id}')" class="money_input">${mbSupplier.balanceAmount}</a>
 					</td>
 					<th>应付金额</th>
-					<td class="money_input">
-						${mbSupplier.unPayBalanceAmount}
+					<td>
+						<a href="javascript:void(0);" onclick="viewMbSupplierStockIn('${mbSupplier.id}')" class="money_input">${mbSupplier.unPayBalanceAmount}</a>
 					</td>
 				</tr>		
 				<tr>	
