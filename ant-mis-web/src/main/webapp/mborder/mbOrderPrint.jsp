@@ -95,7 +95,7 @@
                 document.getElementById("jatoolsPrinter").printPreview(myDoc, false);
                //  jcp.printPreview(myDoc, false); // 打印预览
             } else if (how == "打印") {
-                 document.getElementById("jatoolsPrinter").print(myDoc,true);
+                 document.getElementById("jatoolsPrinter").print(myDoc,false);
                 //jcp.print(myDoc, true); // 打印前弹出打印设置对话框
             }
         }
