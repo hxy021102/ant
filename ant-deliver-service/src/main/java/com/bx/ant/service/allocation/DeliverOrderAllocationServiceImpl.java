@@ -160,11 +160,16 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                 TransactionStatus status = transactionManager.getTransaction(def); // 获得事务状态
 
                 try{
-                    if(!DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(shopDeliverApply.getDeliveryType())
-                            && tokenService.getTokenByShopId(mbShop.getId()) == null) throw new ServiceException("门店不在线，token已失效");
-                    if(!DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(shopDeliverApply.getDeliveryType())
-                            && (shopDeliverApply.getOnline() == null || !shopDeliverApply.getOnline())) throw new ServiceException("门店停止营业");
+                    // 排除代送、强制接单
+                    if(!ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrder.getDeliveryWay())) {
+                        if(!DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(shopDeliverApply.getDeliveryType())
+                                && tokenService.getTokenByShopId(mbShop.getId()) == null) throw new ServiceException("门店不在线，token已失效");
+                        if(!DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(shopDeliverApply.getDeliveryType())
+                                && (shopDeliverApply.getOnline() == null || !shopDeliverApply.getOnline())) throw new ServiceException("门店停止营业");
+                    }
                     deliverOrder.setDeliveryType(shopDeliverApply.getDeliveryType());
+                    deliverOrder.setDeliveryWay(shopDeliverApply.getDeliveryWay());
+                    deliverOrder.setFreight(shopDeliverApply.getFreight());
                     deliverOrder.setShopId(mbShop.getId());
                     deliverOrder.setShopDistance(shopDeliverApply.getDistance());
                     deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_ALLOCATION);
@@ -177,9 +182,10 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
 
                     deliverOrderService.transform(deliverOrder);
 
-                    // 自动接单
+                    // 自动接单||强制接单||代送
                     if(DeliverOrderServiceI.DELIVER_TYPE_AUTO.equals(shopDeliverApply.getDeliveryType()) ||
-                            DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(shopDeliverApply.getDeliveryType())) {
+                            DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(shopDeliverApply.getDeliveryType()) ||
+                            ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrder.getDeliveryWay())) {
                         deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_ACCEPT);
                         deliverOrderService.transform(deliverOrder);
                     }

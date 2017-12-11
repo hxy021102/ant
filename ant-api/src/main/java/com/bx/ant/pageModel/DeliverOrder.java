@@ -36,6 +36,7 @@ public class DeliverOrder implements java.io.Serializable {
 	private String completeRemark;
     private String deliverOrderLogType;
 	private Integer weight;
+	private Integer freight; // 运费统一配置：分/件
 
 	private String deliveryWay;
 	private String deliveryType; // 派单类型
@@ -307,5 +308,13 @@ public class DeliverOrder implements java.io.Serializable {
 
 	public void setOriginalOrderStatus(String originalOrderStatus) {
 		this.originalOrderStatus = originalOrderStatus;
+	}
+
+	public Integer getFreight() {
+		return freight;
+	}
+
+	public void setFreight(Integer freight) {
+		this.freight = freight;
 	}
 }

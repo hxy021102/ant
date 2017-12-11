@@ -29,6 +29,7 @@ public class DeliverOrderShop implements java.io.Serializable {
     private Long[] ids;
 
 	private String deliveryType; // 派单类型
+	private Integer freight; // 运费统一配置：分/件
 
 
 
@@ -161,5 +162,13 @@ public class DeliverOrderShop implements java.io.Serializable {
 
 	public void setAddtimeEnd(Date addtimeEnd) {
 		this.addtimeEnd = addtimeEnd;
+	}
+
+	public Integer getFreight() {
+		return freight;
+	}
+
+	public void setFreight(Integer freight) {
+		this.freight = freight;
 	}
 }
