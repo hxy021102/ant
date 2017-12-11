@@ -19,7 +19,7 @@
      <OBJECT  ID="jatoolsPrinter" CLASSID="CLSID:B43D3361-D075-4BE2-87FE-057188254255"
              codebase="jatoolsPrinter.cab#version=8,6,0,0"></OBJECT>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/style/guide.css" />
-    <script type="text/javascript" src="${pageContext.request.contextPath}/web/js/jcp.js"></script>
+  <%--  <script type="text/javascript" src="${pageContext.request.contextPath}/web/js/jcp.js"></script>--%>
 
     <script>
 
@@ -91,7 +91,6 @@
             };
           /*  document.getElementById("jatoolsPrinter").printPreview(myDoc); */
             // 直接打印，不弹出打印机设置对话框
-            var jcp = getJCP();
             if (how == '打印预览') {
                 document.getElementById("jatoolsPrinter").printPreview(myDoc, false);
                //  jcp.printPreview(myDoc, false); // 打印预览
@@ -103,10 +102,8 @@
         function init(){
             if(parent&&parent.printComplete){
                 try {
-                    //alert(${fn:substring(((5+3)/4),0,fn:indexOf(((5+3)/4), '.'))})
-                   alert("${1==0?5:fn:substring(((5+3)/4+1),0,fn:indexOf((5.0), '.'))}")
-                    doPrint("打印预览");
-                }catch(e){
+                    doPrint("打印");
+                } catch (e) {
 
                 }
                 /*setTimeout(function(){
@@ -204,8 +201,8 @@
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
             </tr>
-           <c:if test="${status.count==13||(status.count-13)%22==0}">
-           </table> </div><div id='page${(status.count-13)/22==0?2:fn:substring(((status.count-13)/22+2),0,fn:indexOf(((status.count-13)/22), '.'))}' class="breakable" style='width: 100%; margin: 0px; padding: 0; background-color: white;'>
+           <c:if test="${status.count==9||(status.count-9)%18==0}">
+           </table> </div><div id='page${(status.count-9)/18==0?2:fn:substring(((status.count-9)/18+2),0,fn:indexOf(((status.count-9)/18), '.'))}' class="breakable" style='width: 100%; margin: 0px; padding: 0; background-color: white;'>
                <table id='sample' cellpadding="0" style="border-collapse: collapse" width="100%">
            </c:if>
         </c:forEach>
