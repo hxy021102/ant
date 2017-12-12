@@ -74,7 +74,7 @@ public interface MbContractItemServiceI {
      * @param ph
      * @return
      */
-    public DataGrid queryContractItem(MbContractItem mbContractItem, PageHelper ph);
+    DataGrid queryContractItem(MbContractItem mbContractItem, PageHelper ph);
 
     /**
      * 批量修改合同价格
@@ -82,7 +82,7 @@ public interface MbContractItemServiceI {
      * @param mbContractItemList
      * @param newPrice
      */
-    public void updateBatchContractPrice(String mbContractItemList, Integer newPrice);
+    void updateBatchContractPrice(String mbContractItemList, Integer newPrice);
 
     /**
      * 查询合同商品信息
@@ -91,12 +91,6 @@ public interface MbContractItemServiceI {
      */
     List<MbContractItem> query(MbContractItem mbContractItem);
 
-    /**
-     * 获取合同商品明细
-     * @param mbContractItem
-     * @return
-     */
-    List<MbContractItem> query(MbContractItem mbContractItem);
 
     /**
      * 获取商品列表与数量和合同价格

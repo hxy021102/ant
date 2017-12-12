@@ -50,7 +50,7 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 	private HibernateTransactionManager transactionManager;
 
 	@Autowired
-	private DeliverOrderShopItemServiceI deliverOrderShopItemSerivce;
+	private DeliverOrderShopItemServiceI deliverOrderShopItemService;
 
 
 	@Override
@@ -148,11 +148,12 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 					whereHql += " and t.id in(:ids)";
 					params.put("ids", orderShopIds);
 				}
+				if (F.empty(deliverOrderShop.getOrderId())) {
+					whereHql += " and t.orderId is null";
+				}
 			}
-			if (F.empty(deliverOrderShop.getOrderId())) {
-				whereHql += " and t.orderId is null";
-			}
-		}	
+
+
 		return whereHql;
 	}
 
@@ -349,7 +350,7 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 	protected  void fillShopItemInfo(DeliverOrderShopView deliverOrderShopView) {
 		DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
 		deliverOrderShopItem.setDeliverOrderShopId(deliverOrderShopView.getId());
-		List<DeliverOrderShopItem> deliverOrderShopItems = deliverOrderShopItemSerivce.list(deliverOrderShopItem);
+		List<DeliverOrderShopItem> deliverOrderShopItems = deliverOrderShopItemService.list(deliverOrderShopItem);
 		deliverOrderShopView.setDeliverOrderShopItemList(deliverOrderShopItems);
 	}
 

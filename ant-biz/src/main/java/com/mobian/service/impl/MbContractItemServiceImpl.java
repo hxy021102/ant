@@ -245,22 +245,7 @@ public class MbContractItemServiceImpl extends BaseServiceImpl<MbContractItem> i
         }
         return ol;
     }
-    @Override
-    public List<MbContractItem> query(MbContractItem mbContractItem) {
-        List<MbContractItem> ol = new ArrayList<MbContractItem>();
-        String hql = " from TmbContractItem t ";
-        Map<String, Object> params = new HashMap<String, Object>();
-        String where = whereHql(mbContractItem, params);
-        List<TmbContractItem> l = mbContractItemDao.find(hql + where, params);
-        if (CollectionUtils.isNotEmpty(l)) {
-            for (TmbContractItem t : l) {
-                MbContractItem o = new MbContractItem();
-                BeanUtils.copyProperties(t, o);
-                ol.add(o);
-            }
-        }
-        return ol;
-    }
+
 
     @Override
     public List<MbItemView> getItemListWidthPriceAndQuantity(String DeliverOrderShopIds, Integer shopId) {
