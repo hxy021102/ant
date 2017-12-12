@@ -51,4 +51,5 @@ public interface SupplierItemRelationServiceI {
 	 */
 	public void delete(Integer id);
 
+    DataGrid dataGridView(SupplierItemRelation supplierItemRelation, PageHelper ph);
 }

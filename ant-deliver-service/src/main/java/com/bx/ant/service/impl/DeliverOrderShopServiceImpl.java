@@ -1,7 +1,9 @@
 package com.bx.ant.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bx.ant.pageModel.*;
 import com.bx.ant.service.DeliverOrderServiceI;
+import com.bx.ant.service.DeliverOrderShopItemServiceI;
 import com.bx.ant.service.DeliverOrderShopPayServiceI;
 import com.bx.ant.service.ShopOrderBillServiceI;
 import com.mobian.absx.F;
@@ -46,6 +48,10 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 
 	@Autowired
 	private HibernateTransactionManager transactionManager;
+
+	@Autowired
+	private DeliverOrderShopItemServiceI deliverOrderShopItemSerivce;
+
 
 	@Override
 	public DataGrid dataGrid(DeliverOrderShop deliverOrderShop, PageHelper ph) {
@@ -94,6 +100,8 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 				whereHql += " and t.status in(:status)";
 				params.put("status", deliverOrderShop.getStatus().split(","));
 			}		
+				params.put("status", deliverOrderShop.getStatus().split(","));
+			}
 			if (!F.empty(deliverOrderShop.getAmount())) {
 				whereHql += " and t.amount = :amount";
 				params.put("amount", deliverOrderShop.getAmount());
@@ -324,6 +332,44 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		}
 		return dataGrid;
 	}
+	@Override
+	public DeliverOrderShopView getView(Long id) {
+		DeliverOrderShop deliverOrderShop = get(id);
+		DeliverOrderShopView deliverOrderShopView = new DeliverOrderShopView();
+		BeanUtils.copyProperties(deliverOrderShop, deliverOrderShopView);
+		fillShopItemInfo(deliverOrderShopView);
+		fillDeliverOrderInfo(deliverOrderShopView);
+		return deliverOrderShopView;
+	}
+
+	/**
+	 * 填充商品信息
+	 * @param deliverOrderShopView
+	 */
+	protected  void fillShopItemInfo(DeliverOrderShopView deliverOrderShopView) {
+		DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
+		deliverOrderShopItem.setDeliverOrderShopId(deliverOrderShopView.getId());
+		List<DeliverOrderShopItem> deliverOrderShopItems = deliverOrderShopItemSerivce.list(deliverOrderShopItem);
+		deliverOrderShopView.setDeliverOrderShopItemList(deliverOrderShopItems);
+	}
+
+	/**
+	 * 填充order信息
+	 * @param deliverOrderShopView
+	 */
+	protected void fillDeliverOrderInfo(DeliverOrderShopView deliverOrderShopView) {
+		if (!F.empty(deliverOrderShopView.getDeliverOrderId())) {
+			DeliverOrder deliverOrder = deliverOrderService.get(deliverOrderShopView.getDeliverOrderId());
+			if (deliverOrder != null) {
+				deliverOrderShopView.setContactPeople(deliverOrder.getContactPeople());
+				deliverOrderShopView.setContactPhone(deliverOrder.getContactPhone());
+				deliverOrderShopView.setDeliverAddress(deliverOrder.getDeliveryAddress());
+				deliverOrderShopView.setDeliverRequireTime(deliverOrder.getDeliveryRequireTime());
+				deliverOrderShopView.setLongitude(deliverOrder.getLongitude());
+				deliverOrderShopView.setLatitude(deliverOrder.getLatitude());
+			}
+		}
+	}
 
 	@Override
 	public void settleShopPay() {
@@ -374,19 +420,27 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		}
 
 		//3. 对账单进行添加并进行结算
-		for (Map.Entry entry : deliverOrderMap.entrySet()) {
-			ShopOrderBillQuery shopOrderBillQuery = (ShopOrderBillQuery) entry.getValue();
+		for (ShopOrderBillQuery shopOrderBillQuery : deliverOrderMap.values()) {
 			shopOrderBillService.addAndPayShopOrderBillAndShopPay(shopOrderBillQuery);
 			List<DeliverOrderShop> orderShopList = shopOrderBillQuery.getDeliverOrderShopList();
-			for (DeliverOrderShop orderShop : orderShopList) {
-				DeliverOrderExt orderExt = new DeliverOrderExt();
-				orderExt.setId(orderShop.getDeliverOrderId());
-				orderExt.setShopId(orderShop.getShopId());
-				orderExt.setBalanceLogType("BT060");
-				orderExt.setPayWay(DeliverOrderServiceI.PAY_WAY_BALANCE);
-				orderExt.setStatus(DeliverOrderServiceI.STATUS_CLOSED);
-				orderExt.setOrderShopId(orderShop.getId());
-				deliverOrderService.transform(orderExt);
+			DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+			def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+			TransactionStatus status = transactionManager.getTransaction(def);
+			try {
+				for (DeliverOrderShop orderShop : orderShopList) {
+					DeliverOrderExt orderExt = new DeliverOrderExt();
+					orderExt.setId(orderShop.getDeliverOrderId());
+					orderExt.setShopId(orderShop.getShopId());
+					orderExt.setBalanceLogType("BT060");
+					orderExt.setPayWay(DeliverOrderServiceI.PAY_WAY_BALANCE);
+					orderExt.setStatus(DeliverOrderServiceI.STATUS_CLOSED);
+					orderExt.setOrderShopId(orderShop.getId());
+					deliverOrderService.transform(orderExt);
+					transactionManager.commit(status);
+				}
+			}catch (Exception e) {
+				transactionManager.rollback(status);
+				continue;
 			}
 		}
 	}

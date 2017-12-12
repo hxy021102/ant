@@ -164,4 +164,29 @@ public interface ShopItemServiceI {
 
 
     void updateQuantity(ShopItem shopItem);
+
+	/**
+	 * 批量修改运费
+	 * @param shopItemList
+	 * @param freight
+	 */
+    void updateBatchFright(String shopItemList,Integer freight);
+
+	/**
+	 * 批量修改审核状态
+	 * @param shopItemList
+	 * @param status
+	 */
+    void editBatchAuditState(String shopItemList,String status,String reviewerId);
+
+	/**
+	 * 通过查询门店商品合同，自动添加门店商品
+	 */
+	void addShopItemAllocation();
+
+	/**
+	 * 从合同商品一键同步门店商品
+	 * @param shopId
+	 */
+	void addShoItemFromContract(Integer shopId);
 }

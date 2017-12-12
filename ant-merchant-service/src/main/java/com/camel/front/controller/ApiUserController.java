@@ -53,6 +53,9 @@ public class ApiUserController extends BaseController {
     @Autowired
     private DiveRegionServiceI diveRegionService;
 
+    @Autowired
+    private MbOrderServiceI mbOrderService;
+
     /**
      * 登录接口
      */
@@ -357,7 +360,11 @@ public class ApiUserController extends BaseController {
                     completionService.submit(new Task<MbUser, MbBalance>(o) {
                         @Override
                         public MbBalance call() throws Exception {
-                            return mbBalanceService.addOrGetMbBalance(getD().getShopId());
+                            MbBalance balance = mbBalanceService.addOrGetMbBalance(getD().getShopId());
+                            Integer debt = mbOrderService.getOrderDebtMoney(getD().getShopId());
+                            debt = debt == null ? 0 : debt;
+                            balance.setAmount(balance.getAmount() - debt);
+                            return balance;
                         }
 
                         protected void set(MbUser d, MbBalance mbBalance) {

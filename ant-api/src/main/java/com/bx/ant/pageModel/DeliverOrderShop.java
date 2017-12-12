@@ -31,6 +31,8 @@ public class DeliverOrderShop implements java.io.Serializable {
 	private String deliveryType; // 派单类型
 	private Integer orderId;     //创建的订单id
 
+
+
 	public void setId(Long value) {
 		this.id = value;
 	}

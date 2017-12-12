@@ -87,7 +87,11 @@
                     if (value != null)
                         return $.formatMoney(value);
                     return "";
-                }},{
+                }}, {
+				field: 'rate',
+				title: '费率（%）',
+				width: 30
+				},{
                 field: 'totalPrice',
                 title: '总金额',
                 width: 30,

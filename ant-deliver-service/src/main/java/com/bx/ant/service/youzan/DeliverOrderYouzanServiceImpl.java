@@ -1,14 +1,10 @@
 package com.bx.ant.service.youzan;
 
-import com.bx.ant.pageModel.DeliverOrder;
-import com.bx.ant.pageModel.Supplier;
-import com.bx.ant.pageModel.SupplierItemRelation;
-import com.bx.ant.pageModel.SupplierItemRelationView;
-import com.bx.ant.service.DeliverOrderServiceI;
-import com.bx.ant.service.DeliverOrderYouzanServiceI;
-import com.bx.ant.service.SupplierItemRelationServiceI;
-import com.bx.ant.service.SupplierServiceI;
+import com.bx.ant.pageModel.*;
+import com.bx.ant.service.*;
+import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
+import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.thirdpart.redis.Key;
 import com.mobian.thirdpart.redis.Namespace;
@@ -28,10 +24,17 @@ import com.youzan.open.sdk.gen.v3_0_0.model.YouzanTradesSoldGetResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -51,7 +54,15 @@ public class DeliverOrderYouzanServiceImpl implements DeliverOrderYouzanServiceI
     private SupplierItemRelationServiceI supplierItemRelationService;
 
     @Resource
+    private SupplierOrderBillServiceI supplierOrderBillService;
+    @Resource
+    private DeliverOrderPayServiceI deliverOrderPayService;
+
+    @Resource
     private RedisUtil redisUtil;
+
+    @Autowired
+    private HibernateTransactionManager transactionManager;
 
     @Override
     public void youzanOrders() {
@@ -60,7 +71,6 @@ public class DeliverOrderYouzanServiceImpl implements DeliverOrderYouzanServiceI
         YouzanTradesSoldGetParams youzanTradesSoldGetParams = new YouzanTradesSoldGetParams();
 
         youzanTradesSoldGetParams.setStatus(WAIT_SELLER_SEND_GOODS);
-//        youzanTradesSoldGetParams.setStatus(WAIT_BUYER_CONFIRM_GOODS);
 
         YouzanTradesSoldGet youzanTradesSoldGet = new YouzanTradesSoldGet();
         youzanTradesSoldGet.setAPIParams(youzanTradesSoldGetParams);
@@ -120,9 +130,20 @@ public class DeliverOrderYouzanServiceImpl implements DeliverOrderYouzanServiceI
                     }
 
                     // 添加订单和订单明细
-                    if(valid)
-                        deliverOrderService.addAndItems(order, supplierItemRelations);
+                    if(valid) {
+                        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+                        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);// 事物隔离级别，开启新事务
+                        TransactionStatus status = transactionManager.getTransaction(def); // 获得事务状态
+                        try {
+                            deliverOrderService.addAndItems(order, supplierItemRelations);
 
+                            transactionManager.commit(status);
+                        }catch(Exception e){
+                            transactionManager.rollback(status);
+                            logger.error("有赞订单添加失败", e);
+                        }
+
+                    }
                 }
             }
         }
@@ -142,6 +163,76 @@ public class DeliverOrderYouzanServiceImpl implements DeliverOrderYouzanServiceI
         YouzanLogisticsOnlineConfirmResult result = client.invoke(youzanLogisticsOnlineConfirm);
         if(!result.getIsSuccess()) {
             logger.error("youzan.logistics.online.confirm接口调用失败");
+        }
+    }
+
+    @Override
+    public void settleYouzanBill() {
+        String accessToken = (String)redisUtil.get(Key.build(Namespace.YOUZAN_CONFIG, "youzan_access_token"));
+        YZClient client = new DefaultYZClient(new Token(accessToken));
+        YouzanTradesSoldGetParams youzanTradesSoldGetParams = new YouzanTradesSoldGetParams();
+
+        youzanTradesSoldGetParams.setStatus(WAIT_SELLER_SEND_GOODS);
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DAY_OF_MONTH, -Integer.valueOf(ConvertNameUtil.getString(YouzanUtil.SETTLE_TERM, "7")));
+        youzanTradesSoldGetParams.setEndUpdate(c.getTime());
+        c.add(Calendar.MONTH, -3);
+        youzanTradesSoldGetParams.setStartUpdate(c.getTime());
+
+        YouzanTradesSoldGet youzanTradesSoldGet = new YouzanTradesSoldGet();
+        youzanTradesSoldGet.setAPIParams(youzanTradesSoldGetParams);
+        YouzanTradesSoldGetResult result = client.invoke(youzanTradesSoldGet);
+        YouzanTradesSoldGetResult.TradeDetailV2[] trades = result.getTrades();
+        if(trades != null && trades.length > 0) {
+            String tids = "";
+            // 根据供应商订单ID集合查询未结算的订单
+            for(YouzanTradesSoldGetResult.TradeDetailV2 trade : trades) {
+                if(!F.empty(tids)) tids += ",";
+                tids += trade.getTid();
+            }
+            DeliverOrder order = new DeliverOrder();
+            order.setSupplierOrderId(tids);
+            PageHelper ph = new PageHelper();
+            ph.setHiddenTotal(true);
+            List<DeliverOrder> list = deliverOrderService.unPayOrderDataGrid(order, ph).getRows();
+
+            Integer amount = 0;
+            for (DeliverOrder d : list) {
+                if(d.getAmount() != null) {
+                    amount += d.getAmount();
+                }
+            }
+            SupplierOrderBill supplierOrderBill = new SupplierOrderBill();
+            supplierOrderBill.setSupplierId(list.get(0).getSupplierId());
+            supplierOrderBill.setStatus("BAS04");//自动结算
+            supplierOrderBill.setAmount(amount);
+            supplierOrderBill.setPayWay(list.get(0).getPayWay());
+            supplierOrderBillService.add(supplierOrderBill); // 创建账单
+            for (DeliverOrder d : list) {
+
+                DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+                def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);// 事物隔离级别，开启新事务
+                TransactionStatus status = transactionManager.getTransaction(def); // 获得事务状态
+
+                try {
+                    d.setPayStatus("DPS02");// 已结算
+                    deliverOrderService.editOrderStatus(d);
+
+                    DeliverOrderPay deliverOrderPay = new DeliverOrderPay();
+                    deliverOrderPay.setDeliverOrderId(d.getId());
+                    deliverOrderPay.setSupplierOrderBillId(supplierOrderBill.getId().intValue());
+                    deliverOrderPay.setSupplierId(list.get(0).getSupplierId());
+                    deliverOrderPay.setAmount(d.getAmount());
+                    deliverOrderPay.setStatus("DPS02");// 已结算
+                    deliverOrderPayService.add(deliverOrderPay);
+
+                    transactionManager.commit(status);
+                }catch(Exception e){
+                    transactionManager.rollback(status);
+                    logger.error("自动结算失败", e);
+                }
+
+            }
         }
     }
 }

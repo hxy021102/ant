@@ -64,6 +64,9 @@ public class GeoUtil {
             akey = aks[index];
         }
         String requestUrl = "http://api.map.baidu.com/geocoder/v2/?output=json&address=" + address + "&ak=" + akey;
+        requestUrl.replaceAll("\n","");
+        requestUrl.replaceAll("\r","");
+        requestUrl.replaceAll(" ","");
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.httpRequest(requestUrl, "GET", null));
         if (jsonObject != null) {
                 if (jsonObject.getInteger("status") == 0) {

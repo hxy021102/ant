@@ -1,9 +1,6 @@
 package com.mobian.service;
 
-import com.bx.ant.service.DeliverOrderAllocationServiceI;
-import com.bx.ant.service.DeliverOrderServiceI;
-import com.bx.ant.service.DeliverOrderShopServiceI;
-import com.bx.ant.service.DeliverOrderYouzanServiceI;
+import com.bx.ant.service.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -25,6 +22,9 @@ public class DeliverOrderTaskService {
     @Resource
     private DeliverOrderShopServiceI deliverOrderShopService;
 
+    @Resource
+    private DriverOrderShopAllocationServiceI driverOrderShopAllocationService;
+
 
     public void orderAllocation(){
         deliverOrderAllocationService.orderAllocation();
@@ -40,5 +40,15 @@ public class DeliverOrderTaskService {
 
     public void youzanOrders(){
         deliverOrderYouzanService.youzanOrders();
+    }
+
+    public void driverOrderShopAllocation() {
+        driverOrderShopAllocationService.orderAllocation();
+    }
+
+
+
+    public void settleYouzanBill(){
+        deliverOrderYouzanService.settleYouzanBill();
     }
 }

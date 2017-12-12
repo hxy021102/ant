@@ -13,21 +13,28 @@
 
 		<!--<task:scheduled ref="taskServiceImpl" method="setOrderQuantity" cron="0 0/5 * * * ?" />-->
 
-		<task:scheduled ref="taskServiceImpl" method="updateCostPrice" cron="0 0/1 * * * ?" />
+		<!--<task:scheduled ref="taskServiceImpl" method="updateCostPrice" cron="0 0/1 * * * ?" />-->
 
 		<task:scheduled ref="taskServiceImpl" method="deleteUnPayOrder" cron= "0 0 0 * * ?" />
 
 		<task:scheduled ref="taskServiceImpl" method="updateBatchShopLocation" cron= "0 23 23 * * ?" />
 
-		<task:scheduled ref="taskServiceImpl" method="remindDrivers" cron="0 0/5 8-19 * * ?"/>
+		<!--<task:scheduled ref="taskServiceImpl" method="remindDrivers" cron="0 0/5 8-19 * * ?"/>-->
 
-		<!--<task:scheduled ref="deliverOrderTaskService" method="orderAllocation" cron="0 0/1 * * * ?"/>-->
+		<!--<task:scheduled ref="deliverOrderTaskService" method="orderAllocation" cron="0/10 * * * * ?"/>-->
 
-		<!--<task:scheduled ref="deliverOrderTaskService" method="settleShopPay" cron="0 0/5  * * * ?" />-->
+		<!--<task:scheduled ref="deliverOrderTaskService" method="settleShopPay" cron="* 0/5  * * * ?" />-->
 
-		<!--<task:scheduled ref="deliverOrderTaskService" method="checkTimeOutOrder" cron="0 0/1 * * * ? "></task:scheduled>-->
+		<!--<task:scheduled ref="deliverOrderTaskService" method="checkTimeOutOrder" cron="0 0/1 * * * ? "/>-->
 
-		<!--<task:scheduled ref="deliverOrderTaskService" method="youzanOrders" cron="0 0/1 * * * ? "></task:scheduled>-->
+		<!--<task:scheduled ref="driverOrderShopTaskService" method="orderAllocation" cron="0/5 * * * * ? "/>-->
+		<!--<task:scheduled ref="driverOrderShopTaskService" method="addPayOperation" cron="0/5 * * * * ? "/>-->
+
+		<!--<task:scheduled ref="shopItemTaskService" method="addShopItemAllocation" cron="0 */9 * * * ?"/>-->
+		<!--<task:scheduled ref="shopItemTaskService" method="addShopItemAllocation" cron="*/5 * * * * ?"/>-->
+
+		<!--<task:scheduled ref="deliverOrderTaskService" method="youzanOrders" cron="* 0/1 * * * ? "/>-->
+		<!--<task:scheduled ref="deliverOrderTaskService" method="settleYouzanBill" cron="0 0 0 * * ?"/>-->
 
 	</task:scheduled-tasks>
 
