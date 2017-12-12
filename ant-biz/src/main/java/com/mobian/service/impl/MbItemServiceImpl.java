@@ -4,6 +4,8 @@ import com.mobian.absx.F;
 import com.mobian.dao.MbItemDaoI;
 import com.mobian.model.TmbItem;
 import com.mobian.pageModel.*;
+import com.mobian.service.MbContractItemServiceI;
+import com.mobian.service.MbContractServiceI;
 import com.mobian.service.MbItemCategoryServiceI;
 import com.mobian.service.MbItemServiceI;
 import com.mobian.util.MyBeanUtils;
@@ -26,6 +28,11 @@ public class MbItemServiceImpl extends BaseServiceImpl<MbItem> implements MbItem
 
 	@Resource
 	private MbItemCategoryServiceI categoryService;
+
+	@Resource
+	private MbContractServiceI mbContractService;
+	@Resource
+	private MbContractItemServiceI mbContractItemService;
 
 	@Override
 	public DataGrid dataGrid(MbItem mbItem, PageHelper ph) {
@@ -187,6 +194,17 @@ public class MbItemServiceImpl extends BaseServiceImpl<MbItem> implements MbItem
 			}
 		}
 		return ol;
+	}
+
+	@Override
+	public DataGrid dataGridWidthDeliverOrderShop(MbItemQuery mbItemQuery, PageHelper ph) {
+		List<MbItemView> mbItemViewList = mbContractItemService.getItemListWidthPriceAndQuantity(mbItemQuery.getDeliverOrderShopIds(), mbItemQuery.getShopId());
+		if (CollectionUtils.isNotEmpty(mbItemViewList)) {
+			DataGrid dataGrid = new DataGrid();
+			dataGrid.setRows(mbItemViewList);
+			return dataGrid;
+		}
+		return new DataGrid();
 	}
 
 }

@@ -129,4 +129,12 @@ public interface DeliverOrderShopServiceI {
 	List<DeliverOrderShop> queryTodayOrdersByShopId(Integer shopId);
 
     DeliverOrderShopView getView(Long id);
+
+	/**
+	 * 通过订单deliverOrderShopIds获取订单列表
+	 *
+	 * @param deliverOrderShopIds
+	 * @return
+	 */
+	List<DeliverOrderShop> queryByDeliverOrderShopIds(String deliverOrderShopIds);
 }

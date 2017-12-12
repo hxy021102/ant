@@ -1,5 +1,7 @@
 package com.mobian.service.impl;
 
+import com.bx.ant.pageModel.DeliverOrderShopItem;
+import com.bx.ant.service.DeliverOrderShopItemServiceI;
 import com.mobian.absx.F;
 import com.mobian.dao.MbContractItemDaoI;
 import com.mobian.model.TmbContractItem;
@@ -29,6 +31,8 @@ public class MbContractItemServiceImpl extends BaseServiceImpl<MbContractItem> i
     private MbContractServiceI mbContractService;
     @Autowired
     private MbShopServiceI mbShopService;
+    @javax.annotation.Resource
+    private DeliverOrderShopItemServiceI deliverOrderShopItemService;
 
     @Override
     public DataGrid dataGrid(MbContractItem mbContractItem, PageHelper ph) {
@@ -93,6 +97,13 @@ public class MbContractItemServiceImpl extends BaseServiceImpl<MbContractItem> i
             if (mbContractItem.getContractIds() != null && mbContractItem.getContractIds().length > 0) {
                 whereHql += " and t.contractId in(:contractIds)";
                 params.put("contractIds", mbContractItem.getContractIds());
+            }
+            if (mbContractItem instanceof MbContractItemQuery) {
+                MbContractItemQuery mbContractItemQuery = (MbContractItemQuery) mbContractItem;
+                if (mbContractItemQuery.getItemIds() != null && mbContractItemQuery.getItemIds().length > 0) {
+                    whereHql += " and t.itemId in(:itemIds)";
+                    params.put("itemIds", mbContractItemQuery.getItemIds());
+                }
             }
         }
         return whereHql;
@@ -233,5 +244,61 @@ public class MbContractItemServiceImpl extends BaseServiceImpl<MbContractItem> i
             }
         }
         return ol;
+    }
+
+
+    @Override
+    public List<MbItemView> getItemListWidthPriceAndQuantity(String DeliverOrderShopIds, Integer shopId) {
+        Map<Integer, DeliverOrderShopItem> deliverOrderShopItemMap = deliverOrderShopItemService.queryOrderShopItem(DeliverOrderShopIds);
+        if (CollectionUtils.isNotEmpty(deliverOrderShopItemMap.values())) {
+            Integer[] itemIds = new Integer[new ArrayList<DeliverOrderShopItem>(deliverOrderShopItemMap.values()).size()];
+            int i = 0;
+            for (DeliverOrderShopItem deliverOrderShopItem : new ArrayList<DeliverOrderShopItem>(deliverOrderShopItemMap.values())) {
+                itemIds[i++] = deliverOrderShopItem.getItemId();
+            }
+            MbItemQuery mbItemQuery = new MbItemQuery();
+            mbItemQuery.setItemIds(itemIds);
+            //获取所对应的商品列表
+            List<MbItem> mbItemList = mbItemService.query(mbItemQuery);
+            if (CollectionUtils.isNotEmpty(mbItemList)) {
+                Map<Integer, MbContractItem> map = new HashMap<Integer, MbContractItem>();
+                MbContract mbContract = mbContractService.getNewMbContract(shopId);
+                if (mbContract != null) {
+                    MbContractItemQuery mbContractItemQuery = new MbContractItemQuery();
+                    mbContractItemQuery.setItemIds(itemIds);
+                    mbContractItemQuery.setContractId(mbContract.getId());
+                    if (mbContract != null) {
+                        List<MbContractItem> mbContractItemList = query(mbContractItemQuery);
+                        if (CollectionUtils.isNotEmpty(mbContractItemList)) {
+                            for (MbContractItem mbContractItem : mbContractItemList) {
+                                map.put(mbContractItem.getItemId(), mbContractItem);
+                            }
+                        }
+                    }
+                }
+                //如果门店跟公司签订了合同价，怎按合同价格设置购买价格，否则设置为市场价格
+                List<MbItemView> mbItemViewList = new ArrayList<MbItemView>();
+                for (MbItem mbItem : mbItemList) {
+                    MbItemView mbItemView = new MbItemView();
+                    BeanUtils.copyProperties(mbItem, mbItemView);
+                    if (map.get(mbItemView.getId()) != null) {
+                        mbItemView.setBuyPrice(map.get(mbItem.getId()).getPrice());
+                    } else {
+                        mbItemView.setBuyPrice(mbItem.getMarketPrice());
+                    }
+                    mbItemViewList.add(mbItemView);
+                }
+                //设置购买数量
+                if (CollectionUtils.isNotEmpty(mbItemViewList)) {
+                    for (MbItemView mbItem : mbItemViewList) {
+                        mbItem.setQuantity(deliverOrderShopItemMap.get(mbItem.getId()).getQuantity());
+                        mbItem.setItemId(mbItem.getId());
+                        mbItem.setId(null);
+                    }
+                    return mbItemViewList;
+                }
+            }
+        }
+        return null;
     }
 }

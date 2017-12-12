@@ -29,7 +29,7 @@ public class DeliverOrderShop implements java.io.Serializable {
     private Long[] ids;
 
 	private String deliveryType; // 派单类型
-
+	private Integer orderId;     //创建的订单id
 
 
 
@@ -161,5 +161,13 @@ public class DeliverOrderShop implements java.io.Serializable {
 
 	public void setAddtimeEnd(Date addtimeEnd) {
 		this.addtimeEnd = addtimeEnd;
+	}
+
+	public Integer getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Integer orderId) {
+		this.orderId = orderId;
 	}
 }

@@ -63,6 +63,8 @@ public class TdeliverOrderShop implements java.io.Serializable,IEntity{
 	//columns END
     private String shopPayStatus;
 
+    private Integer orderId;
+
 		public TdeliverOrderShop(){
 		}
 		public TdeliverOrderShop(Long id) {
@@ -171,6 +173,15 @@ public class TdeliverOrderShop implements java.io.Serializable,IEntity{
 
 	public void setShopPayStatus(String shopPayStatus) {
 		this.shopPayStatus = shopPayStatus;
+	}
+
+	@Column(name = "order_id", unique = false, nullable = true, insertable = true, updatable = true, length = 11)
+	public Integer getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Integer orderId) {
+		this.orderId = orderId;
 	}
 	/*
 	public String toString() {
