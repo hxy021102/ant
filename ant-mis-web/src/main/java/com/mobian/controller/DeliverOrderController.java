@@ -395,4 +395,78 @@ public class DeliverOrderController extends BaseController {
 		}
 		return j;
 	}
+
+	/**
+	 * 扫码打单页面
+	 * @return
+	 */
+	@RequestMapping("/managerOrderSan")
+	public String updateOrderSanPage() {
+		return "/deliverorder/updateOrderSanPage";
+	}
+
+	/**
+	 * 扫码打单，修改代送单状态为已打单
+	 * @param request
+	 * @param deliverOrderId
+	 * @return
+	 */
+	@RequestMapping("/updateOrderSan")
+	@ResponseBody
+	public Json updateOrderSan(HttpServletRequest request, Long deliverOrderId) {
+		Json j = new Json();
+		DeliverOrder deliverOrder = deliverOrderService.get(deliverOrderId);
+		if (deliverOrder != null) {
+			if ("DTS01".equals(deliverOrder.getAgentStatus())&& "DAW04".equals(deliverOrder.getDeliveryWay())) {
+				deliverOrder.setAgentStatus("DTS02");
+				deliverOrderService.edit(deliverOrder);
+				j.setMsg("打单成功！");
+				j.setSuccess(true);
+				return j;
+			}else {
+				j.setMsg("该订单已扫码打单，不能重复执行！");
+			}
+		} else {
+			j.setMsg("不存在该订单，请确认订单是否正确！");
+		}
+		j.setSuccess(false);
+		return j;
+	}
+
+	/**
+	 * 扫码订单发货页面
+	 * @return
+	 */
+	@RequestMapping("/managerOrderDeliverGoodsPage")
+	public String updateOrderDeliverGoodsPage() {
+		return "/deliverorder/updateOrderDeliverGoodsPage";
+	}
+
+	/**
+	 * 修改订单为已发货
+	 * @param request
+	 * @param deliverOrderId
+	 * @return
+	 */
+	@RequestMapping("/updateOrderDeliverGoods")
+	@ResponseBody
+	public Json updateOrderDeliverGoods(HttpServletRequest request, Long deliverOrderId) {
+		Json j = new Json();
+		DeliverOrder deliverOrder = deliverOrderService.get(deliverOrderId);
+		if (deliverOrder != null) {
+			if ("DTS02".equals(deliverOrder.getAgentStatus())&& "DAW04".equals(deliverOrder.getDeliveryWay())) {
+				deliverOrder.setAgentStatus("DTS03");
+				deliverOrderService.edit(deliverOrder);
+				j.setMsg("打单成功！");
+				j.setSuccess(true);
+				return j;
+			}else {
+				j.setMsg("该订单已发货打单，不能重复执行！");
+			}
+		} else {
+			j.setMsg("不存在该订单，请确认订单是否正确！");
+		}
+		j.setSuccess(false);
+		return j;
+	}
 }

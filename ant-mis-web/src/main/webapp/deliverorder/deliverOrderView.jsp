@@ -412,6 +412,17 @@
 				<td colspan="3">
 					${deliverOrder.remark}
 				</td>
+				<c:choose>
+					<c:when test="${deliverOrder.deliveryWay=='DAW04'}">
+						<th>代送状态</th>
+						<td colspan="3">
+								${deliverOrder.agentStatusName}
+						</td>
+					</c:when>
+					<c:otherwise>
+						<th></th><td></td>
+					</c:otherwise>
+				</c:choose>
 			</tr>
 		</table>
 	</div>

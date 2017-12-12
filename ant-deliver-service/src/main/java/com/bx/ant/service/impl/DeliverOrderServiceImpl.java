@@ -529,6 +529,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		deliverOrderQuery.setShopPayStatusName(deliverOrder.getShopPayStatus());
 		deliverOrderQuery.setDeliveryStatusName(deliverOrder.getDeliveryStatus());
 		deliverOrderQuery.setOriginalOrderStatusName(deliverOrder.getOriginalOrderStatus());
+		deliverOrderQuery.setAgentStatusName(deliverOrder.getAgentStatus());
 		if (!F.empty(deliverOrderQuery.getCompleteImages())) {
 			String[] imageArray = deliverOrderQuery.getCompleteImages().split(";");
 			List<String> imageList = new ArrayList<String>();

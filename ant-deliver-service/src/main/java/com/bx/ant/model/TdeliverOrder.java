@@ -106,6 +106,7 @@ public class TdeliverOrder implements java.io.Serializable,IEntity{
 	private String originalOrderId;
 	private String originalShop;
 	private String originalOrderStatus;
+	private String agentStatus;
 
 		public TdeliverOrder(){
 		}
@@ -384,7 +385,14 @@ public class TdeliverOrder implements java.io.Serializable,IEntity{
 	public void setOriginalOrderStatus(String originalOrderStatus) {
 		this.originalOrderStatus = originalOrderStatus;
 	}
+	@Column(name = "agent_status", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public String getAgentStatus() {
+		return agentStatus;
+	}
 
+	public void setAgentStatus(String agentStatus) {
+		this.agentStatus = agentStatus;
+	}
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

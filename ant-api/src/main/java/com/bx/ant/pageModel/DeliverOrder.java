@@ -45,6 +45,7 @@ public class DeliverOrder implements java.io.Serializable {
 	private String originalOrderId;
 	private String originalShop;
 	private String originalOrderStatus;
+	private String agentStatus;
 	public void setId(Long value) {
 		this.id = value;
 	}
@@ -316,5 +317,13 @@ public class DeliverOrder implements java.io.Serializable {
 
 	public void setFreight(Integer freight) {
 		this.freight = freight;
+	}
+
+	public String getAgentStatus() {
+		return agentStatus;
+	}
+
+	public void setAgentStatus(String agentStatus) {
+		this.agentStatus = agentStatus;
 	}
 }
