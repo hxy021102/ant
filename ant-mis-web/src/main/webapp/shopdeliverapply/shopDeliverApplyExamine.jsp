@@ -83,7 +83,7 @@
 				<tr>
 					<th>配送方式</th>
 					<td>
-						<jb:select name="deliveryWay" dataType="DAW" required="true" value="${shopDeliverApply.deliveryWay}"></jb:select>
+						<jb:select name="deliveryWay" dataType="DAW" noShowValue="DAW02" required="true" value="${shopDeliverApply.deliveryWay}"></jb:select>
 					</td>
 				</tr>
 				<tr>
