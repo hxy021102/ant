@@ -4,6 +4,8 @@ import com.mobian.pageModel.MbStockOutOrder;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
+import java.util.List;
+
 /**
  * 
  * @author John
@@ -51,4 +53,10 @@ public interface MbStockOutOrderServiceI {
 	 */
 	public void delete(Integer id);
 
+	/**
+	 * 查询出库订单数据
+	 * @param mbStockOutOrder
+	 * @return
+	 */
+	List<MbStockOutOrder> query(MbStockOutOrder mbStockOutOrder);
 }

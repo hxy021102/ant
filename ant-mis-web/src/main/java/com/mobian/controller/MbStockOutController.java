@@ -9,10 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mobian.pageModel.*;
+import com.mobian.service.MbStockOutOrderServiceI;
 import com.mobian.service.MbStockOutServiceI;
 
 import com.mobian.service.MbWarehouseServiceI;
 import com.mobian.service.UserServiceI;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +38,8 @@ public class MbStockOutController extends BaseController {
 	private UserServiceI userService;
 	@Autowired
 	private MbWarehouseServiceI mbWarehouseService;
+	@Autowired
+	private MbStockOutOrderServiceI mbStockOutOrderService;
 
 
 	/**
@@ -175,6 +179,39 @@ public class MbStockOutController extends BaseController {
 		j.setMsg("删除成功！");
 		j.setSuccess(true);
 		return j;
+	}
+
+	/**
+	 *
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/viewDetails")
+	public String viewDetails(HttpServletRequest request, Integer id) {
+		MbStockOut mbStockOut = mbStockOutService.get(id);
+		if (mbStockOut.getStockOutPeopleId() != null) {
+			User user = userService.get(mbStockOut.getStockOutPeopleId());
+			mbStockOut.setStockOutPeopleName(user.getNickname());
+		}
+		if (mbStockOut.getLoginId() != null) {
+			User user = userService.get(mbStockOut.getLoginId());
+			if (user != null) {
+				mbStockOut.setLoginName(user.getName());
+			}
+		}
+		if (mbStockOut.getWarehouseId() != null) {
+			MbWarehouse mbWarehouse = mbWarehouseService.get(mbStockOut.getWarehouseId());
+			mbStockOut.setWarehouseName(mbWarehouse.getName());
+		}
+		MbStockOutOrder mbStockOutOrder = new MbStockOutOrder();
+		mbStockOutOrder.setMbStockOutId(id);
+		List<MbStockOutOrder> mbStockOutOrders = mbStockOutOrderService.query(mbStockOutOrder);
+		if (CollectionUtils.isNotEmpty(mbStockOutOrders)) {
+			mbStockOutOrder = mbStockOutOrders.get(0);
+		}
+		mbStockOut.setDeliverOrderId(mbStockOutOrder.getDeliverOrderId());
+		request.setAttribute("mbStockOut", mbStockOut);
+		return "/mbstockout/mbStockOutDetails";
 	}
 
 }

@@ -9,12 +9,15 @@ import java.util.UUID;
 
 import com.mobian.absx.F;
 import com.mobian.dao.MbStockOutOrderDaoI;
+import com.mobian.model.TmbItem;
 import com.mobian.model.TmbStockOutOrder;
+import com.mobian.pageModel.MbItem;
 import com.mobian.pageModel.MbStockOutOrder;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.MbStockOutOrderServiceI;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -108,4 +111,20 @@ public class MbStockOutOrderServiceImpl extends BaseServiceImpl<MbStockOutOrder>
 		//mbStockOutOrderDao.delete(mbStockOutOrderDao.get(TmbStockOutOrder.class, id));
 	}
 
+	@Override
+	public List<MbStockOutOrder> query(MbStockOutOrder mbStockOutOrder) {
+		List<MbStockOutOrder> ol = new ArrayList<MbStockOutOrder>();
+		String hql = " from TmbStockOutOrder t ";
+		Map<String, Object> params = new HashMap<String, Object>();
+		String where = whereHql(mbStockOutOrder, params);
+		List<TmbStockOutOrder> l = mbStockOutOrderDao.find(hql  + where, params);
+		if (CollectionUtils.isNotEmpty(l)) {
+			for (TmbStockOutOrder t : l) {
+				MbStockOutOrder o = new MbStockOutOrder();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		return ol;
+	}
 }
