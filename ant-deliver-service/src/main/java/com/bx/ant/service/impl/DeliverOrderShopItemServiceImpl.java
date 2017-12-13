@@ -98,7 +98,16 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 			if (!F.empty(deliverOrderShopItem.getFreight())) {
 				whereHql += " and t.freight = :freight";
 				params.put("freight", deliverOrderShopItem.getFreight());
-			}		
+			}
+			if (!F.empty(deliverOrderShopItem.getDeliverOrderIds())) {
+				Long[] deliverOrderIds = new Long[deliverOrderShopItem.getDeliverOrderIds().length()];
+				int i = 0;
+				for (String deliverOrder : deliverOrderShopItem.getDeliverOrderIds().split(",")) {
+					deliverOrderIds[i++] = Long.parseLong(deliverOrder);
+				}
+				whereHql += " and t.deliverOrderId in(:deliverOrderIds)";
+				params.put("deliverOrderIds", deliverOrderIds);
+			}
 		}	
 		return whereHql;
 	}
@@ -270,6 +279,28 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 			}
 		}
 		return dg;
+	}
+
+	@Override
+	public DataGrid dataGridByDeliverOrderIds(String deliverOrderIds) {
+		DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
+		deliverOrderShopItem.setDeliverOrderIds(deliverOrderIds);
+		List<DeliverOrderShopItem> deliverOrderShopItems = list(deliverOrderShopItem);
+		if (CollectionUtils.isNotEmpty(deliverOrderShopItems)) {
+			List<DeliverOrderShopItemExt> deliverOrderShopItemExts = new ArrayList<DeliverOrderShopItemExt>();
+			for (DeliverOrderShopItem orderShopItem : deliverOrderShopItems) {
+				DeliverOrderShopItemExt deliverOrderShopItemExt = new DeliverOrderShopItemExt();
+				BeanUtils.copyProperties(orderShopItem, deliverOrderShopItemExt);
+				MbItem mbItem = mbItemService.getFromCache(orderShopItem.getItemId());
+				deliverOrderShopItemExt.setItemCode(mbItem.getCode());
+				deliverOrderShopItemExt.setItemName(mbItem.getName());
+				deliverOrderShopItemExts.add(deliverOrderShopItemExt);
+			}
+			DataGrid dg = new DataGrid();
+			dg.setRows(deliverOrderShopItemExts);
+			return dg;
+		}
+		return null;
 	}
 
 }

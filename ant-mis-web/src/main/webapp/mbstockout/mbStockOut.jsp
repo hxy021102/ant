@@ -87,11 +87,11 @@
 					}
 					str += '&nbsp;';
 					if ($.canView) {
-                       /* if ("OT06" == row.stockOutType) {*/
+                       if ("OT06" == row.stockOutType) {
                             str += $.formatString('<img onclick="view(\'{0}\');" src="{1}" title="出库详情"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/map/magnifier.png');
-                      /*  } else {
+                         } else {
                             str += $.formatString('<img onclick="viewFun(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/map/magnifier.png');
-                        }*/
+                        }
 					}
 					return str;
 				}

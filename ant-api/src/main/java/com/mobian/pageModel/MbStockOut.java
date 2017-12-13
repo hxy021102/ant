@@ -26,7 +26,7 @@ public class MbStockOut implements java.io.Serializable {
 	private String warehouseName;
 	private String stockOutType;
 	private String stockOutTypeName;
-	private Integer deliverOrderId;
+	private String deliverOrderIds;
 
 	public String getStockOutTypeName() {
 		return ConvertNameUtil.getString(this.stockOutType);
@@ -159,11 +159,11 @@ public class MbStockOut implements java.io.Serializable {
 		return this.remark;
 	}
 
-	public Integer getDeliverOrderId() {
-		return deliverOrderId;
+	public String getDeliverOrderIds() {
+		return deliverOrderIds;
 	}
 
-	public void setDeliverOrderId(Integer deliverOrderId) {
-		this.deliverOrderId = deliverOrderId;
+	public void setDeliverOrderIds(String deliverOrderIds) {
+		this.deliverOrderIds = deliverOrderIds;
 	}
 }
