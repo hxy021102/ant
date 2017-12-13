@@ -353,6 +353,8 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 				deliverOrderShopView.setDeliverRequireTime(deliverOrder.getDeliveryRequireTime());
 				deliverOrderShopView.setLongitude(deliverOrder.getLongitude());
 				deliverOrderShopView.setLatitude(deliverOrder.getLatitude());
+				deliverOrderShopView.setOriginalOrderId(deliverOrder.getOriginalOrderId());
+				deliverOrderShopView.setOriginalShop(deliverOrder.getOriginalShop());
 			}
 		}
 	}
