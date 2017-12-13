@@ -26,6 +26,7 @@ public class DeliverOrderQuery extends DeliverOrder {
     private String showTime;
     private String deliveryWayName;
     private String originalOrderStatusName;
+    private String agentStatusName;
 
     public String getStatusName() {
         return ConvertNameUtil.getString(this.statusName);
@@ -161,5 +162,13 @@ public class DeliverOrderQuery extends DeliverOrder {
 
     public void setOriginalOrderStatusName(String originalOrderStatusName) {
         this.originalOrderStatusName = originalOrderStatusName;
+    }
+
+    public String getAgentStatusName() {
+        return ConvertNameUtil.getString(this.agentStatusName);
+    }
+
+    public void setAgentStatusName(String agentStatusName) {
+        this.agentStatusName = agentStatusName;
     }
 }

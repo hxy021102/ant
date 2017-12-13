@@ -48,6 +48,44 @@
 											<jb:select dataType="DAW" name="deliveryWay"></jb:select>	
 					</td>							
 				</tr>
+
+				<tr>
+					<th>派单类型</th>
+					<td>
+						<jb:select name="deliveryType" dataType="DAT" required="true" value="${shopDeliverApply.deliveryType}"></jb:select>
+					</td>
+					<th>冻结状态</th>
+					<td>
+						<select class="easyui-combobox" name="frozen" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+							<option value="1" <c:if test="${shopDeliverApply.frozen}">selected="selected"</c:if>>冻结</option>
+							<option value="0" <c:if test="${!shopDeliverApply.frozen}">selected="selected"</c:if>>正常</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th style="width: 80px">最大配送距离</th>
+					<td>
+						<input name="maxDeliveryDistance" type="text" class="span2"><font color="red">(单位：米)默认5000米,-1不限制</font>
+					</td>
+				</tr>
+				<tr>
+					<th>是否上传回单</th>
+					<td>
+						<select class="easyui-combobox" name="uploadRequired" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+								<option value="1">是</option>
+								<option value="0" selected="selected">否</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>是否短信通知</th>
+					<td>
+						<select class="easyui-combobox" name="smsRemind" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+								<option value="1">是</option>
+								<option value="0" selected="selected">否</option>
+						</select>
+					</td>
+				</tr>
 			</table>		
 		</form>
 	</div>
