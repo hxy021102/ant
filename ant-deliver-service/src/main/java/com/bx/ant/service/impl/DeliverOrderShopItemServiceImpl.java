@@ -283,24 +283,24 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 
 	@Override
 	public DataGrid dataGridByDeliverOrderIds(String deliverOrderIds) {
-		DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
-		deliverOrderShopItem.setDeliverOrderIds(deliverOrderIds);
-		List<DeliverOrderShopItem> deliverOrderShopItems = list(deliverOrderShopItem);
-		if (CollectionUtils.isNotEmpty(deliverOrderShopItems)) {
-			List<DeliverOrderShopItemExt> deliverOrderShopItemExts = new ArrayList<DeliverOrderShopItemExt>();
-			for (DeliverOrderShopItem orderShopItem : deliverOrderShopItems) {
-				DeliverOrderShopItemExt deliverOrderShopItemExt = new DeliverOrderShopItemExt();
-				BeanUtils.copyProperties(orderShopItem, deliverOrderShopItemExt);
-				MbItem mbItem = mbItemService.getFromCache(orderShopItem.getItemId());
-				deliverOrderShopItemExt.setItemCode(mbItem.getCode());
-				deliverOrderShopItemExt.setItemName(mbItem.getName());
-				deliverOrderShopItemExts.add(deliverOrderShopItemExt);
-			}
-			DataGrid dg = new DataGrid();
-			dg.setRows(deliverOrderShopItemExts);
-			return dg;
-		}
-		return null;
-	}
+        DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
+        deliverOrderShopItem.setDeliverOrderIds(deliverOrderIds);
+        List<DeliverOrderShopItem> deliverOrderShopItems = list(deliverOrderShopItem);
+        DataGrid dg = new DataGrid();
+        if (CollectionUtils.isNotEmpty(deliverOrderShopItems)) {
+            List<DeliverOrderShopItemExt> deliverOrderShopItemExts = new ArrayList<DeliverOrderShopItemExt>();
+            for (DeliverOrderShopItem orderShopItem : deliverOrderShopItems) {
+                DeliverOrderShopItemExt deliverOrderShopItemExt = new DeliverOrderShopItemExt();
+                BeanUtils.copyProperties(orderShopItem, deliverOrderShopItemExt);
+                MbItem mbItem = mbItemService.getFromCache(orderShopItem.getItemId());
+                deliverOrderShopItemExt.setItemCode(mbItem.getCode());
+                deliverOrderShopItemExt.setItemName(mbItem.getName());
+                deliverOrderShopItemExts.add(deliverOrderShopItemExt);
+            }
+            dg.setRows(deliverOrderShopItemExts);
+            return dg;
+        }
+        return null;
+    }
 
 }

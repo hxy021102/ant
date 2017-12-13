@@ -53,7 +53,7 @@ public class DeliverOrderShopItemController extends BaseController {
 	@ResponseBody
 	public DataGrid dataGrid(DeliverOrderShopItem deliverOrderShopItem, PageHelper ph) {
 		if (!F.empty(deliverOrderShopItem.getDeliverOrderIds())) {
-			deliverOrderShopItemService.dataGridByDeliverOrderIds(deliverOrderShopItem.getDeliverOrderIds());
+			return deliverOrderShopItemService.dataGridByDeliverOrderIds(deliverOrderShopItem.getDeliverOrderIds());
 		}
 		return deliverOrderShopItemService.dataGridWithName(deliverOrderShopItem, ph);
 	}
