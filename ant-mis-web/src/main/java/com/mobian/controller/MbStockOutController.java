@@ -5,9 +5,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bx.ant.pageModel.DeliverOrderShopItem;
+import com.bx.ant.service.DeliverOrderShopItemServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.*;
 import com.mobian.service.MbStockOutOrderServiceI;
@@ -41,6 +44,8 @@ public class MbStockOutController extends BaseController {
 	private MbWarehouseServiceI mbWarehouseService;
 	@Autowired
 	private MbStockOutOrderServiceI mbStockOutOrderService;
+	@javax.annotation.Resource
+	private DeliverOrderShopItemServiceI deliverOrderShopItemService;
 
 
 	/**
@@ -218,6 +223,45 @@ public class MbStockOutController extends BaseController {
 		mbStockOut.setDeliverOrderIds(mbStockOut.getDeliverOrderIds());
 		request.setAttribute("mbStockOut", mbStockOut);
 		return "/mbstockout/mbStockOutDetails";
+	}
+
+	/**
+	 * 出库打印
+	 * @param request
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/print")
+	public  String print(HttpServletRequest request,Integer id){
+		MbStockOut mbStockOut = mbStockOutService.get(id);
+		if (mbStockOut.getStockOutPeopleId() != null) {
+			User user = userService.get(mbStockOut.getStockOutPeopleId());
+			mbStockOut.setStockOutPeopleName(user.getNickname());
+		}
+		if (mbStockOut.getLoginId() != null) {
+			User user = userService.get(mbStockOut.getLoginId());
+			if (user != null) {
+				mbStockOut.setLoginName(user.getName());
+			}
+		}
+		if (mbStockOut.getWarehouseId() != null) {
+			MbWarehouse mbWarehouse = mbWarehouseService.get(mbStockOut.getWarehouseId());
+			mbStockOut.setWarehouseName(mbWarehouse.getName());
+		}
+		MbStockOutOrder mbStockOutOrder = new MbStockOutOrder();
+		mbStockOutOrder.setMbStockOutId(id);
+		List<MbStockOutOrder> mbStockOutOrders = mbStockOutOrderService.query(mbStockOutOrder);
+		if (CollectionUtils.isNotEmpty(mbStockOutOrders)) {
+			String deliverOrderIds="";
+			for(MbStockOutOrder stockOutOrder:mbStockOutOrders){
+				deliverOrderIds+=stockOutOrder.getDeliverOrderId()+",";
+			}
+			mbStockOut.setDeliverOrderIds(deliverOrderIds);
+			List<DeliverOrderShopItem> deliverOrderShopItemList=deliverOrderShopItemService.dataGridByDeliverOrderIds(deliverOrderIds).getRows();
+			request.setAttribute("mbStockOut", mbStockOut);
+			request.setAttribute("deliverOrderShopItemList", deliverOrderShopItemList);
+		}
+		return "/mbstockout/mbStockOutPrint";
 	}
 
 }

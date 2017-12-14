@@ -136,7 +136,9 @@
                  closable : true
              });
          }
-
+         function print() {
+             $('#printIframe').attr("src",'${pageContext.request.contextPath}/mbStockOutController/print?id=${mbStockOut.id}');
+         }
 	 </script>
 </head>
 
@@ -145,6 +147,11 @@
 	<div data-options="region:'north',title:'基本信息',border:false" style="height: 146px; overflow: hidden;">
 		<table class="table">
 			<tr>
+				<th>出库ID</th>
+				<td>
+					${mbStockOut.id}
+					<a href="javascript:void(0);" class="easyui-linkbutton print" onclick="print()">打印</a>
+				</td>
 				<th><%=TmbStockOut.ALIAS_STOCK_OUT_PEOPLE_ID%></th>
 				<td>
 					${mbStockOut.stockOutPeopleName}
@@ -158,12 +165,12 @@
 				<td >
 					${mbStockOut.warehouseName}
 				</td>
+			</tr>
+			<tr>
 				<th><%=TmbStockOut.ALIAS_STOCK_OUT_TIME%></th>
 				<td>
 					${mbStockOut.stockOutTime}
 				</td>
-			</tr>
-			<tr>
 				<th><%=TmbStockOut.ALIAS_STOCK_OUT_TYPE%></th>
 				<td colspan="7">
 					${mbStockOut.stockOutTypeName}
@@ -185,6 +192,7 @@
 			<div title="门店商品">
 				<table id="deliverItemDataGrid"></table>
 			</div>
+			<iframe id="printIframe" style="display: none;"></iframe>
 		</div>
 	</div>
 </div>

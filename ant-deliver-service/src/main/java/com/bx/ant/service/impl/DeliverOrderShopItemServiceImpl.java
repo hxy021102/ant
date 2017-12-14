@@ -299,7 +299,7 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 					BeanUtils.copyProperties(orderShopItem, deliverOrderShopItemExt);
 					MbItem mbItem = mbItemService.getFromCache(orderShopItem.getItemId());
 					deliverOrderShopItemExt.setItemCode(mbItem.getCode());
-					deliverOrderShopItemExt.setItemName(mbItem.getName()+"  "+mbItem.getQuantityUnitName());
+					deliverOrderShopItemExt.setItemName(mbItem.getName() + ("规格：" + mbItem.getQuantityUnitName()));
 					deliverOrderShopItemExts.add(deliverOrderShopItemExt);
 				} else {
 					map.put(key, itemIdValue += orderShopItem.getQuantity());
