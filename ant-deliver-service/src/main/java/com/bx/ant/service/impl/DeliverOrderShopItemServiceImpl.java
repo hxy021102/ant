@@ -304,9 +304,9 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 				} else {
 					map.put(key, itemIdValue += orderShopItem.getQuantity());
 				}
-				for (DeliverOrderShopItemExt orderShopItemExt : deliverOrderShopItemExts) {
-					orderShopItemExt.setQuantity(map.get(orderShopItemExt.getItemId()));
-				}
+			}
+			for (DeliverOrderShopItemExt orderShopItemExt : deliverOrderShopItemExts) {
+				orderShopItemExt.setQuantity(map.get(orderShopItemExt.getItemId()));
 			}
             dg.setRows(deliverOrderShopItemExts);
             return dg;
