@@ -126,4 +126,5 @@ public class DeliverOrderShopItem implements java.io.Serializable {
 	public void setDeliverOrderIds(String deliverOrderIds) {
 		this.deliverOrderIds = deliverOrderIds;
 	}
+
 }

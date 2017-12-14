@@ -97,136 +97,111 @@
 </head>
 <body onload="init();">
 <input type="button" value="预览" onClick='doPreview()' style="display: none;">&nbsp;<input type="button" value="打印" onClick='doPrint()' style="display: none;">
-<div id='page1'>
-    <table width="100%" cellspacing="0" cellpadding="0">
-        <tr>
-            <td colspan="3"></td>
-            <td rowspan="2" align="center"><div id="bcTarget"></div></td>
-        </tr>
-        <tr>
-            <td colspan="4" align="center" valign="top">上海奔翔实业有限公司配送单</td>
-        </tr>
-        <tr>
-            <td align="left" width="15%">&nbsp;&nbsp;&nbsp;订单时间：</td>
-            <td width="35%"><fmt:formatDate value="${mbOrder.addtime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
-            <td align="left" width="15%">发货仓：</td>
-            <td width="35%">${mbWarehouseName}</td>
-        </tr>
-        <tr>
-            <td align="left" width="15%">&nbsp;&nbsp;&nbsp;订单编号：</td>
-            <td width="35%">${mbOrder.id}</td>
-            <td align="left" width="15%">打单时间：</td>
-            <td width="35%">${printTime}</td>
-        </tr>
-    </table>
-    <table id='sample' cellpadding="0" style="border-collapse: collapse" width="100%">
-        <tr>
-            <td>客户编号</td>
-            <td colspan="2">${mbOrder.shopId}</td>
-            <td>客户名称</td>
-            <td colspan="6">${mbOrder.shopName}</td>
-            <td>电话</td>
-            <td colspan="3">${mbOrder.contactPhone}</td>
-        </tr>
-        <tr>
-            <td>配送地址</td>
-            <td colspan="8">${mbOrder.deliveryAddress}</td>
-            <td>所属区域</td>
-            <td colspan="3">${mbShop.regionPath}</td>
-        </tr>
-        <tr>
-            <td>订单备注</td>
-            <td colspan="8">${mbOrder.userRemark}</td>
-            <td>录入人</td>
-            <td colspan="3">
-                <c:choose>
-                    <c:when test="${mbOrder.addLoginId!=null}">
-                        客服
-                    </c:when>
-                    <c:otherwise>
-                        公众号
-                    </c:otherwise>
-                </c:choose>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="7">品名</td>
-            <td>数量</td>
-            <td>单价</td>
-            <td>金额</td>
-            <td>回桶</td>
-            <td>回票</td>
-            <td>实送量</td>
-        </tr>
-        <c:forEach items="${mbOrderItemList }" var="mbOrderItem" varStatus="status">
-            <c:set value="${mbOrderItem.quantity + totalQuantity}" var="totalQuantity"></c:set>
-            <c:set value="${mbOrderItem.buyPrice * mbOrderItem.quantity + totalItemPrice}" var="totalItemPrice"></c:set>
-           <tr style="border-top:none;border-bottom:none;" valign="top">
-                <td colspan="7">${mbOrderItem.item.name}&nbsp;${mbOrderItem.item.quantityUnitName}</td>
-                <td>${mbOrderItem.quantity}</td>
-                <td>
-                    ${mbOrderItem.buyPrice/100.00}
-                </td>
-                <td>
-                    ${mbOrderItem.buyPrice * mbOrderItem.quantity/100.00}
-                </td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
+<c:forEach items="${deliverOrderExtList}" var="deliverOrderExt" varStatus="status">
+    <div id='page${status.count}'>
+        <table width="100%" cellspacing="0" cellpadding="0">
+            <tr>
+                <td colspan="3"></td>
+                <td rowspan="2" align="center"><div id="bcTarget"></div></td>
             </tr>
-        </c:forEach>
-        <tr>
-            <td colspan="7">总计</td>
-            <td>${totalQuantity}</td>
-            <td></td>
-            <td>
-                ${totalItemPrice/100.00}
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>付款方式</td>
-            <td colspan="3">${mbPayment.payWayName}</td>
+            <tr>
+                <td colspan="4" align="center" valign="top">上海奔翔实业有限公司配送单</td>
+            </tr>
+            <tr>
+                <td align="left" width="15%">&nbsp;&nbsp;&nbsp;订单时间：</td>
+                <td width="35%"><fmt:formatDate value="${deliverOrderExt.addtime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+                <td align="left" width="15%">发货仓：</td>
+                <td width="35%">王桥电商仓</td>
+            </tr>
+            <tr>
+                <td align="left" width="15%">&nbsp;&nbsp;&nbsp;订单编号：</td>
+                <td width="35%">${deliverOrderExt.id}</td>
+                <td align="left" width="15%">打单时间：</td>
+                <td width="35%">${printTime}</td>
+            </tr>
+        </table>
+        <table id="sample" cellpadding="0" style="border-collapse: collapse" width="100%">
+            <tr>
+                <td>代送点编号</td>
+                <td colspan="2">${deliverOrderExt.mbShop.id}</td>
+                <td>代送点名称</td>
+                <td colspan="6">${deliverOrderExt.mbShop.name}</td>
+                <td>代送点电话</td>
+                <td colspan="3">${deliverOrderExt.mbShop.contactPhone}</td>
+            </tr>
+            <tr>
+                <td>代送点地址</td>
+                <td colspan="8">${deliverOrderExt.mbShop.address}</td>
+                <td>所属区域</td>
+                <td colspan="3">${deliverOrderExt.mbShop.regionPath}</td>
+            </tr>
+            <tr>
+                <td>客户名称</td>
+                <td colspan="2">${deliverOrderExt.contactPeople}</td>
+                <td>客户电话</td>
+                <td colspan="3">${deliverOrderExt.contactPhone}</td>
+                <td>店铺名称</td>
+                <td colspan="3">${deliverOrderExt.originalShop}</td>
+                <td>原订单号</td>
+                <td colspan="2">${deliverOrderExt.originalOrderId}</td>
 
-            <td colspan="2">券票</td>
+            </tr>
+            <tr>
+                <td>客户地址</td>
+                <td colspan="12">${deliverOrderExt.deliveryAddress}</td>
+            </tr>
+            <tr>
+                <td>订单备注</td>
+                <td colspan="12">${deliverOrderExt.remark}</td>
+            </tr>
+            <tr>
+                <td colspan="7">品名</td>
+                <td>数量</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>实送量</td>
+            </tr>
+            <c:forEach items="${deliverOrderExt.deliverOrderShopItemList}" var="mbOrderItem" varStatus="status">
+                <c:set value="${mbOrderItem.quantity + totalQuantity}" var="totalQuantity"></c:set>
+               <tr style="border-top:none;border-bottom:none;" valign="top">
+                    <td colspan="7">${mbOrderItem.itemName}[${mbOrderItem.itemCode}]</td>
+                    <td>${mbOrderItem.quantity}</td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+            </c:forEach>
+            <tr>
+                <td colspan="7">总计</td>
+                <td>${totalQuantity}</td>
+                <td></td>
+                <td>
 
-            <td>欠桶数</td>
-            <td>还桶数</td>
-            <td colspan="2">累计欠桶量</td>
-            <td>&nbsp;</td>
-            <td>本单欠款</td>
-            <td>
-                <c:if test="${mbOrder.payStatus=='PS01'}">
-                    ${totalItemPrice/100.00}
-                </c:if>
-            </td>
-        </tr>
-        <tr>
-            <td>${mbOrder.payStatusName}</td>
-            <td colspan="3">${mbPayment.amount/100.00}</td>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+        <table width="100%" cellspacing="0" cellpadding="0">
+            <tr>
 
-            <td colspan="2">&nbsp;</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-            <td colspan="2">累计欠结</td>
-            <td></td>
-            <td>账户余额</td>
-            <td>${mbBalance.amount/100.00}</td>
-        </tr>
-    </table>
-    <table width="100%" cellspacing="0" cellpadding="0">
-        <tr>
+                <td>客户签名：</td>
+                <td>配送员签名：</td>
+                <td>仓库发货员签名：</td>
+            </tr>
 
-            <td>客户签名：</td>
-            <td>配送员签名：</td>
-            <td>仓库发货员签名：</td>
-            <td>仓库收桶员签名：</td>
-        </tr>
-
-    </table>
-</div>
+        </table>
+    </div>
+</c:forEach>
 </body>
 </html>
 

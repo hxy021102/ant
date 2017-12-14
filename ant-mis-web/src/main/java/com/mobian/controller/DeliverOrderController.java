@@ -15,8 +15,11 @@ import com.bx.ant.service.SupplierServiceI;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
 import com.mobian.service.BasedataServiceI;
+import com.mobian.service.MbItemServiceI;
+import com.mobian.service.MbShopServiceI;
 import com.mobian.util.ConfigUtil;
 import com.mobian.util.ConvertNameUtil;
+import com.mobian.util.DateUtil;
 import com.mobian.util.ImportExcelUtil;
 import net.sf.json.JSONArray;
 import org.apache.commons.collections.CollectionUtils;
@@ -64,6 +67,9 @@ public class DeliverOrderController extends BaseController {
 	private BasedataServiceI basedataService;
     @Resource
 	private DeliverOrderShopServiceI deliverOrderShopService;
+
+	@Resource
+	private MbShopServiceI mbShopService;
 
 	/**
 	 * 跳转到DeliverOrder管理页面
@@ -403,8 +409,25 @@ public class DeliverOrderController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/printView")
-	public String printView(String deliverOrderIds) {
+	public String printView(HttpServletRequest request,String deliverOrderIds) {
+		String[] ids = deliverOrderIds.split("[,]");
+		Long[] idLong = new Long[ids.length];
+		for (int i = 0; i < ids.length; i++) {
+			idLong[i] = new Long(ids[i]);
+		}
+		DeliverOrderQuery query = new DeliverOrderQuery();
+		query.setIds(idLong);
+		PageHelper ph = new PageHelper();
+		ph.setHiddenTotal(true);
+		DataGrid dataGrid = deliverOrderService.dataGridExt(query, ph);
+		List<DeliverOrderExt> deliverOrderExtList = dataGrid.getRows();
+		for (DeliverOrderExt deliverOrderExt : deliverOrderExtList) {
+			MbShop mbShop = mbShopService.getFromCache(deliverOrderExt.getShopId());
+			deliverOrderExt.setMbShop(mbShop);
+		}
+		request.setAttribute("printTime", DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
 
+		request.setAttribute("deliverOrderExtList", deliverOrderExtList);
 		return "/deliverorder/deliverOrderPrint";
 	}
 

@@ -57,7 +57,7 @@ public class DeliverOrder15StateImpl extends AbstractDeliverOrderState {
         //TODO 这里应该执行重新分配订单方法
 
         //对门店新订单进行计数
-        deliverOrderService.reduseAllocationOrderRedis(deliverOrder.getShopId());
+        deliverOrderService.reduceAllocationOrderRedis(deliverOrder.getShopId());
 
     }
 

@@ -240,7 +240,7 @@ public interface DeliverOrderServiceI {
 	 * @param shopId
 	 * @return
 	 */
-    Integer reduseAllocationOrderRedis(Integer shopId);
+    Integer reduceAllocationOrderRedis(Integer shopId);
 
 	/**
 	 * 清除新订单计数
@@ -294,7 +294,7 @@ public interface DeliverOrderServiceI {
 	 * @param deliverOrderShop
 	 * @return
 	 */
-	DeliverOrderExt getBanlanceLogDetial(DeliverOrderShop deliverOrderShop);
+	DeliverOrderExt getBalanceLogDetail(DeliverOrderShop deliverOrderShop);
 
     DeliverOrderExt getDetail(Long id);
 	/**

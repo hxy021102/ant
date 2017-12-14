@@ -1,10 +1,8 @@
 package com.bx.ant.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bx.ant.dao.DeliverOrderItemDaoI;
 import com.bx.ant.pageModel.*;
 import com.bx.ant.service.*;
-import com.bx.ant.service.session.TokenServiceI;
 import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderDaoI;
 import com.bx.ant.model.TdeliverOrder;
@@ -451,10 +449,11 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		String[] statusArray = {"DSS01", "DSS02", "DSS04", "DSS05", "DSS06"};
 		orderShopQuery.setStatusList(statusArray);
 		orderShopQuery.setDeliverOrderId(ox.getId());
-		List<DeliverOrderShop> deliverOrderShops =  deliverOrderShopService.query(orderShopQuery);
+		List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(orderShopQuery);
 		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
-			DeliverOrderShop deliverOrderShop =deliverOrderShops.get(0);
+			DeliverOrderShop deliverOrderShop = deliverOrderShops.get(0);
 			ox.setOrderShopId(deliverOrderShop.getId());
+			ox.setDeliverOrderShop(deliverOrderShop);
 			fillDeliverOrderShopItemInfo(ox);
 			ox.setOrderShopId(null);
 			fillDeliverOrderShopInfo(ox);
@@ -748,7 +747,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	}
 
 //	@Override
-	public Integer reduseAllocationOrderRedis(Integer shopId) {
+	public Integer reduceAllocationOrderRedis(Integer shopId) {
 		return updateAllocationOrderRedis(shopId, -1);
 	}
 
@@ -923,7 +922,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	}
 
 	@Override
-	public DeliverOrderExt getBanlanceLogDetial(DeliverOrderShop deliverOrderShop) {
+	public DeliverOrderExt getBalanceLogDetail(DeliverOrderShop deliverOrderShop) {
 		//显示商品信息
         DeliverOrderShop orderShop=deliverOrderShopService.query(deliverOrderShop).get(0);
         DeliverOrderShopItem deliverOrderShopItem=new DeliverOrderShopItem();
