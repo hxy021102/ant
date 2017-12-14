@@ -160,4 +160,26 @@ public class MbStockOutOrderController extends BaseController {
 		return j;
 	}
 
+	/**
+	 * 跳转到添加MbStockOutOrder页面
+	 *
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/addStockOutPage")
+	public String addStockOutPage(String deliverOrderIds, HttpServletRequest request) {
+		request.setAttribute("deliverOrderIds", deliverOrderIds);
+		return "/deliverorder/createStockOut";
+	}
+
+	/**
+	 * 获取出库单商品数据
+	 *
+	 * @return
+	 */
+	@RequestMapping("/orderItemDataGrid")
+	@ResponseBody
+	public DataGrid orderItemDataGrid(MbStockOutOrder mbStockOutOrder, PageHelper ph) {
+		return mbStockOutOrderService.dataGrid(mbStockOutOrder, ph);
+	}
 }

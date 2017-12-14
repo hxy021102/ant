@@ -25,6 +25,8 @@ public class MbStockOutServiceImpl extends BaseServiceImpl<MbStockOut> implement
     @Autowired
     private MbStockOutItemServiceI mbStockOutItemService;
     @Autowired
+    private MbStockOutOrderServiceI mbStockOutOrderService;
+    @Autowired
     private UserServiceI userService;
     @Autowired
     private MbItemStockServiceI mbItemStockService;
@@ -115,6 +117,44 @@ public class MbStockOutServiceImpl extends BaseServiceImpl<MbStockOut> implement
     public void addStockOut(MbStockOut mbStockOut, String dataGrid) {
         add(mbStockOut);
         addStockOutItem(mbStockOut, dataGrid);
+    }
+
+    @Override
+    public void addStockOut(MbStockOut mbStockOut, String dataGrid, String deliverOrderIds) {
+        add(mbStockOut);
+        addStockOutOrder(mbStockOut, dataGrid, deliverOrderIds);
+    }
+
+    private void addStockOutOrder(MbStockOut mbStockOut, String dataGrid, String deliverOrderIds) {
+        net.sf.json.JSONArray jsonArray = net.sf.json.JSONArray.fromObject(dataGrid);
+        String[] deliverOrderIdArr = deliverOrderIds.split(",");
+        for (int i = 0; i < deliverOrderIdArr.length; i++) {
+            if(F.empty(deliverOrderIdArr[i])) continue;
+
+            MbStockOutOrder mbStockOutOrder = new MbStockOutOrder();
+            mbStockOutOrder.setMbStockOutId(mbStockOut.getId());
+            mbStockOutOrder.setDeliverOrderId(Integer.valueOf(deliverOrderIdArr[i]));
+            mbStockOutOrderService.add(mbStockOutOrder);
+        }
+
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            MbStockOutItem mbStockOutItem = (MbStockOutItem) JSONObject.toBean(jsonObject, MbStockOutItem.class);
+
+            Integer id = mbStockOut.getWarehouseId();
+            Integer itemId = mbStockOutItem.getItemId();
+            MbItem mbItem = mbItemService.getFromCache(itemId);
+            if(mbItem == null) throw new ServiceException(String.format("商品不存在:%s",itemId));
+            //添加出库项改变仓库库存
+            MbItemStock mbItemStockShop = mbItemStockService.getByWareHouseIdAndItemId(id, itemId);
+            MbItemStock changeShop = new MbItemStock();
+            changeShop.setId(mbItemStockShop.getId());
+            changeShop.setAdjustment(mbStockOutItem.getQuantity()*(-1));
+            changeShop.setLogType("SL03");
+            changeShop.setReason(String.format("出库ID：%s出库，库存：%s", mbStockOut.getId(),mbItemStockShop.getQuantity()-mbStockOutItem.getQuantity()));
+            mbItemStockService.editAndInsertLog(changeShop, mbStockOut.getLoginId());
+        }
+
     }
 
     @Override

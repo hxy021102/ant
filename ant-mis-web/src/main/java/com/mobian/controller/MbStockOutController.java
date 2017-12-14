@@ -8,6 +8,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mobian.absx.F;
 import com.mobian.pageModel.*;
 import com.mobian.service.MbStockOutOrderServiceI;
 import com.mobian.service.MbStockOutServiceI;
@@ -102,9 +103,10 @@ public class MbStockOutController extends BaseController {
 	 */
 	@RequestMapping("/add")
 	@ResponseBody
-	public Json add(MbStockOut mbStockOut,String dataGrid) {
+	public Json add(MbStockOut mbStockOut,String dataGrid,String deliverOrderIds) {
 		Json j = new Json();		
-		mbStockOutService.addStockOut(mbStockOut,dataGrid);
+		if(F.empty(deliverOrderIds)) mbStockOutService.addStockOut(mbStockOut,dataGrid);
+		else mbStockOutService.addStockOut(mbStockOut, dataGrid, deliverOrderIds);
 		j.setSuccess(true);
 		j.setMsg("添加成功！");		
 		return j;

@@ -179,7 +179,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			}
 			if (!F.empty(deliverOrder.getDeliveryWay())) {
 				whereHql += " and t.deliveryWay = :deliveryWay";
-				params.put("devlieryWay", deliverOrder.getDeliveryWay());
+				params.put("deliveryWay", deliverOrder.getDeliveryWay());
 			}
 			if (!F.empty(deliverOrder.getOriginalShop())) {
 				whereHql += " and t.originalShop LIKE :originalShop";
@@ -188,6 +188,10 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			if (!F.empty(deliverOrder.getOriginalOrderId())) {
 				whereHql += " and t.originalOrderId = :originalOrderId";
 				params.put("originalOrderId", deliverOrder.getOriginalOrderId());
+			}
+			if (!F.empty(deliverOrder.getAgentStatus())) {
+				whereHql += " and t.agentStatus = :agentStatus";
+				params.put("agentStatus", deliverOrder.getAgentStatus());
 			}
 			if (deliverOrder instanceof DeliverOrderQuery) {
 				DeliverOrderQuery orderQuery = (DeliverOrderQuery) deliverOrder;
