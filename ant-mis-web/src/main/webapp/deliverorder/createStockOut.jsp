@@ -3,6 +3,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%>
+<style>
+    .dialog-content {
+        overflow-x: hidden;
+    }
+</style>
 <script type="text/javascript">
     var dataGrid;
     $(function () {
@@ -34,6 +39,7 @@
         });
 
         dataGrid = $('#dataGrid').datagrid({
+            url : '${pageContext.request.contextPath}/deliverOrderShopItemController/dataGrid?deliverOrderIds='+'${deliverOrderIds}',
             fit: true,
             fitColumns: true,
             border: false,

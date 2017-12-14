@@ -483,9 +483,13 @@
             },{
                 field : 'id',
                 title : '运单ID',
-                width : 20,
+                width : 50,
                 formatter : function (value, row, index) {
-                    return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
+                    var str = '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
+                    if(row.stockOutNum && row.stockOutNum > 0) {
+                        str += '<font color="red">(出+'+row.stockOutNum+')</font>';
+                    }
+                    return str;
                 }
             },  {
                 field : 'addtime',
@@ -766,8 +770,7 @@
         } else if(index == 3) {
             options.url +='?agentStatus=DTS01&deliveryWay=DAW04';
         } else if(index == 4) {
-//            options.url +='?agentStatus=DTS02&deliveryWay=DAW04';
-            options.url +='?status=notDriver';
+            options.url +='?agentStatus=DTS02&deliveryWay=DAW04';
         } else if(index == 5) {
             options.url +='?agentStatus=DTS03&deliveryWay=DAW04';
         }
@@ -815,18 +818,33 @@
 
     function batchDeliver() {
         var rows = selectDatagrid.datagrid('getChecked');
-        var ids = [];
+        var ids = [], nonStockOutIds = [];
         if (rows.length > 0) {
-            parent.$.messager.confirm('确认', '您是否确认当前选中的运单已发货？', function(r) {
+            for ( var i = 0; i < rows.length; i++) {
+                ids.push(rows[i].id);
+                if(!rows[i].stockOutNum || rows[i].stockOutNum == 0) {
+                    nonStockOutIds.push(rows[i].id);
+                }
+            }
+            var msg = '您是否确认当前选中的运单已发货？';
+            if(nonStockOutIds.length > 0) {
+                msg = '运单' + nonStockOutIds.join(',') + '<font color="red">未创建出库单</font>，是否继续已发货？';
+            }
+            parent.$.messager.confirm('确认', msg, function(r) {
                 if (r) {
                     parent.$.messager.progress({
                         title : '提示',
                         text : '数据处理中，请稍后....'
                     });
-                    for ( var i = 0; i < rows.length; i++) {
-                        ids.push(rows[i].id);
-                    }
-
+                    $.post('${pageContext.request.contextPath}/deliverOrderController/batchUpdateOrderDeliver', {
+                        deliverOrderIds : ids.join(',')
+                    }, function(result) {
+                        if (result.success) {
+                            parent.$.messager.alert('提示', result.msg, 'info');
+                            selectDatagrid.datagrid('reload');
+                        }
+                        parent.$.messager.progress('close');
+                    }, 'JSON');
                 }
             });
         } else {
@@ -839,16 +857,23 @@
 
     function addStockOut() {
         var rows = selectDatagrid.datagrid('getChecked');
-        var ids = [];
+        var ids = [], stockOutIds = [];
         if (rows.length > 0) {
             for ( var i = 0; i < rows.length; i++) {
                 ids.push(rows[i].id);
+                if(rows[i].stockOutNum && rows[i].stockOutNum > 0) {
+                    stockOutIds.push(rows[i].id);
+                }
+            }
+            if(stockOutIds.length > 0) {
+                parent.$.messager.alert('提示', '运单' + stockOutIds.join(',') + '<font color="red">已出库</font>，无法创建！', 'info');
+                return;
             }
 
             parent.$.modalDialog({
                 title : '创建出库单',
                 width : 780,
-                height : 500,
+                height : 540,
                 href : '${pageContext.request.contextPath}/mbStockOutOrderController/addStockOutPage?deliverOrderIds=' + ids ,
                 buttons : [ {
                     text: '关闭',
@@ -860,7 +885,7 @@
                     handler: function () {
                         parent.$.messager.confirm('询问', '请确认是否创建出库单？', function(b) {
                             if (b) {
-                                parent.$.modalDialog.openner_dataGrid = dataGrid;
+                                parent.$.modalDialog.openner_dataGrid = selectDatagrid;
                                 var f = parent.$.modalDialog.handler.find('#form');
                                 f.submit();
                             }
@@ -981,7 +1006,9 @@
     </div>
     <div id="toolbar02" style="display: none;">
         <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
-        <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="addStockOut();">创建出库单</a>
+        <c:if test="${fn:contains(sessionInfo.resourceList, '/mbStockOutOrderController/addStockOutPage')}">
+            <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="addStockOut();">创建出库单</a>
+        </c:if>
         <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="batchDeliver();">批量确认发货</a>
 
     </div>

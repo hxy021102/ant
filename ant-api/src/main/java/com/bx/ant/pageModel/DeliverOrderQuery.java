@@ -28,6 +28,8 @@ public class DeliverOrderQuery extends DeliverOrder {
     private String originalOrderStatusName;
     private String agentStatusName;
 
+    private Integer stockOutNum;
+
     public String getStatusName() {
         return ConvertNameUtil.getString(this.statusName);
     }
@@ -170,5 +172,13 @@ public class DeliverOrderQuery extends DeliverOrder {
 
     public void setAgentStatusName(String agentStatusName) {
         this.agentStatusName = agentStatusName;
+    }
+
+    public Integer getStockOutNum() {
+        return stockOutNum;
+    }
+
+    public void setStockOutNum(Integer stockOutNum) {
+        this.stockOutNum = stockOutNum;
     }
 }

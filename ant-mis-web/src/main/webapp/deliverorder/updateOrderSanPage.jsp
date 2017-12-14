@@ -53,7 +53,7 @@
     }
 
     function cleanFun() {
-		$('#scanInp').val('');
+		$('#scanInp').val('').focus();
 	}
 </script>
 </head>

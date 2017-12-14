@@ -19,6 +19,8 @@ public class MbStockOutOrder implements java.io.Serializable {
 	private String status;
 	private String statusName;
 
+	private Integer[] deliverOrderIds;
+
 	public void setId(Integer value) {
 		this.id = value;
 	}
@@ -86,5 +88,11 @@ public class MbStockOutOrder implements java.io.Serializable {
 		this.statusName = statusName;
 	}
 
+	public Integer[] getDeliverOrderIds() {
+		return deliverOrderIds;
+	}
 
+	public void setDeliverOrderIds(Integer[] deliverOrderIds) {
+		this.deliverOrderIds = deliverOrderIds;
+	}
 }

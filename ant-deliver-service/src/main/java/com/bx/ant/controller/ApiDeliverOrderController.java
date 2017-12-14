@@ -291,6 +291,35 @@ public class ApiDeliverOrderController extends BaseController {
     }
 
     /**
+     * 门店确认签收
+     *
+     * @param request
+     * @param id
+     * @return
+     */
+    @RequestMapping("/editOrderSign")
+    @ResponseBody
+    public Json editOrderSign(HttpServletRequest request, Long id) {
+        Json json = new Json();
+
+        //获取shopId
+        TokenWrap token = getTokenWrap(request);
+        Integer shopId = token.getShopId();
+        DeliverOrder order = deliverOrderService.get(id);
+        if(shopId.intValue() != order.getShopId()) {
+            json.setMsg("签收失败，订单与您身份信息不匹配！");
+            return json;
+        }
+        order = new DeliverOrder();
+        order.setId(id);
+        order.setAgentStatus(DeliverOrderServiceI.AGENT_STATUS_DTS04);
+        deliverOrderService.editAndAddLog(order, DeliverOrderLogServiceI.TYPE_DLT16, "代送运单门店签收");
+        json.setMsg("u know");
+        json.setSuccess(true);
+        return json;
+    }
+
+    /**
      * 门店确认骑手接货
      *
      * @param request

@@ -71,7 +71,11 @@ public class MbStockOutOrderServiceImpl extends BaseServiceImpl<MbStockOutOrder>
 			if (!F.empty(mbStockOutOrder.getStatus())) {
 				whereHql += " and t.status = :status";
 				params.put("status", mbStockOutOrder.getStatus());
-			}		
+			}
+			if(mbStockOutOrder.getDeliverOrderIds() != null && mbStockOutOrder.getDeliverOrderIds().length > 0) {
+				whereHql += " and t.deliverOrderId in (:deliverOrderIds)";
+				params.put("deliverOrderIds", mbStockOutOrder.getDeliverOrderIds());
+			}
 		}	
 		return whereHql;
 	}
