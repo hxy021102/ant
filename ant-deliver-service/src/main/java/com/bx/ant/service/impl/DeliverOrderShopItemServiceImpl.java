@@ -98,7 +98,16 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 			if (!F.empty(deliverOrderShopItem.getFreight())) {
 				whereHql += " and t.freight = :freight";
 				params.put("freight", deliverOrderShopItem.getFreight());
-			}		
+			}
+			if (!F.empty(deliverOrderShopItem.getDeliverOrderIds())) {
+				Long[] deliverOrderIds = new Long[deliverOrderShopItem.getDeliverOrderIds().length()];
+				int i = 0;
+				for (String deliverOrder : deliverOrderShopItem.getDeliverOrderIds().split(",")) {
+					deliverOrderIds[i++] = Long.parseLong(deliverOrder);
+				}
+				whereHql += " and t.deliverOrderId in(:deliverOrderIds)";
+				params.put("deliverOrderIds", deliverOrderIds);
+			}
 		}	
 		return whereHql;
 	}
@@ -271,4 +280,38 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 		}
 		return dg;
 	}
+
+	@Override
+	public DataGrid dataGridByDeliverOrderIds(String deliverOrderIds) {
+        DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
+        deliverOrderShopItem.setDeliverOrderIds(deliverOrderIds);
+        List<DeliverOrderShopItem> deliverOrderShopItems = list(deliverOrderShopItem);
+        DataGrid dg = new DataGrid();
+        if (CollectionUtils.isNotEmpty(deliverOrderShopItems)) {
+            List<DeliverOrderShopItemExt> deliverOrderShopItemExts = new ArrayList<DeliverOrderShopItemExt>();
+            Map<Integer,Integer> map=new HashMap<Integer, Integer>();
+            for (DeliverOrderShopItem orderShopItem : deliverOrderShopItems) {
+            	Integer key=orderShopItem.getItemId();
+            	Integer itemIdValue=map.get(orderShopItem.getItemId());
+				if (itemIdValue == null) {
+					map.put(key, orderShopItem.getQuantity());
+					DeliverOrderShopItemExt deliverOrderShopItemExt = new DeliverOrderShopItemExt();
+					BeanUtils.copyProperties(orderShopItem, deliverOrderShopItemExt);
+					MbItem mbItem = mbItemService.getFromCache(orderShopItem.getItemId());
+					deliverOrderShopItemExt.setItemCode(mbItem.getCode());
+					deliverOrderShopItemExt.setItemName(mbItem.getName()+"  "+mbItem.getQuantityUnitName());
+					deliverOrderShopItemExts.add(deliverOrderShopItemExt);
+				} else {
+					map.put(key, itemIdValue += orderShopItem.getQuantity());
+				}
+			}
+			for (DeliverOrderShopItemExt orderShopItemExt : deliverOrderShopItemExts) {
+				orderShopItemExt.setQuantity(map.get(orderShopItemExt.getItemId()));
+			}
+            dg.setRows(deliverOrderShopItemExts);
+            return dg;
+        }
+        return dg;
+    }
+
 }

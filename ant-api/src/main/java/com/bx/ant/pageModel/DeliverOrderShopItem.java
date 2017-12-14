@@ -20,7 +20,7 @@ public class DeliverOrderShopItem implements java.io.Serializable {
 	private Integer inPrice;
 	private Integer freight;
 	private Integer quantity;
-
+	private String deliverOrderIds;
 
 	
 
@@ -117,5 +117,13 @@ public class DeliverOrderShopItem implements java.io.Serializable {
 
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
+	}
+
+	public String getDeliverOrderIds() {
+		return deliverOrderIds;
+	}
+
+	public void setDeliverOrderIds(String deliverOrderIds) {
+		this.deliverOrderIds = deliverOrderIds;
 	}
 }

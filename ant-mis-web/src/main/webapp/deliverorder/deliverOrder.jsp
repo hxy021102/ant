@@ -36,6 +36,18 @@
                 invoke: function () {
                     gridMap.handle(this, loadDataGridNotDriver);
                 }, grid: null
+            }, 3: {
+                invoke: function () {
+                    gridMap.handle(this, loadDataGridAgentStatus_DTS01);
+                }, grid: null
+            }, 4: {
+                invoke: function () {
+                    gridMap.handle(this, loadDataGridAgentStatus_DTS02);
+                }, grid: null
+            }, 5: {
+                invoke: function () {
+                    gridMap.handle(this, loadDataGridAgentStatus_DTS03);
+                }, grid: null
             }
         };
         $('#deliverOrder_list_tabs').tabs({
@@ -349,6 +361,292 @@
         });
     }
 
+    function loadDataGridAgentStatus_DTS01() {
+        return  $('#dataGridAgentStatus_DTS01').datagrid({
+            fit : true,
+            fitColumns : true,
+            border : false,
+            pagination : true,
+            idField : 'id',
+            pageSize : 10,
+            pageList : [ 100,200 ],
+            sortOrder : 'desc',
+            sortName:'updatetime',
+            sortable:true,
+            checkOnSelect : false,
+            selectOnCheck : false,
+            nowrap : false,
+            striped : true,
+            rownumbers : true,
+            singleSelect : true,
+            columns : [ [ {
+                field : 'checkbox',
+                checkbox:true,
+                width : 30
+            },{
+                field : 'id',
+                title : '运单ID',
+                width : 20,
+                formatter : function (value, row, index) {
+                    return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
+                }
+            },  {
+                field : 'addtime',
+                title : '创建时间',
+                width : 55
+            },{
+                field : 'updatetime',
+                title : '修改时间',
+                width : 55
+            }, {
+                field : 'supplierOrderId',
+                title : '订单ID',
+                width : 20
+            },{
+                field : 'supplierId',
+                title : '供应商ID',
+                width : 25
+            }, {
+                field : 'supplierName',
+                title : '供应商名称',
+                width : 50
+            }, {
+                field : 'shopName',
+                title : '门店名称',
+                width : 50,
+                sortable : true
+            }, {
+                field : 'amount',
+                title : '总金额',
+                align:"right",
+                width : 20	,
+                formatter: function (value) {
+                    if (value == null)
+                        return "";
+                    return $.formatMoney(value);
+                }
+            }, {
+                field : 'statusName',
+                title : '订单状态',
+                width : 25
+            }, {
+                field : 'deliveryStatusName',
+                title : '配送状态',
+                width : 25
+            },{
+                field : 'contactPeople',
+                title : '收货人',
+                width : 25
+            }, {
+                field : 'deliveryRequireTime',
+                title : '要求送达时间',
+                width : 55
+            },{
+                field : 'originalShop',
+                title : '店铺',
+                width : 50
+            }, {
+                field : 'originalOrderId',
+                title : '订单号',
+                width : 35
+            }] ],
+            toolbar : '#toolbar01',
+            onLoadSuccess : function() {
+                $('#searchForm table').show();
+                parent.$.messager.progress('close');
+            }
+        });
+    }
+
+    function loadDataGridAgentStatus_DTS02() {
+        return  $('#dataGridAgentStatus_DTS02').datagrid({
+            fit : true,
+            fitColumns : true,
+            border : false,
+            pagination : true,
+            idField : 'id',
+            pageSize : 10,
+            pageList : [ 100,200 ],
+            sortOrder : 'desc',
+            sortName:'updatetime',
+            sortable:true,
+            checkOnSelect : false,
+            selectOnCheck : false,
+            nowrap : false,
+            striped : true,
+            rownumbers : true,
+            singleSelect : true,
+            columns : [ [ {
+                field : 'checkbox',
+                checkbox:true,
+                width : 30
+            },{
+                field : 'id',
+                title : '运单ID',
+                width : 20,
+                formatter : function (value, row, index) {
+                    return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
+                }
+            },  {
+                field : 'addtime',
+                title : '创建时间',
+                width : 55
+            },{
+                field : 'updatetime',
+                title : '修改时间',
+                width : 55
+            }, {
+                field : 'supplierOrderId',
+                title : '订单ID',
+                width : 20
+            }, {
+                field : 'supplierName',
+                title : '供应商名称',
+                width : 50
+            }, {
+                field : 'shopName',
+                title : '门店名称',
+                width : 50,
+                sortable:true
+            }, {
+                field : 'amount',
+                title : '总金额',
+                align:"right",
+                width : 20	,
+                formatter: function (value) {
+                    if (value == null)
+                        return "";
+                    return $.formatMoney(value);
+                }
+            }, {
+                field : 'statusName',
+                title : '订单状态',
+                width : 25
+            },{
+                field : 'contactPeople',
+                title : '收货人',
+                width : 25
+            }, {
+                field : 'deliveryRequireTime',
+                title : '要求送达时间',
+                width : 55
+            },{
+                field : 'originalShop',
+                title : '店铺',
+                width : 50
+            }, {
+                field : 'originalOrderId',
+                title : '订单号',
+                width : 35
+            }] ],
+            toolbar : '#toolbar02',
+            onLoadSuccess : function() {
+                $('#searchForm table').show();
+                parent.$.messager.progress('close');
+            }
+        });
+    }
+
+    function loadDataGridAgentStatus_DTS03() {
+        return  $('#dataGridAgentStatus_DTS03').datagrid({
+            fit : true,
+            fitColumns : true,
+            border : false,
+            pagination : true,
+            idField : 'id',
+            pageSize : 10,
+            pageList : [ 100,200 ],
+            sortOrder : 'desc',
+            sortName:'updatetime',
+            sortable:true,
+            checkOnSelect : false,
+            selectOnCheck : false,
+            nowrap : false,
+            striped : true,
+            rownumbers : true,
+            singleSelect : true,
+            columns : [ [ {
+                field : 'id',
+                title : '运单ID',
+                width : 20,
+                formatter : function (value, row, index) {
+                    return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
+                }
+            },  {
+                field : 'addtime',
+                title : '创建时间',
+                width : 55
+            },{
+                field : 'updatetime',
+                title : '修改时间',
+                width : 55
+            }, {
+                field : 'supplierOrderId',
+                title : '订单ID',
+                width : 20
+            },{
+                field : 'supplierId',
+                title : '供应商ID',
+                width : 25
+            }, {
+                field : 'supplierName',
+                title : '供应商名称',
+                width : 50
+            }, {
+                field : 'shopName',
+                title : '门店名称',
+                width : 50
+            }, {
+                field : 'amount',
+                title : '总金额',
+                align:"right",
+                width : 20	,
+                formatter: function (value) {
+                    if (value == null)
+                        return "";
+                    return $.formatMoney(value);
+                }
+            }, {
+                field : 'statusName',
+                title : '订单状态',
+                width : 25
+            }, {
+                field : 'deliveryStatusName',
+                title : '配送状态',
+                width : 25
+            },{
+                field : 'contactPeople',
+                title : '收货人',
+                width : 25
+            }, {
+                field : 'deliveryRequireTime',
+                title : '要求送达时间',
+                width : 55
+            }, {
+                field : 'shopPayStatusName',
+                title : '门店结算',
+                width : 25
+            }, {
+                field : 'payStatusName',
+                title : '供应商结算',
+                width : 29
+            },{
+                field : 'originalShop',
+                title : '店铺',
+                width : 50
+            }, {
+                field : 'originalOrderId',
+                title : '订单号',
+                width : 35
+            }] ],
+            toolbar : '#toolbar03',
+            onLoadSuccess : function() {
+                $('#searchForm table').show();
+                parent.$.messager.progress('close');
+            }
+        });
+    }
+
 	function deleteFun(id) {
 		if (id == undefined) {
 			var rows = dataGrid.datagrid('getSelections');
@@ -465,6 +763,13 @@
             options.url += '?time=30';
         }else if(index == 2){
             options.url +='?status=notDriver';
+        } else if(index == 3) {
+            options.url +='?agentStatus=DTS01&deliveryWay=DAW04';
+        } else if(index == 4) {
+//            options.url +='?agentStatus=DTS02&deliveryWay=DAW04';
+            options.url +='?status=notDriver';
+        } else if(index == 5) {
+            options.url +='?agentStatus=DTS03&deliveryWay=DAW04';
         }
         options.queryParams = $.serializeObject($('#searchForm'));
         selectDatagrid.datagrid(options);
@@ -474,6 +779,103 @@
 		$('#searchForm input').val('');
         selectDatagrid.datagrid('load', {});
 	}
+
+    var isPrint = true;
+    function batchPrint() {
+        if(!isPrint) {
+            parent.$.messager.show({
+                title : '提示',
+                msg : '操作频繁请稍后重试或刷新页面！'
+            });
+            return;
+        }
+        var rows = selectDatagrid.datagrid('getChecked');
+        var ids = [];
+        if (rows.length > 0) {
+            parent.$.messager.confirm('确认', '打印前请确认，避免重复打印？', function(r) {
+                if (r) {
+                    isPrint = false;
+                    for ( var i = 0; i < rows.length; i++) {
+                        ids.push(rows[i].id);
+                    }
+                    $('#printIframe').attr("src",'${pageContext.request.contextPath}/deliverOrderController/printView?deliverOrderIds=' + ids);
+                    setTimeout(function(){
+                        isPrint = true;
+                    }, 30000);
+                }
+            });
+        } else {
+            parent.$.messager.show({
+                title : '提示',
+                msg : '请勾选要打印的运单！'
+            });
+        }
+
+    }
+
+    function batchDeliver() {
+        var rows = selectDatagrid.datagrid('getChecked');
+        var ids = [];
+        if (rows.length > 0) {
+            parent.$.messager.confirm('确认', '您是否确认当前选中的运单已发货？', function(r) {
+                if (r) {
+                    parent.$.messager.progress({
+                        title : '提示',
+                        text : '数据处理中，请稍后....'
+                    });
+                    for ( var i = 0; i < rows.length; i++) {
+                        ids.push(rows[i].id);
+                    }
+
+                }
+            });
+        } else {
+            parent.$.messager.show({
+                title : '提示',
+                msg : '请勾选要打印的运单！'
+            });
+        }
+    }
+
+    function addStockOut() {
+        var rows = selectDatagrid.datagrid('getChecked');
+        var ids = [];
+        if (rows.length > 0) {
+            for ( var i = 0; i < rows.length; i++) {
+                ids.push(rows[i].id);
+            }
+
+            parent.$.modalDialog({
+                title : '创建出库单',
+                width : 780,
+                height : 500,
+                href : '${pageContext.request.contextPath}/mbStockOutOrderController/addStockOutPage?deliverOrderIds=' + ids ,
+                buttons : [ {
+                    text: '关闭',
+                    handler: function () {
+                        parent.$.modalDialog.handler.dialog('close');
+                    }
+                }, {
+                    text: '创建',
+                    handler: function () {
+                        parent.$.messager.confirm('询问', '请确认是否创建出库单？', function(b) {
+                            if (b) {
+                                parent.$.modalDialog.openner_dataGrid = dataGrid;
+                                var f = parent.$.modalDialog.handler.find('#form');
+                                f.submit();
+                            }
+                        });
+
+                    }
+                }]
+            });
+        } else {
+            parent.$.messager.show({
+                title : '提示',
+                msg : '请勾选要发货的运单！'
+            });
+        }
+    }
 </script>
 </head>
 <body>
@@ -542,6 +944,15 @@
 				<div title="超时未配送运单">
 					<table id="dataGridNotDriver"></table>
 				</div>
+                <div title="未打单">
+                    <table id="dataGridAgentStatus_DTS01"></table>
+                </div>
+                <div title="已打单">
+                    <table id="dataGridAgentStatus_DTS02"></table>
+                </div>
+                <div title="待签收">
+                    <table id="dataGridAgentStatus_DTS03"></table>
+                </div>
 		     </div>
 		</div>
 	</div>
@@ -561,6 +972,23 @@
 			<iframe id="downloadIframe" name="downloadIframe" style="display: none;"></iframe>
 		</c:if>
 
-	</div>	
+	</div>
+    <div id="toolbar01" style="display: none;">
+        <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
+        <c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/printView')}">
+            <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="batchPrint();">批量打单</a>
+        </c:if>
+    </div>
+    <div id="toolbar02" style="display: none;">
+        <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
+        <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="addStockOut();">创建出库单</a>
+        <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="batchDeliver();">批量确认发货</a>
+
+    </div>
+    <div id="toolbar03" style="display: none;">
+        <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
+
+    </div>
+    <iframe id="printIframe" style="display: none;"></iframe>
 </body>
 </html>

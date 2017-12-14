@@ -59,4 +59,12 @@ public interface MbStockOutOrderServiceI {
 	 * @return
 	 */
 	List<MbStockOutOrder> query(MbStockOutOrder mbStockOutOrder);
+
+	/**
+	 *出库订单显示列表
+	 * @param mbStockOutOrder
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridWithName(MbStockOutOrder mbStockOutOrder, PageHelper ph);
 }
