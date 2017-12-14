@@ -21,17 +21,21 @@
     <script>
 
         $(function(){
-            $("#bcTarget").barcode("${mbOrder.id}", "codabar",{
-                output:'css',       //渲染方式 css/bmp/svg/canvas
-                //bgColor: '#ff0000', //条码背景颜色
-                color: '#000000',   //条码颜色
-                barWidth: 3,        //单条条码宽度
-                barHeight: 45,     //单体条码高度
+            $(".bcTarget").each(function(){
+                var orderId = $(this).attr('orderId');
+                $(this).barcode("${mbOrder.id}", "codabar",{
+                    output:'css',       //渲染方式 css/bmp/svg/canvas
+                    //bgColor: '#ff0000', //条码背景颜色
+                    color: '#000000',   //条码颜色
+                    barWidth: 3,        //单条条码宽度
+                    barHeight: 45,     //单体条码高度
 //                moduleSize: 5,   //条码大小
 //                posX: 10,        //条码坐标X
 //                posY: 5,         //条码坐标Y
-                addQuietZone: false  //是否添加空白区（内边距）
+                    addQuietZone: false  //是否添加空白区（内边距）
+                });
             });
+
         })
 
         //参考api http://printfree.jatools.com/document.html
@@ -102,7 +106,7 @@
         <table width="100%" cellspacing="0" cellpadding="0">
             <tr>
                 <td colspan="3"></td>
-                <td rowspan="2" align="center"><div id="bcTarget"></div></td>
+                <td rowspan="2" align="center"><div class="bcTarget" orderId="${deliverOrderExt.id}"></div></td>
             </tr>
             <tr>
                 <td colspan="4" align="center" valign="top">上海奔翔实业有限公司配送单</td>
