@@ -209,9 +209,13 @@ public class MbStockOutController extends BaseController {
 		mbStockOutOrder.setMbStockOutId(id);
 		List<MbStockOutOrder> mbStockOutOrders = mbStockOutOrderService.query(mbStockOutOrder);
 		if (CollectionUtils.isNotEmpty(mbStockOutOrders)) {
-			mbStockOutOrder = mbStockOutOrders.get(0);
+			String deliverOrderIds="";
+			for(MbStockOutOrder stockOutOrder:mbStockOutOrders){
+				deliverOrderIds+=stockOutOrder.getDeliverOrderId()+",";
+			}
+            mbStockOut.setDeliverOrderIds(deliverOrderIds);
 		}
-		mbStockOut.setDeliverOrderId(mbStockOutOrder.getDeliverOrderId());
+		mbStockOut.setDeliverOrderIds(mbStockOut.getDeliverOrderIds());
 		request.setAttribute("mbStockOut", mbStockOut);
 		return "/mbstockout/mbStockOutDetails";
 	}

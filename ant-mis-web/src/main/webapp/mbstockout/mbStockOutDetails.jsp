@@ -13,8 +13,7 @@
 		 var dataGridmbStockOutOrder;
          function loadDataGridmbStockOutOrder() {
            return dataGridmbStockOutOrder = $('#dataGridmbStockOutOrder').datagrid({
-               //  url : '${pageContext.request.contextPath}/mbStockOutOrderController/dataGrid?mbStockOutId='+${mbStockOut.id},
-                 url : '${pageContext.request.contextPath}/mbStockOutOrderController/dataGrid',
+			     url : '${pageContext.request.contextPath}/mbStockOutOrderController/dataGrid?mbStockOutId='+${mbStockOut.id},
                  fit : true,
                  fitColumns : true,
                  border : false,
@@ -50,7 +49,10 @@
                  }, {
                      field : 'deliverOrderId',
                      title : '<%=TmbStockOutOrder.ALIAS_DELIVER_ORDER_ID%>',
-                     width : 30
+                     width : 30,
+                     formatter: function (value, row) {
+                         return '<a onclick="viewFun(' + row.deliverOrderId + ')">' + row.deliverOrderId + '</a>';
+                     }
                  }, {
                      field : 'status',
                      title : '<%=TmbStockOutOrder.ALIAS_STATUS%>',
@@ -66,8 +68,7 @@
 
          function loadDeliverItemDataGrid() {
              return $('#deliverItemDataGrid').datagrid({
-                // url : '${pageContext.request.contextPath}/deliverOrderShopItemController/dataGrid?deliverOrderId='+${mbStockOut.deliverOrderId},
-                 url : '${pageContext.request.contextPath}/deliverOrderShopItemController/dataGrid',
+				 url : '${pageContext.request.contextPath}/deliverOrderShopItemController/dataGrid?deliverOrderIds='+'${mbStockOut.deliverOrderIds}',
                  fit : true,
                  fitColumns : true,
                  border : false,
@@ -161,12 +162,21 @@
 
          });
 
+         function viewFun(id) {
+             var href = '${pageContext.request.contextPath}/deliverOrderController/view?id=' + id;
+             parent.$("#index_tabs").tabs('add', {
+                 title : '运单详情-' + id,
+                 content : '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+                 closable : true
+             });
+         }
+
 	 </script>
 </head>
 
 <body>
 <div class="easyui-layout" data-options="fit : true,border:false">
-	<div data-options="region:'north',title:'基本信息',border:false" style="height: 180px; overflow: hidden;">
+	<div data-options="region:'north',title:'基本信息',border:false" style="height: 146px; overflow: hidden;">
 		<table class="table">
 			<tr>
 				<th><%=TmbStockOut.ALIAS_STOCK_OUT_PEOPLE_ID%></th>
@@ -177,28 +187,25 @@
 				<td>
 					${mbStockOut.loginName}
 				</td>
-			</tr>
-			<tr>
 				<th><%=TmbStockOut.ALIAS_WAREHOUSE_ID%>
 				</th>
 				<td >
 					${mbStockOut.warehouseName}
 				</td>
 				<th><%=TmbStockOut.ALIAS_STOCK_OUT_TIME%></th>
-				<td colspan="4">
+				<td>
 					${mbStockOut.stockOutTime}
 				</td>
-
 			</tr>
 			<tr>
 				<th><%=TmbStockOut.ALIAS_STOCK_OUT_TYPE%></th>
-				<td colspan="4">
+				<td colspan="7">
 					${mbStockOut.stockOutTypeName}
 				</td>
 			</tr>
 			<tr>
 				<th><%=TmbStockOut.ALIAS_REMARK%></th>
-				<td colspan="4">
+				<td colspan="7">
 					${mbStockOut.remark}
 				</td>
 			</tr>

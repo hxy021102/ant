@@ -3,6 +3,7 @@ package com.mobian.controller;
 import com.alibaba.fastjson.JSON;
 import com.bx.ant.pageModel.DeliverOrderShopItem;
 import com.bx.ant.service.DeliverOrderShopItemServiceI;
+import com.mobian.absx.F;
 import com.mobian.pageModel.Colum;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
@@ -51,6 +52,9 @@ public class DeliverOrderShopItemController extends BaseController {
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(DeliverOrderShopItem deliverOrderShopItem, PageHelper ph) {
+		if (!F.empty(deliverOrderShopItem.getDeliverOrderIds())) {
+			return deliverOrderShopItemService.dataGridByDeliverOrderIds(deliverOrderShopItem.getDeliverOrderIds());
+		}
 		return deliverOrderShopItemService.dataGridWithName(deliverOrderShopItem, ph);
 	}
 	/**
