@@ -95,6 +95,8 @@ public class DeliverOrderController extends BaseController {
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(DeliverOrderQuery deliverOrderQuery, PageHelper ph) {
+		if(!F.empty(ph.getSort()) && "shopName".equals(ph.getSort())) ph.setSort("shopId");
+
         if(deliverOrderQuery.getTime()!=null&&deliverOrderQuery.getTime()!=0){
 			deliverOrderQuery.setTime(Integer.valueOf(ConvertNameUtil.getString("DSV500", "30")));
 			return deliverOrderService.dataGridOutTimeDeliverOrder(deliverOrderQuery, ph);
@@ -394,6 +396,16 @@ public class DeliverOrderController extends BaseController {
 			j.setMsg("指派失败，门店商品不足！");
 		}
 		return j;
+	}
+
+	/**
+	 * 获取打印数据
+	 * @return
+	 */
+	@RequestMapping("/printView")
+	public String printView(String deliverOrderIds) {
+
+		return "/deliverorder/deliverOrderPrint";
 	}
 
 	/**
