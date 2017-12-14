@@ -442,19 +442,20 @@ public class DeliverOrderController extends BaseController {
 
 	/**
 	 * 扫码打单，修改代送单状态为已打单
-	 * @param request
+	 * @param session
 	 * @param deliverOrderId
 	 * @return
 	 */
 	@RequestMapping("/updateOrderSan")
 	@ResponseBody
-	public Json updateOrderSan(HttpServletRequest request, Long deliverOrderId) {
+	public Json updateOrderSan( HttpSession session, Long deliverOrderId) {
 		Json j = new Json();
+		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
 		DeliverOrder deliverOrder = deliverOrderService.get(deliverOrderId);
 		if (deliverOrder != null) {
 			if ("DTS01".equals(deliverOrder.getAgentStatus())&& "DAW04".equals(deliverOrder.getDeliveryWay())) {
 				deliverOrder.setAgentStatus("DTS02");
-				deliverOrderService.edit(deliverOrder);
+				deliverOrderService.editAndAddLog(deliverOrder,DeliverOrderLogServiceI.TYPE_DLT15,"扫码打单成功",sessionInfo.getId());
 				j.setMsg("打单成功！");
 				j.setSuccess(true);
 				return j;
@@ -479,19 +480,20 @@ public class DeliverOrderController extends BaseController {
 
 	/**
 	 * 修改订单为已发货
-	 * @param request
+	 * @param session
 	 * @param deliverOrderId
 	 * @return
 	 */
 	@RequestMapping("/updateOrderDeliverGoods")
 	@ResponseBody
-	public Json updateOrderDeliverGoods(HttpServletRequest request, Long deliverOrderId) {
+	public Json updateOrderDeliverGoods(HttpSession session, Long deliverOrderId) {
 		Json j = new Json();
+		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
 		DeliverOrder deliverOrder = deliverOrderService.get(deliverOrderId);
 		if (deliverOrder != null) {
 			if ("DTS02".equals(deliverOrder.getAgentStatus())&& "DAW04".equals(deliverOrder.getDeliveryWay())) {
 				deliverOrder.setAgentStatus("DTS03");
-				deliverOrderService.edit(deliverOrder);
+				deliverOrderService.editAndAddLog(deliverOrder,DeliverOrderLogServiceI.TYPE_DLT14,"扫码发货成功",sessionInfo.getId());
 				j.setMsg("打单成功！");
 				j.setSuccess(true);
 				return j;
