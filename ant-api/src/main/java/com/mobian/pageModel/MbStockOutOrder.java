@@ -1,5 +1,7 @@
 package com.mobian.pageModel;
 
+import com.mobian.util.ConvertNameUtil;
+
 import java.util.Date;
 
 @SuppressWarnings("serial")
@@ -15,8 +17,7 @@ public class MbStockOutOrder implements java.io.Serializable {
 	private Integer mbStockOutId;
 	private Integer deliverOrderId;
 	private String status;
-
-	
+	private String statusName;
 
 	public void setId(Integer value) {
 		this.id = value;
@@ -76,5 +77,14 @@ public class MbStockOutOrder implements java.io.Serializable {
 	public String getStatus() {
 		return this.status;
 	}
+
+	public String getStatusName() {
+		return ConvertNameUtil.getString(this.status);
+	}
+
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
+	}
+
 
 }

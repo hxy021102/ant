@@ -289,18 +289,29 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
         DataGrid dg = new DataGrid();
         if (CollectionUtils.isNotEmpty(deliverOrderShopItems)) {
             List<DeliverOrderShopItemExt> deliverOrderShopItemExts = new ArrayList<DeliverOrderShopItemExt>();
+            Map<Integer,Integer> map=new HashMap<Integer, Integer>();
             for (DeliverOrderShopItem orderShopItem : deliverOrderShopItems) {
-                DeliverOrderShopItemExt deliverOrderShopItemExt = new DeliverOrderShopItemExt();
-                BeanUtils.copyProperties(orderShopItem, deliverOrderShopItemExt);
-                MbItem mbItem = mbItemService.getFromCache(orderShopItem.getItemId());
-                deliverOrderShopItemExt.setItemCode(mbItem.getCode());
-                deliverOrderShopItemExt.setItemName(mbItem.getName());
-                deliverOrderShopItemExts.add(deliverOrderShopItemExt);
-            }
+            	Integer key=orderShopItem.getItemId();
+            	Integer itemIdValue=map.get(orderShopItem.getItemId());
+				if (itemIdValue == null) {
+					map.put(key, orderShopItem.getQuantity());
+					DeliverOrderShopItemExt deliverOrderShopItemExt = new DeliverOrderShopItemExt();
+					BeanUtils.copyProperties(orderShopItem, deliverOrderShopItemExt);
+					MbItem mbItem = mbItemService.getFromCache(orderShopItem.getItemId());
+					deliverOrderShopItemExt.setItemCode(mbItem.getCode());
+					deliverOrderShopItemExt.setItemName(mbItem.getName()+"  "+mbItem.getQuantityUnitName());
+					deliverOrderShopItemExts.add(deliverOrderShopItemExt);
+				} else {
+					map.put(key, itemIdValue += orderShopItem.getQuantity());
+				}
+				for (DeliverOrderShopItemExt orderShopItemExt : deliverOrderShopItemExts) {
+					orderShopItemExt.setQuantity(map.get(orderShopItemExt.getItemId()));
+				}
+			}
             dg.setRows(deliverOrderShopItemExts);
             return dg;
         }
-        return null;
+        return dg;
     }
 
 }

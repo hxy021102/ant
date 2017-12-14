@@ -127,4 +127,20 @@ public class MbStockOutOrderServiceImpl extends BaseServiceImpl<MbStockOutOrder>
 		}
 		return ol;
 	}
+
+	@Override
+	public DataGrid dataGridWithName(MbStockOutOrder mbStockOutOrder, PageHelper ph) {
+		DataGrid dataGrid = dataGrid(mbStockOutOrder, ph);
+		List<MbStockOutOrder> mbStockOutOrderList = dataGrid.getRows();
+		if (CollectionUtils.isNotEmpty(mbStockOutOrderList)) {
+			List<MbStockOutOrder> mbStockOutOrders = new ArrayList<MbStockOutOrder>();
+			for (MbStockOutOrder stockOutOrder : mbStockOutOrderList) {
+				stockOutOrder.setStatusName(stockOutOrder.getStatus());
+				mbStockOutOrders.add(stockOutOrder);
+			}
+			dataGrid.setRows(mbStockOutOrders);
+			return dataGrid;
+		}
+		return dataGrid;
+	}
 }

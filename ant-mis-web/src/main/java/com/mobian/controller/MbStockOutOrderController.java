@@ -55,7 +55,7 @@ public class MbStockOutOrderController extends BaseController {
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(MbStockOutOrder mbStockOutOrder, PageHelper ph) {
-		return mbStockOutOrderService.dataGrid(mbStockOutOrder, ph);
+		return mbStockOutOrderService.dataGridWithName(mbStockOutOrder, ph);
 	}
 	/**
 	 * 获取MbStockOutOrder数据表格excel

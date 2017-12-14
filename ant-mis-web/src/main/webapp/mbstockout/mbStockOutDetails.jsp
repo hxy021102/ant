@@ -53,12 +53,7 @@
                      formatter: function (value, row) {
                          return '<a onclick="viewFun(' + row.deliverOrderId + ')">' + row.deliverOrderId + '</a>';
                      }
-                 }, {
-                     field : 'status',
-                     title : '<%=TmbStockOutOrder.ALIAS_STATUS%>',
-                     width : 40
-                 }
-                      ] ],
+                 }] ],
                  onLoadSuccess : function() {
                      parent.$.messager.progress('close');
                      $(this).datagrid('tooltip');
@@ -91,36 +86,7 @@
                      field : 'itemName',
                      title : '商品名称',
                      width : 80
-                 }, {
-                     field : 'price',
-                     title : '单价',
-                     width : 30,
-                     formatter: function (value) {
-                         if (value == null)
-                             return "";
-                         return $.formatMoney(value);
-                     }
-                 }, {
-                     field : 'inPrice',
-                     title : '成本价',
-                     align:"right",
-                     width : 30,
-                     formatter: function (value) {
-                         if (value == null)
-                             return "";
-                         return $.formatMoney(value);
-                     }
-                 }, {
-                     field : 'freight',
-                     title : '运费',
-                     align:"right",
-                     width : 30,
-                     formatter: function (value) {
-                         if (value == null)
-                             return "";
-                         return $.formatMoney(value);
-                     }
-                 }, {
+                 },   {
                      field : 'quantity',
                      title : '数量',
                      width : 30
