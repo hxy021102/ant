@@ -40,6 +40,7 @@ public class QimenOrderCancelServiceImpl extends AbstrcatQimenService {
             } else if (ArrayUtils.contains(status, deliverOrder.getStatus())) {
                 deliverOrderReq.setStatus(DeliverOrderServiceI.STATUS_FAILURE_CLOSED);
                 deliverOrderReq.setSupplierId(supplierId);
+                deliverOrderReq.setRemark(orderCancelRequest.getCancelReason());
                 deliverOrderService.transform(deliverOrderReq);
             } else {
                 response.setFlag("failure");
