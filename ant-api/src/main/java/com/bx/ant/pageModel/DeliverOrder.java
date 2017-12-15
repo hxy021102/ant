@@ -42,6 +42,8 @@ public class DeliverOrder implements java.io.Serializable {
 	private String deliveryType; // 派单类型
 	private Long orderShopId;
 	private String  orderLogRemark;
+	private DriverAccount driverAccount;
+
 	private String originalOrderId;
 	private String originalShop;
 	private String originalOrderStatus;
@@ -285,6 +287,14 @@ public class DeliverOrder implements java.io.Serializable {
 
 	public void setDeliveryWay(String deliveryWay) {
 		this.deliveryWay = deliveryWay;
+	}
+
+	public DriverAccount getDriverAccount() {
+		return driverAccount;
+	}
+
+	public void setDriverAccount(DriverAccount driverAccount) {
+		this.driverAccount = driverAccount;
 	}
 
 	public String getOriginalOrderId() {

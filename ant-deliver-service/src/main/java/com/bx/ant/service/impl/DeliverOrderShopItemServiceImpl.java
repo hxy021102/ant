@@ -1,12 +1,14 @@
 package com.bx.ant.service.impl;
 
+import com.bx.ant.dao.DeliverOrderShopItemDaoI;
+import com.bx.ant.model.TdeliverOrderShopItem;
 import com.bx.ant.pageModel.*;
 import com.bx.ant.service.*;
 import com.mobian.absx.F;
-import com.bx.ant.dao.DeliverOrderShopItemDaoI;
-import com.bx.ant.model.TdeliverOrderShopItem;
 import com.mobian.exception.ServiceException;
-import com.mobian.pageModel.*;
+import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.MbItem;
+import com.mobian.pageModel.PageHelper;
 import com.mobian.service.MbItemServiceI;
 import com.mobian.util.MyBeanUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -98,6 +100,17 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 			if (!F.empty(deliverOrderShopItem.getFreight())) {
 				whereHql += " and t.freight = :freight";
 				params.put("freight", deliverOrderShopItem.getFreight());
+			}
+			if (!F.empty(deliverOrderShopItem.getDeliverOrderShopIds())) {
+				Long[] orderShopIds = new Long[deliverOrderShopItem.getDeliverOrderShopIds().split(",").length];
+				int i = 0;
+				for (String orderShopId : deliverOrderShopItem.getDeliverOrderShopIds().split(",")) {
+					orderShopIds[i++] = Long.valueOf(orderShopId).longValue();
+				}
+				whereHql += " and t.deliverOrderShopId in (:deliverOrderShopIds)";
+				params.put("deliverOrderShopIds", orderShopIds);
+			}
+
 			}
 			if (!F.empty(deliverOrderShopItem.getDeliverOrderIds())) {
 				Long[] deliverOrderIds = new Long[deliverOrderShopItem.getDeliverOrderIds().length()];
@@ -280,6 +293,27 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 			}
 		}
 		return dg;
+	}
+
+	@Override
+	public Map<Integer, DeliverOrderShopItem> queryOrderShopItem(String deliverOrderShopIds) {
+		DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
+		deliverOrderShopItem.setDeliverOrderShopIds(deliverOrderShopIds);
+		List<DeliverOrderShopItem> deliverOrderShopItems = list(deliverOrderShopItem);
+		if (CollectionUtils.isNotEmpty(deliverOrderShopItems)) {
+			Map<Integer, DeliverOrderShopItem> deliverOrderShopItemMap = new HashMap<Integer, DeliverOrderShopItem>();
+			for (DeliverOrderShopItem orderShopItem : deliverOrderShopItems) {
+				if (deliverOrderShopItemMap.get(orderShopItem.getItemId()) == null) {
+					deliverOrderShopItemMap.put(orderShopItem.getItemId(), orderShopItem);
+				} else {
+					DeliverOrderShopItem shopItem = deliverOrderShopItemMap.get(orderShopItem.getItemId());
+					shopItem.setQuantity(shopItem.getQuantity() + orderShopItem.getQuantity());
+					deliverOrderShopItemMap.put(orderShopItem.getItemId(), shopItem);
+				}
+			}
+			return deliverOrderShopItemMap;
+		}
+		return null;
 	}
 
 	@Override

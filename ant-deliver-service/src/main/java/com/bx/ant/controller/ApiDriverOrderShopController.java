@@ -253,6 +253,12 @@ public class ApiDriverOrderShopController extends BaseController {
         json.setSuccess(true);
         return json;
     }
+
+    /**
+     * 今日有效订单
+     * @param request
+     * @return
+     */
     @RequestMapping("/getTodayOrders")
     @ResponseBody
     public Json getTodayOrders(HttpServletRequest request) {
@@ -315,5 +321,25 @@ public class ApiDriverOrderShopController extends BaseController {
             logger.error("获取订单详情接口异常", e);
         }
         return j;
+    }
+
+    /**
+     * 今日收益详情
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getTodayProfitOrders")
+    @ResponseBody
+    public Json getTodayProfitOrders(HttpServletRequest request) {
+        Json json = new Json();
+        //获取accountId
+        TokenWrap token = getTokenWrap(request);
+        Integer accountId = Integer.parseInt(token.getUid());
+        // String status = DriverOrderShopServiceI.STATUS_DELIVERED + "," + DriverOrderShopServiceI.STATUS_SETTLEED + ",";
+        DataGrid dataGrid = driverOrderShopService.listTodayOrderByAccountId(accountId);
+        json.setMsg("u know");
+        json.setObj(dataGrid);
+        json.setSuccess(true);
+        return json;
     }
 }

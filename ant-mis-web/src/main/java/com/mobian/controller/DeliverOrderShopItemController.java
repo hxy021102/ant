@@ -71,7 +71,7 @@ public class DeliverOrderShopItemController extends BaseController {
 	 */
 	@RequestMapping("/download")
 	public void download(DeliverOrderShopItem deliverOrderShopItem, PageHelper ph,String downloadFields,HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException{
-		DataGrid dg = dataGrid(deliverOrderShopItem,ph);		
+		DataGrid dg = dataGrid(deliverOrderShopItem,ph);
 		downloadFields = downloadFields.replace("&quot;", "\"");
 		downloadFields = downloadFields.substring(1,downloadFields.length()-1);
 		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);

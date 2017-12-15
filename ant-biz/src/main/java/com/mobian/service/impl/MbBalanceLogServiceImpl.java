@@ -128,7 +128,7 @@ public class MbBalanceLogServiceImpl extends BaseServiceImpl<MbBalanceLog> imple
 				whereHql += " and t.balanceId in (:balanceIds) ";
 				params.put("balanceIds", mbBalanceLog.getBalanceIds());
 			}
-			if(mbBalanceLog.getRefTypes() !=null) {
+			if(!F.empty(mbBalanceLog.getRefTypes())) {
 				whereHql += " and t.refType in (:refTypes)";
 				params.put("refTypes", mbBalanceLog.getRefTypes().split(","));
 			}

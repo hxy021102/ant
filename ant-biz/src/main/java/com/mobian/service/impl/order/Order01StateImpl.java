@@ -1,5 +1,8 @@
 package com.mobian.service.impl.order;
 
+import com.bx.ant.pageModel.DeliverOrderShop;
+import com.bx.ant.service.DeliverOrderShopServiceI;
+import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
 import com.mobian.service.*;
@@ -38,6 +41,8 @@ public class Order01StateImpl implements OrderState {
 
     @Autowired
     private MbBalanceServiceI mbBalanceService;
+    @Resource
+    private DeliverOrderShopServiceI deliverOrderShopService;
 
     @Override
     public String getStateName() {
@@ -58,7 +63,13 @@ public class Order01StateImpl implements OrderState {
 //        validate(mbOrder);
 
         orderService.add(mbOrder);
-
+        if (!F.empty(mbOrder.getDeliverOrderShopIds())) {
+            List<DeliverOrderShop> deliverOrderShopList = deliverOrderShopService.queryByDeliverOrderShopIds(mbOrder.getDeliverOrderShopIds());
+            for (DeliverOrderShop deliverOrderShop : deliverOrderShopList) {
+                deliverOrderShop.setOrderId(mbOrder.getId());
+                deliverOrderShopService.edit(deliverOrderShop);
+            }
+        }
         //订单商品信息
         List<MbOrderItem> mbOrderItemList = mbOrder.getMbOrderItemList();
         if(mbOrderItemList != null && mbOrderItemList.size() > 0) {

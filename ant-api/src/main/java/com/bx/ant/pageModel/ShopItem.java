@@ -1,6 +1,7 @@
 package com.bx.ant.pageModel;
 
 import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class ShopItem implements java.io.Serializable {
@@ -23,7 +24,7 @@ public class ShopItem implements java.io.Serializable {
 	private String reviewerId;
 	private String remark;
 	private Integer[] itemIds;
-
+    private List<ShopItem> shopItemList;
 	public void setId(Integer value) {
 		this.id = value;
 	}
@@ -142,5 +143,13 @@ public class ShopItem implements java.io.Serializable {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public List<ShopItem> getShopItemList() {
+		return shopItemList;
+	}
+
+	public void setShopItemList(List<ShopItem> shopItemList) {
+		this.shopItemList = shopItemList;
 	}
 }

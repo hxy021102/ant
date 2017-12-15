@@ -261,4 +261,18 @@ public class MbItemController extends BaseController {
 		}
 		return lt;
 	}
+
+	/**
+	 * 获取需要补充商品的DeliverOrderShop商品列表
+	 * @param mbItemQuery
+	 * @param ph
+	 * @return
+	 */
+	@RequestMapping("/dataGridWidthDeliverOrderShop")
+	@ResponseBody
+	public DataGrid dataGridWidthDeliverOrderShop(MbItemQuery mbItemQuery, PageHelper ph) {
+		if (mbItemQuery.getDeliverOrderShopIds() != null && !F.empty(mbItemQuery.getShopId()))
+			return mbItemService.dataGridWidthDeliverOrderShop(mbItemQuery, ph);
+		return new DataGrid();
+	}
 }

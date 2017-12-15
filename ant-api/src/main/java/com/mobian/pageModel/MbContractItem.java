@@ -21,6 +21,7 @@ public class MbContractItem implements java.io.Serializable {
 	private String shopName;
 	private Integer newPrice;
 
+    private Integer[] contractIds;
 	private List<MbContractItem> mbContractItemList;
 	public List<MbContractItem> getMbContractItemList() {
 		return mbContractItemList;
@@ -139,4 +140,11 @@ public class MbContractItem implements java.io.Serializable {
 		return this.price;
 	}
 
+	public Integer[] getContractIds() {
+		return contractIds;
+	}
+
+	public void setContractIds(Integer[] contractIds) {
+		this.contractIds = contractIds;
+	}
 }
