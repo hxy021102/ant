@@ -24,6 +24,10 @@ public interface QimenRequestService {
      */
     void updateDeliveryOrderConfirm(DeliverOrder deliverOrder);
 
-
+    /**
+     * 修改订单处理流水
+     * @param status
+     * @param deliverOrder
+     */
     void updateOrderProcessReportRequest(String status,DeliverOrder deliverOrder);
 }

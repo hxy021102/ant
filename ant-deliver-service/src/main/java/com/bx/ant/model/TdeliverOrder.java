@@ -308,7 +308,7 @@ public class TdeliverOrder implements java.io.Serializable,IEntity{
 		this.latitude = latitude;
 	}
 
-	@Column(name = "supplier_order_id", unique = false, nullable = true, insertable = true, updatable = true, scale = 32)
+	@Column(name = "supplier_order_id", unique = false, nullable = true, insertable = true, updatable = true, scale = 64)
 	public String getSupplierOrderId() {
 		return supplierOrderId;
 	}

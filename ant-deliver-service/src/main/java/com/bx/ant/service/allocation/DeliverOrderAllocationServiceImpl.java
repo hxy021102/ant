@@ -8,6 +8,7 @@ import com.bx.ant.service.DeliverOrderAllocationServiceI;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.bx.ant.service.ShopDeliverApplyServiceI;
+import com.bx.ant.service.qimen.QimenRequestService;
 import com.bx.ant.service.session.TokenServiceI;
 import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
@@ -37,6 +38,7 @@ import java.util.*;
  */
 @Service
 public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocationServiceI {
+    public static final String REJECT = "REJECT";
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -53,6 +55,9 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
 
     @Resource
     private TokenServiceI tokenService;
+
+    @Autowired
+    private QimenRequestService qimenRequestService;
 
     @Override
     public void orderAllocation() {
@@ -151,6 +156,7 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
             });
 
             //5、计算分单价格
+            boolean allocationSuccess = false;
             for(ShopDeliverApply shopDeliverApply : includeShop) {
                 MbShop mbShop = shopDeliverApply.getMbShop();
                 DefaultTransactionDefinition def = new DefaultTransactionDefinition();
@@ -161,14 +167,14 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
 
                 try{
                     // 排除代送、强制接单
-                    if(!ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrder.getDeliveryWay())) {
+                    if(!ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(shopDeliverApply.getDeliveryWay())) {
                         if(!DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(shopDeliverApply.getDeliveryType())
                                 && tokenService.getTokenByShopId(mbShop.getId()) == null) throw new ServiceException("门店不在线，token已失效");
                         if(!DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(shopDeliverApply.getDeliveryType())
                                 && (shopDeliverApply.getOnline() == null || !shopDeliverApply.getOnline())) throw new ServiceException("门店停止营业");
                     }
                     deliverOrder.setDeliveryType(shopDeliverApply.getDeliveryType());
-                    deliverOrder.setDeliveryWay(shopDeliverApply.getDeliveryWay());
+                    deliverOrder.setDeliveryWay(F.empty(deliverOrder.getDeliveryWay()) ? shopDeliverApply.getDeliveryWay() : deliverOrder.getDeliveryWay());
                     deliverOrder.setFreight(shopDeliverApply.getFreight());
                     deliverOrder.setShopId(mbShop.getId());
                     deliverOrder.setShopDistance(shopDeliverApply.getDistance());
@@ -216,19 +222,24 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                         template.setParams(params);
                         MNSUtil.sendMns(mbShop.getContactPhone(), template);
                     }
+                    allocationSuccess = true;
                     break;
                 }catch(Exception e){
                     transactionManager.rollback(status);
                     logger.error("分单失败", e);
 
-                    // 万里牛订单不满足处理
-                    if(e instanceof ServiceException && deliverOrder.getIsdeleted()) {
-                        deliverOrder.setOriginalOrderStatus(DeliverOrderServiceI.ORIGINAL_ORDER_STATUS_OTS03);
-                        deliverOrderService.edit(deliverOrder);
-                    }
+
                     continue;
                 }
 
+            }
+            if(allocationSuccess){
+                // 万里牛订单不满足处理
+                if(deliverOrder.getIsdeleted()) {
+                    deliverOrder.setOriginalOrderStatus(DeliverOrderServiceI.ORIGINAL_ORDER_STATUS_OTS03);
+                    deliverOrderService.edit(deliverOrder);
+                    qimenRequestService.updateOrderProcessReportRequest(REJECT,deliverOrder);
+                }
             }
         }
     }

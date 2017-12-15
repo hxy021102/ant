@@ -39,6 +39,7 @@ public interface DeliverOrderServiceI {
 	String STATUS_DELIVERY_COMPLETE = "DOS30"; //已配送完成
 	String STATUS_CLOSED = "DOS40"; //订单完成
 	String STATUS_DRIVER_DELIVERING = "DOS50"; // 骑手已配送，等待门店确认
+	String STATUS_FAILURE_CLOSED = "DOS60"; // 关闭订单
 
 	//配送状态
 	String DELIVER_STATUS_STANDBY = "DDS01"; //待处理
@@ -255,6 +256,14 @@ public interface DeliverOrderServiceI {
 	Integer clearAllocationOrderRedis(Integer shopId);
 
 	DeliverOrder getBySupplierOrderId(String supplierOrderId);
+
+	/**
+	 * 根据外部ID获取
+	 * @param supplierId
+	 * @param supplierOrderId
+	 * @return
+	 */
+	DeliverOrder getBySupplierOrderIdAndSupplierId(Integer supplierId,String supplierOrderId);
 
 	/**
 	 * 通过excel获取到的list生成订单
