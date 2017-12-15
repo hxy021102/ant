@@ -87,19 +87,17 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 			if (!F.empty(deliverOrderShop.getIsdeleted())) {
 				whereHql += " and t.isdeleted = :isdeleted";
 				params.put("isdeleted", deliverOrderShop.getIsdeleted());
-			}		
+			}
 			if (!F.empty(deliverOrderShop.getDeliverOrderId())) {
 				whereHql += " and t.deliverOrderId = :deliverOrderId";
 				params.put("deliverOrderId", deliverOrderShop.getDeliverOrderId());
-			}		
+			}
 			if (!F.empty(deliverOrderShop.getShopId())) {
 				whereHql += " and t.shopId = :shopId";
 				params.put("shopId", deliverOrderShop.getShopId());
 			}
 			if (!F.empty(deliverOrderShop.getStatus())) {
 				whereHql += " and t.status in(:status)";
-				params.put("status", deliverOrderShop.getStatus().split(","));
-			}		
 				params.put("status", deliverOrderShop.getStatus().split(","));
 			}
 			if (!F.empty(deliverOrderShop.getAmount())) {
@@ -108,20 +106,20 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 			}
 			if (deliverOrderShop.getUpdatetimeBegin() != null) {
 				whereHql += " and t.updatetime >= :updatetimeBegin";
-				params.put("updatetimeBegin",deliverOrderShop.getUpdatetimeBegin());
+				params.put("updatetimeBegin", deliverOrderShop.getUpdatetimeBegin());
 			}
 			if (deliverOrderShop.getUpdatetimeEnd() != null) {
 				whereHql += " and t.updatetime < :updatetimeEnd";
-				params.put("updatetimeEnd",deliverOrderShop.getUpdatetimeEnd());
+				params.put("updatetimeEnd", deliverOrderShop.getUpdatetimeEnd());
 			}
 
 			if (deliverOrderShop.getAddtimeBegin() != null) {
 				whereHql += " and t.addtime >= :addtimeBegin";
-				params.put("addtimeBegin",deliverOrderShop.getAddtimeBegin());
+				params.put("addtimeBegin", deliverOrderShop.getAddtimeBegin());
 			}
 			if (deliverOrderShop.getAddtimeEnd() != null) {
 				whereHql += " and t.addtime < :addtimeEnd";
-				params.put("addtimeEnd",deliverOrderShop.getAddtimeEnd());
+				params.put("addtimeEnd", deliverOrderShop.getAddtimeEnd());
 			}
 
 			if (!F.empty(deliverOrderShop.getShopPayStatus())) {
@@ -152,7 +150,7 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 					whereHql += " and t.orderId is null";
 				}
 			}
-
+		}
 
 		return whereHql;
 	}
