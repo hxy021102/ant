@@ -91,7 +91,7 @@
         function init(){
             if(parent&&parent.printComplete){
                 try {
-                    doPrint("打印预览");
+                    doPrint("打印");
                 } catch (e) {
 
                 }
