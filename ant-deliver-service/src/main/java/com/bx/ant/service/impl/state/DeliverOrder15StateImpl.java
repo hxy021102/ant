@@ -25,7 +25,8 @@ public class DeliverOrder15StateImpl extends AbstractDeliverOrderState {
     @Autowired
     private DeliverOrderShopServiceI deliverOrderShopService;
 
-
+    @Resource(name = "deliverOrder60StateImpl")
+    private DeliverOrderState deliverOrderState60;
 
     @Autowired
     private ShopItemServiceI shopItemService;
@@ -65,6 +66,8 @@ public class DeliverOrder15StateImpl extends AbstractDeliverOrderState {
     public DeliverOrderState next(DeliverOrder deliverOrder) {
         if ((prefix + "10").equals(deliverOrder.getStatus())) {
             return deliverOrderState10;
+        }else if((prefix + "60").equals(deliverOrder.getStatus())){
+            return deliverOrderState60;
         }
         return null;
     }

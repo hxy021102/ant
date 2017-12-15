@@ -449,13 +449,8 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	}
 
 	protected void fillIShopInfo(DeliverOrderExt ox) {
-		DeliverOrderShopQuery orderShopQuery = new DeliverOrderShopQuery();
-		String[] statusArray = {"DSS01", "DSS02", "DSS04", "DSS05", "DSS06"};
-		orderShopQuery.setStatusList(statusArray);
-		orderShopQuery.setDeliverOrderId(ox.getId());
-		List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(orderShopQuery);
-		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
-			DeliverOrderShop deliverOrderShop = deliverOrderShops.get(0);
+		DeliverOrderShop deliverOrderShop = deliverOrderShopService.getByDeliverOrderId(ox.getId());
+		if (deliverOrderShop != null) {
 			ox.setOrderShopId(deliverOrderShop.getId());
 			ox.setDeliverOrderShop(deliverOrderShop);
 			fillDeliverOrderShopItemInfo(ox);
@@ -765,6 +760,20 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("supplierOrderId", supplierOrderId);
 		TdeliverOrder t = deliverOrderDao.get("from TdeliverOrder t  where t.isdeleted = 0 and t.supplierOrderId = :supplierOrderId", params);
+		if(t != null) {
+			DeliverOrder o = new DeliverOrder();
+			BeanUtils.copyProperties(t, o);
+			return o;
+		}
+		return null;
+	}
+
+	@Override
+	public DeliverOrder getBySupplierOrderIdAndSupplierId(Integer supplierId, String supplierOrderId) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("supplierOrderId", supplierOrderId);
+		params.put("supplierId", supplierId);
+		TdeliverOrder t = deliverOrderDao.get("from TdeliverOrder t  where t.supplierOrderId = :supplierOrderId and t.supplierId = :supplierId", params);
 		if(t != null) {
 			DeliverOrder o = new DeliverOrder();
 			BeanUtils.copyProperties(t, o);

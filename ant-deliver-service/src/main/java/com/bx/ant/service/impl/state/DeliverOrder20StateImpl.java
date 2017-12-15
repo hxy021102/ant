@@ -29,6 +29,9 @@ public class DeliverOrder20StateImpl extends AbstractDeliverOrderState{
     @Resource(name = "deliverOrder30StateImpl")
     private DeliverOrderState deliverOrderState30;
 
+    @Resource(name = "deliverOrder60StateImpl")
+    private DeliverOrderState deliverOrderState60;
+
     @Autowired
     private DeliverOrderServiceI deliverOrderService;
 
@@ -116,6 +119,8 @@ public class DeliverOrder20StateImpl extends AbstractDeliverOrderState{
         }
         if ((prefix + "30").equals(deliverOrder.getStatus())) {
             return deliverOrderState30;
+        }else if((prefix + "60").equals(deliverOrder.getStatus())){
+            return deliverOrderState60;
         }
         return null;
     }
