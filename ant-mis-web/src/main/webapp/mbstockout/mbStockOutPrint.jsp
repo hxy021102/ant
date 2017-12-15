@@ -35,6 +35,7 @@
         document.getElementById("jatoolsPrinter").print(myDoc, false); // 直接打印，不弹出打印机设置对话框
     }
     function doPreview() {
+        alert("你好sdd")
         var myDoc = {
             settings: {
                 paperName: 'BX6L',
@@ -50,12 +51,14 @@
              作为首页打印id 为'page2'的作为第二页打印            */
             copyrights: '杰创软件拥有版权  www.jatools.com' // 版权声明,必须
         };
+
         document.getElementById("jatoolsPrinter").printPreview(myDoc,true); // 直接打印，不弹出打印机设置对话框
     }
     function init() {
         if (parent && parent.printComplete) {
             try {
-                doPrint();
+                alert("你好")
+                doPreview();
             } catch (e) {
 
             }
@@ -95,7 +98,7 @@
             <td align="left" width="15%">&nbsp;&nbsp;&nbsp;出库时间:</td>
             <td width="35%">${mbStockOut.stockOutTime}</td>
             <td align="left" width="15%">操作人：</td>
-            <td width="35%">${mbSupplierStockIn.signPeopleName}</td>
+            <td width="35%">${mbStockOut.loginName}</td>
         </tr>
         <tr>
             <td align="left" width="15%">&nbsp;&nbsp;&nbsp;备注:</td>
