@@ -173,8 +173,12 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                         if(!DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(shopDeliverApply.getDeliveryType())
                                 && (shopDeliverApply.getOnline() == null || !shopDeliverApply.getOnline())) throw new ServiceException("门店停止营业");
                     }
+                    String deliverWay = F.empty(deliverOrder.getDeliveryWay()) ? shopDeliverApply.getDeliveryWay() : deliverOrder.getDeliveryWay();
+                    if(ShopDeliverApplyServiceI.DELIVER_WAY_CUSTOMER.equals(deliverWay) && ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(shopDeliverApply.getDeliveryWay()))
+                        deliverWay = ShopDeliverApplyServiceI.DELIVER_WAY_CUSTOMER_AGENT;
+
                     deliverOrder.setDeliveryType(shopDeliverApply.getDeliveryType());
-                    deliverOrder.setDeliveryWay(F.empty(deliverOrder.getDeliveryWay()) ? shopDeliverApply.getDeliveryWay() : deliverOrder.getDeliveryWay());
+                    deliverOrder.setDeliveryWay(deliverWay);
                     deliverOrder.setFreight(shopDeliverApply.getFreight());
                     deliverOrder.setShopId(mbShop.getId());
                     deliverOrder.setShopDistance(shopDeliverApply.getDistance());
@@ -191,7 +195,8 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                     // 自动接单||强制接单||代送
                     if(DeliverOrderServiceI.DELIVER_TYPE_AUTO.equals(shopDeliverApply.getDeliveryType()) ||
                             DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(shopDeliverApply.getDeliveryType()) ||
-                            ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrder.getDeliveryWay())) {
+                            ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrder.getDeliveryWay()) ||
+                            ShopDeliverApplyServiceI.DELIVER_WAY_CUSTOMER_AGENT.equals(deliverOrder.getDeliveryWay())) {
                         deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_ACCEPT);
                         deliverOrderService.transform(deliverOrder);
                     }
@@ -221,6 +226,19 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
 
                         template.setParams(params);
                         MNSUtil.sendMns(mbShop.getContactPhone(), template);
+                    }
+
+                    // 给用户发送自提短信通知(注：自提+代送为门店签收时发送短信)
+                    if(ShopDeliverApplyServiceI.DELIVER_WAY_CUSTOMER.equals(deliverWay) && !F.empty(deliverOrder.getContactPhone())) {
+                        MNSTemplate template = new MNSTemplate();
+                        Map<String, String> params = new HashMap<String, String>();
+                        template.setTemplateCode("SMS_117170055");
+                        params.put("originalOrderId", deliverOrder.getOriginalOrderId());
+                        params.put("address", mbShop.getAddress());
+                        params.put("contactPeople", mbShop.getContactPeople());
+                        params.put("contactPhone", mbShop.getContactPhone());
+                        template.setParams(params);
+                        MNSUtil.sendMns(deliverOrder.getContactPhone(), template);
                     }
                     allocationSuccess = true;
                     break;

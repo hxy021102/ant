@@ -21,10 +21,11 @@ public interface ShopDeliverApplyServiceI {
 	String DAS_02 = "DAS02"; //审核通过
 	String DAS_03 = "DAS03"; //审核拒绝
 
-	String  DELIVER_WAY_SHOP = "DAW01";
-	String DELIVER_WAY_CUSTOMER = "DAW02";
-	String DELIVER_WAY_DRIVER = "DAW03";
+	String  DELIVER_WAY_SHOP = "DAW01";  // 门店配送
+	String DELIVER_WAY_CUSTOMER = "DAW02"; // 用户自提
+	String DELIVER_WAY_DRIVER = "DAW03"; // 骑手配送
 	String DELIVER_WAY_AGENT = "DAW04"; // 门店代送
+	String DELIVER_WAY_CUSTOMER_AGENT = "DAW05"; // 自提+代送
 
 	/**
 	 * 获取ShopDeliverApply数据表格

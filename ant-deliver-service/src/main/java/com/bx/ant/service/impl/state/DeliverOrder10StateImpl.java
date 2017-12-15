@@ -88,7 +88,8 @@ public class DeliverOrder10StateImpl extends AbstractDeliverOrderState {
         //2.3 编辑deliverOrderShop中金额amount字段
         deliverOrderShop.setFreight(deliverOrder.getFreight());
         deliverOrderShop.setDeliveryType(deliverOrder.getDeliveryType());
-        if(ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrder.getDeliveryWay()))
+        if(ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrder.getDeliveryWay())
+                || ShopDeliverApplyServiceI.DELIVER_WAY_CUSTOMER_AGENT.equals(deliverOrder.getDeliveryWay()))
             deliverOrderShop.setDeliveryType(ShopDeliverApplyServiceI.DELIVER_WAY_AGENT);
         deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItemList, deliverOrderShop);
 
