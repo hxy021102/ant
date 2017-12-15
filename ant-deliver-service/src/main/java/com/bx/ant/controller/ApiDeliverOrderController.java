@@ -580,5 +580,23 @@ public class ApiDeliverOrderController extends BaseController {
         json.setSuccess(true);
         return json;
     }
+
+    /**
+     * 门店今日收益详情
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getTodayProfitOrders")
+    @ResponseBody
+    public Json getTodayProfitOrders(HttpServletRequest request) {
+        Json json = new Json();
+        TokenWrap token = getTokenWrap(request);
+        Integer shopId = token.getShopId();
+        List<DeliverOrder> deliverOrderList=deliverOrderService.queryTodayProfitOrdersByShopId(shopId);
+        json.setMsg("u know");
+        json.setObj(deliverOrderList);
+        json.setSuccess(true);
+        return json;
+    }
 }
 

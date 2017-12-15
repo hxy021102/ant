@@ -47,4 +47,8 @@ public class DeliverOrderTaskService {
     }
 
 
+
+    public void settleYouzanBill(){
+        deliverOrderYouzanService.settleYouzanBill();
+    }
 }

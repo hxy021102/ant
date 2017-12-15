@@ -43,7 +43,10 @@
 			}
 			target.val(val);
 		});
-	});
+        $('.money_input').each(function(){
+            $(this).val($.formatMoney($(this).val().trim()));
+        });
+    });
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;">

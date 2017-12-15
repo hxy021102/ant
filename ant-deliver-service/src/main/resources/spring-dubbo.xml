@@ -21,6 +21,8 @@
        <dubbo:reference id="userService" interface="com.mobian.service.UserServiceI" url="${dubbo.direct.url}"/>
        <dubbo:reference id="mbWithdrawLogService" interface="com.mobian.service.MbWithdrawLogServiceI" url="${dubbo.direct.url}"/>
        <dubbo:reference id="diveRegionService" interface="com.mobian.service.DiveRegionServiceI" url="${dubbo.direct.url}"/>
+       <dubbo:reference id="mbContractService" interface="com.mobian.service.MbContractServiceI" url="${dubbo.direct.url}"/>
+       <dubbo:reference id="mbContractItemService" interface="com.mobian.service.MbContractItemServiceI" url="${dubbo.direct.url}"/>
 
        <!-- 用dubbo协议在20880端口暴露服务 -->
        <dubbo:protocol name="${dubbo.protocol.name}" port="${dubbo.protocol.port}" />

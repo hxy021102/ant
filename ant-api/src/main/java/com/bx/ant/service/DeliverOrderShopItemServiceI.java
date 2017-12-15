@@ -6,6 +6,7 @@ import com.bx.ant.pageModel.DeliverOrderShop;
 import com.bx.ant.pageModel.DeliverOrderShopItem;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -75,6 +76,12 @@ public interface DeliverOrderShopItemServiceI {
 	 * @return
 	 */
 	DataGrid dataGridWithName(DeliverOrderShopItem deliverOrderShopItem, PageHelper ph);
+
+	/**
+	 * 通过门店订单deliverOrderShopIds获取门店订单商品列表
+	 * @return
+	 */
+	Map<Integer, DeliverOrderShopItem> queryOrderShopItem(String deliverOrderShopIds);
 
 	/**
 	 * 通过订单id查询门店订单商品

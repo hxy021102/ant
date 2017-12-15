@@ -12,7 +12,7 @@ public class DeliverOrderShopQuery extends DeliverOrderShop {
 	private String[] statusList;
 	private String shopPayStatusName;
 	private Date endDate;
-
+    private String deliverOrderShopIds;
 	public String getShopName() {
 		return shopName;
 	}
@@ -51,5 +51,13 @@ public class DeliverOrderShopQuery extends DeliverOrderShop {
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+
+	public String getDeliverOrderShopIds() {
+		return deliverOrderShopIds;
+	}
+
+	public void setDeliverOrderShopIds(String deliverOrderShopIds) {
+		this.deliverOrderShopIds = deliverOrderShopIds;
 	}
 }

@@ -2,6 +2,7 @@ package com.bx.ant.service.impl.driverodershopstate;
 
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.DeliverOrderShop;
+import com.bx.ant.pageModel.DriverAccount;
 import com.bx.ant.pageModel.DriverOrderShop;
 import com.bx.ant.service.*;
 import com.bx.ant.service.impl.DeliverOrderServiceImpl;
@@ -35,6 +36,8 @@ public class DriverOrderShop05StateImpl implements DriverOrderShopState {
 
     @Autowired
     private DeliverOrderServiceImpl deliverOrderService;
+    @Autowired
+    private DriverAccountServiceI driverAccountService;
 
 
     @Override
@@ -66,6 +69,8 @@ public class DriverOrderShop05StateImpl implements DriverOrderShopState {
         deliverOrder.setId(deliverOrderShop.getDeliverOrderId());
         deliverOrder.setStatus(DeliverOrderServiceI.STATUS_CHECK_DRIVER_TAKE);
         deliverOrder.setShopId(deliverOrderShop.getShopId());
+        DriverAccount driverAccount = driverAccountService.get(driverOrderShop.getDriverAccountId());
+        deliverOrder.setDriverAccount(driverAccount);
         deliverOrderService.transform(deliverOrder);
 
     }

@@ -93,7 +93,15 @@
                     formatter:function(value){
                         return $.formatMoney(value);
                     }
-                }, ] ],
+                },{
+                    field : 'stockSumPrice',
+                    title : '入库总额',
+                    width : 50,
+                    align:"center",
+                    formatter:function(value){
+                        return $.formatMoney(value);
+                    }
+                } ] ],
                 onLoadSuccess : function() {
                     computeSupplierOrder();
                 },
@@ -216,12 +224,14 @@
              if (arr.length!=0) {
                  var sumQuantity = 0;
                  var sumwarehouseQuantity = 0;
-                 var sumTotalPrice=0
+                 var sumTotalPrice=0;
+                 var stockTotalPrice=0;
                  //累加
                  for (var i = 0; i < arr.length; i++) {
                      sumQuantity += arr[i].quantity
                      sumwarehouseQuantity += arr[i].warehouseQuantity
                      sumTotalPrice += arr[i].sumPrice
+                     stockTotalPrice+=arr[i].stockSumPrice
                  }
                  if(isNaN(sumwarehouseQuantity)){
                      sumwarehouseQuantity="";
@@ -233,6 +243,7 @@
                      warehouseQuantity: sumwarehouseQuantity,
 					 price:"",
                      sumPrice:sumTotalPrice,
+                     stockSumPrice:stockTotalPrice,
                  });
              }
          }

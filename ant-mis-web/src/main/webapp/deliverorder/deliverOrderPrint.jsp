@@ -23,7 +23,7 @@
         $(function(){
             $(".bcTarget").each(function(){
                 var orderId = $(this).attr('orderId');
-                $(this).barcode("${mbOrder.id}", "codabar",{
+                $(this).barcode(orderId, "codabar",{
                     output:'css',       //渲染方式 css/bmp/svg/canvas
                     //bgColor: '#ff0000', //条码背景颜色
                     color: '#000000',   //条码颜色

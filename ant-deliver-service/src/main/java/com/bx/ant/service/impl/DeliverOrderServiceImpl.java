@@ -153,8 +153,8 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 				params.put("contactPeople", deliverOrder.getContactPeople());
 			}
 			if (!F.empty(deliverOrder.getSupplierOrderId())) {
-				whereHql += " and t.supplierOrderId = :supplierOrderId";
-				params.put("supplierOrderId", deliverOrder.getSupplierOrderId());
+				whereHql += " and t.supplierOrderId in (:supplierOrderId)";
+				params.put("supplierOrderId", deliverOrder.getSupplierOrderId().split(","));
 			}
 			if (!F.empty(deliverOrder.getRemark())) {
 				whereHql += " and t.remark = :remark";
@@ -955,6 +955,20 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			return ox;
 		}
 		return null;
+	}
+
+	@Override
+	public List<DeliverOrder> queryTodayProfitOrdersByShopId(Integer shopId) {
+		List<DeliverOrder> deliverOrderList = new ArrayList<DeliverOrder>();
+		List<DeliverOrderShop> deliverOrderShopList = deliverOrderShopService.queryTodayOrdersByShopId(shopId);
+		if (CollectionUtils.isNotEmpty(deliverOrderShopList)) {
+			for (DeliverOrderShop orderShop : deliverOrderShopList) {
+				if (!F.empty(orderShop.getDeliverOrderId())) {
+					deliverOrderList.add(getDeliverOrderExt(orderShop));
+				}
+			}
+		}
+		return deliverOrderList;
 	}
 
 	@Override

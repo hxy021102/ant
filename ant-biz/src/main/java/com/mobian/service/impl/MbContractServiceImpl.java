@@ -3,13 +3,11 @@ package com.mobian.service.impl;
 import com.mobian.absx.F;
 import com.mobian.dao.MbContractDaoI;
 import com.mobian.model.TmbContract;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.MbContract;
-import com.mobian.pageModel.MbShop;
-import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.*;
 import com.mobian.service.MbContractServiceI;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.util.MyBeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -84,7 +82,11 @@ public class MbContractServiceImpl extends BaseServiceImpl<MbContract> implement
 			if (!F.empty(mbContract.getAttachment())) {
 				whereHql += " and t.attachment = :attachment";
 				params.put("attachment", mbContract.getAttachment());
-			}		
+			}
+			if (mbContract.getShopIds() != null && mbContract.getShopIds().length > 0) {
+				whereHql += " and t.shopId in (:shopIds)";
+				params.put("shopIds", mbContract.getShopIds());
+			}
 		}	
 		return whereHql;
 	}
@@ -163,6 +165,23 @@ public class MbContractServiceImpl extends BaseServiceImpl<MbContract> implement
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String now = sdf.format(d);
 		return mbContractDao.find("from TmbContract t where t.isdeleted = 0 and valid = 1 and expiryDateStart <= '" + now + "' and expiryDateEnd >= '" + now + "' order by t.updatetime asc");
+	}
+
+	@Override
+	public List<MbContract> query(MbContract mbContract) {
+		List<MbContract> ol = new ArrayList<MbContract>();
+		String hql = " from TmbContract t ";
+		Map<String, Object> params = new HashMap<String, Object>();
+		String where = whereHql(mbContract, params);
+		List<TmbContract> l = mbContractDao.find(hql + where, params);
+		if (CollectionUtils.isNotEmpty(l)) {
+			for (TmbContract t : l) {
+				MbContract o = new MbContract();
+				BeanUtils.copyProperties(t, o);
+				ol.add(o);
+			}
+		}
+		return ol;
 	}
 
 }

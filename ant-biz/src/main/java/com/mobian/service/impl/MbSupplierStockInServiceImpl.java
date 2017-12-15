@@ -143,31 +143,54 @@ public class MbSupplierStockInServiceImpl extends BaseServiceImpl<MbSupplierStoc
         MbSupplierStockIn mbSupplierStockIn = new MbSupplierStockIn();
         mbSupplierStockIn.setId(id);
         mbSupplierStockIn.setPayStatus("FS02");
-        TmbSupplierStockIn  tmbSupplierStockIn=edit(mbSupplierStockIn);
-        MbSupplierFinanceLog mbSupplierFinanceLog = new MbSupplierFinanceLog();
-        mbSupplierFinanceLog.setPayStatus(mbSupplierStockIn.getPayStatus());
-        mbSupplierFinanceLog.setPayLoginId(loginId);
-        mbSupplierFinanceLog.setSupplierStockInId(mbSupplierStockIn.getId());
-        mbSupplierFinanceLog.setPayRemark(remark);
-        mbSupplierFinanceLog.setInvoiceStatus(mbSupplierStockIn.getInvoiceStatus());
-        mbSupplierFinanceLogService.add(mbSupplierFinanceLog);
+        TmbSupplierStockIn tmbSupplierStockIn = edit(mbSupplierStockIn);
+        MbSupplierFinanceLog mbSupplierFinanceLog2 = getMbSupplierFinanceLog(mbSupplierStockIn.getId());
+        if (mbSupplierFinanceLog2 == null) {
+            MbSupplierFinanceLog mbSupplierFinanceLog = new MbSupplierFinanceLog();
+            mbSupplierFinanceLog.setPayStatus(mbSupplierStockIn.getPayStatus());
+            mbSupplierFinanceLog.setPayLoginId(loginId);
+            mbSupplierFinanceLog.setSupplierStockInId(mbSupplierStockIn.getId());
+            mbSupplierFinanceLog.setPayRemark(remark);
+            mbSupplierFinanceLog.setInvoiceStatus(mbSupplierStockIn.getInvoiceStatus());
+            mbSupplierFinanceLogService.add(mbSupplierFinanceLog);
+        } else {
+            MbSupplierFinanceLog mbSupplierFinanceLog = new MbSupplierFinanceLog();
+            mbSupplierFinanceLog.setPayStatus(mbSupplierStockIn.getPayStatus());
+            mbSupplierFinanceLog.setPayLoginId(loginId);
+            mbSupplierFinanceLog.setSupplierStockInId(mbSupplierStockIn.getId());
+            mbSupplierFinanceLog.setPayRemark(remark);
+            mbSupplierFinanceLog.setInvoiceStatus(mbSupplierStockIn.getInvoiceStatus());
+            mbSupplierFinanceLog.setId(mbSupplierFinanceLog2.getId());
+            mbSupplierFinanceLogService.edit(mbSupplierFinanceLog);
+        }
         //添加钱包信息和钱包日志
-        MbSupplierOrder mbSupplierOrder=mbSupplierOrderService.get(tmbSupplierStockIn.getSupplierOrderId());
+        MbSupplierOrder mbSupplierOrder = mbSupplierOrderService.get(tmbSupplierStockIn.getSupplierOrderId());
         MbBalance mbBalance = mbBalanceService.addOrGetSupplierMbBalance(mbSupplierOrder.getSupplierId());
         MbBalanceLog balanceLog = new MbBalanceLog();
         balanceLog.setBalanceId(mbBalance.getId());
-        balanceLog.setRefId(id+"");
+        balanceLog.setRefId(id + "");
         balanceLog.setRefType("BT070");
-        MbSupplierStockInItem supplierStockInItem =new MbSupplierStockInItem();
+        MbSupplierStockInItem supplierStockInItem = new MbSupplierStockInItem();
         supplierStockInItem.setSupplierStockInId(id);
-        List<MbSupplierStockInItem> mbSupplierStockInItemList =mbSupplierStockInItemService.query(supplierStockInItem);
+        List<MbSupplierStockInItem> mbSupplierStockInItemList = mbSupplierStockInItemService.query(supplierStockInItem);
         Integer totalAmount = 0;
         for (MbSupplierStockInItem mbSupplierStockInItem : mbSupplierStockInItemList) {
             totalAmount += mbSupplierStockInItem.getQuantity() * mbSupplierStockInItem.getPrice();
         }
         balanceLog.setAmount(totalAmount);
-        balanceLog.setReason(String.format("供应商[ID:%1$s]完成入库[ID:%2$s]结算转入", mbSupplierOrder.getSupplierId(),id));
+        balanceLog.setReason(String.format("供应商[ID:%1$s]完成入库[ID:%2$s]结算转入", mbSupplierOrder.getSupplierId(), id));
         mbBalanceLogService.addAndUpdateBalance(balanceLog);
+    }
+
+
+    private MbSupplierFinanceLog getMbSupplierFinanceLog(Integer stockInId){
+        MbSupplierFinanceLog mbSupplierFinanceLog = new MbSupplierFinanceLog();
+        mbSupplierFinanceLog.setSupplierStockInId(stockInId);
+        List<MbSupplierFinanceLog> list = mbSupplierFinanceLogService.query(mbSupplierFinanceLog);
+        if(CollectionUtils.isNotEmpty(list)){
+            return list.get(0);
+        }
+        return null;
     }
 
     @Override
@@ -176,15 +199,22 @@ public class MbSupplierStockInServiceImpl extends BaseServiceImpl<MbSupplierStoc
         mbSupplierStockIn.setId(id);
         mbSupplierStockIn.setInvoiceStatus("IS02");
         edit(mbSupplierStockIn);
-        MbSupplierFinanceLog mbSupplierFinanceLog = new MbSupplierFinanceLog();
-        mbSupplierFinanceLog.setSupplierStockInId(mbSupplierStockIn.getId());
-        List<MbSupplierFinanceLog> list = mbSupplierFinanceLogService.query(mbSupplierFinanceLog);
-        MbSupplierFinanceLog mbSupplierFinanceLog2 = list.get(0);
-        mbSupplierFinanceLog2.setInvoiceStatus(mbSupplierStockIn.getInvoiceStatus());
-        mbSupplierFinanceLog2.setInvoiceLoginId(loginId);
-        mbSupplierFinanceLog2.setInvoiceRemark(remark);
-        mbSupplierFinanceLog2.setInvoiceNo(invoiceNo);
-        mbSupplierFinanceLogService.edit(mbSupplierFinanceLog2);
+        MbSupplierFinanceLog mbSupplierFinanceLog2 = getMbSupplierFinanceLog(mbSupplierStockIn.getId());
+        if(mbSupplierFinanceLog2 == null) {
+            mbSupplierFinanceLog2 = new MbSupplierFinanceLog();
+            mbSupplierFinanceLog2.setSupplierStockInId(mbSupplierStockIn.getId());
+            mbSupplierFinanceLog2.setInvoiceStatus(mbSupplierStockIn.getInvoiceStatus());
+            mbSupplierFinanceLog2.setInvoiceLoginId(loginId);
+            mbSupplierFinanceLog2.setInvoiceRemark(remark);
+            mbSupplierFinanceLog2.setInvoiceNo(invoiceNo);
+            mbSupplierFinanceLogService.add(mbSupplierFinanceLog2);
+        }else{
+            mbSupplierFinanceLog2.setInvoiceStatus(mbSupplierStockIn.getInvoiceStatus());
+            mbSupplierFinanceLog2.setInvoiceLoginId(loginId);
+            mbSupplierFinanceLog2.setInvoiceRemark(remark);
+            mbSupplierFinanceLog2.setInvoiceNo(invoiceNo);
+            mbSupplierFinanceLogService.edit(mbSupplierFinanceLog2);
+        }
     }
 
     protected String whereHql(MbSupplierStockIn mbSupplierStockIn, Map<String, Object> params) {

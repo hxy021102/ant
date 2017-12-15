@@ -36,8 +36,16 @@
 <script type="text/javascript">
 	var dataGrid;
 	$(function() {
+        var urls = null, supplierId, payStatus;
+        if (${supplierId!=null}) {
+            supplierId =${supplierId==null? "null":supplierId};
+            payStatus = ${payStatus==null? "null":payStatus};
+            urls = '${pageContext.request.contextPath}/mbSupplierStockInController/dataGrid?supplierId=' + supplierId + '&payStatus=' + payStatus;
+        } else {
+            urls = "${pageContext.request.contextPath}/mbSupplierStockInController/dataGrid";
+        }
 		dataGrid = $('#dataGrid').datagrid({
-			url : '${pageContext.request.contextPath}/mbSupplierStockInController/dataGrid',
+            url: urls,
 			fit : true,
 			fitColumns : true,
 			border : false,
@@ -53,15 +61,16 @@
 			singleSelect : true,
             sortName : 'addtime',
             sortOrder : 'desc',
+            showFooter : true,
 			columns : [ [ {
 				field : 'id',
 				title : '编号',
 				width : 30,
                 formatter : function (value, row, index) {
-                    if ($.canView) {
+                    if ($.canView&&value != undefined) {
                         return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
                     }
-                    else{
+                    else if (value != undefined) {
                         return value;
                     }
                 }
@@ -99,6 +108,14 @@
                     title : '订单ID',
                     width : 40,
                 }, {
+                    field : 'totalAmount',
+                    title : '总金额',
+					align:"right",
+                    width : 50,
+                    formatter:function(value){
+                        return $.formatMoney(value);
+                    }
+                },{
                     field : 'warehouseName',
                     title : '<%=TmbSupplierStockIn.ALIAS_WAREHOUSE_ID%>',
                     width : 50
@@ -112,7 +129,7 @@
 					 <%--str += $.formatString('<img onclick="editFun(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/bug/bug_edit.png');--%>
 					 <%--}--%>
 					str += '&nbsp;';
-					if ($.canDelete) {
+					if ($.canDelete&&value!=null) {
 						str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/cancel.png');
 					}
                     str += '&nbsp;';
@@ -120,7 +137,7 @@
                         str += $.formatString('<img onclick="canPay(\'{0}\');" src="{1}" title="付款"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/money_yen.png');
                     }
                     str += '&nbsp;';
-                    if ($.canInvoice&&row.payStatus=='FS02'&&row.invoiceStatus=='IS01') {
+                    if ($.canInvoice&&row.invoiceStatus=='IS01') {
                         str += $.formatString('<img onclick="caninvoice(\'{0}\');" src="{1}" title="开票"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/money.png');
                     }
 					return str;

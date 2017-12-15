@@ -2,6 +2,7 @@ package com.mobian.service;
 
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbItem;
+import com.mobian.pageModel.MbItemQuery;
 import com.mobian.pageModel.PageHelper;
 
 import java.util.List;
@@ -63,5 +64,13 @@ public interface MbItemServiceI {
 	int reduceItemCount(Integer id, Integer count);
 
 	List<MbItem> query(MbItem mbItem);
+
+	/**
+	 * 获取需要补充商品的DeliverOrderShop商品列表
+	 * @param mbItemQuery
+	 * @param ph
+	 * @return
+	 */
+	DataGrid dataGridWidthDeliverOrderShop(MbItemQuery mbItemQuery, PageHelper ph);
 
 }
