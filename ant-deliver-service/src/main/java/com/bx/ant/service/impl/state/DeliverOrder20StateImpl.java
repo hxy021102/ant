@@ -1,10 +1,12 @@
 package com.bx.ant.service.impl.state;
 
-import com.bx.ant.pageModel.*;
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderShop;
+import com.bx.ant.pageModel.DriverOrderShop;
+import com.bx.ant.pageModel.ShopDeliverApply;
 import com.bx.ant.service.*;
 import com.bx.ant.service.qimen.QimenRequestService;
 import com.mobian.absx.F;
-import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.PageHelper;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,11 +104,15 @@ public class DeliverOrder20StateImpl extends AbstractDeliverOrderState{
                     driverOrderShopService.transform(driverOrderShop);
                 }
 
-                DeliverOrder deliverOrderOld = DeliverOrderState.deliverOrder.get();
-                qimenRequestService.updateOrderProcessReportRequest(prefix + getStateName(),deliverOrderOld);
+
             }
         }
 
+    }
+
+    protected void afterCompletion(DeliverOrder deliverOrder) {
+        DeliverOrder deliverOrderOld = DeliverOrderState.deliverOrder.get();
+        qimenRequestService.updateOrderProcessReportRequest(prefix + getStateName(),deliverOrderOld);
     }
 
     @Override

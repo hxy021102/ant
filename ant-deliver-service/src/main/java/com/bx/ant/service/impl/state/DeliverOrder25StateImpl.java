@@ -41,10 +41,14 @@ public class DeliverOrder25StateImpl extends AbstractDeliverOrderState {
         orderNew.setStatus(prefix + getStateName());
         orderNew.setDeliveryStatus(DeliverOrderServiceI.DELIVER_STATUS_DELIVERING);
         deliverOrderService.editAndAddLog(orderNew, DeliverOrderLogServiceI.TYPE_DELIVERING_DELIVER_ORDER, "运单发货");
+
+
+
+    }
+
+    protected void afterCompletion(DeliverOrder deliverOrder) {
         DeliverOrder deliverOrderOld = DeliverOrderState.deliverOrder.get();
         qimenRequestService.updateDeliveryOrderConfirm(deliverOrderOld);
-
-
     }
 
     @Override
