@@ -129,7 +129,7 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 		TdeliverOrderShopItem t = new TdeliverOrderShopItem();
 		BeanUtils.copyProperties(deliverOrderShopItem, t);
 		//t.setId(jb.absx.UUID.uuid());
-		t.setIsdeleted(false);
+		if(F.empty(deliverOrderShopItem.getIsdeleted())) t.setIsdeleted(false);
 		deliverOrderShopItemDao.save(t);
 	}
 
