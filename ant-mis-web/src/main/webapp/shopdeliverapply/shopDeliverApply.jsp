@@ -142,7 +142,7 @@
         parent.$.modalDialog({
             title : '审核派单',
             width : 780,
-            height : 450,
+            height : 490,
             href : '${pageContext.request.contextPath}/shopDeliverApplyController/examinePage?id=' + id,
             buttons: [{
                 text: '通过',

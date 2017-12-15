@@ -34,6 +34,7 @@ public class ShopDeliverApply implements java.io.Serializable {
 	private Integer freight; // 运费统一配置：分/件
 
 	private BigDecimal distance; // 运单和门店之间的距离
+	private Boolean transferAuth;
 
 	public void setId(Integer value) {
 		this.id = value;
@@ -186,5 +187,13 @@ public class ShopDeliverApply implements java.io.Serializable {
 
 	public void setFreight(Integer freight) {
 		this.freight = freight;
+	}
+
+	public Boolean getTransferAuth() {
+		return transferAuth;
+	}
+
+	public void setTransferAuth(Boolean transferAuth) {
+		this.transferAuth = transferAuth;
 	}
 }

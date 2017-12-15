@@ -1,19 +1,14 @@
 package com.bx.ant.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
-import com.bx.ant.pageModel.*;
-import com.bx.ant.service.DeliverOrderServiceI;
-import com.bx.ant.service.DeliverOrderShopItemServiceI;
-import com.bx.ant.service.DeliverOrderShopPayServiceI;
-import com.bx.ant.service.ShopOrderBillServiceI;
-import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderShopDaoI;
 import com.bx.ant.model.TdeliverOrderShop;
+import com.bx.ant.pageModel.*;
+import com.bx.ant.service.*;
+import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.PageHelper;
-import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.DateUtil;
@@ -159,11 +154,23 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 	public void add(DeliverOrderShop deliverOrderShop) {
 		TdeliverOrderShop t = new TdeliverOrderShop();
 		BeanUtils.copyProperties(deliverOrderShop, t);
-		//t.setId(jb.absx.UUID.uuid());
 		t.setIsdeleted(false);
 		deliverOrderShopDao.save(t);
 		deliverOrderShop.setId(t.getId());
 	}
+
+	@Override
+	public DeliverOrderShop getByDeliverOrderId(Long deliverOrderId) {
+		DeliverOrderShopQuery orderShopQuery = new DeliverOrderShopQuery();
+		orderShopQuery.setStatusList(VALID_STATUS);
+		orderShopQuery.setDeliverOrderId(deliverOrderId);
+		List<DeliverOrderShop> deliverOrderShops = query(orderShopQuery);
+		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
+			return deliverOrderShops.get(0);
+		}
+		return null;
+	}
+
 	@Override
 	public DeliverOrderShop addAndGet(DeliverOrderShop deliverOrderShop){
 		add(deliverOrderShop);
