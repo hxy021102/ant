@@ -1,5 +1,6 @@
 package com.bx.ant.service.qimen;
 
+import com.alibaba.fastjson.JSON;
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.SupplierItemRelation;
 import com.bx.ant.pageModel.SupplierItemRelationView;
@@ -40,7 +41,7 @@ public class QimenDeliveryOrderCreateServiceImpl extends AbstrcatQimenService {
         DeliveryorderCreateRequest req = (DeliveryorderCreateRequest) request;
         Integer supplierId = Integer.parseInt(ConvertNameUtil.getString(QimenRequestService.QIM_06));
         DeliveryorderCreateRequest.DeliveryOrder deliveryOrder = req.getDeliveryOrder();
-
+        logger.error("看看数据："+ JSON.toJSONString(req));
         DeliveryorderCreateResponse response = new DeliveryorderCreateResponse();
         response.setFlag("success");
         if(!QimenRequestService.JYCK.equals(deliveryOrder.getOrderType())) {
