@@ -81,7 +81,7 @@
                 </tr>
                     <th>配送方式</th>
 					<td>
-                        <jb:select dataType="DAW" name="deliveryWay" required="true" value="${shopDeliverApply.deliveryWay}"></jb:select>
+                        <jb:select dataType="DAW" name="deliveryWay" noShowValue="DAW02" required="true" value="${shopDeliverApply.deliveryWay}"></jb:select>
 					</td>
                 <tr>
                     <th>冻结状态</th>

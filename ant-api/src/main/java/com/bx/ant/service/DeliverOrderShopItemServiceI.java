@@ -83,4 +83,10 @@ public interface DeliverOrderShopItemServiceI {
 	 */
 	Map<Integer, DeliverOrderShopItem> queryOrderShopItem(String deliverOrderShopIds);
 
+	/**
+	 * 通过订单id查询门店订单商品
+	 * @param deliverOrderIds
+	 * @return
+	 */
+	DataGrid dataGridByDeliverOrderIds(String deliverOrderIds);
 }

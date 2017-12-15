@@ -111,7 +111,16 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 				params.put("deliverOrderShopIds", orderShopIds);
 			}
 
-		}	
+			if (!F.empty(deliverOrderShopItem.getDeliverOrderIds())) {
+				Long[] deliverOrderIds = new Long[deliverOrderShopItem.getDeliverOrderIds().length()];
+				int i = 0;
+				for (String deliverOrder : deliverOrderShopItem.getDeliverOrderIds().split(",")) {
+					deliverOrderIds[i++] = Long.parseLong(deliverOrder);
+				}
+				whereHql += " and t.deliverOrderId in(:deliverOrderIds)";
+				params.put("deliverOrderIds", deliverOrderIds);
+			}
+		}
 		return whereHql;
 	}
 
@@ -158,21 +167,35 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 			int amount = 0;
 			Long deliverOrderId = null;
 			for (DeliverOrderItem d : deliverOrderItems) {
-//				ShopItem shopItem = shopItemService.getByShopIdAndItemId(deliverOrderShop.getShopId(), d.getItemId());
-				ShopItem shopItem = shopItemService.getByShopIdAndItemId(deliverOrderShop.getShopId(), d.getItemId(), true, "SIS02");
-				if (shopItem == null) throw new ServiceException("无法找到门店对应商品");
-				if (!DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(deliverOrderShop.getDeliveryType())
-						&& (F.empty(shopItem.getQuantity()) || d.getQuantity() > shopItem.getQuantity()))
-					throw new ServiceException("门店对应商品库存不足");
-
 				//记录deliverOrderId
 				deliverOrderId = d.getDeliverOrderId();
 
-				//扣除库存
-                ShopItem shopItemN = new ShopItem();
-                shopItemN.setId(shopItem.getId());
-                shopItemN.setQuantity( - d.getQuantity());
-				shopItemService.updateQuantity(shopItemN);
+				ShopItem shopItem = shopItemService.getByShopIdAndItemId(deliverOrderShop.getShopId(), d.getItemId(), true, "SIS02");
+				// TODO 代送处理
+				if(ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrderShop.getDeliveryType())) {
+					if(shopItem == null) {
+						shopItem = new ShopItem();
+						shopItem.setShopId(deliverOrderShop.getShopId());
+						shopItem.setItemId(d.getItemId());
+						shopItem.setPrice(deliverOrderShop.getFreight());
+						shopItem.setInPrice(0);
+						shopItem.setFreight(deliverOrderShop.getFreight());
+						shopItem.setOnline(true);
+						shopItem.setStatus("SIS02");
+						shopItemService.add(shopItem);
+					}
+				} else {
+					if (shopItem == null) throw new ServiceException("无法找到门店对应商品");
+					if (!DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(deliverOrderShop.getDeliveryType())
+							&& (F.empty(shopItem.getQuantity()) || d.getQuantity() > shopItem.getQuantity()))
+						throw new ServiceException("门店对应商品库存不足");
+
+					//扣除库存
+					ShopItem shopItemN = new ShopItem();
+					shopItemN.setId(shopItem.getId());
+					shopItemN.setQuantity( - d.getQuantity());
+					shopItemService.updateQuantity(shopItemN);
+				}
 
 				//添加deliverOrderShopItem
 				DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
@@ -187,6 +210,7 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 				add(deliverOrderShopItem);
 
 				//计算总金额
+				//TODO 用户自提未作处理,现在只是统一到门店自己配送
 				amount += deliverOrderShopItem.getPrice() * deliverOrderShopItem.getQuantity();
 
 			}
@@ -234,6 +258,7 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 			MbItem item = mbItemService.getFromCache(deliverOrderShopItemExt.getItemId());
 			if (item != null) {
 				deliverOrderShopItemExt.setItemName(item.getName());
+				deliverOrderShopItemExt.setItemCode(item.getCode());
 				deliverOrderShopItemExt.setPictureUrl(item.getUrl());
 				deliverOrderShopItemExt.setQuantityUnitName(item.getQuantityUnitName());
 			}
@@ -289,5 +314,38 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 		}
 		return null;
 	}
+
+	@Override
+	public DataGrid dataGridByDeliverOrderIds(String deliverOrderIds) {
+        DeliverOrderShopItem deliverOrderShopItem = new DeliverOrderShopItem();
+        deliverOrderShopItem.setDeliverOrderIds(deliverOrderIds);
+        List<DeliverOrderShopItem> deliverOrderShopItems = list(deliverOrderShopItem);
+        DataGrid dg = new DataGrid();
+        if (CollectionUtils.isNotEmpty(deliverOrderShopItems)) {
+            List<DeliverOrderShopItemExt> deliverOrderShopItemExts = new ArrayList<DeliverOrderShopItemExt>();
+            Map<Integer,Integer> map=new HashMap<Integer, Integer>();
+            for (DeliverOrderShopItem orderShopItem : deliverOrderShopItems) {
+            	Integer key=orderShopItem.getItemId();
+            	Integer itemIdValue=map.get(orderShopItem.getItemId());
+				if (itemIdValue == null) {
+					map.put(key, orderShopItem.getQuantity());
+					DeliverOrderShopItemExt deliverOrderShopItemExt = new DeliverOrderShopItemExt();
+					BeanUtils.copyProperties(orderShopItem, deliverOrderShopItemExt);
+					MbItem mbItem = mbItemService.getFromCache(orderShopItem.getItemId());
+					deliverOrderShopItemExt.setItemCode(mbItem.getCode());
+					deliverOrderShopItemExt.setItemName(mbItem.getName() + ("规格：" + mbItem.getQuantityUnitName()));
+					deliverOrderShopItemExts.add(deliverOrderShopItemExt);
+				} else {
+					map.put(key, itemIdValue += orderShopItem.getQuantity());
+				}
+			}
+			for (DeliverOrderShopItemExt orderShopItemExt : deliverOrderShopItemExts) {
+				orderShopItemExt.setQuantity(map.get(orderShopItemExt.getItemId()));
+			}
+            dg.setRows(deliverOrderShopItemExts);
+            return dg;
+        }
+        return dg;
+    }
 
 }

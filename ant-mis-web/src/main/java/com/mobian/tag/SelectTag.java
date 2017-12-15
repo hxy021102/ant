@@ -28,6 +28,15 @@ public class SelectTag extends TagSupport {
     private boolean mustSelect;
     private boolean multiple;
     private boolean required;
+    private String noShowValue;
+
+    public String getNoShowValue() {
+        return noShowValue;
+    }
+
+    public void setNoShowValue(String noShowValue) {
+        this.noShowValue = noShowValue;
+    }
 
     public String getDataType() {
         return dataType;
@@ -133,6 +142,9 @@ public class SelectTag extends TagSupport {
                         out.print("<option value=\"" + bd.getId() + "\">" + bd.getName() + "</option>");
                     } else {
                         if (F.empty(value) || !value.equals(bd.getId())) {
+                            if(!F.empty(noShowValue)) {
+                                if (noShowValue.equals(bd.getId())) continue;
+                            }
                             out.print("<option value=\"" + bd.getId() + "\">" + bd.getName() + "</option>");
                         } else {
                             out.print("<option value=\"" + bd.getId() + "\" selected=\"selected\">" + bd.getName() + "</option>");

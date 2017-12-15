@@ -15,8 +15,12 @@ import com.bx.ant.service.SupplierServiceI;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
 import com.mobian.service.BasedataServiceI;
+import com.mobian.service.MbItemServiceI;
+import com.mobian.service.MbShopServiceI;
+import com.mobian.service.MbStockOutOrderServiceI;
 import com.mobian.util.ConfigUtil;
 import com.mobian.util.ConvertNameUtil;
+import com.mobian.util.DateUtil;
 import com.mobian.util.ImportExcelUtil;
 import net.sf.json.JSONArray;
 import org.apache.commons.collections.CollectionUtils;
@@ -36,10 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * DeliverOrder管理控制器
@@ -64,6 +65,12 @@ public class DeliverOrderController extends BaseController {
 	private BasedataServiceI basedataService;
     @Resource
 	private DeliverOrderShopServiceI deliverOrderShopService;
+
+	@Resource
+	private MbShopServiceI mbShopService;
+
+	@Autowired
+	private MbStockOutOrderServiceI mbStockOutOrderService;
 
 	/**
 	 * 跳转到DeliverOrder管理页面
@@ -95,13 +102,44 @@ public class DeliverOrderController extends BaseController {
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(DeliverOrderQuery deliverOrderQuery, PageHelper ph) {
+		if(!F.empty(ph.getSort()) && "shopName".equals(ph.getSort())) ph.setSort("shopId");
+
         if(deliverOrderQuery.getTime()!=null&&deliverOrderQuery.getTime()!=0){
 			deliverOrderQuery.setTime(Integer.valueOf(ConvertNameUtil.getString("DSV500", "30")));
 			return deliverOrderService.dataGridOutTimeDeliverOrder(deliverOrderQuery, ph);
 		}else if("notDriver,".equals(deliverOrderQuery.getStatus())){
         	return deliverOrderService.dataGridNotDriverDeliverOrder(deliverOrderQuery,ph);
-		}else
-			return deliverOrderService.dataGridWithName(deliverOrderQuery, ph);
+		}else {
+			DataGrid dg = deliverOrderService.dataGridWithName(deliverOrderQuery, ph);
+
+			// 统计运单创建出库单次数
+			if(DeliverOrderServiceI.AGENT_STATUS_DTS02.equals(deliverOrderQuery.getAgentStatus())) {
+				List<DeliverOrderQuery> list = dg.getRows();
+				Integer[] ids = new Integer[list.size()];
+				for (int i = 0; i < list.size(); i++) {
+					ids[i] = list.get(i).getId().intValue();
+				}
+				MbStockOutOrder mbStockOutOrder = new MbStockOutOrder();
+				mbStockOutOrder.setDeliverOrderIds(ids);
+				List<MbStockOutOrder> stockOutOrders = mbStockOutOrderService.query(mbStockOutOrder);
+				if(CollectionUtils.isNotEmpty(stockOutOrders)) {
+					Map<Long, Integer> numMap = new HashMap<Long, Integer>();
+					for(MbStockOutOrder stockOutOrder : stockOutOrders) {
+						if(numMap.containsKey(stockOutOrder.getDeliverOrderId().longValue())) {
+							numMap.put(stockOutOrder.getDeliverOrderId().longValue(), numMap.get(stockOutOrder.getDeliverOrderId().longValue()) + 1);
+						} else {
+							numMap.put(stockOutOrder.getDeliverOrderId().longValue(), 1);
+						}
+					}
+					for(DeliverOrderQuery order : list) {
+						order.setStockOutNum(numMap.get(order.getId()));
+					}
+				}
+
+			}
+			return dg;
+		}
+
 
 	}
 	@RequestMapping("/unPayOrderDataGrid")
@@ -393,6 +431,129 @@ public class DeliverOrderController extends BaseController {
 			j.setSuccess(false);
 			j.setMsg("指派失败，门店商品不足！");
 		}
+		return j;
+	}
+
+	/**
+	 * 获取打印数据
+	 * @return
+	 */
+	@RequestMapping("/printView")
+	public String printView(HttpServletRequest request,String deliverOrderIds) {
+		String[] ids = deliverOrderIds.split("[,]");
+		Long[] idLong = new Long[ids.length];
+		for (int i = 0; i < ids.length; i++) {
+			idLong[i] = new Long(ids[i]);
+		}
+		DeliverOrderQuery query = new DeliverOrderQuery();
+		query.setIds(idLong);
+		PageHelper ph = new PageHelper();
+		ph.setHiddenTotal(true);
+		DataGrid dataGrid = deliverOrderService.dataGridExt(query, ph);
+		List<DeliverOrderExt> deliverOrderExtList = dataGrid.getRows();
+		for (DeliverOrderExt deliverOrderExt : deliverOrderExtList) {
+			MbShop mbShop = mbShopService.getFromCache(deliverOrderExt.getShopId());
+			deliverOrderExt.setMbShop(mbShop);
+		}
+		request.setAttribute("printTime", DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+
+		request.setAttribute("deliverOrderExtList", deliverOrderExtList);
+		return "/deliverorder/deliverOrderPrint";
+	}
+
+	/**
+	 * 扫码打单页面
+	 * @return
+	 */
+	@RequestMapping("/managerOrderSan")
+	public String updateOrderSanPage() {
+		return "/deliverorder/updateOrderSanPage";
+	}
+
+	/**
+	 * 扫码打单，修改代送单状态为已打单
+	 * @param session
+	 * @param deliverOrderId
+	 * @return
+	 */
+	@RequestMapping("/updateOrderSan")
+	@ResponseBody
+	public Json updateOrderSan( HttpSession session, Long deliverOrderId) {
+		Json j = new Json();
+		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+		DeliverOrder deliverOrder = deliverOrderService.get(deliverOrderId);
+		if (deliverOrder != null) {
+			if ("DTS01".equals(deliverOrder.getAgentStatus())&& "DAW04".equals(deliverOrder.getDeliveryWay())) {
+				deliverOrder.setAgentStatus("DTS02");
+				deliverOrderService.editAndAddLog(deliverOrder, DeliverOrderLogServiceI.TYPE_DLT15, "扫码打单成功", sessionInfo.getId());
+				j.setMsg("打单成功！");
+				j.setSuccess(true);
+				return j;
+			}else {
+				j.setMsg("该订单已扫码打单，不能重复执行！");
+			}
+		} else {
+			j.setMsg("不存在该订单，请确认订单是否正确！");
+		}
+		j.setSuccess(false);
+		return j;
+	}
+
+	/**
+	 * 扫码订单发货页面
+	 * @return
+	 */
+	@RequestMapping("/managerOrderDeliverGoodsPage")
+	public String updateOrderDeliverGoodsPage() {
+		return "/deliverorder/updateOrderDeliverGoodsPage";
+	}
+
+	/**
+	 * 修改订单为已发货
+	 * @param session
+	 * @param deliverOrderId
+	 * @return
+	 */
+	@RequestMapping("/updateOrderDeliverGoods")
+	@ResponseBody
+	public Json updateOrderDeliverGoods(HttpSession session, Long deliverOrderId) {
+		Json j = new Json();
+		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+		DeliverOrder deliverOrder = deliverOrderService.get(deliverOrderId);
+		if (deliverOrder != null) {
+			if ("DTS02".equals(deliverOrder.getAgentStatus())&& "DAW04".equals(deliverOrder.getDeliveryWay())) {
+				deliverOrder.setAgentStatus("DTS03");
+				deliverOrderService.editAndAddLog(deliverOrder, DeliverOrderLogServiceI.TYPE_DLT14, "扫码发货成功", sessionInfo.getId());
+				j.setMsg("打单成功！");
+				j.setSuccess(true);
+				return j;
+			}else {
+				j.setMsg("该订单已发货打单，不能重复执行！");
+			}
+		} else {
+			j.setMsg("不存在该订单，请确认订单是否正确！");
+		}
+		j.setSuccess(false);
+		return j;
+	}
+
+	/**
+	 * 批量修改订单为已发货
+	 * @return
+	 */
+	@RequestMapping("/batchUpdateOrderDeliver")
+	@ResponseBody
+	public Json batchUpdateOrderDeliver(HttpSession session, String deliverOrderIds) {
+		Json j = new Json();
+		if(!F.empty(deliverOrderIds)) {
+			for (String id : deliverOrderIds.split(",")) {
+				if (!F.empty(id)) {
+					updateOrderDeliverGoods(session, Long.valueOf(id));
+				}
+			}
+		}
+		j.setMsg("批量发货成功！");
+		j.setSuccess(true);
 		return j;
 	}
 }

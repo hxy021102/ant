@@ -5,14 +5,20 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bx.ant.pageModel.DeliverOrderShopItem;
+import com.bx.ant.service.DeliverOrderShopItemServiceI;
+import com.mobian.absx.F;
 import com.mobian.pageModel.*;
+import com.mobian.service.MbStockOutOrderServiceI;
 import com.mobian.service.MbStockOutServiceI;
 
 import com.mobian.service.MbWarehouseServiceI;
 import com.mobian.service.UserServiceI;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +42,10 @@ public class MbStockOutController extends BaseController {
 	private UserServiceI userService;
 	@Autowired
 	private MbWarehouseServiceI mbWarehouseService;
+	@Autowired
+	private MbStockOutOrderServiceI mbStockOutOrderService;
+	@javax.annotation.Resource
+	private DeliverOrderShopItemServiceI deliverOrderShopItemService;
 
 
 	/**
@@ -98,9 +108,10 @@ public class MbStockOutController extends BaseController {
 	 */
 	@RequestMapping("/add")
 	@ResponseBody
-	public Json add(MbStockOut mbStockOut,String dataGrid) {
+	public Json add(MbStockOut mbStockOut,String dataGrid,String deliverOrderIds) {
 		Json j = new Json();		
-		mbStockOutService.addStockOut(mbStockOut,dataGrid);
+		if(F.empty(deliverOrderIds)) mbStockOutService.addStockOut(mbStockOut,dataGrid);
+		else mbStockOutService.addStockOut(mbStockOut, dataGrid, deliverOrderIds);
 		j.setSuccess(true);
 		j.setMsg("添加成功！");		
 		return j;
@@ -175,6 +186,82 @@ public class MbStockOutController extends BaseController {
 		j.setMsg("删除成功！");
 		j.setSuccess(true);
 		return j;
+	}
+
+	/**
+	 *
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/viewDetails")
+	public String viewDetails(HttpServletRequest request, Integer id) {
+		MbStockOut mbStockOut = mbStockOutService.get(id);
+		if (mbStockOut.getStockOutPeopleId() != null) {
+			User user = userService.get(mbStockOut.getStockOutPeopleId());
+			mbStockOut.setStockOutPeopleName(user.getNickname());
+		}
+		if (mbStockOut.getLoginId() != null) {
+			User user = userService.get(mbStockOut.getLoginId());
+			if (user != null) {
+				mbStockOut.setLoginName(user.getName());
+			}
+		}
+		if (mbStockOut.getWarehouseId() != null) {
+			MbWarehouse mbWarehouse = mbWarehouseService.get(mbStockOut.getWarehouseId());
+			mbStockOut.setWarehouseName(mbWarehouse.getName());
+		}
+		MbStockOutOrder mbStockOutOrder = new MbStockOutOrder();
+		mbStockOutOrder.setMbStockOutId(id);
+		List<MbStockOutOrder> mbStockOutOrders = mbStockOutOrderService.query(mbStockOutOrder);
+		if (CollectionUtils.isNotEmpty(mbStockOutOrders)) {
+			String deliverOrderIds="";
+			for(MbStockOutOrder stockOutOrder:mbStockOutOrders){
+				deliverOrderIds+=stockOutOrder.getDeliverOrderId()+",";
+			}
+            mbStockOut.setDeliverOrderIds(deliverOrderIds);
+		}
+		mbStockOut.setDeliverOrderIds(mbStockOut.getDeliverOrderIds());
+		request.setAttribute("mbStockOut", mbStockOut);
+		return "/mbstockout/mbStockOutDetails";
+	}
+
+	/**
+	 * 出库打印
+	 * @param request
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/print")
+	public  String print(HttpServletRequest request,Integer id){
+		MbStockOut mbStockOut = mbStockOutService.get(id);
+		if (mbStockOut.getStockOutPeopleId() != null) {
+			User user = userService.get(mbStockOut.getStockOutPeopleId());
+			mbStockOut.setStockOutPeopleName(user.getNickname());
+		}
+		if (mbStockOut.getLoginId() != null) {
+			User user = userService.get(mbStockOut.getLoginId());
+			if (user != null) {
+				mbStockOut.setLoginName(user.getName());
+			}
+		}
+		if (mbStockOut.getWarehouseId() != null) {
+			MbWarehouse mbWarehouse = mbWarehouseService.get(mbStockOut.getWarehouseId());
+			mbStockOut.setWarehouseName(mbWarehouse.getName());
+		}
+		MbStockOutOrder mbStockOutOrder = new MbStockOutOrder();
+		mbStockOutOrder.setMbStockOutId(id);
+		List<MbStockOutOrder> mbStockOutOrders = mbStockOutOrderService.query(mbStockOutOrder);
+		if (CollectionUtils.isNotEmpty(mbStockOutOrders)) {
+			String deliverOrderIds="";
+			for(MbStockOutOrder stockOutOrder:mbStockOutOrders){
+				deliverOrderIds+=stockOutOrder.getDeliverOrderId()+",";
+			}
+			mbStockOut.setDeliverOrderIds(deliverOrderIds);
+			List<DeliverOrderShopItem> deliverOrderShopItemList=deliverOrderShopItemService.dataGridByDeliverOrderIds(deliverOrderIds).getRows();
+			request.setAttribute("mbStockOut", mbStockOut);
+			request.setAttribute("deliverOrderShopItemList", deliverOrderShopItemList);
+		}
+		return "/mbstockout/mbStockOutPrint";
 	}
 
 }

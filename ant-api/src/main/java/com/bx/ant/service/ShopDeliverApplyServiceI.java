@@ -24,6 +24,7 @@ public interface ShopDeliverApplyServiceI {
 	String  DELIVER_WAY_SHOP = "DAW01";
 	String DELIVER_WAY_CUSTOMER = "DAW02";
 	String DELIVER_WAY_DRIVER = "DAW03";
+	String DELIVER_WAY_AGENT = "DAW04"; // 门店代送
 
 	/**
 	 * 获取ShopDeliverApply数据表格

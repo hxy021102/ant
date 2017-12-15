@@ -302,9 +302,14 @@
 
 	 </script>
 </head>
+<style type="text/css">
+	div img:hover {
+		transform: scale(1.5);
+	}
+</style>
 <body>
 <div class="easyui-layout" data-options="fit : true,border:false">
-	<div data-options="region:'north',title:'基本信息',border:false" style="height: 295px; overflow: hidden;">
+	<div data-options="region:'north',title:'基本信息',border:false" style="height: 325px; overflow: hidden;">
 		<table class="table">
 			<tr>
 				<th>运单ID</th>
@@ -354,13 +359,13 @@
 				<td>
 					${deliverOrder.deliveryAddress}
 				</td>
-				<th>配送地区</th>
-				<td>
-					${deliverOrder.deliveryRegion}
-				</td>
 				<th>送达时间</th>
 				<td>
 					<fmt:formatDate value="${deliverOrder.deliveryRequireTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
+				</td>
+				<th>平台接单状态</th>
+				<td>
+					${deliverOrder.originalOrderStatusName}
 				</td>
 			</tr>
 			<tr>
@@ -385,6 +390,12 @@
 				</c:forEach>
 			</tr>
 			<tr>
+				<th>店铺</th>
+				<td>${deliverOrder.originalShop}</td>
+				<th>订单号</th>
+				<td>${deliverOrder.originalOrderId}</td>
+			</tr>
+			<tr>
 				<th>送达备注</th>
 				<td colspan="3">
 					${deliverOrder.completeRemark}
@@ -401,6 +412,17 @@
 				<td colspan="3">
 					${deliverOrder.remark}
 				</td>
+				<c:choose>
+					<c:when test="${deliverOrder.deliveryWay=='DAW04'}">
+						<th>代送状态</th>
+						<td colspan="3">
+								${deliverOrder.agentStatusName}
+						</td>
+					</c:when>
+					<c:otherwise>
+						<th></th><td></td>
+					</c:otherwise>
+				</c:choose>
 			</tr>
 		</table>
 	</div>

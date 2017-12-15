@@ -5,22 +5,28 @@ import com.bx.ant.service.*;
 import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.DataGrid;
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.Supplier;
+import com.bx.ant.pageModel.SupplierItemRelation;
+import com.bx.ant.pageModel.SupplierItemRelationView;
+import com.bx.ant.service.DeliverOrderServiceI;
+import com.bx.ant.service.DeliverOrderYouzanServiceI;
+import com.bx.ant.service.SupplierItemRelationServiceI;
+import com.bx.ant.service.SupplierServiceI;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.thirdpart.redis.Key;
 import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.thirdpart.redis.RedisUtil;
 import com.mobian.thirdpart.youzan.YouzanUtil;
 import com.mobian.util.ConvertNameUtil;
-import com.youzan.open.sdk.client.auth.Sign;
 import com.youzan.open.sdk.client.auth.Token;
 import com.youzan.open.sdk.client.core.DefaultYZClient;
 import com.youzan.open.sdk.client.core.YZClient;
 import com.youzan.open.sdk.gen.v3_0_0.api.YouzanLogisticsOnlineConfirm;
+import com.youzan.open.sdk.gen.v3_0_0.api.YouzanTradeSelffetchcodeGet;
 import com.youzan.open.sdk.gen.v3_0_0.api.YouzanTradesSoldGet;
-import com.youzan.open.sdk.gen.v3_0_0.model.YouzanLogisticsOnlineConfirmParams;
-import com.youzan.open.sdk.gen.v3_0_0.model.YouzanLogisticsOnlineConfirmResult;
-import com.youzan.open.sdk.gen.v3_0_0.model.YouzanTradesSoldGetParams;
-import com.youzan.open.sdk.gen.v3_0_0.model.YouzanTradesSoldGetResult;
+import com.youzan.open.sdk.gen.v3_0_0.model.*;
+import net.sf.json.JSON;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -234,5 +240,23 @@ public class DeliverOrderYouzanServiceImpl implements DeliverOrderYouzanServiceI
 
             }
         }
+    }
+
+    @Override
+    public Long getOrderByCode(String code) {
+        String accessToken = (String)redisUtil.get(Key.build(Namespace.YOUZAN_CONFIG, "youzan_access_token"));
+        YZClient client = new DefaultYZClient(new Token(accessToken));
+        YouzanTradeSelffetchcodeGetParams youzanTradeSelffetchcodeGetParams = new YouzanTradeSelffetchcodeGetParams();
+
+        youzanTradeSelffetchcodeGetParams.setCode(code);
+        youzanTradeSelffetchcodeGetParams.setFields("tid");
+
+        YouzanTradeSelffetchcodeGet youzanTradeSelffetchcodeGet = new YouzanTradeSelffetchcodeGet();
+        youzanTradeSelffetchcodeGet.setAPIParams(youzanTradeSelffetchcodeGetParams);
+        YouzanTradeSelffetchcodeGetResult result = client.invoke(youzanTradeSelffetchcodeGet);
+        String  tid = result.getTid();
+        DeliverOrder o = deliverOrderService.getOrderByYouZanTid(tid);
+        Long orderId = o.getId();
+        return orderId;
     }
 }

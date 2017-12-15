@@ -20,6 +20,8 @@ public class YouzanUtil {
     public final static String APPKEY = "YZ04"; // 有赞接入方appKey
     public final static String SETTLE_TERM = "YZ05"; // 结算期限
 
+    public final static String TOKEN_SWITCH = "YZ06"; // 是否开启token刷新 1开始、0关闭
+
     /**
      * 获取access_token的接口地址（GET） 限200（次/天）
      */

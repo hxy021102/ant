@@ -65,11 +65,21 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
         DataGrid dataGrid = deliverOrderService.dataGrid(request, ph);
         List<DeliverOrder> deliverOrderList = dataGrid.getRows();
 
+        // 1.1、获取万里牛未处理订单
+        request = new DeliverOrderExt();
+        request.setIsdeleted(true);
+        request.setOriginalOrderStatus(DeliverOrderServiceI.ORIGINAL_ORDER_STATUS_OTS01);
+        dataGrid = deliverOrderService.dataGrid(request, ph);
+        if(CollectionUtils.isNotEmpty(dataGrid.getRows())) {
+            deliverOrderList.addAll(dataGrid.getRows());
+        }
+
         for (DeliverOrder deliverOrder : deliverOrderList) {
             try{
                 allocationOrderOwnerShopId(deliverOrder);
             }catch(Exception e){
                 logger.error("分单失败", e);
+
             }
         }
     }
@@ -115,23 +125,21 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
         for (ShopDeliverApply shopDeliverApply : shopDeliverApplyList) {
             MbShop mbShop = shopDeliverApply.getMbShop();
             if (excludeShop.contains(mbShop.getId())) continue;
-            double distance = GeoUtil.getDistance(deliverOrder.getLongitude().doubleValue(), deliverOrder.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
-
             if(shopDeliverApply.getMaxDeliveryDistance() != null) {
                 maxDistance = shopDeliverApply.getMaxDeliveryDistance().doubleValue();
             }
-            // maxDistance=-1距离不限
-            if(maxDistance != -1 && distance > maxDistance) continue;
 
-            shopDeliverApply.setDistance(BigDecimal.valueOf(distance));
-            includeShop.add(shopDeliverApply);
+            if(deliverOrder.getLongitude() != null && deliverOrder.getLatitude() != null
+                    && deliverOrder.getLongitude().doubleValue() != -1 && deliverOrder.getLatitude().doubleValue() != -1) {
+                double distance = GeoUtil.getDistance(deliverOrder.getLongitude().doubleValue(), deliverOrder.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
+                // maxDistance=-1距离不限
+                if(maxDistance != -1 && distance > maxDistance) continue;
 
-//            if (distance < minDistance || minDistance == 0) {
-//                minMbShop = mbShop;
-//                minDistance = distance;
-//
-//                if(distance == 0) break; // 解决同一个地址不分配的问题
-//            }
+                shopDeliverApply.setDistance(BigDecimal.valueOf(distance));
+                includeShop.add(shopDeliverApply);
+            } else {
+                if(maxDistance == -1) includeShop.add(shopDeliverApply);
+            }
         }
 
         if(CollectionUtils.isNotEmpty(includeShop)) {
@@ -152,19 +160,32 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                 TransactionStatus status = transactionManager.getTransaction(def); // 获得事务状态
 
                 try{
-                    if(!DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(shopDeliverApply.getDeliveryType())
-                            && tokenService.getTokenByShopId(mbShop.getId()) == null) throw new ServiceException("门店不在线，token已失效");
-                    if(!DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(shopDeliverApply.getDeliveryType())
-                            && (shopDeliverApply.getOnline() == null || !shopDeliverApply.getOnline())) throw new ServiceException("门店停止营业");
+                    // 排除代送、强制接单
+                    if(!ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrder.getDeliveryWay())) {
+                        if(!DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(shopDeliverApply.getDeliveryType())
+                                && tokenService.getTokenByShopId(mbShop.getId()) == null) throw new ServiceException("门店不在线，token已失效");
+                        if(!DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(shopDeliverApply.getDeliveryType())
+                                && (shopDeliverApply.getOnline() == null || !shopDeliverApply.getOnline())) throw new ServiceException("门店停止营业");
+                    }
                     deliverOrder.setDeliveryType(shopDeliverApply.getDeliveryType());
+                    deliverOrder.setDeliveryWay(shopDeliverApply.getDeliveryWay());
+                    deliverOrder.setFreight(shopDeliverApply.getFreight());
                     deliverOrder.setShopId(mbShop.getId());
                     deliverOrder.setShopDistance(shopDeliverApply.getDistance());
                     deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_ALLOCATION);
+
+                    // 分配万里牛平台订单
+                    if(deliverOrder.getIsdeleted()) {
+                        deliverOrder.setIsdeleted(false);
+                        deliverOrder.setOriginalOrderStatus(DeliverOrderServiceI.ORIGINAL_ORDER_STATUS_OTS02);
+                    }
+
                     deliverOrderService.transform(deliverOrder);
 
-                    // 自动接单
+                    // 自动接单||强制接单||代送
                     if(DeliverOrderServiceI.DELIVER_TYPE_AUTO.equals(shopDeliverApply.getDeliveryType()) ||
-                            DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(shopDeliverApply.getDeliveryType())) {
+                            DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(shopDeliverApply.getDeliveryType()) ||
+                            ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrder.getDeliveryWay())) {
                         deliverOrder.setStatus(DeliverOrderServiceI.STATUS_SHOP_ACCEPT);
                         deliverOrderService.transform(deliverOrder);
                     }
@@ -178,16 +199,19 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                     if(!F.empty(mbShop.getContactPhone()) && smsRemind) {
                         MNSTemplate template = new MNSTemplate();
                         Map<String, String> params = new HashMap<String, String>();
-                        if(DeliverOrderServiceI.DELIVER_TYPE_AUTO.equals(shopDeliverApply.getDeliveryType())) {
-                            template.setTemplateCode("SMS_109405064");
-                            params.put("orderId", "(" + deliverOrder.getId() + ")");
-                            params.put("address", deliverOrder.getDeliveryAddress());
+                        params.put("orderId", "(" + deliverOrder.getId() + ")");
+                        params.put("address", deliverOrder.getDeliveryAddress());
+                        if(ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrder.getDeliveryWay())) {
+                            template.setTemplateCode("SMS_117150037");
                         } else {
-                            template.setTemplateCode("SMS_105685061");
-                            params.put("orderId", "(" + deliverOrder.getId() + ")");
-                            params.put("address", deliverOrder.getDeliveryAddress());
-                            params.put("time", ConvertNameUtil.getString("DSV100", "10") + "分钟");
+                            if(DeliverOrderServiceI.DELIVER_TYPE_AUTO.equals(shopDeliverApply.getDeliveryType())) {
+                                template.setTemplateCode("SMS_109405064");
+                            } else {
+                                template.setTemplateCode("SMS_105685061");
+                                params.put("time", ConvertNameUtil.getString("DSV100", "10") + "分钟");
+                            }
                         }
+
 
                         template.setParams(params);
                         MNSUtil.sendMns(mbShop.getContactPhone(), template);
@@ -196,6 +220,12 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                 }catch(Exception e){
                     transactionManager.rollback(status);
                     logger.error("分单失败", e);
+
+                    // 万里牛订单不满足处理
+                    if(e instanceof ServiceException && deliverOrder.getIsdeleted()) {
+                        deliverOrder.setOriginalOrderStatus(DeliverOrderServiceI.ORIGINAL_ORDER_STATUS_OTS03);
+                        deliverOrderService.edit(deliverOrder);
+                    }
                     continue;
                 }
 

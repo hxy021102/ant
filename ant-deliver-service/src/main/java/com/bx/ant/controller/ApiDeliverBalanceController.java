@@ -14,7 +14,6 @@ import com.mobian.absx.F;
 import com.mobian.pageModel.*;
 import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbBalanceServiceI;
-import com.mobian.service.MbShopServiceI;
 import com.mobian.service.MbWithdrawLogServiceI;
 import com.mobian.thirdpart.mns.MNSTemplate;
 import com.mobian.thirdpart.mns.MNSUtil;
@@ -100,7 +99,7 @@ public class ApiDeliverBalanceController extends BaseController {
             deliverOrderShop.setDeliverOrderId(deliverOrderShopPay.getDeliverOrderId());
             deliverOrderShop.setId(deliverOrderShopPay.getDeliverOrderShopId());
             deliverOrderShop.setStatus("DSS04");
-            json.setObj(deliverOrderService.getBanlanceLogDetial(deliverOrderShop));
+            json.setObj(deliverOrderService.getBalanceLogDetail(deliverOrderShop));
         }
         json.setMsg("u know");
         json.setSuccess(true);

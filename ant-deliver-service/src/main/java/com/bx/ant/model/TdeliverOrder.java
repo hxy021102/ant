@@ -93,6 +93,7 @@ public class TdeliverOrder implements java.io.Serializable,IEntity{
 	//columns END
 
 	private String supplierOrderId;
+	private String supplierOrderType;
 
 	private BigDecimal longitude;
 
@@ -102,6 +103,10 @@ public class TdeliverOrder implements java.io.Serializable,IEntity{
 	private String completeRemark;
 
 	private String deliveryWay;
+	private String originalOrderId;
+	private String originalShop;
+	private String originalOrderStatus;
+	private String agentStatus;
 
 		public TdeliverOrder(){
 		}
@@ -312,6 +317,15 @@ public class TdeliverOrder implements java.io.Serializable,IEntity{
 		this.supplierOrderId = supplierOrderId;
 	}
 
+	@Column(name = "supplier_order_type", unique = false, nullable = true, insertable = true, updatable = true, scale = 18)
+	public String getSupplierOrderType() {
+		return supplierOrderType;
+	}
+
+	public void setSupplierOrderType(String supplierOrderType) {
+		this.supplierOrderType = supplierOrderType;
+	}
+
 	@Column(name = "complete_images", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
 	public String getCompleteImages() {
 		return completeImages;
@@ -347,7 +361,38 @@ public class TdeliverOrder implements java.io.Serializable,IEntity{
 	public void setDeliveryWay(String deliveryWay) {
 		this.deliveryWay = deliveryWay;
 	}
+	@Column(name = "original_order_id", unique = false, nullable = true, insertable = true, updatable = true, length = 32)
+	public String getOriginalOrderId() {
+		return originalOrderId;
+	}
 
+	public void setOriginalOrderId(String originalOrderId) {
+		this.originalOrderId = originalOrderId;
+	}
+	@Column(name = "original_shop", unique = false, nullable = true, insertable = true, updatable = true, length = 32)
+	public String getOriginalShop() {
+		return originalShop;
+	}
+
+	public void setOriginalShop(String originalShop) {
+		this.originalShop = originalShop;
+	}
+	@Column(name = "original_order_status", unique = false, nullable = true, insertable = true, updatable = true, length = 11)
+	public String getOriginalOrderStatus() {
+		return originalOrderStatus;
+	}
+
+	public void setOriginalOrderStatus(String originalOrderStatus) {
+		this.originalOrderStatus = originalOrderStatus;
+	}
+	@Column(name = "agent_status", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public String getAgentStatus() {
+		return agentStatus;
+	}
+
+	public void setAgentStatus(String agentStatus) {
+		this.agentStatus = agentStatus;
+	}
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

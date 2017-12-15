@@ -2,7 +2,10 @@ package com.mobian.service;
 
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbStockOut;
+import com.mobian.pageModel.MbStockOutOrder;
 import com.mobian.pageModel.PageHelper;
+
+import java.util.List;
 
 /**
  * 
@@ -53,7 +56,9 @@ public interface MbStockOutServiceI {
 	/**
 	 * 添加出库明细
 	 */
-	 void addStockOut(MbStockOut mbStockOut, String dataGrid);
+ 	void addStockOut(MbStockOut mbStockOut, String dataGrid);
+
+	void addStockOut(MbStockOut mbStockOut, String dataGrid, String deliverOrderIds);
 	/**
 	 * 添加出库商品项
 	 */
@@ -62,7 +67,5 @@ public interface MbStockOutServiceI {
 	 * 通过出库id删除出库明细
 	 */
 	void deleteStockOutItem(Integer id);
-
-
 
 }
