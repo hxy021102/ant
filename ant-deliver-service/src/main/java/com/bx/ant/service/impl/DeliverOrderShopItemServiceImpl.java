@@ -111,7 +111,6 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 				params.put("deliverOrderShopIds", orderShopIds);
 			}
 
-			}
 			if (!F.empty(deliverOrderShopItem.getDeliverOrderIds())) {
 				Long[] deliverOrderIds = new Long[deliverOrderShopItem.getDeliverOrderIds().length()];
 				int i = 0;
@@ -121,7 +120,7 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 				whereHql += " and t.deliverOrderId in(:deliverOrderIds)";
 				params.put("deliverOrderIds", deliverOrderIds);
 			}
-		}	
+		}
 		return whereHql;
 	}
 
