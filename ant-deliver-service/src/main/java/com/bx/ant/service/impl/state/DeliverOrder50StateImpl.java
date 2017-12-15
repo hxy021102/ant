@@ -1,6 +1,7 @@
 package com.bx.ant.service.impl.state;
 
 import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.service.AbstractDeliverOrderState;
 import com.bx.ant.service.DeliverOrderLogServiceI;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderState;
@@ -14,7 +15,7 @@ import javax.annotation.Resource;
  * Created by wanxp on 17-9-26.
  */
 @Service("deliverOrder50StateImpl")
-public class DeliverOrder50StateImpl implements DeliverOrderState {
+public class DeliverOrder50StateImpl extends AbstractDeliverOrderState {
 
     @Resource(name = "deliverOrder30StateImpl")
     private DeliverOrderState deliverOrderState30;
@@ -28,8 +29,9 @@ public class DeliverOrder50StateImpl implements DeliverOrderState {
         return "50";
     }
 
+
     @Override
-    public void handle(DeliverOrder deliverOrder) {
+    public void execute(DeliverOrder deliverOrder) {
 
         // 修改运单状态
         DeliverOrder orderNew = new DeliverOrder();

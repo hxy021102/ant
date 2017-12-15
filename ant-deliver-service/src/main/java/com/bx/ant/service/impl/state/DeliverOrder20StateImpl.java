@@ -18,7 +18,7 @@ import java.util.List;
  * Created by wanxp on 17-9-26.
  */
 @Service("deliverOrder20StateImpl")
-public class DeliverOrder20StateImpl implements DeliverOrderState {
+public class DeliverOrder20StateImpl extends AbstractDeliverOrderState{
 
     @Resource(name = "deliverOrder21StateImpl")
     private DeliverOrderState deliverOrderState21;
@@ -52,7 +52,7 @@ public class DeliverOrder20StateImpl implements DeliverOrderState {
     }
 
     @Override
-    public void handle(DeliverOrder deliverOrder) {
+    public void execute(DeliverOrder deliverOrder) {
         if (!F.empty(deliverOrder.getShopId())) {
             //门店申请者的配送方式
             ShopDeliverApply apply = new ShopDeliverApply();

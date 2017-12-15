@@ -20,7 +20,7 @@ import java.util.List;
  * Created by wanxp on 17-9-26.
  */
 @Service("deliverOrder40StateImpl")
-public class DeliverOrder40StateImpl implements DeliverOrderState {
+public class DeliverOrder40StateImpl extends AbstractDeliverOrderState {
 
     @Autowired
     private DeliverOrderServiceI deliverOrderService;
@@ -37,8 +37,6 @@ public class DeliverOrder40StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderShopPayServiceI deliverOrderShopPayService;
 
-    @Autowired
-    private DeliverOrderLogServiceI deliverOrderLogService;
 
     @Override
     public String getStateName() {
@@ -46,7 +44,7 @@ public class DeliverOrder40StateImpl implements DeliverOrderState {
     }
 
     @Override
-    public void handle(DeliverOrder deliverOrder) {
+    public void execute(DeliverOrder deliverOrder) {
         //条件检查
         //修改运单状态
         DeliverOrder orderNew = new DeliverOrder();

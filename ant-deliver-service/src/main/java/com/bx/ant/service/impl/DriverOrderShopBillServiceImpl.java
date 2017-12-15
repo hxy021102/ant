@@ -366,15 +366,14 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 								mbBalanceLog.setAmount(orderPay.getAmount());
 								mbBalanceLog.setReason(String.format("骑手[ID:%1$s]完成运单[ID:%2$s]结算转入", orderPay.getDriverAccountId(), orderPay.getDriverOrderShopId()));
 								mbBalanceLogService.addAndUpdateBalance(mbBalanceLog);
-								transactionManager.commit(status);
 							}
+							transactionManager.commit(status);
 						} catch (Exception e) {
 							transactionManager.rollback(status);
 							continue;
 						}
 					}
 				}
-
 		}
 	}
 }

@@ -19,6 +19,8 @@ import javax.annotation.Resource;
  */
 @Service(value = "driverOrderShop05StateImpl")
 public class DriverOrderShop05StateImpl implements DriverOrderShopState {
+    @Resource(name = "driverOrderShop50StateImpl")
+    private DriverOrderShopState driverOrderShopState50;
 
     @Resource(name = "driverOrderShop08StateImpl")
     private DriverOrderShopState driverOrderShopState08;
@@ -77,6 +79,9 @@ public class DriverOrderShop05StateImpl implements DriverOrderShopState {
     public DriverOrderShopState next(DriverOrderShop driverOrderShop) {
         if ( (prefix  + "08").equals(driverOrderShop.getStatus())) {
             return driverOrderShopState08;
+        }
+        if ((prefix + "50").equals(driverOrderShop.getStatus())) {
+            return driverOrderShopState50;
         }
         return null;
     }

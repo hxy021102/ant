@@ -14,12 +14,6 @@ import javax.annotation.Resource;
  */
 @Service(value = "driverOrderShop30StateImpl")
 public class DriverOrderShop30StateImpl implements DriverOrderShopState {
-
-
-
-    @Resource
-    private DriverOrderShopServiceI driverOrderShopSerivce;
-
     @Resource
     private DriverOrderShopServiceI driverOrderShopService;
 

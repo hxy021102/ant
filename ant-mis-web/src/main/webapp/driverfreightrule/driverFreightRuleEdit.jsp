@@ -29,20 +29,20 @@
 				}
 			}
 		});
-        $('.money_input').blur(function () {
-            var source = $(this);
-            var target = source.next();
-            if (!/^([1-9]\d*|0)(\.\d{2})?$/.test(source.val())) {
-                source.val("").focus();
-            }
-            var val = source.val().trim();
-            if (val.indexOf('.') > -1) {
-                val = val.replace('.', "");
-            } else if (val != '') {
-                val += "00";
-            }
-            target.val(val);
-        });
+		$('.money_input').blur(function () {
+			var source = $(this);
+			var target = source.next();
+			if (!/^([-1-9]\d*|0)(\.\d{2})?$/.test(source.val())) {
+				source.val("").focus();
+			}
+			var val = source.val().trim();
+			if (val.indexOf('.') > -1) {
+				val = val.replace('.', "");
+			} else if (val != '') {
+				val += "00";
+			}
+			target.val(val);
+		});
         $('.money_input').each(function(){
             $(this).val($.formatMoney($(this).val().trim()));
         });
@@ -80,8 +80,8 @@
 					</td>
 					<th>费用</th>
 					<td>
-						<input class="span2 easyui-validatebox money_input" name="priceStr" type="text" value="${driverFreightRule.freight}" data-options="required:true"/>
-						<input  name="freight" type="hidden"/>元
+						<input  name="freightStr" type="text" class="span2 money_input" data-options="required:true" value="${driverFreightRule.freight / 100.00}"/>
+						<input type="hidden" name="freight">
 					</td>
 				</tr>
 				<tr>

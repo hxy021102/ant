@@ -145,8 +145,7 @@ public class ApiDriverOrderShopController extends BaseController {
         if (b = driverOrderShopService.editOrderAccept(driverOrderShop)) {
             json.setMsg("u know");
         } else {
-            //json.setMsg("订单已失效,请刷新页面");
-            json.setMsg("失败，你有订单未配送完成，请配送完再接单！");
+            json.setMsg("对不起派送中运单超过上限,请完成后再来尝试");
         }
         json.setSuccess(b);
         return json;
