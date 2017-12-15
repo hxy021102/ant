@@ -167,14 +167,14 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
 
                 try{
                     // 排除代送、强制接单
-                    if(!ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrder.getDeliveryWay())) {
+                    if(!ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(shopDeliverApply.getDeliveryWay())) {
                         if(!DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(shopDeliverApply.getDeliveryType())
                                 && tokenService.getTokenByShopId(mbShop.getId()) == null) throw new ServiceException("门店不在线，token已失效");
                         if(!DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(shopDeliverApply.getDeliveryType())
                                 && (shopDeliverApply.getOnline() == null || !shopDeliverApply.getOnline())) throw new ServiceException("门店停止营业");
                     }
                     deliverOrder.setDeliveryType(shopDeliverApply.getDeliveryType());
-                    deliverOrder.setDeliveryWay(shopDeliverApply.getDeliveryWay());
+                    deliverOrder.setDeliveryWay(F.empty(deliverOrder.getDeliveryWay()) ? shopDeliverApply.getDeliveryWay() : deliverOrder.getDeliveryWay());
                     deliverOrder.setFreight(shopDeliverApply.getFreight());
                     deliverOrder.setShopId(mbShop.getId());
                     deliverOrder.setShopDistance(shopDeliverApply.getDistance());
