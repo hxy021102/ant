@@ -231,7 +231,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		TdeliverOrder t = new TdeliverOrder();
 		BeanUtils.copyProperties(deliverOrder, t);
 		//t.setId(jb.absx.UUID.uuid());
-		t.setIsdeleted(false);
+		if(F.empty(deliverOrder.getIsdeleted())) t.setIsdeleted(false);
 		deliverOrderDao.save(t);
 		deliverOrder.setId(t.getId());
 	}
@@ -254,7 +254,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	public void edit(DeliverOrder deliverOrder) {
 		TdeliverOrder t = deliverOrderDao.get(TdeliverOrder.class, deliverOrder.getId());
 		if (t != null) {
-			MyBeanUtils.copyProperties(deliverOrder, t, new String[] { "id" , "addtime", "isdeleted","updatetime" },true);
+			MyBeanUtils.copyProperties(deliverOrder, t, new String[] { "id" , "addtime", "updatetime" },true);
 		}
 	}
 
