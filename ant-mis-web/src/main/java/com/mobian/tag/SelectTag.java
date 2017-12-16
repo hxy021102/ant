@@ -11,6 +11,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +29,15 @@ public class SelectTag extends TagSupport {
     private boolean mustSelect;
     private boolean multiple;
     private boolean required;
+    private String noShowValue;
+
+    public String getNoShowValue() {
+        return noShowValue;
+    }
+
+    public void setNoShowValue(String noShowValue) {
+        this.noShowValue = noShowValue;
+    }
 
     public String getDataType() {
         return dataType;
@@ -126,6 +136,12 @@ public class SelectTag extends TagSupport {
                 BaseData baseData = new BaseData();
                 baseData.setBasetypeCode(dataType);
                 List<BaseData> baseDataList = service.getBaseDatas(baseData);
+                List<String> noShowValueList = new ArrayList<String>();
+                if (!F.empty(noShowValue)) {
+                    for (String value : noShowValue.split(",")) {
+                        noShowValueList.add(value);
+                    }
+                }
                 if (!required)
                     out.print("<option value=\"\">    </option>");
                 for (BaseData bd : baseDataList) {
@@ -133,6 +149,9 @@ public class SelectTag extends TagSupport {
                         out.print("<option value=\"" + bd.getId() + "\">" + bd.getName() + "</option>");
                     } else {
                         if (F.empty(value) || !value.equals(bd.getId())) {
+                            if (noShowValueList != null && noShowValueList.size() > 0) {
+                                if (noShowValueList.contains(bd.getId())) continue;
+                            }
                             out.print("<option value=\"" + bd.getId() + "\">" + bd.getName() + "</option>");
                         } else {
                             out.print("<option value=\"" + bd.getId() + "\" selected=\"selected\">" + bd.getName() + "</option>");

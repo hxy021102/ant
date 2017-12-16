@@ -25,7 +25,10 @@ public class DeliverOrderQuery extends DeliverOrder {
     private List<String> image;
     private String showTime;
     private String deliveryWayName;
+    private String originalOrderStatusName;
+    private String agentStatusName;
 
+    private Integer stockOutNum;
 
     public String getStatusName() {
         return ConvertNameUtil.getString(this.statusName);
@@ -153,5 +156,29 @@ public class DeliverOrderQuery extends DeliverOrder {
 
     public void setDeliveryWayName(String deliveryWayName) {
         this.deliveryWayName = deliveryWayName;
+    }
+
+    public String getOriginalOrderStatusName() {
+        return ConvertNameUtil.getString(super.getOriginalOrderStatus()) ;
+    }
+
+    public void setOriginalOrderStatusName(String originalOrderStatusName) {
+        this.originalOrderStatusName = originalOrderStatusName;
+    }
+
+    public String getAgentStatusName() {
+        return ConvertNameUtil.getString(this.agentStatusName);
+    }
+
+    public void setAgentStatusName(String agentStatusName) {
+        this.agentStatusName = agentStatusName;
+    }
+
+    public Integer getStockOutNum() {
+        return stockOutNum;
+    }
+
+    public void setStockOutNum(Integer stockOutNum) {
+        this.stockOutNum = stockOutNum;
     }
 }

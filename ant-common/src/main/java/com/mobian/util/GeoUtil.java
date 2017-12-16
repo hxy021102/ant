@@ -69,18 +69,25 @@ public class GeoUtil {
         requestUrl.replaceAll(" ","");
         JSONObject jsonObject = JSONObject.parseObject(HttpUtil.httpRequest(requestUrl, "GET", null));
         if (jsonObject != null) {
-                if (jsonObject.getInteger("status") == 0) {
-                    JSONObject result = (JSONObject) jsonObject.get("result");
-                    JSONObject location = (JSONObject) result.get("location");
-                    Object ln = location.get("lng");
-                    Object la = location.get("lat");
-                    BigDecimal[] point = new BigDecimal[2];
-                    point[0] = new BigDecimal(ln.toString());
-                    point[1] = new BigDecimal(la.toString());
-                    return point;
-                }
+            if (jsonObject.getInteger("status") == 0) {
+                JSONObject result = (JSONObject) jsonObject.get("result");
+                JSONObject location = (JSONObject) result.get("location");
+                Object ln = location.get("lng");
+                Object la = location.get("lat");
+                BigDecimal[] point = new BigDecimal[2];
+                point[0] = new BigDecimal(ln.toString());
+                point[1] = new BigDecimal(la.toString());
+                return point;
+            } else {
+                // 超出配额等错误
             }
-            return null;
+        } else { // 未知位置
+            BigDecimal[] point = new BigDecimal[2];
+            point[0] = new BigDecimal(-1);
+            point[1] = new BigDecimal(-1);
+            return point;
+        }
+        return null;
     }
     public static void main(String[] args) {
         System.out.println(getDistance(121.446014,31.215937,121.446028464238,31.2158502442799  ));

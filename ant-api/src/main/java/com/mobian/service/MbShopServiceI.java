@@ -60,6 +60,11 @@ public interface MbShopServiceI {
 	 */
 	MbShop get(Integer id);
 
+	/**
+	 * 获得MbShop
+	 * @param id
+	 * @return
+	 */
 	MbShop getFromCache(Integer id);
 
 	/**
@@ -83,6 +88,11 @@ public interface MbShopServiceI {
 	 */
 	void delete(Integer id);
 
+	/**
+	 * 手机号获取门店
+	 * @param phone
+	 * @return
+	 */
 	List<MbShop> getByPhone(String phone);
 
 	void addOrUpdate(MbShop mbShop);

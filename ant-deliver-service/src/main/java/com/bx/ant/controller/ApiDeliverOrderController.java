@@ -1,18 +1,24 @@
 package com.bx.ant.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderLog;
 import com.bx.ant.pageModel.DeliverOrderShop;
 import com.bx.ant.pageModel.DriverOrderShop;
 import com.bx.ant.pageModel.session.TokenWrap;
-import com.bx.ant.service.DeliverOrderServiceI;
-import com.bx.ant.service.DeliverOrderShopServiceI;
-import com.bx.ant.service.DriverOrderShopServiceI;
+import com.bx.ant.service.*;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
+import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.MbShopServiceI;
+import com.mobian.thirdpart.mns.MNSTemplate;
+import com.mobian.thirdpart.mns.MNSUtil;
 import com.mobian.util.ConvertNameUtil;
+import com.youzan.open.sdk.client.core.DefaultYZClient;
+import com.youzan.open.sdk.client.core.YZClient;
+import com.youzan.open.sdk.gen.v3_0_0.model.YouzanTradeSelffetchcodeApplyParams;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,10 +29,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * Created by  wanxp 2017/9/22.
@@ -49,6 +53,8 @@ public class ApiDeliverOrderController extends BaseController {
 
     @Resource
     private DriverOrderShopServiceI driverOrderShopService;
+    @Resource
+    private DeliverOrderYouzanServiceI deliverOrderYouzanService;
 
     @RequestMapping("/dataGrid")
     @ResponseBody
@@ -285,6 +291,50 @@ public class ApiDeliverOrderController extends BaseController {
     }
 
     /**
+     * 门店确认签收
+     *
+     * @param request
+     * @param id
+     * @return
+     */
+    @RequestMapping("/editOrderSign")
+    @ResponseBody
+    public Json editOrderSign(HttpServletRequest request, Long id) {
+        Json json = new Json();
+
+        //获取shopId
+        TokenWrap token = getTokenWrap(request);
+        Integer shopId = token.getShopId();
+        DeliverOrder order = deliverOrderService.get(id);
+        if(shopId.intValue() != order.getShopId()) {
+            json.setMsg("签收失败，订单与您身份信息不匹配！");
+            return json;
+        }
+        order = new DeliverOrder();
+        order.setId(id);
+        order.setAgentStatus(DeliverOrderServiceI.AGENT_STATUS_DTS04);
+        deliverOrderService.editAndAddLog(order, DeliverOrderLogServiceI.TYPE_DLT16, "代送运单门店签收");
+
+        if(!F.empty(order.getContactPhone())) {
+            MbShop shop = mbShopService.getFromCache(shopId);
+            MNSTemplate template = new MNSTemplate();
+            Map<String, String> params = new HashMap<String, String>();
+            template.setTemplateCode("SMS_117170055");
+            params.put("originalOrderId", order.getOriginalOrderId());
+            params.put("address", shop.getAddress());
+            params.put("contactPeople", shop.getContactPeople());
+            params.put("contactPhone", shop.getContactPhone());
+            template.setParams(params);
+            MNSUtil.sendMns(order.getContactPhone(), template);
+        }
+
+
+        json.setMsg("u know");
+        json.setSuccess(true);
+        return json;
+    }
+
+    /**
      * 门店确认骑手接货
      *
      * @param request
@@ -352,6 +402,7 @@ public class ApiDeliverOrderController extends BaseController {
         Integer shopId = token.getShopId();
 
         deliverOrder.setShopId(shopId);
+        deliverOrder.setDeliverOrderLogType(DeliverOrderLogServiceI.TYPE_DELIVERED_DELIVER_ORDER);
         deliverOrder.setStatus(deliverOrderService.STATUS_DELIVERY_COMPLETE);
 
         deliverOrderService.transformByShopIdAndStatus(deliverOrder);
@@ -513,6 +564,35 @@ public class ApiDeliverOrderController extends BaseController {
         json.setSuccess(true);
         json.setMsg("u know");
         json.setObj(driverOrderShop);
+        return json;
+    }
+    /**
+     * 门店扫码取货
+     *
+     * @param
+     * @return
+     */
+    @RequestMapping("/getOrderByCode")
+    @ResponseBody
+    public Json getOrderByCode(String code) {
+     Json j = new Json();
+     Long orderId = deliverOrderYouzanService.getOrderByCode(code);
+     j.setObj(orderId);
+     return j ;
+    }
+    @RequestMapping("/editFetchOrder")
+    @ResponseBody
+    public Json editFetchOrder(HttpServletRequest request, DeliverOrder deliverOrder) {
+        Json json = new Json();
+        //获取shopId
+        TokenWrap token = getTokenWrap(request);
+        Integer shopId = token.getShopId();
+        deliverOrder.setShopId(shopId);
+        deliverOrder.setStatus(deliverOrderService.STATUS_DELIVERY_COMPLETE);
+        deliverOrder.setDeliverOrderLogType(DeliverOrderLogServiceI.TYPE_USER_TAKE_ORDER);
+        deliverOrderService.transform(deliverOrder);
+        json.setMsg("u know");
+        json.setSuccess(true);
         return json;
     }
 

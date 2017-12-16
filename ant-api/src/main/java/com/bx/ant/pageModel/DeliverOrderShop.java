@@ -30,6 +30,7 @@ public class DeliverOrderShop implements java.io.Serializable {
 
 	private String deliveryType; // 派单类型
 	private Integer orderId;     //创建的订单id
+	private Integer freight; // 运费统一配置：分/件
 
 
 
@@ -169,5 +170,13 @@ public class DeliverOrderShop implements java.io.Serializable {
 
 	public void setOrderId(Integer orderId) {
 		this.orderId = orderId;
+	}
+
+	public Integer getFreight() {
+		return freight;
+	}
+
+	public void setFreight(Integer freight) {
+		this.freight = freight;
 	}
 }

@@ -13,7 +13,7 @@ import javax.annotation.Resource;
  * Created by wanxp on 17-9-26.
  */
 @Service("deliverOrder15StateImpl")
-public class DeliverOrder15StateImpl implements DeliverOrderState {
+public class DeliverOrder15StateImpl extends AbstractDeliverOrderState {
 
 
     @Resource(name = "deliverOrder10StateImpl")
@@ -25,7 +25,8 @@ public class DeliverOrder15StateImpl implements DeliverOrderState {
     @Autowired
     private DeliverOrderShopServiceI deliverOrderShopService;
 
-
+    @Resource(name = "deliverOrder60StateImpl")
+    private DeliverOrderState deliverOrderState60;
 
     @Autowired
     private ShopItemServiceI shopItemService;
@@ -36,7 +37,7 @@ public class DeliverOrder15StateImpl implements DeliverOrderState {
     }
 
     @Override
-    public void handle(DeliverOrder deliverOrder) {
+    public void execute(DeliverOrder deliverOrder) {
 
         //修改运单状态
         DeliverOrder orderNew = new  DeliverOrder();
@@ -57,7 +58,7 @@ public class DeliverOrder15StateImpl implements DeliverOrderState {
         //TODO 这里应该执行重新分配订单方法
 
         //对门店新订单进行计数
-        deliverOrderService.reduseAllocationOrderRedis(deliverOrder.getShopId());
+        deliverOrderService.reduceAllocationOrderRedis(deliverOrder.getShopId());
 
     }
 
@@ -65,6 +66,8 @@ public class DeliverOrder15StateImpl implements DeliverOrderState {
     public DeliverOrderState next(DeliverOrder deliverOrder) {
         if ((prefix + "10").equals(deliverOrder.getStatus())) {
             return deliverOrderState10;
+        }else if((prefix + "60").equals(deliverOrder.getStatus())){
+            return deliverOrderState60;
         }
         return null;
     }

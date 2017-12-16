@@ -15,7 +15,7 @@ import javax.annotation.Resource;
  * Created by wanxp on 17-9-26.
  */
 @Service("deliverOrder30StateImpl")
-public class DeliverOrder30StateImpl implements DeliverOrderState {
+public class DeliverOrder30StateImpl extends AbstractDeliverOrderState {
 
     @Resource(name = "deliverOrder40StateImpl")
     private DeliverOrderState deliverOrderState40;
@@ -35,7 +35,7 @@ public class DeliverOrder30StateImpl implements DeliverOrderState {
     }
 
     @Override
-    public void handle(DeliverOrder deliverOrder) {
+    public void execute(DeliverOrder deliverOrder) {
 
         //修改运单状态
         DeliverOrder orderEdit = new DeliverOrder();
@@ -44,7 +44,7 @@ public class DeliverOrder30StateImpl implements DeliverOrderState {
         orderEdit.setDeliveryStatus(DeliverOrderServiceI.DELIVER_STATUS_DELIVERED);
         orderEdit.setCompleteImages(deliverOrder.getCompleteImages());
         orderEdit.setCompleteRemark(deliverOrder.getCompleteRemark());
-        deliverOrderService.editAndAddLog(orderEdit, DeliverOrderLogServiceI.TYPE_DELIVERED_DELIVER_ORDER, "运单已被派送至目的地");
+        deliverOrderService.editAndAddLog(orderEdit, deliverOrder.getDeliverOrderLogType(), "运单已被派送至目的地");
 
         //门店订单状态
         DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
@@ -64,7 +64,6 @@ public class DeliverOrder30StateImpl implements DeliverOrderState {
             }
         }
     }
-
     @Override
     public DeliverOrderState next(DeliverOrder deliverOrder) {
         if ((prefix + "40").equals(deliverOrder.getStatus())) {

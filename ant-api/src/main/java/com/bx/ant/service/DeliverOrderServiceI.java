@@ -39,6 +39,7 @@ public interface DeliverOrderServiceI {
 	String STATUS_DELIVERY_COMPLETE = "DOS30"; //已配送完成
 	String STATUS_CLOSED = "DOS40"; //订单完成
 	String STATUS_DRIVER_DELIVERING = "DOS50"; // 骑手已配送，等待门店确认
+	String STATUS_FAILURE_CLOSED = "DOS60"; // 关闭订单
 
 	//配送状态
 	String DELIVER_STATUS_STANDBY = "DDS01"; //待处理
@@ -56,6 +57,15 @@ public interface DeliverOrderServiceI {
 	String DELIVER_TYPE_HAND = "DAT01"; // 手动接单
 	String DELIVER_TYPE_AUTO = "DAT02"; // 自动接单
 	String DELIVER_TYPE_FORCE = "DAT03"; // 强制接单
+
+	String ORIGINAL_ORDER_STATUS_OTS01 = "OTS01"; // 待处理
+	String ORIGINAL_ORDER_STATUS_OTS02 = "OTS02"; // 平台接单
+	String ORIGINAL_ORDER_STATUS_OTS03 = "OTS03"; // 平台不接单
+
+	String AGENT_STATUS_DTS01 = "DTS01"; // 未打单
+	String AGENT_STATUS_DTS02 = "DTS02"; // 已打单
+	String AGENT_STATUS_DTS03 = "DTS03"; // 已发货
+	String AGENT_STATUS_DTS04 = "DTS04"; // 已签收
 
 	//派单结算时间差
 	Long TIME_DIF_SHOP_PAY_SETTLED = new Long(1 * 1 * 1 * 60 * 1000) ;
@@ -236,7 +246,7 @@ public interface DeliverOrderServiceI {
 	 * @param shopId
 	 * @return
 	 */
-    Integer reduseAllocationOrderRedis(Integer shopId);
+    Integer reduceAllocationOrderRedis(Integer shopId);
 
 	/**
 	 * 清除新订单计数
@@ -246,6 +256,14 @@ public interface DeliverOrderServiceI {
 	Integer clearAllocationOrderRedis(Integer shopId);
 
 	DeliverOrder getBySupplierOrderId(String supplierOrderId);
+
+	/**
+	 * 根据外部ID获取
+	 * @param supplierId
+	 * @param supplierOrderId
+	 * @return
+	 */
+	DeliverOrder getBySupplierOrderIdAndSupplierId(Integer supplierId,String supplierOrderId);
 
 	/**
 	 * 通过excel获取到的list生成订单
@@ -290,7 +308,7 @@ public interface DeliverOrderServiceI {
 	 * @param deliverOrderShop
 	 * @return
 	 */
-	DeliverOrderExt getBanlanceLogDetial(DeliverOrderShop deliverOrderShop);
+	DeliverOrderExt getBalanceLogDetail(DeliverOrderShop deliverOrderShop);
 
     DeliverOrderExt getDetail(Long id);
 
@@ -300,4 +318,8 @@ public interface DeliverOrderServiceI {
 	 * @return
 	 */
 	List<DeliverOrder> queryTodayProfitOrdersByShopId(Integer shopId);
+	/**
+	 * 通过有赞的订单id 查找本地的订单
+	 */
+	DeliverOrder getOrderByYouZanTid(String tid);
 }

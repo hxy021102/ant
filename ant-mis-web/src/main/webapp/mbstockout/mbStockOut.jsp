@@ -87,7 +87,11 @@
 					}
 					str += '&nbsp;';
 					if ($.canView) {
-						str += $.formatString('<img onclick="viewFun(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/map/magnifier.png');
+                       if ("OT06" == row.stockOutType) {
+                            str += $.formatString('<img onclick="view(\'{0}\');" src="{1}" title="出库详情"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/map/magnifier.png');
+                         } else {
+                            str += $.formatString('<img onclick="viewFun(\'{0}\');" src="{1}" title="查看"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/map/magnifier.png');
+                        }
 					}
 					return str;
 				}
@@ -125,7 +129,14 @@
 			}
 		});
 	}
-
+    function view(id) {
+        var href = '${pageContext.request.contextPath}/mbStockOutController/viewDetails?id=' + id;
+        parent.$("#index_tabs").tabs('add', {
+            title : '出库详情-' + id,
+            content : '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            closable : true
+        });
+    }
 	function editFun(id) {
 		if (id == undefined) {
 			var rows = dataGrid.datagrid('getSelections');

@@ -36,6 +36,12 @@
             <type>java.lang.String</type>
         </attribute>
         <attribute>
+            <name>noShowValue</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
             <name>mustSelect</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>

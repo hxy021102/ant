@@ -30,6 +30,23 @@
 				}
 			}
 		});
+        $('.money_input').blur(function () {
+            var source = $(this);
+            var target = source.next();
+            if (!/^([1-9]\d*|0)(\.\d{2})?$/.test(source.val())) {
+                source.val("").focus();
+            }
+            var val = source.val().trim();
+            if (val.indexOf('.') > -1) {
+                val = val.replace('.', "");
+            } else if (val != '') {
+                val += "00";
+            }
+            target.val(val);
+        });
+        $('.money_input').each(function(){
+            $(this).val($.formatMoney($(this).val().trim()));
+        });
 	});
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
@@ -83,7 +100,7 @@
 				<tr>
 					<th>配送方式</th>
 					<td>
-						<jb:select name="deliveryWay" dataType="DAW" required="true" value="${shopDeliverApply.deliveryWay}"></jb:select>
+						<jb:select name="deliveryWay" dataType="DAW" noShowValue="DAW02,DAW05" required="true" value="${shopDeliverApply.deliveryWay}"></jb:select>
 					</td>
 				</tr>
 				<tr>
@@ -93,6 +110,28 @@
 							<option value="1" <c:if test="${shopDeliverApply.frozen}">selected="selected"</c:if>>冻结</option>
 							<option value="0" <c:if test="${!shopDeliverApply.frozen}">selected="selected"</c:if>>正常</option>
 						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>转入权限</th>
+					<td>
+						<select class="easyui-combobox" name="transferAuth" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+							<c:if test="${shopDeliverApply.transferAuth == false}">
+								<option value="1">允许</option>
+								<option value="0" selected="selected">无权限</option>
+							</c:if>
+							<c:if test="${shopDeliverApply.transferAuth == true}">
+								<option value="1" selected="selected">允许</option>
+								<option value="0">无权限</option>
+							</c:if>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>运费</th>
+					<td>
+						<input class="span2 easyui-validatebox money_input" name="priceStr" type="text" value="${shopDeliverApply.freight}" data-options="required:true"/>
+						<input name="freight" type="hidden" class="span2" value="${shopDeliverApply.freight}">
 					</td>
 				</tr>
 				<tr>

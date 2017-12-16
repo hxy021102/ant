@@ -1,9 +1,11 @@
 package com.bx.ant.service.impl.state;
 
-import com.bx.ant.pageModel.DeliverOrderShop;
-import com.bx.ant.service.*;
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.DeliverOrderLog;
+import com.bx.ant.service.AbstractDeliverOrderState;
+import com.bx.ant.service.DeliverOrderLogServiceI;
+import com.bx.ant.service.DeliverOrderServiceI;
+import com.bx.ant.service.DeliverOrderState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +17,13 @@ import javax.annotation.Resource;
  * Created by wanxp on 17-9-26.
  */
 @Service("deliverOrder01StateImpl")
-public class DeliverOrder01StateImpl implements DeliverOrderState {
+public class DeliverOrder01StateImpl extends AbstractDeliverOrderState {
 
     @Resource(name = "deliverOrder10StateImpl")
     private DeliverOrderState deliverOrderState10;
+
+    @Resource(name = "deliverOrder60StateImpl")
+    private DeliverOrderState deliverOrderState60;
 
     @Autowired
     private DeliverOrderServiceI deliverOrderService;
@@ -32,7 +37,7 @@ public class DeliverOrder01StateImpl implements DeliverOrderState {
     }
 
     @Override
-    public void handle(DeliverOrder deliverOrder) {
+    public void execute(DeliverOrder deliverOrder) {
         deliverOrder.setStatus(prefix + getStateName());
         deliverOrder.setPayStatus(DeliverOrderServiceI.PAY_STATUS_NOT_PAY);
         deliverOrder.setShopPayStatus(DeliverOrderServiceI.SHOP_PAY_STATUS_NOT_PAY);
@@ -51,6 +56,8 @@ public class DeliverOrder01StateImpl implements DeliverOrderState {
     public DeliverOrderState next(DeliverOrder deliverOrder) {
         if ((prefix + "10").equals(deliverOrder.getStatus())) {
             return deliverOrderState10;
+        }else if((prefix + "60").equals(deliverOrder.getStatus())){
+            return deliverOrderState60;
         }
         return null;
     }

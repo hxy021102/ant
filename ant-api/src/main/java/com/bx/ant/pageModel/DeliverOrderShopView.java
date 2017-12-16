@@ -20,6 +20,8 @@ public class DeliverOrderShopView extends DeliverOrderShop {
     private String deliverAddress;
     private Date deliverRequireTime;
     private MbShop shop;
+    private String originalOrderId;
+    private String originalShop;
 
     public DeliverOrder getDelvierOrder() {
         return delvierOrder;
@@ -91,5 +93,21 @@ public class DeliverOrderShopView extends DeliverOrderShop {
 
     public void setShop(MbShop shop) {
         this.shop = shop;
+    }
+
+    public String getOriginalOrderId() {
+        return originalOrderId;
+    }
+
+    public void setOriginalOrderId(String originalOrderId) {
+        this.originalOrderId = originalOrderId;
+    }
+
+    public String getOriginalShop() {
+        return originalShop;
+    }
+
+    public void setOriginalShop(String originalShop) {
+        this.originalShop = originalShop;
     }
 }

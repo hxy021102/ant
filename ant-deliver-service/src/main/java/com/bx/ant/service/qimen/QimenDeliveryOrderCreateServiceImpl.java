@@ -1,10 +1,12 @@
 package com.bx.ant.service.qimen;
 
+import com.alibaba.fastjson.JSON;
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.SupplierItemRelation;
 import com.bx.ant.pageModel.SupplierItemRelationView;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.SupplierItemRelationServiceI;
+import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.util.Constants;
@@ -13,7 +15,6 @@ import com.mobian.util.DateUtil;
 import com.qimen.api.QimenRequest;
 import com.qimen.api.QimenResponse;
 import com.qimen.api.response.DeliveryorderCreateResponse;
-import com.taobao.api.internal.util.XmlWriter;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
@@ -40,16 +41,20 @@ public class QimenDeliveryOrderCreateServiceImpl extends AbstrcatQimenService {
         DeliveryorderCreateRequest req = (DeliveryorderCreateRequest) request;
         Integer supplierId = Integer.parseInt(ConvertNameUtil.getString(QimenRequestService.QIM_06));
         DeliveryorderCreateRequest.DeliveryOrder deliveryOrder = req.getDeliveryOrder();
-
+        logger.error("看看数据："+ JSON.toJSONString(req));
         DeliveryorderCreateResponse response = new DeliveryorderCreateResponse();
         response.setFlag("success");
         if(!QimenRequestService.JYCK.equals(deliveryOrder.getOrderType())) {
             return response;
         }
         DeliverOrder order = new DeliverOrder();
+        order.setIsdeleted(true); // 初始化无效
         order.setSupplierId(supplierId);
         order.setSupplierOrderId(deliveryOrder.getDeliveryOrderCode());
-        //TODO shopNick 淘宝店 isdelete false
+        order.setSupplierOrderType(deliveryOrder.getOrderType());
+        order.setOriginalShop(deliveryOrder.getShopNick()); // 店铺名称
+        order.setOriginalOrderStatus(DeliverOrderServiceI.ORIGINAL_ORDER_STATUS_OTS01);
+
         DeliveryorderCreateRequest.ReceiverInfo receiverInfo = deliveryOrder.getReceiverInfo();
         order.setContactPeople(receiverInfo.getReceiverName());
         order.setContactPhone(receiverInfo.getReceiverMobile());
@@ -75,8 +80,11 @@ public class QimenDeliveryOrderCreateServiceImpl extends AbstrcatQimenService {
             itemRelation.setItemId(itemRelations.get(0).getItemId());
             itemRelation.setPrice(itemRelations.get(0).getPrice());
             itemRelation.setQuantity(Integer.parseInt(orderLine.getPlanQty()));
-            //TODO 原订单号sourceOrderCode
+
             supplierItemRelations.add(itemRelation);
+
+            if(F.empty(order.getOriginalOrderId()))
+                order.setOriginalOrderId(orderLine.getSourceOrderCode()); // 原订单号
         }
         // 添加订单和订单明细
         deliverOrderService.addAndItems(order, supplierItemRelations);

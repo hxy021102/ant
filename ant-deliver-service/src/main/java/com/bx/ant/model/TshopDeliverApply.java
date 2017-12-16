@@ -77,7 +77,9 @@ public class TshopDeliverApply implements java.io.Serializable,IEntity{
 	private Boolean uploadRequired;
 	//
 	private String deliveryType;
+	private Integer freight;
 	//columns END
+    private Boolean transferAuth;
 
 
 		public TshopDeliverApply(){
@@ -228,6 +230,23 @@ public class TshopDeliverApply implements java.io.Serializable,IEntity{
 
 	public void setDeliveryType(String deliveryType) {
 		this.deliveryType = deliveryType;
+	}
+
+	@Column(name = "freight", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public Integer getFreight() {
+		return freight;
+	}
+
+	public void setFreight(Integer freight) {
+		this.freight = freight;
+	}
+	@Column(name = "transfer_auth", unique = false, nullable = true, insertable = true, updatable = true, length = 0)
+	public Boolean getTransferAuth() {
+		return transferAuth;
+	}
+
+	public void setTransferAuth(Boolean transferAuth) {
+		this.transferAuth = transferAuth;
 	}
 	/*
 	public String toString() {

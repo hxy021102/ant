@@ -21,7 +21,7 @@ import java.util.List;
  * Created by wanxp on 17-9-26.
  */
 @Service("deliverOrder10StateImpl")
-public class DeliverOrder10StateImpl implements DeliverOrderState {
+public class DeliverOrder10StateImpl extends AbstractDeliverOrderState {
 
     @Resource(name = "deliverOrder20StateImpl")
     private DeliverOrderState deliverOrderState20;
@@ -29,7 +29,8 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
     @Resource(name = "deliverOrder15StateImpl")
     private DeliverOrderState deliverOrderState15;
 
-
+    @Resource(name = "deliverOrder60StateImpl")
+    private DeliverOrderState deliverOrderState60;
 
     @Autowired
     private DeliverOrderServiceI deliverOrderService;
@@ -60,7 +61,7 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
     }
 
     @Override
-    public void handle(DeliverOrder deliverOrder) {
+    public void execute(DeliverOrder deliverOrder) {
         DeliverOrder oldDeliverOrder = DeliverOrderState.deliverOrder.get();
 
         if (DeliverOrderServiceI.STATUS_SHOP_ALLOCATION.equals(oldDeliverOrder.getStatus())) {
@@ -85,11 +86,17 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
         //2.1 添加门店订单明细List<deliverOrderShopItem>
 
         //2.3 编辑deliverOrderShop中金额amount字段
+        deliverOrderShop.setFreight(deliverOrder.getFreight());
         deliverOrderShop.setDeliveryType(deliverOrder.getDeliveryType());
+        if(ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrder.getDeliveryWay())
+                || ShopDeliverApplyServiceI.DELIVER_WAY_CUSTOMER_AGENT.equals(deliverOrder.getDeliveryWay()))
+            deliverOrderShop.setDeliveryType(ShopDeliverApplyServiceI.DELIVER_WAY_AGENT);
         deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItemList, deliverOrderShop);
 
-        //3. 对门店新订单进行计数:非自动接单
-        if(!DeliverOrderServiceI.DELIVER_TYPE_AUTO.equals(deliverOrder.getDeliveryType()))
+        //3. 对门店新订单进行计数:非自动接单且非代送
+        if(!DeliverOrderServiceI.DELIVER_TYPE_AUTO.equals(deliverOrder.getDeliveryType())
+                && !ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrder.getDeliveryWay())
+                && !ShopDeliverApplyServiceI.DELIVER_WAY_CUSTOMER_AGENT.equals(deliverOrder.getDeliveryWay()))
             deliverOrderService.addAllocationOrderRedis(deliverOrder.getShopId());
 
         //4. 编辑订单并添加修改记录
@@ -125,6 +132,8 @@ public class DeliverOrder10StateImpl implements DeliverOrderState {
         //跳转至拒绝状态
         if ((prefix + "15").equals(deliverOrder.getStatus())) {
             return deliverOrderState15;
+        }else if((prefix + "60").equals(deliverOrder.getStatus())){
+            return deliverOrderState60;
         }
         return null;
     }

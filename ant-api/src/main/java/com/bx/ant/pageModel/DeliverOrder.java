@@ -31,10 +31,12 @@ public class DeliverOrder implements java.io.Serializable {
 	private Integer shopId;
 	private BigDecimal shopDistance;
 	private String supplierOrderId;
+	private String supplierOrderType;
 	private String completeImages;
 	private String completeRemark;
     private String deliverOrderLogType;
 	private Integer weight;
+	private Integer freight; // 运费统一配置：分/件
 
 	private String deliveryWay;
 	private String deliveryType; // 派单类型
@@ -42,6 +44,10 @@ public class DeliverOrder implements java.io.Serializable {
 	private String  orderLogRemark;
 	private DriverAccount driverAccount;
 
+	private String originalOrderId;
+	private String originalShop;
+	private String originalOrderStatus;
+	private String agentStatus;
 	public void setId(Long value) {
 		this.id = value;
 	}
@@ -211,6 +217,14 @@ public class DeliverOrder implements java.io.Serializable {
 		this.supplierOrderId = supplierOrderId;
 	}
 
+	public String getSupplierOrderType() {
+		return supplierOrderType;
+	}
+
+	public void setSupplierOrderType(String supplierOrderType) {
+		this.supplierOrderType = supplierOrderType;
+	}
+
 	public String getCompleteImages() {
 		return completeImages;
 	}
@@ -281,5 +295,45 @@ public class DeliverOrder implements java.io.Serializable {
 
 	public void setDriverAccount(DriverAccount driverAccount) {
 		this.driverAccount = driverAccount;
+	}
+
+	public String getOriginalOrderId() {
+		return originalOrderId;
+	}
+
+	public void setOriginalOrderId(String originalOrderId) {
+		this.originalOrderId = originalOrderId;
+	}
+
+	public String getOriginalShop() {
+		return originalShop;
+	}
+
+	public void setOriginalShop(String originalShop) {
+		this.originalShop = originalShop;
+	}
+
+	public String getOriginalOrderStatus() {
+		return originalOrderStatus;
+	}
+
+	public void setOriginalOrderStatus(String originalOrderStatus) {
+		this.originalOrderStatus = originalOrderStatus;
+	}
+
+	public Integer getFreight() {
+		return freight;
+	}
+
+	public void setFreight(Integer freight) {
+		this.freight = freight;
+	}
+
+	public String getAgentStatus() {
+		return agentStatus;
+	}
+
+	public void setAgentStatus(String agentStatus) {
+		this.agentStatus = agentStatus;
 	}
 }

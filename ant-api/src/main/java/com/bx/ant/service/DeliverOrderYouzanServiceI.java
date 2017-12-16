@@ -19,6 +19,11 @@ public interface DeliverOrderYouzanServiceI {
      * @param tid
      */
     void youzanOrderConfirm(String tid);
+    /**
+     *
+     * 获取自提订单
+     */
+    Long getOrderByCode(String code);
 
     /**
      * 自动结算

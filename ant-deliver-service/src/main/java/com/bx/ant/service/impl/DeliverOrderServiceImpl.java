@@ -1,10 +1,8 @@
 package com.bx.ant.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bx.ant.dao.DeliverOrderItemDaoI;
 import com.bx.ant.pageModel.*;
 import com.bx.ant.service.*;
-import com.bx.ant.service.session.TokenServiceI;
 import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderDaoI;
 import com.bx.ant.model.TdeliverOrder;
@@ -99,7 +97,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	protected String whereHql(DeliverOrder deliverOrder, Map<String, Object> params) {
 		String whereHql = "";
 		if (deliverOrder != null) {
-			whereHql += " where t.isdeleted = 0 ";
+			whereHql += " where 1=1 ";
 			if (!F.empty(deliverOrder.getTenantId())) {
 				whereHql += " and t.tenantId = :tenantId";
 				params.put("tenantId", deliverOrder.getTenantId());
@@ -107,6 +105,8 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			if (!F.empty(deliverOrder.getIsdeleted())) {
 				whereHql += " and t.isdeleted = :isdeleted";
 				params.put("isdeleted", deliverOrder.getIsdeleted());
+			} else {
+				whereHql += " and t.isdeleted = 0";
 			}
 			if (!F.empty(deliverOrder.getSupplierId())) {
 				whereHql += " and t.supplierId = :supplierId";
@@ -176,8 +176,20 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 				params.put("shopId", deliverOrder.getShopId());
 			}
 			if (!F.empty(deliverOrder.getDeliveryWay())) {
-				whereHql += " t.deliveryWay = :deliveryWay";
-				params.put("devlieryWay", deliverOrder.getDeliveryWay());
+				whereHql += " and t.deliveryWay = :deliveryWay";
+				params.put("deliveryWay", deliverOrder.getDeliveryWay());
+			}
+			if (!F.empty(deliverOrder.getOriginalShop())) {
+				whereHql += " and t.originalShop LIKE :originalShop";
+				params.put("originalShop", "%" + deliverOrder.getOriginalShop() + "%");
+			}
+			if (!F.empty(deliverOrder.getOriginalOrderId())) {
+				whereHql += " and t.originalOrderId = :originalOrderId";
+				params.put("originalOrderId", deliverOrder.getOriginalOrderId());
+			}
+			if (!F.empty(deliverOrder.getAgentStatus())) {
+				whereHql += " and t.agentStatus = :agentStatus";
+				params.put("agentStatus", deliverOrder.getAgentStatus());
 			}
 			if (deliverOrder instanceof DeliverOrderQuery) {
 				DeliverOrderQuery orderQuery = (DeliverOrderQuery) deliverOrder;
@@ -219,7 +231,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		TdeliverOrder t = new TdeliverOrder();
 		BeanUtils.copyProperties(deliverOrder, t);
 		//t.setId(jb.absx.UUID.uuid());
-		t.setIsdeleted(false);
+		if(F.empty(deliverOrder.getIsdeleted())) t.setIsdeleted(false);
 		deliverOrderDao.save(t);
 		deliverOrder.setId(t.getId());
 	}
@@ -229,16 +241,20 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
 		TdeliverOrder t = deliverOrderDao.get("from TdeliverOrder t  where t.id = :id", params);
-		DeliverOrder o = new DeliverOrder();
-		BeanUtils.copyProperties(t, o);
-		return o;
+		if(t != null) {
+			DeliverOrder o = new DeliverOrder();
+			BeanUtils.copyProperties(t, o);
+			return o;
+		}
+
+		return null;
 	}
 
 	@Override
 	public void edit(DeliverOrder deliverOrder) {
 		TdeliverOrder t = deliverOrderDao.get(TdeliverOrder.class, deliverOrder.getId());
 		if (t != null) {
-			MyBeanUtils.copyProperties(deliverOrder, t, new String[] { "id" , "addtime", "isdeleted","updatetime" },true);
+			MyBeanUtils.copyProperties(deliverOrder, t, new String[] { "id" , "addtime", "updatetime" },true);
 		}
 	}
 
@@ -433,14 +449,10 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	}
 
 	protected void fillIShopInfo(DeliverOrderExt ox) {
-		DeliverOrderShopQuery orderShopQuery = new DeliverOrderShopQuery();
-		String[] statusArray = {"DSS01", "DSS02", "DSS04", "DSS05", "DSS06"};
-		orderShopQuery.setStatusList(statusArray);
-		orderShopQuery.setDeliverOrderId(ox.getId());
-		List<DeliverOrderShop> deliverOrderShops =  deliverOrderShopService.query(orderShopQuery);
-		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
-			DeliverOrderShop deliverOrderShop =deliverOrderShops.get(0);
+		DeliverOrderShop deliverOrderShop = deliverOrderShopService.getByDeliverOrderId(ox.getId());
+		if (deliverOrderShop != null) {
 			ox.setOrderShopId(deliverOrderShop.getId());
+			ox.setDeliverOrderShop(deliverOrderShop);
 			fillDeliverOrderShopItemInfo(ox);
 			ox.setOrderShopId(null);
 			fillDeliverOrderShopInfo(ox);
@@ -518,6 +530,8 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		deliverOrderQuery.setStatusName(deliverOrder.getStatus());
 		deliverOrderQuery.setShopPayStatusName(deliverOrder.getShopPayStatus());
 		deliverOrderQuery.setDeliveryStatusName(deliverOrder.getDeliveryStatus());
+		deliverOrderQuery.setOriginalOrderStatusName(deliverOrder.getOriginalOrderStatus());
+		deliverOrderQuery.setAgentStatusName(deliverOrder.getAgentStatus());
 		if (!F.empty(deliverOrderQuery.getCompleteImages())) {
 			String[] imageArray = deliverOrderQuery.getCompleteImages().split(";");
 			List<String> imageList = new ArrayList<String>();
@@ -732,7 +746,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	}
 
 //	@Override
-	public Integer reduseAllocationOrderRedis(Integer shopId) {
+	public Integer reduceAllocationOrderRedis(Integer shopId) {
 		return updateAllocationOrderRedis(shopId, -1);
 	}
 
@@ -746,6 +760,20 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("supplierOrderId", supplierOrderId);
 		TdeliverOrder t = deliverOrderDao.get("from TdeliverOrder t  where t.isdeleted = 0 and t.supplierOrderId = :supplierOrderId", params);
+		if(t != null) {
+			DeliverOrder o = new DeliverOrder();
+			BeanUtils.copyProperties(t, o);
+			return o;
+		}
+		return null;
+	}
+
+	@Override
+	public DeliverOrder getBySupplierOrderIdAndSupplierId(Integer supplierId, String supplierOrderId) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("supplierOrderId", supplierOrderId);
+		params.put("supplierId", supplierId);
+		TdeliverOrder t = deliverOrderDao.get("from TdeliverOrder t  where t.supplierOrderId = :supplierOrderId and t.supplierId = :supplierId", params);
 		if(t != null) {
 			DeliverOrder o = new DeliverOrder();
 			BeanUtils.copyProperties(t, o);
@@ -907,7 +935,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	}
 
 	@Override
-	public DeliverOrderExt getBanlanceLogDetial(DeliverOrderShop deliverOrderShop) {
+	public DeliverOrderExt getBalanceLogDetail(DeliverOrderShop deliverOrderShop) {
 		//显示商品信息
         DeliverOrderShop orderShop=deliverOrderShopService.query(deliverOrderShop).get(0);
         DeliverOrderShopItem deliverOrderShopItem=new DeliverOrderShopItem();
@@ -950,5 +978,19 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			}
 		}
 		return deliverOrderList;
+	}
+
+	@Override
+	public DeliverOrder getOrderByYouZanTid(String tid) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", tid);
+		TdeliverOrder t = deliverOrderDao.get("from TdeliverOrder t  where t.originalOrderId = :id", params);
+		if(t != null) {
+			DeliverOrder o = new DeliverOrder();
+			BeanUtils.copyProperties(t, o);
+			return o;
+		}
+
+		return null;
 	}
 }

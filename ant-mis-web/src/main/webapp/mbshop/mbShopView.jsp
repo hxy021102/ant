@@ -1096,8 +1096,8 @@
         function addShopDeliverApply(id) {
             parent.$.modalDialog({
                 title: '开通派单',
-                width: 550,
-                height: 350,
+                width: 650,
+                height: 360,
                 href: '${pageContext.request.contextPath}/shopDeliverApplyController/addPage?shopId='+ id,
                 buttons: [{
                     text: '开通',

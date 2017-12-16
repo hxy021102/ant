@@ -12,7 +12,7 @@ import javax.annotation.Resource;
  * Created by wanxp on 17-9-26.
  */
 @Service("deliverOrder25StateImpl")
-public class DeliverOrder25StateImpl implements DeliverOrderState {
+public class DeliverOrder25StateImpl extends AbstractDeliverOrderState {
 
     @Resource(name = "deliverOrder30StateImpl")
     private DeliverOrderState deliverOrderState30;
@@ -33,7 +33,7 @@ public class DeliverOrder25StateImpl implements DeliverOrderState {
     }
 
     @Override
-    public void handle(DeliverOrder deliverOrder) {
+    public void execute(DeliverOrder deliverOrder) {
 
         //修改运单状态
         DeliverOrder orderNew = new DeliverOrder();
@@ -41,10 +41,14 @@ public class DeliverOrder25StateImpl implements DeliverOrderState {
         orderNew.setStatus(prefix + getStateName());
         orderNew.setDeliveryStatus(DeliverOrderServiceI.DELIVER_STATUS_DELIVERING);
         deliverOrderService.editAndAddLog(orderNew, DeliverOrderLogServiceI.TYPE_DELIVERING_DELIVER_ORDER, "运单发货");
+
+
+
+    }
+
+    protected void afterCompletion(DeliverOrder deliverOrder) {
         DeliverOrder deliverOrderOld = DeliverOrderState.deliverOrder.get();
         qimenRequestService.updateDeliveryOrderConfirm(deliverOrderOld);
-
-
     }
 
     @Override

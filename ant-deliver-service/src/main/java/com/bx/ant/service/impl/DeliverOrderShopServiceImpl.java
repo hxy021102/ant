@@ -1,19 +1,14 @@
 package com.bx.ant.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
-import com.bx.ant.pageModel.*;
-import com.bx.ant.service.DeliverOrderServiceI;
-import com.bx.ant.service.DeliverOrderShopItemServiceI;
-import com.bx.ant.service.DeliverOrderShopPayServiceI;
-import com.bx.ant.service.ShopOrderBillServiceI;
-import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderShopDaoI;
 import com.bx.ant.model.TdeliverOrderShop;
+import com.bx.ant.pageModel.*;
+import com.bx.ant.service.*;
+import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.PageHelper;
-import com.bx.ant.service.DeliverOrderShopServiceI;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.DateUtil;
@@ -87,19 +82,17 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 			if (!F.empty(deliverOrderShop.getIsdeleted())) {
 				whereHql += " and t.isdeleted = :isdeleted";
 				params.put("isdeleted", deliverOrderShop.getIsdeleted());
-			}		
+			}
 			if (!F.empty(deliverOrderShop.getDeliverOrderId())) {
 				whereHql += " and t.deliverOrderId = :deliverOrderId";
 				params.put("deliverOrderId", deliverOrderShop.getDeliverOrderId());
-			}		
+			}
 			if (!F.empty(deliverOrderShop.getShopId())) {
 				whereHql += " and t.shopId = :shopId";
 				params.put("shopId", deliverOrderShop.getShopId());
 			}
 			if (!F.empty(deliverOrderShop.getStatus())) {
 				whereHql += " and t.status in(:status)";
-				params.put("status", deliverOrderShop.getStatus().split(","));
-			}		
 				params.put("status", deliverOrderShop.getStatus().split(","));
 			}
 			if (!F.empty(deliverOrderShop.getAmount())) {
@@ -108,20 +101,20 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 			}
 			if (deliverOrderShop.getUpdatetimeBegin() != null) {
 				whereHql += " and t.updatetime >= :updatetimeBegin";
-				params.put("updatetimeBegin",deliverOrderShop.getUpdatetimeBegin());
+				params.put("updatetimeBegin", deliverOrderShop.getUpdatetimeBegin());
 			}
 			if (deliverOrderShop.getUpdatetimeEnd() != null) {
 				whereHql += " and t.updatetime < :updatetimeEnd";
-				params.put("updatetimeEnd",deliverOrderShop.getUpdatetimeEnd());
+				params.put("updatetimeEnd", deliverOrderShop.getUpdatetimeEnd());
 			}
 
 			if (deliverOrderShop.getAddtimeBegin() != null) {
 				whereHql += " and t.addtime >= :addtimeBegin";
-				params.put("addtimeBegin",deliverOrderShop.getAddtimeBegin());
+				params.put("addtimeBegin", deliverOrderShop.getAddtimeBegin());
 			}
 			if (deliverOrderShop.getAddtimeEnd() != null) {
 				whereHql += " and t.addtime < :addtimeEnd";
-				params.put("addtimeEnd",deliverOrderShop.getAddtimeEnd());
+				params.put("addtimeEnd", deliverOrderShop.getAddtimeEnd());
 			}
 
 			if (!F.empty(deliverOrderShop.getShopPayStatus())) {
@@ -152,7 +145,7 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 					whereHql += " and t.orderId is null";
 				}
 			}
-
+		}
 
 		return whereHql;
 	}
@@ -161,11 +154,23 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 	public void add(DeliverOrderShop deliverOrderShop) {
 		TdeliverOrderShop t = new TdeliverOrderShop();
 		BeanUtils.copyProperties(deliverOrderShop, t);
-		//t.setId(jb.absx.UUID.uuid());
 		t.setIsdeleted(false);
 		deliverOrderShopDao.save(t);
 		deliverOrderShop.setId(t.getId());
 	}
+
+	@Override
+	public DeliverOrderShop getByDeliverOrderId(Long deliverOrderId) {
+		DeliverOrderShopQuery orderShopQuery = new DeliverOrderShopQuery();
+		orderShopQuery.setStatusList(VALID_STATUS);
+		orderShopQuery.setDeliverOrderId(deliverOrderId);
+		List<DeliverOrderShop> deliverOrderShops = query(orderShopQuery);
+		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
+			return deliverOrderShops.get(0);
+		}
+		return null;
+	}
+
 	@Override
 	public DeliverOrderShop addAndGet(DeliverOrderShop deliverOrderShop){
 		add(deliverOrderShop);
@@ -368,6 +373,8 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 				deliverOrderShopView.setDeliverRequireTime(deliverOrder.getDeliveryRequireTime());
 				deliverOrderShopView.setLongitude(deliverOrder.getLongitude());
 				deliverOrderShopView.setLatitude(deliverOrder.getLatitude());
+				deliverOrderShopView.setOriginalOrderId(deliverOrder.getOriginalOrderId());
+				deliverOrderShopView.setOriginalShop(deliverOrder.getOriginalShop());
 			}
 		}
 	}
@@ -387,37 +394,37 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		Map<Integer, ShopOrderBillQuery> deliverOrderMap = new HashMap<Integer, ShopOrderBillQuery>();
 		int listSize = deliverOrderShopList.size();
 		for (int i = 0; i < listSize; i++) {
-			DeliverOrderShop order = deliverOrderShopList.get(i);
+			DeliverOrderShop orderShop = deliverOrderShopList.get(i);
 			ShopOrderBillQuery shopOrderBillQuery;
 			//2.1初始化一个账单
-			if (!deliverOrderMap.containsKey(order.getShopId())) {
+			if (!deliverOrderMap.containsKey(orderShop.getShopId())) {
 				shopOrderBillQuery = new ShopOrderBillQuery();
 				List<DeliverOrderShop> deliverOrderShops = new ArrayList<DeliverOrderShop>();
-				deliverOrderShops.add(order);
-				Long[] deliverOrderIds = {order.getId()};
-				shopOrderBillQuery.setAmount(order.getAmount());
-				shopOrderBillQuery.setShopId(order.getShopId());
+				deliverOrderShops.add(orderShop);
+				Long[] deliverOrderIds = {orderShop.getId()};
+				shopOrderBillQuery.setAmount(orderShop.getAmount());
+				shopOrderBillQuery.setShopId(orderShop.getShopId());
 				shopOrderBillQuery.setDeliverOrderIds(deliverOrderIds);
 				shopOrderBillQuery.setDeliverOrderShopList(deliverOrderShops);
 				shopOrderBillQuery.setPayWay("DPW01");
 
 				//2.2 填充账单
 			} else {
-				shopOrderBillQuery = deliverOrderMap.get(order.getShopId());
+				shopOrderBillQuery = deliverOrderMap.get(orderShop.getShopId());
 
 				//2.2.1 添加deliverOrderIds
 				int arrayLen = shopOrderBillQuery.getDeliverOrderIds().length;
 				Long[] deliverOrderIds = new Long[arrayLen + 1];
 				System.arraycopy(shopOrderBillQuery.getDeliverOrderIds(), 0, deliverOrderIds, 0, arrayLen);
-				deliverOrderIds[arrayLen] = order.getId();
+				deliverOrderIds[arrayLen] = orderShop.getId();
 				shopOrderBillQuery.setDeliverOrderIds(deliverOrderIds);
 
 				//2.2.2 计算金额并填充信息
-				shopOrderBillQuery.setAmount(order.getAmount() + shopOrderBillQuery.getAmount());
+				shopOrderBillQuery.setAmount(orderShop.getAmount() + shopOrderBillQuery.getAmount());
 				shopOrderBillQuery.setDeliverOrderIds(deliverOrderIds);
-				shopOrderBillQuery.getDeliverOrderShopList().add(order);
+				shopOrderBillQuery.getDeliverOrderShopList().add(orderShop);
 			}
-			deliverOrderMap.put(order.getShopId(), shopOrderBillQuery);
+			deliverOrderMap.put(orderShop.getShopId(), shopOrderBillQuery);
 		}
 
 		//3. 对账单进行添加并进行结算
@@ -437,8 +444,8 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 					orderExt.setStatus(DeliverOrderServiceI.STATUS_CLOSED);
 					orderExt.setOrderShopId(orderShop.getId());
 					deliverOrderService.transform(orderExt);
-					transactionManager.commit(status);
 				}
+				transactionManager.commit(status);
 			}catch (Exception e) {
 				transactionManager.rollback(status);
 				continue;

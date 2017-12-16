@@ -63,6 +63,8 @@ public interface DriverOrderShopServiceI {
 	 */
 	public void edit(DriverOrderShop driverOrderShop);
 
+	DriverOrderShop update(DriverOrderShop driverOrderShop);
+
 	/**
 	 * 删除DriverOrderShop
 	 * 

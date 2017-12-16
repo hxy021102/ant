@@ -1,5 +1,7 @@
 package com.bx.ant.pageModel;
 
+import com.mobian.pageModel.MbShop;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -15,7 +17,8 @@ public class DeliverOrderExt extends DeliverOrder {
     private String balanceLogType;
     private String shopPayWay;
 
-
+    private DeliverOrderShop deliverOrderShop;
+    private MbShop mbShop;
     private List<DeliverOrderItem> deliverOrderItemList;
     private List<DeliverOrderShopItem> deliverOrderShopItemList;
 
@@ -83,4 +86,19 @@ public class DeliverOrderExt extends DeliverOrder {
         this.shopPayWay = shopPayWay;
     }
 
+    public DeliverOrderShop getDeliverOrderShop() {
+        return deliverOrderShop;
+    }
+
+    public void setDeliverOrderShop(DeliverOrderShop deliverOrderShop) {
+        this.deliverOrderShop = deliverOrderShop;
+    }
+
+    public MbShop getMbShop() {
+        return mbShop;
+    }
+
+    public void setMbShop(MbShop mbShop) {
+        this.mbShop = mbShop;
+    }
 }

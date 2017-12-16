@@ -21,6 +21,9 @@ public interface DeliverOrderShopServiceI {
 	String STATUS_INACTIVE = "DSS05"; //失效
 	String STAUS_SERVICE = "DSS06";  //已送达
 
+	//有效的订单状态
+	String[] VALID_STATUS = {STATUS_AUDITING, STATUS_ACCEPTED, STATUS_COMPLETE, STAUS_SERVICE};
+
 	Long TIME_OUT_TO_ACCEPT = new Long(10 * 60 * 1000);
 
 	/**
@@ -32,14 +35,22 @@ public interface DeliverOrderShopServiceI {
 	 *            分页帮助类
 	 * @return
 	 */
-	public DataGrid dataGrid(DeliverOrderShop deliverOrderShop, PageHelper ph);
+	DataGrid dataGrid(DeliverOrderShop deliverOrderShop, PageHelper ph);
 
 	/**
 	 * 添加DeliverOrderShop
 	 * 
 	 * @param deliverOrderShop
 	 */
-	public void add(DeliverOrderShop deliverOrderShop);
+	void add(DeliverOrderShop deliverOrderShop);
+
+
+
+	/**
+	 * 获取分配正常的
+	 * @return
+	 */
+	DeliverOrderShop getByDeliverOrderId(Long deliverOrderId);
 
 	/**
 	 * 添加并返回包含ID的DeliverOrderShop
@@ -54,21 +65,21 @@ public interface DeliverOrderShopServiceI {
 	 * @param id
 	 * @return
 	 */
-	public DeliverOrderShop get(Long id);
+	DeliverOrderShop get(Long id);
 
 	/**
 	 * 修改DeliverOrderShop
 	 * 
 	 * @param deliverOrderShop
 	 */
-	public void edit(DeliverOrderShop deliverOrderShop);
+	void edit(DeliverOrderShop deliverOrderShop);
 
 	/**
 	 * 删除DeliverOrderShop
 	 * 
 	 * @param id
 	 */
-	public void delete(Integer id);
+	void delete(Integer id);
 
 	/**
 	 * 通过deliverOrder添加DeliverOrderShop'
