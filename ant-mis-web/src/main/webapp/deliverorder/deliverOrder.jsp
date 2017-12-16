@@ -768,7 +768,7 @@
         }else if(index == 2){
             options.url +='?status=notDriver';
         } else if(index == 3) {
-            options.url +='?agentStatus=DTS01&deliveryWay=DAW04';
+            options.url +='?agentStatus=DTS01&deliveryWay=DAW04,DAW05';
         } else if(index == 4) {
             options.url +='?agentStatus=DTS02&deliveryWay=DAW04,DAW05';
         } else if(index == 5) {
