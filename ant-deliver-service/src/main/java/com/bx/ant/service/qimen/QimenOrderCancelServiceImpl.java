@@ -31,9 +31,10 @@ public class QimenOrderCancelServiceImpl extends AbstrcatQimenService {
         logger.error("taobao.qimen.order.cancel："+ JSON.toJSONString(orderCancelRequest));
         DeliverOrder deliverOrderReq = new DeliverOrder();
         Integer supplierId = Integer.parseInt(ConvertNameUtil.getString(QimenRequestService.QIM_06));
-        DeliverOrder deliverOrder = deliverOrderService.getBySupplierOrderIdAndSupplierId(supplierId, orderCancelRequest.getOrderId());
+        String orderCode = orderCancelRequest.getOrderCode();
+        DeliverOrder deliverOrder = deliverOrderService.getBySupplierOrderIdAndSupplierId(supplierId, orderCode);
         if (deliverOrder != null) {
-            String orderId = orderCancelRequest.getOrderId() + "_" + new Date().getTime();
+            String orderId = orderCode + "_" + new Date().getTime();
             String[] status = new String[]{DeliverOrderServiceI.STATUS_NOT_ALLOCATION, DeliverOrderServiceI.STATUS_SHOP_ALLOCATION, DeliverOrderServiceI.STATUS_SHOP_REFUSE, DeliverOrderServiceI.STATUS_SHOP_ACCEPT};
             deliverOrderReq.setId(deliverOrder.getId());
             deliverOrderReq.setSupplierOrderId(orderId);
