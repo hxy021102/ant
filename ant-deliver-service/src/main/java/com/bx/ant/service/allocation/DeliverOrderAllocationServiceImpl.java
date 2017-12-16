@@ -251,7 +251,7 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                 }
 
             }
-            if(allocationSuccess){
+            if(!allocationSuccess){
                 // 万里牛订单不满足处理
                 if(deliverOrder.getIsdeleted()) {
                     deliverOrder.setOriginalOrderStatus(DeliverOrderServiceI.ORIGINAL_ORDER_STATUS_OTS03);
