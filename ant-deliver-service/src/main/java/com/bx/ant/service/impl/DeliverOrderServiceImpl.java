@@ -187,6 +187,10 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 				whereHql += " and t.originalOrderId = :originalOrderId";
 				params.put("originalOrderId", deliverOrder.getOriginalOrderId());
 			}
+			if (!F.empty(deliverOrder.getOriginalOrderStatus())) {
+				whereHql += " and t.originalOrderStatus = :originalOrderStatus";
+				params.put("originalOrderStatus", deliverOrder.getOriginalOrderStatus());
+			}
 			if (!F.empty(deliverOrder.getAgentStatus())) {
 				whereHql += " and t.agentStatus = :agentStatus";
 				params.put("agentStatus", deliverOrder.getAgentStatus());
