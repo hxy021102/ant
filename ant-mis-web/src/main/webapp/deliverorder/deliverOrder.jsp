@@ -866,40 +866,48 @@
                 }
             }
             if(stockOutIds.length > 0) {
-                parent.$.messager.alert('提示', '运单' + stockOutIds.join(',') + '<font color="red">已出库</font>，无法创建！', 'info');
-                return;
+                parent.$.messager.confirm('确认', '运单' + stockOutIds.join(',') + '<font color="red">已出库</font>，是否继续创建！', function(r) {
+                    if (r) {
+                        addStockOutPage(ids);
+                    }
+                });
+            } else {
+                addStockOutPage(ids);
             }
 
-            parent.$.modalDialog({
-                title : '创建出库单',
-                width : 780,
-                height : 540,
-                href : '${pageContext.request.contextPath}/mbStockOutOrderController/addStockOutPage?deliverOrderIds=' + ids ,
-                buttons : [ {
-                    text: '关闭',
-                    handler: function () {
-                        parent.$.modalDialog.handler.dialog('close');
-                    }
-                }, {
-                    text: '创建',
-                    handler: function () {
-                        parent.$.messager.confirm('询问', '请确认是否创建出库单？', function(b) {
-                            if (b) {
-                                parent.$.modalDialog.openner_dataGrid = selectDatagrid;
-                                var f = parent.$.modalDialog.handler.find('#form');
-                                f.submit();
-                            }
-                        });
-
-                    }
-                }]
-            });
         } else {
             parent.$.messager.show({
                 title : '提示',
                 msg : '请勾选要发货的运单！'
             });
         }
+    }
+
+    function addStockOutPage(ids) {
+        parent.$.modalDialog({
+            title : '创建出库单',
+            width : 780,
+            height : 540,
+            href : '${pageContext.request.contextPath}/mbStockOutOrderController/addStockOutPage?deliverOrderIds=' + ids ,
+            buttons : [ {
+                text: '关闭',
+                handler: function () {
+                    parent.$.modalDialog.handler.dialog('close');
+                }
+            }, {
+                text: '创建',
+                handler: function () {
+                    parent.$.messager.confirm('询问', '请确认是否创建出库单？', function(b) {
+                        if (b) {
+                            parent.$.modalDialog.openner_dataGrid = selectDatagrid;
+                            var f = parent.$.modalDialog.handler.find('#form');
+                            f.submit();
+                        }
+                    });
+
+                }
+            }]
+        });
     }
 </script>
 </head>
