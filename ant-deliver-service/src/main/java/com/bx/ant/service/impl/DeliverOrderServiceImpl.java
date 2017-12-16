@@ -985,8 +985,12 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", tid);
 		TdeliverOrder t = deliverOrderDao.get("from TdeliverOrder t  where t.originalOrderId = :id", params);
-		DeliverOrder o = new DeliverOrder();
-		BeanUtils.copyProperties(t, o);
-		return o;
+		if(t != null) {
+			DeliverOrder o = new DeliverOrder();
+			BeanUtils.copyProperties(t, o);
+			return o;
+		}
+
+		return null;
 	}
 }

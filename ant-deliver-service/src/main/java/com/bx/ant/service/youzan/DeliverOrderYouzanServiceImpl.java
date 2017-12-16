@@ -72,8 +72,7 @@ public class DeliverOrderYouzanServiceImpl implements DeliverOrderYouzanServiceI
 
     @Override
     public void youzanOrders() {
-        String accessToken = (String)redisUtil.get(Key.build(Namespace.YOUZAN_CONFIG, "youzan_access_token"));
-        YZClient client = new DefaultYZClient(new Token(accessToken)); //new Sign(appKey, appSecret)
+        YZClient client = createYZClient();
         YouzanTradesSoldGetParams youzanTradesSoldGetParams = new YouzanTradesSoldGetParams();
 
         youzanTradesSoldGetParams.setStatus(WAIT_SELLER_SEND_GOODS);
@@ -157,8 +156,7 @@ public class DeliverOrderYouzanServiceImpl implements DeliverOrderYouzanServiceI
 
     @Override
     public void youzanOrderConfirm(String tid) {
-        String accessToken = (String)redisUtil.get(Key.build(Namespace.YOUZAN_CONFIG, "youzan_access_token"));
-        YZClient client = new DefaultYZClient(new Token(accessToken));
+        YZClient client = createYZClient();
         YouzanLogisticsOnlineConfirmParams youzanLogisticsOnlineConfirmParams = new YouzanLogisticsOnlineConfirmParams();
 
         youzanLogisticsOnlineConfirmParams.setTid(tid);
@@ -174,8 +172,7 @@ public class DeliverOrderYouzanServiceImpl implements DeliverOrderYouzanServiceI
 
     @Override
     public void settleYouzanBill() {
-        String accessToken = (String)redisUtil.get(Key.build(Namespace.YOUZAN_CONFIG, "youzan_access_token"));
-        YZClient client = new DefaultYZClient(new Token(accessToken));
+        YZClient client = createYZClient();
         YouzanTradesSoldGetParams youzanTradesSoldGetParams = new YouzanTradesSoldGetParams();
 
         youzanTradesSoldGetParams.setStatus(WAIT_SELLER_SEND_GOODS);
@@ -244,8 +241,8 @@ public class DeliverOrderYouzanServiceImpl implements DeliverOrderYouzanServiceI
 
     @Override
     public Long getOrderByCode(String code) {
-        String accessToken = (String)redisUtil.get(Key.build(Namespace.YOUZAN_CONFIG, "youzan_access_token"));
-        YZClient client = new DefaultYZClient(new Token(accessToken));
+
+        YZClient client = createYZClient();
         YouzanTradeSelffetchcodeGetParams youzanTradeSelffetchcodeGetParams = new YouzanTradeSelffetchcodeGetParams();
 
         youzanTradeSelffetchcodeGetParams.setCode(code);
@@ -256,7 +253,12 @@ public class DeliverOrderYouzanServiceImpl implements DeliverOrderYouzanServiceI
         YouzanTradeSelffetchcodeGetResult result = client.invoke(youzanTradeSelffetchcodeGet);
         String  tid = result.getTid();
         DeliverOrder o = deliverOrderService.getOrderByYouZanTid(tid);
-        Long orderId = o.getId();
+        Long orderId = o == null ? null : o.getId();
         return orderId;
+    }
+
+    private YZClient createYZClient() {
+        String accessToken = (String)redisUtil.get(Key.build(Namespace.YOUZAN_CONFIG, "youzan_access_token"));
+        return new DefaultYZClient(new Token(accessToken));
     }
 }
