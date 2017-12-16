@@ -1,5 +1,6 @@
 package com.bx.ant.service.qimen;
 
+import com.alibaba.fastjson.JSON;
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.mobian.util.ConvertNameUtil;
@@ -27,6 +28,7 @@ public class QimenOrderCancelServiceImpl extends AbstrcatQimenService {
         OrderCancelRequest orderCancelRequest = (OrderCancelRequest)request;
         OrderCancelResponse response = new OrderCancelResponse();
         response.setFlag("success");
+        logger.error("taobao.qimen.order.cancel："+ JSON.toJSONString(orderCancelRequest));
         DeliverOrder deliverOrderReq = new DeliverOrder();
         Integer supplierId = Integer.parseInt(ConvertNameUtil.getString(QimenRequestService.QIM_06));
         DeliverOrder deliverOrder = deliverOrderService.getBySupplierOrderIdAndSupplierId(supplierId, orderCancelRequest.getOrderId());
@@ -36,6 +38,7 @@ public class QimenOrderCancelServiceImpl extends AbstrcatQimenService {
             deliverOrderReq.setId(deliverOrder.getId());
             deliverOrderReq.setSupplierOrderId(orderId);
             if (deliverOrder.getIsdeleted()) {
+                deliverOrderReq.setOriginalOrderStatus(DeliverOrderServiceI.ORIGINAL_ORDER_STATUS_OTS03);
                 deliverOrderService.edit(deliverOrderReq);
             } else if (ArrayUtils.contains(status, deliverOrder.getStatus())) {
                 deliverOrderReq.setStatus(DeliverOrderServiceI.STATUS_FAILURE_CLOSED);
