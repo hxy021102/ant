@@ -88,13 +88,15 @@ public class DeliverOrder10StateImpl extends AbstractDeliverOrderState {
         //2.3 编辑deliverOrderShop中金额amount字段
         deliverOrderShop.setFreight(deliverOrder.getFreight());
         deliverOrderShop.setDeliveryType(deliverOrder.getDeliveryType());
-        if(ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrder.getDeliveryWay()))
+        if(ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrder.getDeliveryWay())
+                || ShopDeliverApplyServiceI.DELIVER_WAY_CUSTOMER_AGENT.equals(deliverOrder.getDeliveryWay()))
             deliverOrderShop.setDeliveryType(ShopDeliverApplyServiceI.DELIVER_WAY_AGENT);
         deliverOrderShopItemService.addByDeliverOrderItemList(deliverOrderItemList, deliverOrderShop);
 
         //3. 对门店新订单进行计数:非自动接单且非代送
         if(!DeliverOrderServiceI.DELIVER_TYPE_AUTO.equals(deliverOrder.getDeliveryType())
-                && !ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrder.getDeliveryWay()))
+                && !ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrder.getDeliveryWay())
+                && !ShopDeliverApplyServiceI.DELIVER_WAY_CUSTOMER_AGENT.equals(deliverOrder.getDeliveryWay()))
             deliverOrderService.addAllocationOrderRedis(deliverOrder.getShopId());
 
         //4. 编辑订单并添加修改记录

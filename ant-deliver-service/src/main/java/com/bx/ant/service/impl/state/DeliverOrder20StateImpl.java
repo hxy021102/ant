@@ -83,7 +83,7 @@ public class DeliverOrder20StateImpl extends AbstractDeliverOrderState{
                         "(自动)" : (DeliverOrderServiceI.DELIVER_TYPE_FORCE.equals(deliverOrder.getDeliveryType()) ?
                         "(强制)" : "(手动)");
                 if(ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(apply.getDeliveryWay())) type = "(代送)";
-                orderNew.setDeliveryWay(apply.getDeliveryWay());
+                orderNew.setDeliveryWay(F.empty(deliverOrder.getDeliveryWay()) ? apply.getDeliveryWay() : deliverOrder.getDeliveryWay());
                 deliverOrderService.editAndAddLog(orderNew,deliverOrderLogService.TYPE_ACCEPT_DELIVER_ORDER, "运单被接" + type);
 
                 //修改门店运单状态

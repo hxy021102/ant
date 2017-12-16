@@ -10,8 +10,11 @@ import com.bx.ant.service.*;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.Json;
+import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.service.MbShopServiceI;
+import com.mobian.thirdpart.mns.MNSTemplate;
+import com.mobian.thirdpart.mns.MNSUtil;
 import com.mobian.util.ConvertNameUtil;
 import com.youzan.open.sdk.client.core.DefaultYZClient;
 import com.youzan.open.sdk.client.core.YZClient;
@@ -27,10 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by  wanxp 2017/9/22.
@@ -314,6 +314,21 @@ public class ApiDeliverOrderController extends BaseController {
         order.setId(id);
         order.setAgentStatus(DeliverOrderServiceI.AGENT_STATUS_DTS04);
         deliverOrderService.editAndAddLog(order, DeliverOrderLogServiceI.TYPE_DLT16, "代送运单门店签收");
+
+        if(!F.empty(order.getContactPhone())) {
+            MbShop shop = mbShopService.getFromCache(shopId);
+            MNSTemplate template = new MNSTemplate();
+            Map<String, String> params = new HashMap<String, String>();
+            template.setTemplateCode("SMS_117170055");
+            params.put("originalOrderId", order.getOriginalOrderId());
+            params.put("address", shop.getAddress());
+            params.put("contactPeople", shop.getContactPeople());
+            params.put("contactPhone", shop.getContactPhone());
+            template.setParams(params);
+            MNSUtil.sendMns(order.getContactPhone(), template);
+        }
+
+
         json.setMsg("u know");
         json.setSuccess(true);
         return json;

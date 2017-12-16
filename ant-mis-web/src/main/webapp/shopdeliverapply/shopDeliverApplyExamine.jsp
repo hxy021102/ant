@@ -100,7 +100,7 @@
 				<tr>
 					<th>配送方式</th>
 					<td>
-						<jb:select name="deliveryWay" dataType="DAW" noShowValue="DAW02" required="true" value="${shopDeliverApply.deliveryWay}"></jb:select>
+						<jb:select name="deliveryWay" dataType="DAW" noShowValue="DAW02,DAW05" required="true" value="${shopDeliverApply.deliveryWay}"></jb:select>
 					</td>
 				</tr>
 				<tr>
@@ -115,7 +115,7 @@
 				<tr>
 					<th>转入权限</th>
 					<td>
-						<select class="easyui-combobox" name="uploadRequired" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
+						<select class="easyui-combobox" name="transferAuth" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
 							<c:if test="${shopDeliverApply.transferAuth == false}">
 								<option value="1">允许</option>
 								<option value="0" selected="selected">无权限</option>
