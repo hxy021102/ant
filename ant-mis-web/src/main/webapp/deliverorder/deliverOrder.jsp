@@ -63,7 +63,7 @@
 		return dataGrid = $('#dataGrid').datagrid({
 			//url : '${pageContext.request.contextPath}/deliverOrderController/dataGrid?id',
 			fit : true,
-			fitColumns : true,
+			fitColumns : false,
 			border : false,
 			pagination : true,
 			idField : 'id',
@@ -78,79 +78,80 @@
 			striped : true,
 			rownumbers : true,
 			singleSelect : true,
-			columns : [ [ {
-				field : 'id',
-				title : '运单ID',
-				width : 20,
+            frozenColumns:[[{
+                field : 'id',
+                title : '运单ID',
+                width : 60,
                 formatter : function (value, row, index) {
                     return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
                 }
-				},  {
-                field : 'addtime',
-                title : '创建时间',
+            }, {
+                field : 'statusName',
+                title : '订单状态',
+                width : 60
+            }, {
+                field : 'deliveryStatusName',
+                title : '配送状态',
                 width : 55
-                },{
-                field : 'updatetime',
-                title : '修改时间',
-                width : 55
-                }, {
+            }, {
                 field : 'supplierOrderId',
                 title : '订单ID',
-                width : 20
-				},{
-				field : 'supplierId',
-				title : '供应商ID',
-				width : 25
-				}, {
-                field : 'supplierName',
-                title : '供应商名称',
-                width : 50
-                }, {
+                width : 125
+            }, {
                 field : 'shopName',
                 title : '门店名称',
-                width : 50
+                width : 125
+            }]],
+			columns : [ [ {
+                field : 'originalShop',
+                title : '店铺',
+                width : 80
+            }, {
+                field : 'originalOrderId',
+                title : '订单号',
+                width : 170
+            },  {
+                field : 'addtime',
+                title : '创建时间',
+                width : 125
+            },{
+                field : 'contactPeople',
+                title : '收货人',
+                width : 60
                 }, {
-				field : 'amount',
-				title : '总金额',
-				align:"right",
-				width : 20	,
+                field : 'deliveryRequireTime',
+                title : '要求送达时间',
+                width : 125
+                }, {
+				field : 'shopPayStatusName',
+				title : '门店结算',
+				width : 60
+				}, {
+                field : 'payStatusName',
+                title : '供应商结算',
+                width : 60
+                },{
+                field : 'supplierId',
+                title : '供应商ID',
+                width : 30
+            }, {
+                field : 'supplierName',
+                title : '供应商名称',
+                width : 125
+            }, {
+                field : 'amount',
+                title : '总金额',
+                align:"right",
+                width : 60	,
                 formatter: function (value) {
                     if (value == null)
                         return "";
                     return $.formatMoney(value);
                 }
-				}, {
-				field : 'statusName',
-				title : '订单状态',
-				width : 25
-				}, {
-				field : 'deliveryStatusName',
-				title : '配送状态',
-				width : 25
-				},{
-                field : 'contactPeople',
-                title : '收货人',
-                width : 25
-                }, {
-                field : 'deliveryRequireTime',
-                title : '要求送达时间',
-                width : 55
-                }, {
-				field : 'shopPayStatusName',
-				title : '门店结算',
-				width : 25
-				}, {
-                field : 'payStatusName',
-                title : '供应商结算',
-                width : 29
-                },{
-                field : 'originalShop',
-                title : '店铺',
-                width : 50
-                }, {
-                field : 'originalOrderId',
-                title : '订单号',
-                width : 35
+            },{
+                field : 'updatetime',
+                title : '修改时间',
+                width : 125
             }] ],
 			toolbar : '#toolbar',
 			onLoadSuccess : function() {
@@ -163,7 +164,7 @@
             return  $('#dataGridOverTimeOrder').datagrid({
               //  url : '${pageContext.request.contextPath}/deliverOrderController/dataGrid?id',
                 fit : true,
-                fitColumns : true,
+                fitColumns : false,
                 border : false,
                 pagination : true,
                 idField : 'id',
@@ -178,79 +179,68 @@
                 striped : true,
                 rownumbers : true,
                 singleSelect : true,
-                columns : [ [ {
+                frozenColumns:[[{
                     field : 'id',
                     title : '运单ID',
-                    width : 20,
+                    width : 60,
                     formatter : function (value, row, index) {
                         return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
                     }
-                },  {
-                    field : 'addtime',
-                    title : '创建时间',
-                    width : 55
-                },{
-                    field : 'updatetime',
-                    title : '修改时间',
-                    width : 55
                 }, {
                     field : 'supplierOrderId',
                     title : '订单ID',
-                    width : 20
+                    width : 125
+                }]],
+                columns : [ [ {
+                    field : 'originalShop',
+                    title : '店铺',
+                    width : 80
+                }, {
+                    field : 'originalOrderId',
+                    title : '订单号',
+                    width : 170
+                },  {
+                    field : 'addtime',
+                    title : '创建时间',
+                    width : 125
+                },{
+                    field : 'contactPeople',
+                    title : '收货人',
+                    width : 60
+                }, {
+                    field : 'deliveryRequireTime',
+                    title : '要求送达时间',
+                    width : 125
+                }, {
+                    field : 'shopPayStatusName',
+                    title : '门店结算',
+                    width : 60
+                }, {
+                    field : 'payStatusName',
+                    title : '供应商结算',
+                    width : 60
                 },{
                     field : 'supplierId',
                     title : '供应商ID',
-                    width : 25
+                    width : 30
                 }, {
                     field : 'supplierName',
                     title : '供应商名称',
-                    width : 50
-                }, {
-                    field : 'shopName',
-                    title : '门店名称',
-                    width : 50
+                    width : 125
                 }, {
                     field : 'amount',
                     title : '总金额',
                     align:"right",
-                    width : 20	,
+                    width : 60	,
                     formatter: function (value) {
                         if (value == null)
                             return "";
                         return $.formatMoney(value);
                     }
-                }, {
-                    field : 'statusName',
-                    title : '订单状态',
-                    width : 25
-                }, {
-                    field : 'deliveryStatusName',
-                    title : '配送状态',
-                    width : 25
                 },{
-                    field : 'contactPeople',
-                    title : '收货人',
-                    width : 25
-                }, {
-                    field : 'deliveryRequireTime',
-                    title : '要求送达时间',
-                    width : 55
-                }, {
-                    field : 'shopPayStatusName',
-                    title : '门店结算',
-                    width : 25
-                }, {
-                    field : 'payStatusName',
-                    title : '供应商结算',
-                    width : 29
-                },{
-                    field : 'originalShop',
-                    title : '店铺',
-                    width : 50
-                }, {
-                    field : 'originalOrderId',
-                    title : '订单号',
-                    width : 35
+                    field : 'updatetime',
+                    title : '修改时间',
+                    width : 125
                 }] ],
                 toolbar : '#toolbar',
                 onLoadSuccess : function() {
@@ -264,7 +254,7 @@
         return  $('#dataGridNotDriver').datagrid({
             //  url : '${pageContext.request.contextPath}/deliverOrderController/dataGrid?id',
             fit : true,
-            fitColumns : true,
+            fitColumns : false,
             border : false,
             pagination : true,
             idField : 'id',
@@ -279,79 +269,72 @@
             striped : true,
             rownumbers : true,
             singleSelect : true,
-            columns : [ [ {
+            frozenColumns:[[{
                 field : 'id',
                 title : '运单ID',
-                width : 20,
+                width : 60,
                 formatter : function (value, row, index) {
                     return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
                 }
-            },  {
-                field : 'addtime',
-                title : '创建时间',
-                width : 55
-            },{
-                field : 'updatetime',
-                title : '修改时间',
-                width : 55
             }, {
                 field : 'supplierOrderId',
                 title : '订单ID',
-                width : 20
-            },{
-                field : 'supplierId',
-                title : '供应商ID',
-                width : 25
-            }, {
-                field : 'supplierName',
-                title : '供应商名称',
-                width : 50
+                width : 125
             }, {
                 field : 'shopName',
                 title : '门店名称',
-                width : 50
+                width : 125
+            }]],
+            columns : [ [ {
+                field : 'originalShop',
+                title : '店铺',
+                width : 80
+            }, {
+                field : 'originalOrderId',
+                title : '订单号',
+                width : 170
+            },  {
+                field : 'addtime',
+                title : '创建时间',
+                width : 125
+            },{
+                field : 'contactPeople',
+                title : '收货人',
+                width : 60
+            }, {
+                field : 'deliveryRequireTime',
+                title : '要求送达时间',
+                width : 125
+            }, {
+                field : 'shopPayStatusName',
+                title : '门店结算',
+                width : 60
+            }, {
+                field : 'payStatusName',
+                title : '供应商结算',
+                width : 60
+            },{
+                field : 'supplierId',
+                title : '供应商ID',
+                width : 30
+            }, {
+                field : 'supplierName',
+                title : '供应商名称',
+                width : 125
             }, {
                 field : 'amount',
                 title : '总金额',
                 align:"right",
-                width : 20	,
+                width : 60	,
                 formatter: function (value) {
                     if (value == null)
                         return "";
                     return $.formatMoney(value);
                 }
-            }, {
-                field : 'statusName',
-                title : '订单状态',
-                width : 25
-            }, {
-                field : 'deliveryStatusName',
-                title : '配送状态',
-                width : 25
             },{
-                field : 'contactPeople',
-                title : '收货人',
-                width : 25
-            }, {
-                field : 'deliveryRequireTime',
-                title : '要求送达时间',
-                width : 55
-            }, {
-                field : 'shopPayStatusName',
-                title : '门店结算',
-                width : 25
-            }, {
-                field : 'payStatusName',
-                title : '供应商结算',
-                width : 29
-            },{
-                field : 'originalShop',
-                title : '店铺',
-                width : 50
-            }, {
-                field : 'originalOrderId',
-                title : '订单号',
-                width : 35
+                field : 'updatetime',
+                title : '修改时间',
+                width : 125
             }] ],
             toolbar : '#toolbar',
             onLoadSuccess : function() {
@@ -364,7 +347,7 @@
     function loadDataGridAgentStatus_DTS01() {
         return  $('#dataGridAgentStatus_DTS01').datagrid({
             fit : true,
-            fitColumns : true,
+            fitColumns : false,
             border : false,
             pagination : true,
             idField : 'id',
@@ -379,76 +362,81 @@
             striped : true,
             rownumbers : true,
             singleSelect : true,
-            columns : [ [ {
-                field : 'checkbox',
-                checkbox:true,
-                width : 30
-            },{
+            frozenColumns:[[{
                 field : 'id',
                 title : '运单ID',
-                width : 20,
+                checkbox:true,
+                width : 60,
                 formatter : function (value, row, index) {
                     return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
                 }
-            },  {
-                field : 'addtime',
-                title : '创建时间',
-                width : 55
-            },{
-                field : 'updatetime',
-                title : '修改时间',
+            }, {
+                field : 'statusName',
+                title : '订单状态',
+                width : 60
+            }, {
+                field : 'deliveryStatusName',
+                title : '配送状态',
                 width : 55
             }, {
                 field : 'supplierOrderId',
                 title : '订单ID',
-                width : 20
-            },{
-                field : 'supplierId',
-                title : '供应商ID',
-                width : 25
-            }, {
-                field : 'supplierName',
-                title : '供应商名称',
-                width : 50
+                width : 125
             }, {
                 field : 'shopName',
                 title : '门店名称',
-                width : 50,
-                sortable : true
+                width : 125
+            }]],
+            columns : [ [ {
+                field : 'originalShop',
+                title : '店铺',
+                width : 80
+            }, {
+                field : 'originalOrderId',
+                title : '订单号',
+                width : 170
+            },  {
+                field : 'addtime',
+                title : '创建时间',
+                width : 125
+            },{
+                field : 'contactPeople',
+                title : '收货人',
+                width : 60
+            }, {
+                field : 'deliveryRequireTime',
+                title : '要求送达时间',
+                width : 125
+            }, {
+                field : 'shopPayStatusName',
+                title : '门店结算',
+                width : 60
+            }, {
+                field : 'payStatusName',
+                title : '供应商结算',
+                width : 60
+            },{
+                field : 'supplierId',
+                title : '供应商ID',
+                width : 30
+            }, {
+                field : 'supplierName',
+                title : '供应商名称',
+                width : 125
             }, {
                 field : 'amount',
                 title : '总金额',
                 align:"right",
-                width : 20	,
+                width : 60	,
                 formatter: function (value) {
                     if (value == null)
                         return "";
                     return $.formatMoney(value);
                 }
-            }, {
-                field : 'statusName',
-                title : '订单状态',
-                width : 25
-            }, {
-                field : 'deliveryStatusName',
-                title : '配送状态',
-                width : 25
             },{
-                field : 'contactPeople',
-                title : '收货人',
-                width : 25
-            }, {
-                field : 'deliveryRequireTime',
-                title : '要求送达时间',
-                width : 55
-            },{
-                field : 'originalShop',
-                title : '店铺',
-                width : 50
-            }, {
-                field : 'originalOrderId',
-                title : '订单号',
-                width : 35
+                field : 'updatetime',
+                title : '修改时间',
+                width : 125
             }] ],
             toolbar : '#toolbar01',
             onLoadSuccess : function() {
@@ -461,7 +449,7 @@
     function loadDataGridAgentStatus_DTS02() {
         return  $('#dataGridAgentStatus_DTS02').datagrid({
             fit : true,
-            fitColumns : true,
+            fitColumns : false,
             border : false,
             pagination : true,
             idField : 'id',
@@ -476,72 +464,81 @@
             striped : true,
             rownumbers : true,
             singleSelect : true,
-            columns : [ [ {
-                field : 'checkbox',
-                checkbox:true,
-                width : 30
-            },{
+            frozenColumns:[[{
                 field : 'id',
                 title : '运单ID',
-                width : 50,
+                checkbox:true,
+                width : 60,
                 formatter : function (value, row, index) {
-                    var str = '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
-                    if(row.stockOutNum && row.stockOutNum > 0) {
-                        str += '<font color="red">(出+'+row.stockOutNum+')</font>';
-                    }
-                    return str;
+                    return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
                 }
-            },  {
-                field : 'addtime',
-                title : '创建时间',
-                width : 55
-            },{
-                field : 'updatetime',
-                title : '修改时间',
+            }, {
+                field : 'statusName',
+                title : '订单状态',
+                width : 60
+            }, {
+                field : 'deliveryStatusName',
+                title : '配送状态',
                 width : 55
             }, {
                 field : 'supplierOrderId',
                 title : '订单ID',
-                width : 20
-            }, {
-                field : 'supplierName',
-                title : '供应商名称',
-                width : 50
+                width : 125
             }, {
                 field : 'shopName',
                 title : '门店名称',
-                width : 50,
-                sortable:true
+                width : 125
+            }]],
+            columns : [ [ {
+                field : 'originalShop',
+                title : '店铺',
+                width : 80
+            }, {
+                field : 'originalOrderId',
+                title : '订单号',
+                width : 170
+            },  {
+                field : 'addtime',
+                title : '创建时间',
+                width : 125
+            },{
+                field : 'contactPeople',
+                title : '收货人',
+                width : 60
+            }, {
+                field : 'deliveryRequireTime',
+                title : '要求送达时间',
+                width : 125
+            }, {
+                field : 'shopPayStatusName',
+                title : '门店结算',
+                width : 60
+            }, {
+                field : 'payStatusName',
+                title : '供应商结算',
+                width : 60
+            },{
+                field : 'supplierId',
+                title : '供应商ID',
+                width : 30
+            }, {
+                field : 'supplierName',
+                title : '供应商名称',
+                width : 125
             }, {
                 field : 'amount',
                 title : '总金额',
                 align:"right",
-                width : 20	,
+                width : 60	,
                 formatter: function (value) {
                     if (value == null)
                         return "";
                     return $.formatMoney(value);
                 }
-            }, {
-                field : 'statusName',
-                title : '订单状态',
-                width : 25
             },{
-                field : 'contactPeople',
-                title : '收货人',
-                width : 25
-            }, {
-                field : 'deliveryRequireTime',
-                title : '要求送达时间',
-                width : 55
-            },{
-                field : 'originalShop',
-                title : '店铺',
-                width : 50
-            }, {
-                field : 'originalOrderId',
-                title : '订单号',
-                width : 35
+                field : 'updatetime',
+                title : '修改时间',
+                width : 125
             }] ],
             toolbar : '#toolbar02',
             onLoadSuccess : function() {
@@ -554,7 +551,7 @@
     function loadDataGridAgentStatus_DTS03() {
         return  $('#dataGridAgentStatus_DTS03').datagrid({
             fit : true,
-            fitColumns : true,
+            fitColumns : false,
             border : false,
             pagination : true,
             idField : 'id',
@@ -569,79 +566,80 @@
             striped : true,
             rownumbers : true,
             singleSelect : true,
-            columns : [ [ {
+            frozenColumns:[[{
                 field : 'id',
                 title : '运单ID',
-                width : 20,
+                width : 60,
                 formatter : function (value, row, index) {
                     return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
                 }
-            },  {
-                field : 'addtime',
-                title : '创建时间',
-                width : 55
-            },{
-                field : 'updatetime',
-                title : '修改时间',
+            }, {
+                field : 'statusName',
+                title : '订单状态',
+                width : 60
+            }, {
+                field : 'deliveryStatusName',
+                title : '配送状态',
                 width : 55
             }, {
                 field : 'supplierOrderId',
                 title : '订单ID',
-                width : 20
-            },{
-                field : 'supplierId',
-                title : '供应商ID',
-                width : 25
-            }, {
-                field : 'supplierName',
-                title : '供应商名称',
-                width : 50
+                width : 125
             }, {
                 field : 'shopName',
                 title : '门店名称',
-                width : 50
+                width : 125
+            }]],
+            columns : [ [ {
+                field : 'originalShop',
+                title : '店铺',
+                width : 80
+            }, {
+                field : 'originalOrderId',
+                title : '订单号',
+                width : 170
+            },  {
+                field : 'addtime',
+                title : '创建时间',
+                width : 125
+            },{
+                field : 'contactPeople',
+                title : '收货人',
+                width : 60
+            }, {
+                field : 'deliveryRequireTime',
+                title : '要求送达时间',
+                width : 125
+            }, {
+                field : 'shopPayStatusName',
+                title : '门店结算',
+                width : 60
+            }, {
+                field : 'payStatusName',
+                title : '供应商结算',
+                width : 60
+            },{
+                field : 'supplierId',
+                title : '供应商ID',
+                width : 30
+            }, {
+                field : 'supplierName',
+                title : '供应商名称',
+                width : 125
             }, {
                 field : 'amount',
                 title : '总金额',
                 align:"right",
-                width : 20	,
+                width : 60	,
                 formatter: function (value) {
                     if (value == null)
                         return "";
                     return $.formatMoney(value);
                 }
-            }, {
-                field : 'statusName',
-                title : '订单状态',
-                width : 25
-            }, {
-                field : 'deliveryStatusName',
-                title : '配送状态',
-                width : 25
             },{
-                field : 'contactPeople',
-                title : '收货人',
-                width : 25
-            }, {
-                field : 'deliveryRequireTime',
-                title : '要求送达时间',
-                width : 55
-            }, {
-                field : 'shopPayStatusName',
-                title : '门店结算',
-                width : 25
-            }, {
-                field : 'payStatusName',
-                title : '供应商结算',
-                width : 29
-            },{
-                field : 'originalShop',
-                title : '店铺',
-                width : 50
-            }, {
-                field : 'originalOrderId',
-                title : '订单号',
-                width : 35
+                field : 'updatetime',
+                title : '修改时间',
+                width : 125
             }] ],
             toolbar : '#toolbar03',
             onLoadSuccess : function() {
@@ -945,17 +943,17 @@
 						</td>
 						<th>订单ID</th>
 						<td >
-							<input type="text" name="supplierOrderId" maxlength="10" class="span2"/>
+							<input type="text" name="supplierOrderId" class="span2"/>
 						</td>
 						<th>店铺</th>
 						<td >
-							<input type="text" name="originalShop" maxlength="10" class="span2"/>
+							<input type="text" name="originalShop" class="span2"/>
 						</td>
 					</tr>
 					<tr>
-						<th>订单号</th>
+						<th>原订单号</th>
 						<td >
-							<input type="text" name="originalOrderId" maxlength="10" class="span2"/>
+							<input type="text" name="originalOrderId" class="span2"/>
 						</td>
 						<th >订单时间</th>
 						<td colspan="10">
@@ -968,13 +966,13 @@
 		</div>
 		<div data-options="region:'center',border:false">
 			<div id="deliverOrder_list_tabs" class="easyui-tabs" data-options="fit : true,border:false">
-				<div title="所有运单">
+				<div title="所有">
 					<table id="dataGrid"></table>
 				</div>
-				<div title="超时未分配运单">
+				<div title="超时未分配">
 					<table id="dataGridOverTimeOrder"></table>
 				</div>
-				<div title="超时未配送运单">
+				<div title="超时未配送">
 					<table id="dataGridNotDriver"></table>
 				</div>
                 <div title="未打单">
@@ -983,7 +981,7 @@
                 <div title="已打单">
                     <table id="dataGridAgentStatus_DTS02"></table>
                 </div>
-                <div title="待签收">
+                <div title="[代送]待签收">
                     <table id="dataGridAgentStatus_DTS03"></table>
                 </div>
 		     </div>

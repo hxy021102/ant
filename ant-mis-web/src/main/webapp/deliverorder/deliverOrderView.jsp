@@ -249,17 +249,21 @@
                      }
                  },0: {
                      invoke: function () {
-                         gridMap.handle(this,loadDeliverDataGrid);
+
                      }, grid: null
-                 }, 1: {
+                 },1: {
                      invoke: function () {
-                         gridMap.handle(this,loadItemDataGrid);
+                         gridMap.handle(this,loadDeliverDataGrid);
                      }, grid: null
                  }, 2: {
                      invoke: function () {
-                         gridMap.handle(this,loaddeliverItemDataGrid);
+                         gridMap.handle(this,loadItemDataGrid);
                      }, grid: null
                  }, 3: {
+                     invoke: function () {
+                         gridMap.handle(this,loaddeliverItemDataGrid);
+                     }, grid: null
+                 }, 4: {
                      invoke: function () {
                          gridMap.handle(this,loadOrderLogDataGrid);
                      }, grid: null
@@ -309,125 +313,125 @@
 </style>
 <body>
 <div class="easyui-layout" data-options="fit : true,border:false">
-	<div data-options="region:'north',title:'基本信息',border:false" style="height: 325px; overflow: hidden;">
-		<table class="table">
-			<tr>
-				<th>运单ID</th>
-				<td>
-					${deliverOrder.id}
-					<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/assignOrderShopPage') and ( deliverOrder.status=='DOS01' or deliverOrder.status=='DOS15' or deliverOrder.status=='notDriver')}">
-						<a href="javascript:void(0);" class="easyui-linkbutton" onclick="assignOrderShop();">指派</a>
-					</c:if>
-				</td>
-				<th>供应商名称</th>
-				<td>
-			     	${deliverOrder.supplierName}
-				</td>
-				<th>订单状态</th>
-				<td>
-					${deliverOrder.statusName}
-				</td>
-				<th>结算状态</th>
-				<td>
-					${deliverOrder.shopPayStatusName}
-				</td>
-			</tr>
-			<tr>
-				<th>配送状态</th>
-				<td>
-					${deliverOrder.deliveryStatusName}
-				</td>
-				<th>添加时间</th>
-				<td>
-					<fmt:formatDate value="${deliverOrder.addtime}" pattern="yyyy-MM-dd HH:mm:ss"/>
-				</td>
-				<th>修改时间</th>
-				<td>
-					<fmt:formatDate value="${deliverOrder.updatetime}" pattern="yyyy-MM-dd HH:mm:ss"/>
-				</td>
-				<th>收货人</th>
-				<td >
-					${deliverOrder.contactPeople}
-				</td>
-			</tr>
-			<tr>
-				<th>联系电话</th>
-				<td>
-					${deliverOrder.contactPhone}
-				</td>
-				<th>配送地址</th>
-				<td>
-					${deliverOrder.deliveryAddress}
-				</td>
-				<th>送达时间</th>
-				<td>
-					<fmt:formatDate value="${deliverOrder.deliveryRequireTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
-				</td>
-				<th>平台接单状态</th>
-				<td>
-					${deliverOrder.originalOrderStatusName}
-				</td>
-			</tr>
-			<tr>
-				<th>供应商订单ID</th>
-				<td colspan="">${deliverOrder.supplierOrderId}</td>
-				<c:choose>
-					<c:when test="${deliverOrder.status=='notDriver'}">
-					<th>超时</th>
-					<td>
-						${deliverOrder.showTime}
-					</td>
-					</c:when>
-					<c:otherwise>
-					    <th></th><td></td>
-					</c:otherwise>
-				</c:choose>
-				<th>回单</th>
-				<c:forEach items="${deliverOrder.image}" var="image">
-					<td rowspan="5" >
-					 <img src="${image}" width="80px" height="80px" />
-					</td>
-				</c:forEach>
-			</tr>
-			<tr>
-				<th>店铺</th>
-				<td>${deliverOrder.originalShop}</td>
-				<th>订单号</th>
-				<td>${deliverOrder.originalOrderId}</td>
-			</tr>
-			<tr>
-				<th>送达备注</th>
-				<td colspan="3">
-					${deliverOrder.completeRemark}
-				</td>
-			</tr>
-			<tr>
-				<th>商品总重</th>
-				<td>${deliverOrder.weight}克</td>
-				<th>配送方式</th>
-				<td>${deliverOrder.deliveryWayName}</td>
-			</tr>
-			<tr>
-				<th>备注</th>
-				<td colspan="3">
-					${deliverOrder.remark}
-				</td>
-				<c:choose>
-					<c:when test="${deliverOrder.deliveryWay=='DAW04'}">
-						<th>代送状态</th>
-						<td colspan="3">
-								${deliverOrder.agentStatusName}
-						</td>
-					</c:when>
-					<c:otherwise>
-						<th></th><td></td>
-					</c:otherwise>
-				</c:choose>
-			</tr>
-		</table>
-	</div>
 	<div data-options="region:'center',border:false">
 		<div id="deliver_view_tabs" class="easyui-tabs" data-options="fit : true,border:false">
+            <div title="基本">
+                <table class="table">
+                    <tr>
+                        <th>运单ID</th>
+                        <td>
+                            ${deliverOrder.id}
+                            <c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/assignOrderShopPage') and ( deliverOrder.status=='DOS01' or deliverOrder.status=='DOS15' or deliverOrder.status=='notDriver')}">
+                                <a href="javascript:void(0);" class="easyui-linkbutton" onclick="assignOrderShop();">指派</a>
+                            </c:if>
+                        </td>
+                        <th>供应商名称</th>
+                        <td>
+                            ${deliverOrder.supplierName}
+                        </td>
+                        <th>订单状态</th>
+                        <td>
+                            ${deliverOrder.statusName}
+                        </td>
+                        <th>结算状态</th>
+                        <td>
+                            ${deliverOrder.shopPayStatusName}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>配送状态</th>
+                        <td>
+                            ${deliverOrder.deliveryStatusName}
+                        </td>
+                        <th>添加时间</th>
+                        <td>
+                            <fmt:formatDate value="${deliverOrder.addtime}" pattern="yyyy-MM-dd HH:mm:ss"/>
+                        </td>
+                        <th>修改时间</th>
+                        <td>
+                            <fmt:formatDate value="${deliverOrder.updatetime}" pattern="yyyy-MM-dd HH:mm:ss"/>
+                        </td>
+                        <th>收货人</th>
+                        <td >
+                            ${deliverOrder.contactPeople}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>联系电话</th>
+                        <td>
+                            ${deliverOrder.contactPhone}
+                        </td>
+                        <th>配送地址</th>
+                        <td>
+                            ${deliverOrder.deliveryAddress}
+                        </td>
+                        <th>送达时间</th>
+                        <td>
+                            <fmt:formatDate value="${deliverOrder.deliveryRequireTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
+                        </td>
+                        <th>平台接单状态</th>
+                        <td>
+                            ${deliverOrder.originalOrderStatusName}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>供应商订单ID</th>
+                        <td colspan="">${deliverOrder.supplierOrderId}</td>
+                        <c:choose>
+                            <c:when test="${deliverOrder.status=='notDriver'}">
+                                <th>超时</th>
+                                <td>
+                                        ${deliverOrder.showTime}
+                                </td>
+                            </c:when>
+                            <c:otherwise>
+                                <th></th><td></td>
+                            </c:otherwise>
+                        </c:choose>
+                        <th>回单</th>
+                        <c:forEach items="${deliverOrder.image}" var="image">
+                            <td rowspan="5" >
+                                <img src="${image}" width="80px" height="80px" />
+                            </td>
+                        </c:forEach>
+                    </tr>
+                    <tr>
+                        <th>店铺</th>
+                        <td>${deliverOrder.originalShop}</td>
+                        <th>订单号</th>
+                        <td>${deliverOrder.originalOrderId}</td>
+                    </tr>
+                    <tr>
+                        <th>送达备注</th>
+                        <td colspan="3">
+                            ${deliverOrder.completeRemark}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>商品总重</th>
+                        <td>${deliverOrder.weight}克</td>
+                        <th>配送方式</th>
+                        <td>${deliverOrder.deliveryWayName}</td>
+                    </tr>
+                    <tr>
+                        <th>备注</th>
+                        <td colspan="3">
+                            ${deliverOrder.remark}
+                        </td>
+                        <c:choose>
+                            <c:when test="${deliverOrder.deliveryWay=='DAW04'}">
+                                <th>代送状态</th>
+                                <td colspan="3">
+                                        ${deliverOrder.agentStatusName}
+                                </td>
+                            </c:when>
+                            <c:otherwise>
+                                <th></th><td></td>
+                            </c:otherwise>
+                        </c:choose>
+                    </tr>
+                </table>
+            </div>
 			<div title="配送信息">
 				<table id="deliverDataGrid"></table>
 			</div>
