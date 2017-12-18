@@ -363,9 +363,12 @@
             rownumbers : true,
             singleSelect : true,
             frozenColumns:[[{
+                field : 'checkbox',
+                checkbox:true,
+                width : 30
+            },{
                 field : 'id',
                 title : '运单ID',
-                checkbox:true,
                 width : 60,
                 formatter : function (value, row, index) {
                     return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
@@ -466,9 +469,12 @@
             rownumbers : true,
             singleSelect : true,
             frozenColumns:[[{
+                field : 'checkbox',
+                checkbox:true,
+                width : 30
+            },{
                 field : 'id',
                 title : '运单ID',
-                checkbox:true,
                 width : 60,
                 formatter : function (value, row, index) {
                     return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
