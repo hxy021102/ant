@@ -157,7 +157,9 @@ public class SelectTagGrid extends TagSupport {
                 String pid = "";
                 if(!F.empty(mbShop.getParentId())) {
                     mbShop = mbShopService.getFromCache(mbShop.getParentId());
-                    pid = mbShop.getName();
+                    if (mbShop != null) {
+                        pid = mbShop.getName();
+                    }
                 }
                 data.put("pid", pid);
             }
