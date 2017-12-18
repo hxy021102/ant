@@ -89,7 +89,11 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 			if (!F.empty(shopDeliverApply.getAccountId())) {
 				whereHql += " and t.accountId = :accountId";
 				params.put("accountId", shopDeliverApply.getAccountId());
-			}		
+			}
+			if (shopDeliverApply.getShopIds() != null && shopDeliverApply.getShopIds().length > 0) {
+				whereHql += " and t.shopId in (:shopIds)";
+				params.put("shopIds", shopDeliverApply.getShopIds());
+			}
 		}	
 		return whereHql;
 	}

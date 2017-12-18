@@ -2,14 +2,12 @@ package com.bx.ant.service.impl;
 
 import com.bx.ant.dao.ShopItemDaoI;
 import com.bx.ant.model.TshopItem;
-import com.bx.ant.pageModel.DeliverOrder;
-import com.bx.ant.pageModel.DeliverOrderShopItem;
-import com.bx.ant.pageModel.ShopItemQuery;
+import com.bx.ant.pageModel.*;
+import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.bx.ant.service.ShopItemServiceI;
 import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
-import com.bx.ant.pageModel.ShopItem;
 import com.mobian.service.MbContractItemServiceI;
 import com.mobian.service.MbContractServiceI;
 import com.mobian.service.MbItemServiceI;
@@ -44,6 +42,8 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 	private MbContractServiceI mbContractService;
 	@Resource
 	private MbContractItemServiceI mbContractItemService;
+	@Resource
+	private ShopDeliverApplyServiceI shopDeliverApplyService;
 
 	@Override
 	public DataGrid dataGrid(ShopItem shopItem, PageHelper ph) {
@@ -535,16 +535,27 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 					for (MbContract contract : mbContractList) {
 						mbContractMap.put(contract.getShopId(), mbContractItemMap.get(contract.getId()));
 					}
+					//获取门店默认运费
+					ShopDeliverApply shopDeliverApply = new ShopDeliverApply();
+					shopDeliverApply.setShopIds(shopIds);
+					List<ShopDeliverApply> shopDeliverApplyList = shopDeliverApplyService.query(shopDeliverApply);
+					Map<Integer, Integer> shopDeliverApplyMap = new HashMap<Integer, Integer>();
+					if (CollectionUtils.isNotEmpty(shopDeliverApplyList)) {
+						for (ShopDeliverApply deliverApply : shopDeliverApplyList) {
+							shopDeliverApplyMap.put(deliverApply.getShopId(), deliverApply.getFreight());
+						}
+					}
 					//若门店已签订的商品，门店商品中不存在，则进行新增
 					for (Integer key : shopItemMap.keySet()) {
 						List<Integer> itemIds = shopItemMap.get(key);
 						if (mbContractMap.get(key) != null) {
+							Integer freight = shopDeliverApplyMap.get(key) == null ? 300 : shopDeliverApplyMap.get(key);
 							for (MbContractItem contractItem : mbContractMap.get(key)) {
 								if (!itemIds.contains(contractItem.getItemId())) {
 									ShopItem shopItem = new ShopItem();
 									shopItem.setShopId(key);
 									shopItem.setItemId(contractItem.getItemId());
-									shopItem.setFreight(0);
+									shopItem.setFreight(freight);
 									shopItem.setInPrice(contractItem.getPrice());
 									shopItem.setPrice(shopItem.getInPrice());
 									add(shopItem);
@@ -576,11 +587,18 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 				mbContractItem.setContractId(contract.getId());
 				List<MbContractItem> mbContractItemList = mbContractItemService.query(mbContractItem);
 				if (CollectionUtils.isNotEmpty(mbContractItemList)) {
+					ShopDeliverApply shopDeliverApply = new ShopDeliverApply();
+					shopDeliverApply.setShopId(shopId);
+					List<ShopDeliverApply> shopDeliverApplyList = shopDeliverApplyService.query(shopDeliverApply);
+					Integer freight = 300;
+					if (CollectionUtils.isNotEmpty(shopDeliverApplyList)) {
+						freight = shopDeliverApplyList.get(0).getFreight();
+					}
 					for (MbContractItem contractItem : mbContractItemList) {
 						if (!itemIds.contains(contractItem.getItemId())) {
 							ShopItem shopItemNew = new ShopItem();
 							shopItemNew.setShopId(shopId);
-							shopItemNew.setFreight(0);
+							shopItemNew.setFreight(freight);
 							shopItemNew.setItemId(contractItem.getItemId());
 							shopItemNew.setInPrice(contractItem.getPrice());
 							shopItemNew.setPrice(shopItemNew.getInPrice());
