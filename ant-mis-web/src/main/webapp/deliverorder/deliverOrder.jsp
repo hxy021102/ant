@@ -385,7 +385,8 @@
             }, {
                 field : 'shopName',
                 title : '门店名称',
-                width : 125
+                width : 125,
+                sortable : true
             }]],
             columns : [ [ {
                 field : 'originalShop',
@@ -487,7 +488,8 @@
             }, {
                 field : 'shopName',
                 title : '门店名称',
-                width : 125
+                width : 125,
+                sortable : true
             }]],
             columns : [ [ {
                 field : 'originalShop',
