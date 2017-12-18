@@ -322,7 +322,7 @@
                         <td>
                             ${deliverOrder.id}
                             <c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/assignOrderShopPage') and ( deliverOrder.status=='DOS01' or deliverOrder.status=='DOS15' or deliverOrder.status=='notDriver')}">
-                                <a href="javascript:void(0);" class="easyui-linkbutton" onclick="assignOrderShop();">指派</a>
+                                <a href="javascript:void(0);" class="easyui-linkbutton" onclick="assignOrderShop();">人工分单</a>
                             </c:if>
                         </td>
                         <th>供应商名称</th>
