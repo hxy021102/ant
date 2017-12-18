@@ -192,7 +192,7 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 				params.put("originalOrderStatus", deliverOrder.getOriginalOrderStatus());
 			}
 			if (!F.empty(deliverOrder.getAgentStatus())) {
-				whereHql += " and t.agentStatus = :agentStatus";
+				whereHql += " and t.agentStatus = :agentStatus and t.status <> 'DOS60' "; // 代送排除关闭订单
 				params.put("agentStatus", deliverOrder.getAgentStatus());
 			}
 			if (deliverOrder instanceof DeliverOrderQuery) {
