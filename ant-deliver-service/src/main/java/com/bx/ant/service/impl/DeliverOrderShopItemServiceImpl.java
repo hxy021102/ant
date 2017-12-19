@@ -172,7 +172,7 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 
 				ShopItem shopItem = shopItemService.getByShopIdAndItemId(deliverOrderShop.getShopId(), d.getItemId(), true, "SIS02");
 				// TODO 代送处理
-				if(ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrderShop.getDeliveryType())) {
+				if(ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrderShop.getDeliveryType())|| ShopDeliverApplyServiceI.DELIVER_WAY_CUSTOMER_AGENT.equals(deliverOrderShop.getDeliveryType())) {
 					if(shopItem == null) {
 						shopItem = new ShopItem();
 						shopItem.setShopId(deliverOrderShop.getShopId());
