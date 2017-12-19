@@ -3,16 +3,6 @@ package com.bx.ant.service.youzan;
 import com.bx.ant.pageModel.*;
 import com.bx.ant.service.*;
 import com.mobian.absx.F;
-import com.mobian.exception.ServiceException;
-import com.mobian.pageModel.DataGrid;
-import com.bx.ant.pageModel.DeliverOrder;
-import com.bx.ant.pageModel.Supplier;
-import com.bx.ant.pageModel.SupplierItemRelation;
-import com.bx.ant.pageModel.SupplierItemRelationView;
-import com.bx.ant.service.DeliverOrderServiceI;
-import com.bx.ant.service.DeliverOrderYouzanServiceI;
-import com.bx.ant.service.SupplierItemRelationServiceI;
-import com.bx.ant.service.SupplierServiceI;
 import com.mobian.pageModel.PageHelper;
 import com.mobian.thirdpart.redis.Key;
 import com.mobian.thirdpart.redis.Namespace;
@@ -23,10 +13,10 @@ import com.youzan.open.sdk.client.auth.Token;
 import com.youzan.open.sdk.client.core.DefaultYZClient;
 import com.youzan.open.sdk.client.core.YZClient;
 import com.youzan.open.sdk.gen.v3_0_0.api.YouzanLogisticsOnlineConfirm;
+import com.youzan.open.sdk.gen.v3_0_0.api.YouzanTradeGet;
 import com.youzan.open.sdk.gen.v3_0_0.api.YouzanTradeSelffetchcodeGet;
 import com.youzan.open.sdk.gen.v3_0_0.api.YouzanTradesSoldGet;
 import com.youzan.open.sdk.gen.v3_0_0.model.*;
-import net.sf.json.JSON;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +30,6 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,6 +37,7 @@ import java.util.List;
  */
 @Service
 public class DeliverOrderYouzanServiceImpl implements DeliverOrderYouzanServiceI {
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Resource
@@ -91,7 +81,7 @@ public class DeliverOrderYouzanServiceImpl implements DeliverOrderYouzanServiceI
 
                 for(YouzanTradesSoldGetResult.TradeDetailV2 trade : trades) {
                     // 过滤到店自提订单
-                    if("fetch".equals(trade.getShippingType())) continue;
+                    if(FETCH.equals(trade.getShippingType())) continue;
 
                     DeliverOrder exist = deliverOrderService.getBySupplierOrderId(trade.getTid());
                     if(exist != null) {
@@ -255,6 +245,22 @@ public class DeliverOrderYouzanServiceImpl implements DeliverOrderYouzanServiceI
         DeliverOrder o = deliverOrderService.getOrderByYouZanTid(tid);
         Long orderId = o == null ? null : o.getId();
         return orderId;
+    }
+
+    @Override
+    public String getShippingTypeByTid(String tid) {
+        YZClient client = createYZClient();
+        YouzanTradeGetParams youzanTradeGetParams = new YouzanTradeGetParams();
+        youzanTradeGetParams.setTid(tid);
+
+        YouzanTradeGet youzanTradeGet = new YouzanTradeGet();
+        youzanTradeGet.setAPIParams(youzanTradeGetParams);
+        YouzanTradeGetResult result = client.invoke(youzanTradeGet);
+        if(result != null && result.getTrade() != null) {
+            return result.getTrade().getShippingType();
+        }
+
+        return null;
     }
 
     private YZClient createYZClient() {
