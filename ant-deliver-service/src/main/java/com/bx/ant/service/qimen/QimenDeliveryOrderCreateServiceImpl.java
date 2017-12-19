@@ -44,9 +44,9 @@ public class QimenDeliveryOrderCreateServiceImpl extends AbstrcatQimenService {
         logger.error("看看数据："+ JSON.toJSONString(req));
         DeliveryorderCreateResponse response = new DeliveryorderCreateResponse();
         response.setFlag("success");
-        if(!QimenRequestService.JYCK.equals(deliveryOrder.getOrderType())) {
+        /*if(!QimenRequestService.JYCK.equals(deliveryOrder.getOrderType())) {
             return response;
-        }
+        }*/
         DeliverOrder order = new DeliverOrder();
         order.setIsdeleted(true); // 初始化无效
         order.setSupplierId(supplierId);

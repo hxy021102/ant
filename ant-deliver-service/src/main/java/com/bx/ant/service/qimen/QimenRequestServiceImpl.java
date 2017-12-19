@@ -47,7 +47,7 @@ public class QimenRequestServiceImpl extends Objectx implements QimenRequestServ
             order.setLogisticsCode(ConvertNameUtil.getString(QimenRequestService.QIM_09));
             order.setDeliveryOrderCode(deliverOrder.getSupplierOrderId());
             order.setDeliveryOrderId(deliverOrder.getId() + "");
-            order.setOrderType(QimenRequestService.JYCK);
+            order.setOrderType(deliverOrder.getSupplierOrderType() != null ? deliverOrder.getSupplierOrderType() : JYCK);
             request.setDeliveryOrder(order);
             List<DeliveryorderConfirmRequest.Package> packages = new ArrayList<DeliveryorderConfirmRequest.Package>();
             DeliveryorderConfirmRequest.Package _package = new DeliveryorderConfirmRequest.Package();
@@ -92,7 +92,7 @@ public class QimenRequestServiceImpl extends Objectx implements QimenRequestServ
             order.setWarehouseCode(ConvertNameUtil.getString(QimenRequestService.QIM_08));
             order.setOrderCode(deliverOrder.getSupplierOrderId());
             order.setOrderId(deliverOrder.getId() + "");
-            order.setOrderType(QimenRequestService.JYCK);
+            order.setOrderType(deliverOrder.getSupplierOrderType() != null ? deliverOrder.getSupplierOrderType() : JYCK);
             request.setOrder(order);
             OrderprocessReportRequest.Process process = new OrderprocessReportRequest.Process();
             //process.setProcessStatus(processStatus);
