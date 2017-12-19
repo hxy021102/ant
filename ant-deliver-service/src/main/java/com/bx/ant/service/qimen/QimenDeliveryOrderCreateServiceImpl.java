@@ -62,8 +62,8 @@ public class QimenDeliveryOrderCreateServiceImpl extends AbstrcatQimenService {
         order.setOriginalOrderStatus(DeliverOrderServiceI.ORIGINAL_ORDER_STATUS_OTS01);
 
         DeliveryorderCreateRequest.ReceiverInfo receiverInfo = deliveryOrder.getReceiverInfo();
-        order.setContactPeople(receiverInfo.getReceiverName());
-        order.setContactPhone(receiverInfo.getReceiverMobile());
+        order.setContactPeople(receiverInfo.getName());
+        order.setContactPhone(receiverInfo.getMobile());
         order.setDeliveryAddress(receiverInfo.getProvince() + receiverInfo.getCity() + receiverInfo.getArea() + receiverInfo.getDetailAddress());
         order.setRemark(deliveryOrder.getBuyerMessage());
         List<SupplierItemRelationView> supplierItemRelations = new ArrayList<SupplierItemRelationView>();
