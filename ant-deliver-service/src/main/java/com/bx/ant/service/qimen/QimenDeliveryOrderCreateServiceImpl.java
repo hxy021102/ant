@@ -94,7 +94,7 @@ public class QimenDeliveryOrderCreateServiceImpl extends AbstrcatQimenService {
         }
 
         // 有赞店铺订单判断是否为自提
-        if(YouzanUtil.KDT_ID.equals(order.getOriginalShop()) && !F.empty(order.getOriginalOrderId())) {
+        if(ConvertNameUtil.getString(YouzanUtil.KDT_ID).equals(order.getOriginalShop()) && !F.empty(order.getOriginalOrderId())) {
             String shippingType = deliverOrderYouzanService.getShippingTypeByTid(order.getOriginalOrderId());
             if(DeliverOrderYouzanServiceI.FETCH.equals(shippingType))
                 order.setDeliveryWay(ShopDeliverApplyServiceI.DELIVER_WAY_CUSTOMER);
