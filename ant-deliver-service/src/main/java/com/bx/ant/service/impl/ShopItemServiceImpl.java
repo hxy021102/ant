@@ -558,7 +558,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 									shopItem.setItemId(contractItem.getItemId());
 									shopItem.setFreight(freight);
 									shopItem.setInPrice(contractItem.getPrice());
-									shopItem.setPrice(shopItem.getInPrice());
+									shopItem.setPrice(shopItem.getInPrice()+freight);
 									add(shopItem);
 								}
 							}
@@ -602,7 +602,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 							shopItemNew.setFreight(freight);
 							shopItemNew.setItemId(contractItem.getItemId());
 							shopItemNew.setInPrice(contractItem.getPrice());
-							shopItemNew.setPrice(shopItemNew.getInPrice());
+							shopItemNew.setPrice(shopItemNew.getInPrice()+freight);
 							add(shopItemNew);
 						}
 					}
