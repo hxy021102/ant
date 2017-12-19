@@ -78,7 +78,7 @@
             document.getElementById("jatoolsPrinter").printPreview(myDoc); // 直接打印，不弹出打印机设置对话框
         }
         function init(){
-            if(parent&&parent.printComplete){
+            if(parent){
                 try {
                     doPrint();
                 }catch(e){
