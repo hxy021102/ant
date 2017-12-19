@@ -5,10 +5,13 @@ import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.SupplierItemRelation;
 import com.bx.ant.pageModel.SupplierItemRelationView;
 import com.bx.ant.service.DeliverOrderServiceI;
+import com.bx.ant.service.DeliverOrderYouzanServiceI;
+import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.bx.ant.service.SupplierItemRelationServiceI;
 import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.PageHelper;
+import com.mobian.thirdpart.youzan.YouzanUtil;
 import com.mobian.util.Constants;
 import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.DateUtil;
@@ -35,6 +38,9 @@ public class QimenDeliveryOrderCreateServiceImpl extends AbstrcatQimenService {
 
     @Resource
     private DeliverOrderServiceI deliverOrderService;
+
+    @Resource
+    private DeliverOrderYouzanServiceI deliverOrderYouzanService;
 
     @Override
     public QimenResponse execute(QimenRequest request) {
@@ -86,6 +92,14 @@ public class QimenDeliveryOrderCreateServiceImpl extends AbstrcatQimenService {
             if(F.empty(order.getOriginalOrderId()))
                 order.setOriginalOrderId(orderLine.getSourceOrderCode()); // 原订单号
         }
+
+        // 有赞店铺订单判断是否为自提
+        if(YouzanUtil.KDT_ID.equals(order.getOriginalShop()) && !F.empty(order.getOriginalOrderId())) {
+            String shippingType = deliverOrderYouzanService.getShippingTypeByTid(order.getOriginalOrderId());
+            if(DeliverOrderYouzanServiceI.FETCH.equals(shippingType))
+                order.setDeliveryWay(ShopDeliverApplyServiceI.DELIVER_WAY_CUSTOMER);
+        }
+
         // 添加订单和订单明细
         deliverOrderService.addAndItems(order, supplierItemRelations);
         response.setDeliveryOrderId(order.getId() + "");

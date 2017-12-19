@@ -9,6 +9,8 @@ public interface DeliverOrderYouzanServiceI {
     String WAIT_BUYER_CONFIRM_GOODS = "WAIT_BUYER_CONFIRM_GOODS"; // 等待买家确认收货，即：卖家已发货
     String TRADE_BUYER_SIGNED = "TRADE_BUYER_SIGNED"; // 买家已签收
 
+    String FETCH = "fetch"; // 自提
+
     /**
      * 有赞订单对接
      */
@@ -24,6 +26,12 @@ public interface DeliverOrderYouzanServiceI {
      * 获取自提订单
      */
     Long getOrderByCode(String code);
+
+    /**
+     * 根据订单号获取物流方式
+     * @param tid
+     */
+    String getShippingTypeByTid(String tid);
 
     /**
      * 自动结算
