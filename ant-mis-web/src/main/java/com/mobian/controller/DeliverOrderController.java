@@ -486,14 +486,14 @@ public class DeliverOrderController extends BaseController {
 			if ("DTS01".equals(deliverOrder.getAgentStatus())&& "DAW04".equals(deliverOrder.getDeliveryWay())) {
 				deliverOrder.setAgentStatus("DTS02");
 				deliverOrderService.editAndAddLog(deliverOrder, DeliverOrderLogServiceI.TYPE_DLT15, "扫码打单成功", sessionInfo.getId());
-				j.setMsg("打单成功！");
+				j.setMsg("单号："+deliverOrderId+",扫码打单成功！");
 				j.setSuccess(true);
 				return j;
 			}else {
-				j.setMsg("该订单已扫码打单，不能重复执行！");
+				j.setMsg("单号："+deliverOrderId+",已扫码打单，不能重复执行！");
 			}
 		} else {
-			j.setMsg("不存在该订单，请确认订单是否正确！");
+			j.setMsg("单号："+deliverOrderId+",不存在，请确认订单是否正确！");
 		}
 		j.setSuccess(false);
 		return j;
@@ -524,14 +524,14 @@ public class DeliverOrderController extends BaseController {
 			if ("DTS02".equals(deliverOrder.getAgentStatus())&& "DAW04".equals(deliverOrder.getDeliveryWay())) {
 				deliverOrder.setAgentStatus("DTS03");
 				deliverOrderService.editAndAddLog(deliverOrder, DeliverOrderLogServiceI.TYPE_DLT14, "扫码发货成功", sessionInfo.getId());
-				j.setMsg("打单成功！");
+				j.setMsg("单号："+deliverOrderId+",扫码发货成功！");
 				j.setSuccess(true);
 				return j;
 			}else {
-				j.setMsg("该订单已发货打单，不能重复执行！");
+				j.setMsg("单号："+deliverOrderId+",已扫码发货，不能重复执行！");
 			}
 		} else {
-			j.setMsg("不存在该订单，请确认订单是否正确！");
+			j.setMsg("单号："+deliverOrderId+",不存在，请确认订单是否正确！");
 		}
 		j.setSuccess(false);
 		return j;

@@ -36,17 +36,9 @@
             deliverOrderId : deliverOrderId
         }, function(result) {
             if (result.success) {
-                window.location.reload();
-                var href = '${pageContext.request.contextPath}/deliverOrderController/view?id=' + deliverOrderId;
-                parent.$("#index_tabs").tabs('add', {
-                    title : '运单详情-' + deliverOrderId,
-                    content : '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
-                    closable : true
-                });
+				showResult(true,result.msg);
             } else {
-                parent.$.messager.alert('提示', result.msg, 'info', function(){
-                    $('#scanInp').val('').focus();
-                });
+                showResult(false,result.msg);
             }
             parent.$.messager.progress('close');
         }, 'JSON');
@@ -55,6 +47,18 @@
     function cleanFun() {
 		$('#scanInp').val('').focus();
 	}
+    function showResult(result, message) {
+        var resultId = document.getElementById("resultId");
+        var messageStr;
+        if (result) {
+            messageStr = '<font color="green" size="4">' + message + '</font>';
+        } else {
+            messageStr = '<font color="red" size="4">' + message + '</font>';
+
+        }
+        resultId.innerHTML = messageStr;
+        cleanFun();
+    }
 </script>
 </head>
 <body>
@@ -65,8 +69,8 @@
 						<td>
 							<div style="margin-bottom:20px">
 								运单ID:<input type="text" id="scanInp"  maxlength="16" class="span2" placeholder="扫码打单" style="width: 150px;margin-bottom: 0;"/>
-							<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reset"
-							   onclick="cleanFun ()"  >清&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;空</a>
+							<a href="javascript:void(0)" class="easyui-linkbutton" onclick="cleanFun ()"  >清空</a>
+								<div id="resultId"></div>
 							</div>
 						</td>
 					</tr>
