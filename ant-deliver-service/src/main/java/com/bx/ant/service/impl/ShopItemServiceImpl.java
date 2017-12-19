@@ -25,6 +25,7 @@ import java.util.*;
 @Service
 public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements ShopItemServiceI {
 
+	public static final int INT = 0;
 	@Autowired
 	private ShopItemDaoI shopItemDao;
 	@javax.annotation.Resource
@@ -549,7 +550,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 					for (Integer key : shopItemMap.keySet()) {
 						List<Integer> itemIds = shopItemMap.get(key);
 						if (mbContractMap.get(key) != null) {
-							Integer freight = shopDeliverApplyMap.get(key) == null ? 300 : shopDeliverApplyMap.get(key);
+							Integer freight = shopDeliverApplyMap.get(key) == null ? INT : shopDeliverApplyMap.get(key);
 							for (MbContractItem contractItem : mbContractMap.get(key)) {
 								if (!itemIds.contains(contractItem.getItemId())) {
 									ShopItem shopItem = new ShopItem();
@@ -590,7 +591,7 @@ public class ShopItemServiceImpl extends BaseServiceImpl<ShopItem> implements Sh
 					ShopDeliverApply shopDeliverApply = new ShopDeliverApply();
 					shopDeliverApply.setShopId(shopId);
 					List<ShopDeliverApply> shopDeliverApplyList = shopDeliverApplyService.query(shopDeliverApply);
-					Integer freight = 300;
+					Integer freight = INT;
 					if (CollectionUtils.isNotEmpty(shopDeliverApplyList)) {
 						freight = shopDeliverApplyList.get(0).getFreight();
 					}
