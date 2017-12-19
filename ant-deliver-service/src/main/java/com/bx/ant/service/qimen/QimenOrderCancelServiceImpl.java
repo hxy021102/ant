@@ -3,6 +3,7 @@ package com.bx.ant.service.qimen;
 import com.alibaba.fastjson.JSON;
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.service.DeliverOrderServiceI;
+import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.util.ConvertNameUtil;
 import com.qimen.api.QimenRequest;
 import com.qimen.api.QimenResponse;
@@ -25,10 +26,10 @@ public class QimenOrderCancelServiceImpl extends AbstrcatQimenService {
 
     @Override
     public QimenResponse execute(QimenRequest request) {
-        OrderCancelRequest orderCancelRequest = (OrderCancelRequest)request;
+        OrderCancelRequest orderCancelRequest = (OrderCancelRequest) request;
         OrderCancelResponse response = new OrderCancelResponse();
         response.setFlag("success");
-        logger.error("taobao.qimen.order.cancel："+ JSON.toJSONString(orderCancelRequest));
+        logger.error("taobao.qimen.order.cancel：" + JSON.toJSONString(orderCancelRequest));
         DeliverOrder deliverOrderReq = new DeliverOrder();
         Integer supplierId = Integer.parseInt(ConvertNameUtil.getString(QimenRequestService.QIM_06));
         String orderCode = orderCancelRequest.getOrderCode();
@@ -42,6 +43,12 @@ public class QimenOrderCancelServiceImpl extends AbstrcatQimenService {
                 deliverOrderReq.setOriginalOrderStatus(DeliverOrderServiceI.ORIGINAL_ORDER_STATUS_OTS03);
                 deliverOrderService.edit(deliverOrderReq);
             } else if (ArrayUtils.contains(status, deliverOrder.getStatus())) {
+                if (ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrder.getDeliveryWay()) || ShopDeliverApplyServiceI.DELIVER_WAY_CUSTOMER_AGENT.equals(deliverOrder.getDeliveryWay())) {
+                    if (!DeliverOrderServiceI.AGENT_STATUS_DTS01.equals(deliverOrder.getAgentStatus()) && !DeliverOrderServiceI.AGENT_STATUS_DTS02.equals(deliverOrder.getAgentStatus())) {
+                        response.setFlag("failure");
+                        return response;
+                    }
+                }
                 deliverOrderReq.setStatus(DeliverOrderServiceI.STATUS_FAILURE_CLOSED);
                 deliverOrderReq.setSupplierId(supplierId);
                 deliverOrderReq.setRemark(orderCancelRequest.getCancelReason());

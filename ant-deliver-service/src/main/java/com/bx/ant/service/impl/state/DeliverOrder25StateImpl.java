@@ -48,7 +48,10 @@ public class DeliverOrder25StateImpl extends AbstractDeliverOrderState {
 
     protected void afterCompletion(DeliverOrder deliverOrder) {
         DeliverOrder deliverOrderOld = DeliverOrderState.deliverOrder.get();
-        qimenRequestService.updateDeliveryOrderConfirm(deliverOrderOld);
+        //代送业务此处不用确认
+        if (!ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrderOld.getDeliveryWay()) && !ShopDeliverApplyServiceI.DELIVER_WAY_CUSTOMER_AGENT.equals(deliverOrderOld.getDeliveryWay())) {
+            qimenRequestService.updateDeliveryOrderConfirm(deliverOrderOld);
+        }
     }
 
     @Override

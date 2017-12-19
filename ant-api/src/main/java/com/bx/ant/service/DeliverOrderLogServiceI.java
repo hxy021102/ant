@@ -25,7 +25,7 @@ public interface DeliverOrderLogServiceI {
 	String TYPE_DRIVER_TAKE_ORDER = "DLT11";// 骑手已接单
 	String TYPE_DRIVER_TAKE_ITEM = "DLT12";// 骑手已取货
 	String TYPE_USER_TAKE_ORDER = "DLT13";// 用户已自取
-	String TYPE_DLT14= "DLT14";// 扫码发货
+	String TYPE_DLT14= "DLT14";// 代送扫码发货
 	String TYPE_DLT15 = "DLT15";// 扫码打单
 	String TYPE_DLT16 = "DLT16";// 代送单门店签收
 	String TYPE_CLOSE_ORDER = "DLT30";//关闭订单
