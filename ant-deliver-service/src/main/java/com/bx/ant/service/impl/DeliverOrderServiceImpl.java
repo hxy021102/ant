@@ -3,6 +3,7 @@ package com.bx.ant.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.bx.ant.pageModel.*;
 import com.bx.ant.service.*;
+import com.bx.ant.service.qimen.QimenRequestService;
 import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderDaoI;
 import com.bx.ant.model.TdeliverOrder;
@@ -73,6 +74,8 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 
 	@Autowired
 	private ShopItemServiceI shopItemService;
+	@Resource
+	private QimenRequestService qimenRequestService;
 
 
 	@Override
@@ -472,10 +475,14 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		deliverOrderLog.setContent(content);
 		deliverOrderLog.setLogType(logType);
 		deliverOrderLogService.add(deliverOrderLog);
+		//扫描发货的时候确定发货
+		if(DeliverOrderLogServiceI.TYPE_DLT14.equals(logType)){
+			qimenRequestService.updateDeliveryOrderConfirm(deliverOrder);
+		}
 	}
 
 	@Override
-	public  void editAndAddLog(DeliverOrder deliverOrder, String logType, String content) {
+	public void editAndAddLog(DeliverOrder deliverOrder, String logType, String content) {
 		editAndAddLog(deliverOrder, logType, content, null);
 	}
 
