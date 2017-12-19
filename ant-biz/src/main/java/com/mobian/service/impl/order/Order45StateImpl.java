@@ -49,7 +49,8 @@ public class Order45StateImpl implements OrderState {
         }
         MbBalance balance = mbBalanceService.addOrGetMbBalance(mbOrderOld.getShopId());
         MbShop mbShop = mbShopService.getFromCache(mbOrderOld.getShopId());
-        if (balance.getAmount() < 0 && mbShop != null && MbShopServiceI.ST01.equals(mbShop.getShopType())) {
+        Integer payAmount = mbOrderOld.getTotalPrice() - mbOrderOld.getTotalRefundAmount();
+        if (payAmount > 0 && balance.getAmount() < 0 && mbShop != null && MbShopServiceI.ST01.equals(mbShop.getShopType())) {
             throw new ServiceException("加盟水站，余额不足");
         }
 
@@ -72,7 +73,7 @@ public class Order45StateImpl implements OrderState {
         MbPaymentItem mbPaymentItem = new MbPaymentItem();
         mbPaymentItem.setPaymentId(mbPayment.getId());
         mbPaymentItem.setPayWay(mbOrderNew.getPayWay());
-        mbPaymentItem.setAmount(mbOrderOld.getTotalPrice()-mbOrderOld.getTotalRefundAmount());
+        mbPaymentItem.setAmount(payAmount);
         //mbPaymentItem.setRefId(mbOrder.getRefId());
         mbPaymentItemService.add(mbPaymentItem);
 
