@@ -483,8 +483,8 @@ public class DeliverOrderController extends BaseController {
 		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
 		DeliverOrder deliverOrder = deliverOrderService.get(deliverOrderId);
 		if (deliverOrder != null) {
-			if ("DTS01".equals(deliverOrder.getAgentStatus())&& "DAW04".equals(deliverOrder.getDeliveryWay())) {
-				deliverOrder.setAgentStatus("DTS02");
+			if (DeliverOrderServiceI.AGENT_STATUS_DTS01.equals(deliverOrder.getAgentStatus())&& (ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrder.getDeliveryWay())||ShopDeliverApplyServiceI.DELIVER_WAY_CUSTOMER_AGENT.equals(deliverOrder.getDeliveryWay()))) {
+				deliverOrder.setAgentStatus(DeliverOrderServiceI.AGENT_STATUS_DTS02);
 				deliverOrderService.editAndAddLog(deliverOrder, DeliverOrderLogServiceI.TYPE_DLT15, "扫码打单成功", sessionInfo.getId());
 				j.setMsg("单号："+deliverOrderId+",扫码打单成功！");
 				j.setSuccess(true);
@@ -521,8 +521,8 @@ public class DeliverOrderController extends BaseController {
 		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
 		DeliverOrder deliverOrder = deliverOrderService.get(deliverOrderId);
 		if (deliverOrder != null) {
-			if ("DTS02".equals(deliverOrder.getAgentStatus())&& "DAW04".equals(deliverOrder.getDeliveryWay())) {
-				deliverOrder.setAgentStatus("DTS03");
+			if (DeliverOrderServiceI.AGENT_STATUS_DTS02.equals(deliverOrder.getAgentStatus())&& (ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrder.getDeliveryWay())||ShopDeliverApplyServiceI.DELIVER_WAY_CUSTOMER_AGENT.equals(deliverOrder.getDeliveryWay()))) {
+				deliverOrder.setAgentStatus(DeliverOrderServiceI.AGENT_STATUS_DTS03);
 				deliverOrderService.editAndAddLog(deliverOrder, DeliverOrderLogServiceI.TYPE_DLT14, "扫码发货成功", sessionInfo.getId());
 				j.setMsg("单号："+deliverOrderId+",扫码发货成功！");
 				j.setSuccess(true);
