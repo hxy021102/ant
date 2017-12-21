@@ -293,6 +293,10 @@
                 title : '订单ID',
                 width : 125
             }, {
+                field : 'statusName',
+                title : '订单状态',
+                width : 60
+            },  {
                 field : 'shopName',
                 title : '门店名称',
                 width : 125
@@ -938,9 +942,9 @@
                 buttons : [ {
                     text : '关闭',
                     handler : function() {
-                        parent.$.modalDialog.openner_dataGrid = deliverShopItemDataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                        parent.$.modalDialog.openner_dataGrid = selectDatagrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
                         var f = parent.$.modalDialog.handler.find('#form');
-						/*   f.find("input[name= deliverOrderList]").val(JSON.stringify(rows));*/
+						f.find("input[name= deliverOrderList]").val(JSON.stringify(rows));
                         f.submit();
                     }
                 } ]

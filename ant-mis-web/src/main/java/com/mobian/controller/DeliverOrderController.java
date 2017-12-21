@@ -576,19 +576,15 @@ public class DeliverOrderController extends BaseController {
 	@ResponseBody
 	public Json closeDeliverOrderBatch(HttpSession session, String deliverOrderList) {
 		Json j = new Json();
-		if(!F.empty(deliverOrderList)){
-			JSONArray json = JSONArray.fromObject(deliverOrderList);
-			//把json字符串转换成对象
-			/*List<DeliverOrder> deliverOrders = (List<DeliverOrder>) JSONArray.toCollection(json, DeliverOrder.class);
-			for(DeliverOrder deliverOrder:deliverOrders){
-				deliverOrder.setStatus(DeliverOrderServiceI.STATUS_FAILURE_CLOSED);
-				deliverOrderService.transform(deliverOrder);
-			}*/
-			j.setMsg("批量关闭运单成功！");
-			j.setSuccess(true);
+		JSONArray json = JSONArray.fromObject(deliverOrderList);
+		//把json字符串转换成对象
+		List<DeliverOrder> deliverOrders = (List<DeliverOrder>) JSONArray.toCollection(json, DeliverOrder.class);
+		for (DeliverOrder deliverOrder : deliverOrders) {
+			deliverOrder.setStatus(DeliverOrderServiceI.STATUS_FAILURE_CLOSED);
+			deliverOrderService.transform(deliverOrder);
 		}
-		j.setMsg("批量关闭运单失败！");
-		j.setSuccess(false);
+		j.setMsg("批量关闭运单成功！");
+		j.setSuccess(true);
 		return j;
 	}
 }
