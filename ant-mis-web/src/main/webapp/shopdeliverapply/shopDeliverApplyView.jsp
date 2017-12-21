@@ -7,6 +7,9 @@
 <script type="text/javascript">
 	$(function() {
 		parent.$.messager.progress('close');
+        $('.money_input').each(function(){
+            $(this).text($.formatMoney($(this).text().trim()));
+        });
 	});
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
@@ -61,15 +64,15 @@
 				</tr>
 		     	<tr>
 				<th>是否必须上传回单</th>
-				<td>
+				  <td>
 					<c:if test="${shopDeliverApplyQuery.uploadRequired == false}">
 						否
 					</c:if>
 					<c:if test="${shopDeliverApplyQuery.uploadRequired == true}">
 						 是
 					</c:if>
-				</td>
-					<th>是否营业</th>
+				  </td>
+				<th>是否营业</th>
 					<td>
 						<c:if test="${shopDeliverApplyQuery.online == false}">
 							否
@@ -81,8 +84,30 @@
 			  </tr>
 			  <tr>
 				<th>派单类型</th>
-				<td colspan="3">
+				<td >
 					${shopDeliverApplyQuery.deliveryTypeName}
+				</td>
+				<th>配送方式</th>
+				 <td>
+					${shopDeliverApplyQuery.deliveryWayName}
+				 </td>
+			  </tr>
+			<tr>
+				<th>冻结状态</th>
+				<td>
+					<c:if test="${shopDeliverApplyQuery.frozen}">冻结</c:if>
+					<c:if test="${!shopDeliverApplyQuery.frozen}">正常</c:if>
+				</td>
+				<th>转入权限</th>
+				<td>
+					<c:if test="${shopDeliverApplyQuery.transferAuth == false}">无权限</c:if>
+					<c:if test="${shopDeliverApplyQuery.transferAuth == true}">允许</c:if>
+				</td>
+			 </tr>
+			 <tr>
+				<th>运费</th>
+				<td colspan="4">
+					<font   class="money_input">${shopDeliverApplyQuery.freight}</font>
 				</td>
 			  </tr>
 			  <tr>
@@ -90,7 +115,7 @@
 					<td colspan="3">
 						${shopDeliverApplyQuery.result}
 					</td>							
-				</tr>
+			  </tr>
 		</table>
 	</div>
 </div>
