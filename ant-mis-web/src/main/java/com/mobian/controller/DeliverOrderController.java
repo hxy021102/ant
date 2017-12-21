@@ -574,13 +574,14 @@ public class DeliverOrderController extends BaseController {
 	 */
 	@RequestMapping("/closeDeliverOrderBatch")
 	@ResponseBody
-	public Json closeDeliverOrderBatch(HttpSession session, String deliverOrderList) {
+	public Json closeDeliverOrderBatch(HttpSession session, String deliverOrderList,String remark) {
 		Json j = new Json();
 		JSONArray json = JSONArray.fromObject(deliverOrderList);
 		//把json字符串转换成对象
 		List<DeliverOrder> deliverOrders = (List<DeliverOrder>) JSONArray.toCollection(json, DeliverOrder.class);
 		for (DeliverOrder deliverOrder : deliverOrders) {
 			deliverOrder.setStatus(DeliverOrderServiceI.STATUS_FAILURE_CLOSED);
+			deliverOrder.setRemark(remark);
 			deliverOrderService.transform(deliverOrder);
 		}
 		j.setMsg("批量关闭运单成功！");
