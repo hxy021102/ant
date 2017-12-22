@@ -31,6 +31,7 @@ import java.util.Map;
 @Service
 public class QimenRequestServiceImpl extends Objectx implements QimenRequestService {
 
+    public static final String OTHER = "OTHER";
     @Autowired
     private DeliverOrderItemServiceI deliverOrderItemService;
 
@@ -52,7 +53,8 @@ public class QimenRequestServiceImpl extends Objectx implements QimenRequestServ
             List<DeliveryorderConfirmRequest.Package> packages = new ArrayList<DeliveryorderConfirmRequest.Package>();
             DeliveryorderConfirmRequest.Package _package = new DeliveryorderConfirmRequest.Package();
             packages.add(_package);
-            _package.setLogisticsCode("OTHER");
+            _package.setLogisticsCode(OTHER);
+            _package.setLogisticsName(ConvertNameUtil.getString(QimenRequestService.QIM_12));
             _package.setExpressCode(deliverOrder.getId()+"");
             request.setPackages(packages);
             List<DeliverOrderItem> deliverOrderItemList = deliverOrderItemService.getDeliverOrderItemList(deliverOrder.getId());
