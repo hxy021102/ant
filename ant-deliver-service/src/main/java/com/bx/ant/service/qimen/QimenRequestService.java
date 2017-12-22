@@ -16,6 +16,7 @@ public interface QimenRequestService {
     String QIM_08 = "QIM08";
     String QIM_09 = "QIM09";
     String QIM_10 = "QIM10";
+    String QIM_12 = "QIM12";
 
 
     String JYCK = "JYCK";//一般交易出库单
