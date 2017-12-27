@@ -80,6 +80,10 @@
 					<td>
 						<jb:select dataType="URT" name="refType" mustSelect="true" required="true"></jb:select>
 					</td>
+					<th>账号ID</th>
+					<td>
+						<jb:selectSql dataType="SQ020" name="refId" ></jb:selectSql>
+					</td>
 				</tr>
 			</table>
 		</form>
