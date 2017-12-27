@@ -60,6 +60,10 @@
             }
         });
         gridMap[0].invoke();
+
+        $('.money_input').each(function(){
+            $(this).text($.formatMoney($(this).text().trim()));
+        });
     });
     	var dataGrid;
         function dataGrid() {
@@ -383,11 +387,21 @@
             } ]
         });
     }
+
+    //余额
+    function viewBalance(id) {
+        var href = '${pageContext.request.contextPath}/mbUserController/viewBalance?accessSupplierId=' + id;
+        parent.$("#index_tabs").tabs('add', {
+            title: '余额-' + id,
+            content: '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            closable: true
+        });
+    }
 </script>
 </head>
 <body>
 <div class="easyui-layout" data-options="fit:true,border:false">
-	<div data-options="region:'north',title:'基本信息',border:false" style="height: 270px; overflow: hidden;">
+	<div data-options="region:'north',title:'基本信息',border:false" style="height: 246px; overflow: hidden;">
 		<table class="table table-hover table-condensed">
 				<tr>	
 					<th style="width:60px;">appKey</th>
@@ -397,9 +411,7 @@
 					<th style="width: 60px">appSecret</th>
 					<td>
 						${supplier.appSecret}							
-					</td>							
-				</tr>		
-				<tr>
+					</td>
 					<th style="width: 60px">接入方名称</th>
 					<td>
 						${supplier.name}
@@ -409,33 +421,45 @@
 						${supplier.statusName}
 					</td>
 				</tr>
-				<tr>	
+			    <tr>
 					<th style="width: 60px">联系人</th>
 					<td>
 						${supplier.contacter}							
-					</td>							
+					</td>
+					<th style="width: 60px">余额</th>
+					<td>
+						<a href="javascript:void(0);" onclick="viewBalance('${supplier.id}')" class="money_input">${supplier.balance}</a>
+					</td>
+					<th style="width: 60px">保证金</th>
+					<td>
+						<font  class="money_input">${supplier.bond}</font>
+					</td>
+					<th style="width: 60px">授信</th>
+					<td >
+						<font  class="money_input">${supplier.credit}</font>
+					</td>
+				</tr>
+				<tr>
 					<th style="width: 60px">联系电话</th>
 					<td>
-						${supplier.contactPhone}							
-					</td>							
+						${supplier.contactPhone}
+					</td>
+					<th>操作人</th>
+					<td >${supplier.loginName}</td>
+					<th>营业执照</th>
+					<td rowspan="3" height="60" colspan="3">
+						<img src="${supplier.charterUrl}" style="height: 120px;width: 220px"/>
+					</td>
 				</tr>
 				<tr>
 					<th style="width: 60px">地址</th>
 					<td>
 						${supplier.address}
 					</td>
-					<th>营业执照</th>
-					<td rowspan="3" height="60">
-						<img src="${supplier.charterUrl}" style="height: 120px;width: 220px"/>
-					</td>
-				</tr>
-				<tr>
-					<th>操作人</th>
-					<td colspan="2">${supplier.loginName}</td>
 				</tr>
 			<tr>
 				<th>备注</th>
-				<td colspan="2">
+				<td colspan="4">
 				${supplier.remark}
 				</td>
 			</tr>

@@ -236,6 +236,23 @@
             } ]
         });
     }
+
+    function addAccessSupplierMoney() {
+        parent.$.modalDialog({
+            title : '接入方充值',
+            width : 780,
+            height : 260,
+            href : '${pageContext.request.contextPath}/mbRechargeLogController/addAccessSupplierMoneyPage?accessSupplierId='+${mbBalance.refId},
+            buttons : [ {
+                text : '添加',
+                handler : function() {
+                    parent.$.modalDialog.openner_dataGrid = dataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                    var f = parent.$.modalDialog.handler.find('#form');
+                    f.submit();
+                }
+            } ]
+        });
+    }
 </script>
 </head>
 <body>
@@ -275,6 +292,9 @@
     </c:if>
     <c:if test="${fn:contains(sessionInfo.resourceList, '/mbRechargeLogController/addSupplierChargePage') and mbBalance.refType==17}">
         <a onclick="addSupplierCharge();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'pencil_add'">供应商充值</a>
+    </c:if>
+    <c:if test="${fn:contains(sessionInfo.resourceList, '/mbRechargeLogController/addAccessSupplierMoneyPage') and accessSupplier == true}">
+        <a onclick="addAccessSupplierMoney();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'pencil_add'">充值</a>
     </c:if>
 </div>
 </body>

@@ -12,14 +12,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.bx.ant.pageModel.SupplierView;
 import com.mobian.absx.F;
 import com.mobian.pageModel.*;
 import com.bx.ant.service.SupplierServiceI;
 
 import com.bx.ant.pageModel.Supplier;
+import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.UserServiceI;
 import com.mobian.util.ConfigUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,6 +51,8 @@ public class SupplierController extends BaseController {
 	private SupplierServiceI supplierService;
     @Autowired
 	private UserServiceI userService;
+    @Autowired
+	private MbBalanceServiceI mbBalanceService;
 
 
 	/**
@@ -174,8 +179,16 @@ public class SupplierController extends BaseController {
 	public String view(HttpServletRequest request, Integer id) {
 		Supplier supplier = supplierService.get(id);
 		User user = userService.get(supplier.getLoginId());
+		SupplierView supplierView=new SupplierView();
+		BeanUtils.copyProperties(supplier,supplierView);
+		MbBalance mbBalance = mbBalanceService.addOrGetAccessSupplierBalance(id);
+		MbBalance mbBalanceBond = mbBalanceService.addOrGetAccessSupplierBond(id);
+		MbBalance mbBalanceCredit = mbBalanceService.addOrGetAccessSupplierCredit(id);
+		supplierView.setBalance(mbBalance.getAmount());
+		supplierView.setBond(mbBalanceBond.getAmount());
+		supplierView.setCredit(mbBalanceCredit.getAmount());
 		supplier.setLoginName(user.getNickname());
-		request.setAttribute("supplier", supplier);
+		request.setAttribute("supplier", supplierView);
 		return "/supplier/supplierView";
 	}
 

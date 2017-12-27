@@ -148,7 +148,7 @@ public interface MbBalanceServiceI {
 	void transform(Integer amount, MbBalance balanceSource, MbBalance balanceTarget);
 
 	/**
-	 * 通用创建与获取供应商钱包信息
+	 * 通用创建与获取采购供应商钱包信息
 	 * @param refId
 	 * @param refType
 	 * @param initAmount
@@ -170,5 +170,34 @@ public interface MbBalanceServiceI {
 	 * @return
 	 */
 	MbBalance addOrGetDriverBalance(Integer driverAccountId);
+
+	/**
+	 * 获取接入方的余额钱包信息
+	 * @param accessSupplierId
+	 * @return
+	 */
+	MbBalance addOrGetAccessSupplierBalance(Integer accessSupplierId);
+
+	/**
+	 * 获取接入方的保证金信息
+	 * @param accessSupplierId
+	 * @return
+	 */
+	MbBalance addOrGetAccessSupplierBond(Integer accessSupplierId);
+
+	/**
+	 * 获取接入方的授信信息
+	 * @param accessSupplierId
+	 * @return
+	 */
+	MbBalance addOrGetAccessSupplierCredit(Integer accessSupplierId);
+	/**
+	 * 获取接入方的钱包信息
+	 * @param refId
+	 * @param refType： 20代表余额，21代表保证金，22代表授信
+	 * @param initAmount
+	 * @return
+	 */
+	MbBalance addOrGetAccessSupplierBalance(Integer refId, Integer refType, Integer initAmount);
 
 }
