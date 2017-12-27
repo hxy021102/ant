@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,6 +15,22 @@
 	<script type="text/javascript">
             $.canDelete = true;
 	</script>
+</c:if>
+<c:if test="${fn:contains(sessionInfo.resourceList, '/supplierInterfaceConfigController/editPage')}">
+		<script type="text/javascript">
+            $.canEditConfig = true;
+		</script>
+</c:if>
+<c:if test="${fn:contains(sessionInfo.resourceList, '/supplierInterfaceConfigController/delete')}">
+		<script type="text/javascript">
+            $.canDeleteConfig = true;
+		</script>
+</c:if>
+
+<c:if test="${fn:contains(sessionInfo.resourceList, '/supplierInterfaceConfigController/view')}">
+		<script type="text/javascript">
+            $.canViewConfig = true;
+		</script>
 </c:if>
 <script type="text/javascript">
     var gridMap = {};
@@ -30,8 +47,18 @@
                 invoke: function () {
                     gridMap.handle(this, dataGrid);
                 }, grid: null
+            },
+            1: {
+                invoke: function () {
+                    gridMap.handle(this, loadSupplierInterfaceConfigDataGrid);
+                }, grid: null
             }
         };
+        $('#supplier_view_tabs').tabs({
+            onSelect: function (title, index) {
+                gridMap[index].invoke();
+            }
+        });
         gridMap[0].invoke();
     });
     	var dataGrid;
@@ -122,6 +149,106 @@
                 toolbar: "#toolbar"
             });
         };
+    var configdataGrid;
+    function loadSupplierInterfaceConfigDataGrid() {
+        return configdataGrid = $('#supplierInterfaceConfigDataGrid').datagrid({
+        url : '${pageContext.request.contextPath}/supplierInterfaceConfigController/dataGrid?customerId='+${supplier.id},
+        fit : true,
+        fitColumns : true,
+        border : false,
+        pagination : true,
+        idField : 'id',
+        pageSize : 10,
+        pageList : [ 10, 20, 30, 40, 50 ],
+        sortName : 'id',
+        sortOrder : 'desc',
+        checkOnSelect : false,
+        selectOnCheck : false,
+        nowrap : false,
+        striped : true,
+        rownumbers : true,
+        singleSelect : true,
+        columns : [ [ {
+            field : 'id',
+            title : '编号',
+            width : 30,
+            formatter :function (value, row, index) {
+                if ($.canViewConfig)
+                    return '<a onclick="viewConfig(' + row.id + ')">' + row.id + '</a>';
+                return value;
+        }},{
+            field : 'updatetime',
+            title : '修改时间',
+            width : 70
+        },  {
+            field : 'interfaceType',
+            title : '接口类型',
+            width : 50
+        }, {
+            field : 'customerId',
+            title : '客户ID',
+            width : 30
+        }, {
+            field : 'appKey',
+            title : 'appKey',
+            width : 50
+        }, {
+            field : 'appSecret',
+            title : 'appSecret',
+            width : 50
+        }, {
+            field : 'serviceUrl',
+            title : 'serviceUrl',
+            width : 50
+        }, {
+            field : 'version',
+            title : '版本',
+            width : 50
+        }, {
+            field : 'warehouseCode',
+            title : '仓库代码',
+            width : 50
+        }, {
+            field : 'logisticsCode',
+            title : '物流公司代码',
+            width : 50
+        }, {
+            field : 'statusMap',
+            title : '状态映射',
+            width : 50
+        },{
+            field : 'online',
+            title : '是否上线',
+            width : 30,
+            formatter: function (value, row) {
+                if (value == true)
+                    return "是";
+                return "否";
+            }
+        }, {
+            field : 'action',
+            title : '操作',
+            width : 100,
+            formatter : function(value, row) {
+                var str = '';
+                if ($.canEditConfig) {
+                    str += $.formatString('<img onclick="editConfig(\'{0}\');" src="{1}" title="编辑"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/pencil.png');
+                }
+                str += '&nbsp;';
+                if ($.canDeleteConfig) {
+                    str += $.formatString('<img onclick="deleteConfig(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/cancel.png');
+                }
+                return str;
+            }
+        } ] ],
+        toolbar : '#toolbarconfiger',
+        onLoadSuccess : function() {
+            $('#searchForm table').show();
+            parent.$.messager.progress('close');
+            $(this).datagrid('tooltip');
+        }
+    });
+    }
     function addFun() {
         parent.$.modalDialog({
             title : '添加数据',
@@ -181,11 +308,86 @@
             }
         });
     }
+
+    function deleteConfig(id) {
+        if (id == undefined) {
+            var rows = dataGrid.datagrid('getSelections');
+            id = rows[0].id;
+        }
+        parent.$.messager.confirm('询问', '您是否要删除当前数据？', function(b) {
+            if (b) {
+                parent.$.messager.progress({
+                    title : '提示',
+                    text : '数据处理中，请稍后....'
+                });
+                $.post('${pageContext.request.contextPath}/supplierInterfaceConfigController/delete', {
+                    id : id
+                }, function(result) {
+                    if (result.success) {
+                        parent.$.messager.alert('提示', result.msg, 'info');
+                        configdataGrid.datagrid('reload');
+                    }
+                    parent.$.messager.progress('close');
+                }, 'JSON');
+            }
+        });
+    }
+
+    function editConfig(id) {
+        if (id == undefined) {
+            var rows = dataGrid.datagrid('getSelections');
+            id = rows[0].id;
+        }
+        parent.$.modalDialog({
+            title : '修改接入配置',
+            width : 780,
+            height : 400,
+            href : '${pageContext.request.contextPath}/supplierInterfaceConfigController/editPage?id=' + id,
+            buttons : [ {
+                text : '编辑',
+                handler : function() {
+                    parent.$.modalDialog.openner_dataGrid = configdataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                    var f = parent.$.modalDialog.handler.find('#form');
+                    f.submit();
+                }
+            } ]
+        });
+    }
+
+    function viewConfig(id) {
+        if (id == undefined) {
+            var rows = dataGrid.datagrid('getSelections');
+            id = rows[0].id;
+        }
+        parent.$.modalDialog({
+            title : '配置详情',
+            width : 780,
+            height : 400,
+            href : '${pageContext.request.contextPath}/supplierInterfaceConfigController/view?id=' + id
+        });
+    }
+
+    function addConfig() {
+        parent.$.modalDialog({
+            title : '添加接入配置',
+            width : 780,
+            height : 400,
+            href : '${pageContext.request.contextPath}/supplierInterfaceConfigController/addPage?supplierId='+${supplier.id},
+            buttons : [ {
+                text : '添加',
+                handler : function() {
+                    parent.$.modalDialog.openner_dataGrid = configdataGrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                    var f = parent.$.modalDialog.handler.find('#form');
+                    f.submit();
+                }
+            } ]
+        });
+    }
 </script>
 </head>
 <body>
 <div class="easyui-layout" data-options="fit:true,border:false">
-	<div data-options="region:'north',border:false">
+	<div data-options="region:'north',title:'基本信息',border:false" style="height: 270px; overflow: hidden;">
 		<table class="table table-hover table-condensed">
 				<tr>	
 					<th style="width:60px;">appKey</th>
@@ -240,9 +442,12 @@
 		</table>
 	</div>
 	<div data-options="region:'center',border:false">
-		<div id="shop_view_tabs" class="easyui-tabs" data-options="fit : true,border:false">
+		<div id="supplier_view_tabs" class="easyui-tabs" data-options="fit : true,border:false">
 			<div title="商品明细列表">
 				<table id="dataGrid"></table>
+			</div>
+			<div title="接入配置">
+				<table id="supplierInterfaceConfigDataGrid"></table>
 			</div>
 		</div>
 	</div>
@@ -250,6 +455,11 @@
 <div id="toolbar">
 	<c:if test="${fn:contains(sessionInfo.resourceList, '/supplierItemRelationController/addPage')}">
 		<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'pencil_add'">添加</a>
+	</c:if>
+</div>
+<div id="toolbarconfiger" style="display: none;">
+	<c:if test="${fn:contains(sessionInfo.resourceList, '/supplierInterfaceConfigController/addPage')}">
+		<a onclick="addConfig();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'pencil_add'">添加</a>
 	</c:if>
 </div>
 </body>

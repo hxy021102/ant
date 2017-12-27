@@ -75,6 +75,12 @@
 						<jb:select dataType="ES" name="utype" mustSelect="true" required="true"></jb:select>
 					</td>
 				</tr>
+				<tr>
+					<th>账号类型</th>
+					<td>
+						<jb:select dataType="URT" name="refType" mustSelect="true" required="true"></jb:select>
+					</td>
+				</tr>
 			</table>
 		</form>
 	</div>

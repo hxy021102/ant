@@ -68,6 +68,8 @@ public class Tuser implements java.io.Serializable {
 	private String email;
 	private String orgName;
 	private String phone;
+	private String refType;
+	private String refId;
 	
 	public Tuser() {
 	}
@@ -257,5 +259,23 @@ public class Tuser implements java.io.Serializable {
 
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+
+	@Column(name = "ref_type ", unique = false, nullable = true, insertable = true, updatable = true, length = 10)
+	public String getRefType() {
+		return refType;
+	}
+
+	public void setRefType(String refType) {
+		this.refType = refType;
+	}
+
+	@Column(name = "ref_id", unique = false, nullable = true, insertable = true, updatable = true, length = 36)
+	public String getRefId() {
+		return refId;
+	}
+
+	public void setRefId(String refId) {
+		this.refId = refId;
 	}
 }
