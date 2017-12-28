@@ -171,6 +171,17 @@ public class MbBalanceServiceImpl extends BaseServiceImpl<MbBalance> implements 
 	}
 
 	@Override
+	public MbBalance getCashByRealShopId(Integer shopId) {
+		TmbBalance tmbBalance = mbBalanceDao.get("from TmbBalance t where t.refType = 4 and t.refId=" + shopId);
+		if (tmbBalance != null) {
+			MbBalance mbBalance = new MbBalance();
+			BeanUtils.copyProperties(tmbBalance, mbBalance);
+			return mbBalance;
+		}
+		return null;
+	}
+
+	@Override
 	public List<MbBalance> queryByrefTypeAndAmount(Integer refType, Integer amount) {
 		Map<String,Object> params=new HashMap<String,Object>();
 		List<MbBalance> mbBalanceList=new ArrayList<MbBalance>();

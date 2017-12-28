@@ -96,6 +96,13 @@ public interface MbBalanceServiceI {
 	MbBalance getCashByShopId(Integer shopId);
 
 	/**
+	 * 桶押金真实账户
+	 * @param id
+	 * @return
+	 */
+	MbBalance getCashByRealShopId(Integer id);
+
+	/**
 	 * 通过欠款类型和欠款进行查询
 	 * @param refType
 	 * @param amount
@@ -163,4 +170,5 @@ public interface MbBalanceServiceI {
 	 * @return
 	 */
 	MbBalance addOrGetDriverBalance(Integer driverAccountId);
+
 }

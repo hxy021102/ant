@@ -128,9 +128,9 @@
 			id = rows[0].id;
 		}
 		parent.$.modalDialog({
-			title : '派单数据',
+			title : '派单申请详情',
 			width : 780,
-			height : 300,
+			height : 400,
 			href : '${pageContext.request.contextPath}/shopDeliverApplyController/view?id=' + id
 		});
 	}

@@ -575,10 +575,14 @@ public class ApiDeliverOrderController extends BaseController {
     @RequestMapping("/getOrderByCode")
     @ResponseBody
     public Json getOrderByCode(String code) {
-     Json j = new Json();
-     Long orderId = deliverOrderYouzanService.getOrderByCode(code);
-     j.setObj(orderId);
-     return j ;
+        Json j = new Json();
+        Long orderId = deliverOrderYouzanService.getOrderByCode(code);
+        if(!F.empty(orderId)) {
+            j.success();
+            j.setObj(orderId);
+        }
+
+        return j ;
     }
     @RequestMapping("/editFetchOrder")
     @ResponseBody

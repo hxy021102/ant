@@ -324,7 +324,7 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
             // 余额绑定
             if(balanceAmount != 0) {
                 // 分店余额转出
-                MbBalance balance = mbBalanceService.queryByShopId(mbShop.getId());
+                MbBalance balance = mbBalanceService.queryByRealShopId(mbShop.getId());
                 MbBalanceLog log = new MbBalanceLog();
                 log.setBalanceId(balance.getId());
                 log.setAmount(-balanceAmount);
@@ -333,7 +333,7 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
                 mbBalanceLogService.addAndUpdateBalance(log);
 
                 // 主店余额转入
-                balance = mbBalanceService.queryByShopId(mbShop.getParentId());
+                balance = mbBalanceService.queryByRealShopId(mbShop.getParentId());
                 log = new MbBalanceLog();
                 log.setBalanceId(balance.getId());
                 log.setAmount(balanceAmount);
@@ -345,7 +345,7 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
             // 桶余额绑定
             if(cashBalanceAmount != 0) {
                 // 分店桶桶余额转出
-                MbBalance balance = mbBalanceService.getCashByShopId(mbShop.getId());
+                MbBalance balance = mbBalanceService.getCashByRealShopId(mbShop.getId());
                 MbBalanceLog log = new MbBalanceLog();
                 log.setBalanceId(balance.getId());
                 log.setAmount(-cashBalanceAmount);
@@ -354,7 +354,7 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
                 mbBalanceLogService.addAndUpdateBalance(log);
 
                 // 主店桶余额转入
-                balance = mbBalanceService.getCashByShopId(mbShop.getParentId());
+                balance = mbBalanceService.getCashByRealShopId(mbShop.getParentId());
                 log = new MbBalanceLog();
                 log.setBalanceId(balance.getId());
                 log.setAmount(cashBalanceAmount);
