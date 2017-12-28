@@ -15,7 +15,6 @@ import com.bx.ant.service.SupplierServiceI;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
 import com.mobian.service.BasedataServiceI;
-import com.mobian.service.MbItemServiceI;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.service.MbStockOutOrderServiceI;
 import com.mobian.util.ConfigUtil;
@@ -588,4 +587,50 @@ public class DeliverOrderController extends BaseController {
 		j.setSuccess(true);
 		return j;
 	}
+
+	/**
+	 * 跳转到批量运单指派页
+	 *
+	 * @return
+	 */
+	@RequestMapping("/assignOrderBatchPage")
+	public String assignOrderBatchPage() {
+		return "/deliverorder/assignOrderBatchShop";
+	}
+
+	/**
+	 * 指派批量运单给门店
+	 * @param shopId
+	 * @param orderLogRemark
+	 * @param deliverOrderList
+	 * @return
+	 */
+	@RequestMapping("/assignOrderBatchShop")
+	@ResponseBody
+	public Json assignOrderBatchShop(Integer shopId,String orderLogRemark,String deliverOrderList) {
+		Json j = new Json();
+		JSONArray json = JSONArray.fromObject(deliverOrderList);
+		//把json字符串转换成对象
+		List<DeliverOrder> deliverOrders = (List<DeliverOrder>) JSONArray.toCollection(json, DeliverOrder.class);
+		for (DeliverOrder deliverOrder : deliverOrders) {
+			DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+			deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
+			deliverOrderShop.setStatus("DSS02");
+			List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(deliverOrderShop);
+			DeliverOrderShop orderShop = deliverOrderShops.get(0);
+			deliverOrder.setOrderShopId(orderShop.getId());
+			deliverOrder.setShopId(shopId);
+			deliverOrder.setOrderLogRemark(orderLogRemark);
+			Boolean result = deliverOrderService.handleAssignDeliverOrder(deliverOrder);
+			if (!result) {
+				j.setSuccess(false);
+				j.setMsg("运单:" + deliverOrder.getId() + "指派失败，门店商品不足或不存在该商品！");
+				return j;
+			}
+		}
+		j.setSuccess(true);
+		j.setMsg("指派成功！");
+		return j;
+	}
+
 }

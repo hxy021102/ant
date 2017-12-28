@@ -956,6 +956,32 @@
             });
         }
     }
+
+    function assignOrderBatch() {
+        var rows = selectDatagrid.datagrid('getChecked');
+        if (rows.length > 0) {
+            parent.$.modalDialog({
+                title : '批量运单分配',
+                width : 780,
+                height : 220,
+                href : '${pageContext.request.contextPath}/deliverOrderController/assignOrderBatchPage',
+                buttons : [ {
+                    text : '分配',
+                    handler : function() {
+                        parent.$.modalDialog.openner_dataGrid = selectDatagrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                        var f = parent.$.modalDialog.handler.find('#form');
+						f.find("input[name= deliverOrderList]").val(JSON.stringify(rows));
+                        f.submit();
+                    }
+                } ]
+            });
+        } else {
+            parent.$.messager.show({
+                title : '提示',
+                msg : '请勾选要分配的运单！'
+            });
+        }
+    }
 </script>
 </head>
 <body>
@@ -1050,6 +1076,10 @@
 			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">
 			</form>
 			<iframe id="downloadIframe" name="downloadIframe" style="display: none;"></iframe>
+		</c:if>
+
+		<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/assignOrderBatchPage')}">
+			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="assignOrderBatch();">人工分单批量</a>
 		</c:if>
 		<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/closeDeliverOrderBatch')}">
 			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="closeDeliverOrderBatch();">批量关闭运单</a>
