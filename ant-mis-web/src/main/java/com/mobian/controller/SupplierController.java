@@ -73,7 +73,12 @@ public class SupplierController extends BaseController {
 	 */
 	@RequestMapping("/dataGrid")
 	@ResponseBody
-	public DataGrid dataGrid(Supplier supplier, PageHelper ph) {
+	public DataGrid dataGrid(HttpSession session,Supplier supplier, PageHelper ph) {
+		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+		User user = userService.get(sessionInfo.getId());
+		if ("URT02".equals(user.getRefType())) {
+			supplier.setId(Integer.parseInt(user.getRefId()));
+		}
 		return supplierService.dataGrid(supplier, ph);
 	}
 	/**
@@ -90,7 +95,7 @@ public class SupplierController extends BaseController {
 	 */
 	@RequestMapping("/download")
 	public void download(Supplier supplier, PageHelper ph,String downloadFields,HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException{
-		DataGrid dg = dataGrid(supplier,ph);		
+		DataGrid dg = supplierService.dataGrid(supplier,ph);
 		downloadFields = downloadFields.replace("&quot;", "\"");
 		downloadFields = downloadFields.substring(1,downloadFields.length()-1);
 		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
