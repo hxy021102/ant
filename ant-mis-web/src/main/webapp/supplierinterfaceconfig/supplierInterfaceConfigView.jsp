@@ -21,7 +21,7 @@
 			</tr>
 			<th>接口类型</th>
 				<td>
-					${supplierInterfaceConfig.interfaceType}
+					${supplierInterfaceConfig.interfaceTypeName}
 				</td>
 				<th>客户ID</th>
 				<td>

@@ -1,5 +1,7 @@
 package com.bx.ant.pageModel;
 
+import com.mobian.util.ConvertNameUtil;
+
 import java.util.Date;
 
 @SuppressWarnings("serial")
@@ -23,8 +25,8 @@ public class SupplierInterfaceConfig implements java.io.Serializable {
 	private String statusMap;
 	private String remark;
 	private Boolean online;
-
-	
+	private Integer supplierId;
+	private String interfaceTypeName;
 
 	public void setId(Integer value) {
 		this.id = value;
@@ -141,4 +143,19 @@ public class SupplierInterfaceConfig implements java.io.Serializable {
 		return this.online;
 	}
 
+	public Integer getSupplierId() {
+		return supplierId;
+	}
+
+	public void setSupplierId(Integer supplierId) {
+		this.supplierId = supplierId;
+	}
+
+	public String getInterfaceTypeName() {
+		return ConvertNameUtil.getString(interfaceType);
+	}
+
+	public void setInterfaceTypeName(String interfaceTypeName) {
+		this.interfaceTypeName = interfaceTypeName;
+	}
 }

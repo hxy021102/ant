@@ -97,7 +97,11 @@ public class SupplierInterfaceConfigServiceImpl extends BaseServiceImpl<Supplier
 			if (!F.empty(supplierInterfaceConfig.getOnline())) {
 				whereHql += " and t.online = :online";
 				params.put("online", supplierInterfaceConfig.getOnline());
-			}		
+			}
+			if (!F.empty(supplierInterfaceConfig.getSupplierId())) {
+				whereHql += " and t.supplierId = :supplierId";
+				params.put("supplierId", supplierInterfaceConfig.getSupplierId());
+			}
 		}	
 		return whereHql;
 	}

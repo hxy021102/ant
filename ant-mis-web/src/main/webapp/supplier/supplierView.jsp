@@ -156,7 +156,7 @@
     var configdataGrid;
     function loadSupplierInterfaceConfigDataGrid() {
         return configdataGrid = $('#supplierInterfaceConfigDataGrid').datagrid({
-        url : '${pageContext.request.contextPath}/supplierInterfaceConfigController/dataGrid?customerId='+${supplier.id},
+        url : '${pageContext.request.contextPath}/supplierInterfaceConfigController/dataGrid?supplierId='+${supplier.id},
         fit : true,
         fitColumns : true,
         border : false,
@@ -185,7 +185,7 @@
             title : '修改时间',
             width : 70
         },  {
-            field : 'interfaceType',
+            field : 'interfaceTypeName',
             title : '接口类型',
             width : 50
         }, {

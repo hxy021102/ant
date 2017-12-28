@@ -210,10 +210,12 @@ public class DeliverOrderController extends BaseController {
 		if (CollectionUtils.isNotEmpty(deliverOrderQueries)) {
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			for (DeliverOrderQuery orderQuery : deliverOrderQueries) {
-				String addDateStr= formatter.format(orderQuery.getAddtime());
-				String requiredDateStr = formatter.format(orderQuery.getDeliveryRequireTime());
+				String addDateStr = formatter.format(orderQuery.getAddtime());
+				if (orderQuery.getDeliveryRequireTime() != null) {
+					String requiredDateStr = formatter.format(orderQuery.getDeliveryRequireTime());
+					orderQuery.setRequiredDate(requiredDateStr);
+				}
 				orderQuery.setCreateDate(addDateStr);
-				orderQuery.setRequiredDate(requiredDateStr);
 				orderQuery.setAmountElement(orderQuery.getAmount() / 100.0);
 			}
 		}

@@ -34,49 +34,53 @@
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'center',border:false" title="" style="overflow: hidden;">	
 		<form id="form" method="post">
-			<input class="span2" name="customerId" type="hidden" value="${param.supplierId}"/>
+			<input class="span2" name="supplierId" type="hidden" value="${param.supplierId}"/>
 			<table class="table table-hover table-condensed">
 				<tr>	
 					<th>接口类型</th>
 					<td>
-						<input class="span2" name="interfaceType" type="text"/>
+						<jb:select dataType="IFT" name="interfaceType" required="true"></jb:select>
 					</td>
 					<th>appkey</th>
 					<td>
-						 <input class="span2" name="appKey" type="text"/>
+						 <input class="easyui-validatebox span2"  required="true" name="appKey" type="text"/>
 					</td>
 				</tr>
 				<tr>
 				<th>appSecret</th>
 					<td>
-						 <input class="span2" name="appSecret" type="text"/>
+						 <input  class="easyui-validatebox span2"  required="true" name="appSecret" type="text"/>
 					</td>
 					<th>serviceUrl</th>
 					<td>
-						  <input class="span2" name="serviceUrl" type="text"/>
+						  <input class="easyui-validatebox span2"  required="true" name="serviceUrl" type="text"/>
 					</td>
 				</tr>
 				<tr>
 				<th>版本</th>
 					<td>
-						  <input class="span2" name="version" type="text"/>
+						  <input class="easyui-validatebox span2"  required="true" name="version" type="text"/>
 					</td>
 					<th>仓库代码</th>
 					<td>
-							<input class="span2" name="warehouseCode" type="text"/>
+							<input class="easyui-validatebox span2"  required="true" name="warehouseCode" type="text"/>
 					</td>
 				</tr>
 				<tr>
 				<th>物流公司代码</th>
 					<td>
-							<input class="span2" name="logisticsCode" type="text"/>
+							<input class="easyui-validatebox span2"  required="true" name="logisticsCode" type="text"/>
 					</td>
 					<th>状态映射</th>
 					<td>
-							<input class="span2" name="statusMap" type="text"/>
+							<input class="easyui-validatebox span2"  required="true" name="statusMap" type="text"/>
 					</td>
 				</tr>
 				<tr>
+				<th>客户ID</th>
+					<td>
+						<input class="easyui-validatebox span2" required="true" name="customerId" type="text"/>
+				    </td>
 				<th>是否上线</th>
 					<td>
 						<select class="easyui-combobox" name="online" data-options="width:140,height:29,editable:false,panelHeight:'auto'">

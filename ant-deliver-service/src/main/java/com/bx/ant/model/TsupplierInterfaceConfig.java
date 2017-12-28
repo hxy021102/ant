@@ -79,7 +79,7 @@ public class TsupplierInterfaceConfig implements java.io.Serializable, IEntity {
 	//
 	private Boolean online;
 	//columns END
-
+	private Integer supplierId;
 
 		public TsupplierInterfaceConfig(){
 		}
@@ -235,8 +235,15 @@ public class TsupplierInterfaceConfig implements java.io.Serializable, IEntity {
 	public void setOnline(Boolean online) {
 		this.online = online;
 	}
-	
-	
+	@Column(name = "supplier_Id", unique = false, nullable = true, insertable = true, updatable = true, length = 11)
+	public Integer getSupplierId() {
+		return supplierId;
+	}
+
+	public void setSupplierId(Integer supplierId) {
+		this.supplierId = supplierId;
+	}
+
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

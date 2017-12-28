@@ -39,44 +39,48 @@
 				<tr>
 					<th>接口类型</th>
 					<td>
-						<input class="span2" name="interfaceType" type="text" value="${supplierInterfaceConfig.interfaceType}"/>
+						<input class="easyui-validatebox span2"  required="true" name="interfaceType" type="text" value="${supplierInterfaceConfig.interfaceTypeName}"/>
 					</td>
 					<th>appkey</th>
 					<td>
-						<input class="span2" name="appKey" type="text" value="${supplierInterfaceConfig.appKey}"/>
+						<input class="easyui-validatebox span2"  required="true" name="appKey" type="text" value="${supplierInterfaceConfig.appKey}"/>
 					</td>
 				</tr>
 				<tr>
 					<th>appSecret</th>
 					<td>
-						<input class="span2" name="appSecret" type="text" value="${supplierInterfaceConfig.appSecret}"/>
+						<input class="easyui-validatebox span2"  required="true" name="appSecret" type="text" value="${supplierInterfaceConfig.appSecret}"/>
 					</td>
 					<th>serviceUrl</th>
 					<td>
-						<input class="span2" name="serviceUrl" type="text" value="${supplierInterfaceConfig.serviceUrl}"/>
+						<input class="easyui-validatebox span2"  required="true" name="serviceUrl" type="text" value="${supplierInterfaceConfig.serviceUrl}"/>
 					</td>
 				</tr>
 				<tr>
 					<th>版本</th>
 					<td>
-						<input class="span2" name="version" type="text" value="${supplierInterfaceConfig.version}"/>
+						<input class="easyui-validatebox span2"  required="true" name="version" type="text" value="${supplierInterfaceConfig.version}"/>
 					</td>
 					<th>仓库代码</th>
 					<td>
-						<input class="span2" name="warehouseCode" type="text" value="${supplierInterfaceConfig.warehouseCode}"/>
+						<input class="easyui-validatebox span2"  required="true" name="warehouseCode" type="text" value="${supplierInterfaceConfig.warehouseCode}"/>
 					</td>
 				</tr>
 				<tr>
 					<th>物流公司代码</th>
 					<td>
-						<input class="span2" name="logisticsCode" type="text" value="${supplierInterfaceConfig.logisticsCode}"/>
+						<input class="easyui-validatebox span2"  required="true" name="logisticsCode" type="text" value="${supplierInterfaceConfig.logisticsCode}"/>
 					</td>
 					<th>状态映射</th>
 					<td>
-						<input class="span2" name="statusMap" type="text" value="${supplierInterfaceConfig.statusMap}"/>
+						<input class="easyui-validatebox span2"  required="true" name="statusMap" type="text" value="${supplierInterfaceConfig.statusMap}"/>
 					</td>
 				</tr>
 				<tr>
+					<th>客户ID</th>
+					<td>
+						<input class="easyui-validatebox span2" required="true" value="${supplierInterfaceConfig.customerId}" name="customerId" type="text"/>
+					</td>
 					<th>是否上线</th>
 					<td colspan="3">
 						<select class="easyui-combobox" name="online" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
