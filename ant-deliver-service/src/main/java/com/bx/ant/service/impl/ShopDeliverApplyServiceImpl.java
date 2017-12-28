@@ -177,6 +177,7 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 		MbShop shop = mbShopService.getFromCache(shopDeliverApply.getShopId());
 		shopDeliverApplyQuery.setShopName(shop.getName());
 		shopDeliverApplyQuery.setDeliveryTypeName(shopDeliverApply.getDeliveryType());
+		shopDeliverApplyQuery.setDeliveryWayName(shopDeliverApply.getDeliveryWay());
 		return shopDeliverApplyQuery;
 	}
 
