@@ -79,6 +79,10 @@
 			rownumbers : true,
 			singleSelect : true,
             frozenColumns:[[{
+                field : 'checkbox',
+                checkbox:true,
+                width : 30
+            },{
                 field : 'id',
                 title : '运单ID',
                 width : 60,
@@ -180,6 +184,10 @@
                 rownumbers : true,
                 singleSelect : true,
                 frozenColumns:[[{
+                    field : 'checkbox',
+                    checkbox:true,
+                    width : 30
+                },{
                     field : 'id',
                     title : '运单ID',
                     width : 60,
@@ -270,6 +278,10 @@
             rownumbers : true,
             singleSelect : true,
             frozenColumns:[[{
+                field : 'checkbox',
+                checkbox:true,
+                width : 30
+            },{
                 field : 'id',
                 title : '运单ID',
                 width : 60,
@@ -281,6 +293,10 @@
                 title : '订单ID',
                 width : 125
             }, {
+                field : 'statusName',
+                title : '订单状态',
+                width : 60
+            },  {
                 field : 'shopName',
                 title : '门店名称',
                 width : 125
@@ -915,6 +931,31 @@
             }]
         });
     }
+    function closeDeliverOrderBatch() {
+        var rows = selectDatagrid.datagrid('getChecked');
+        if (rows.length > 0) {
+            parent.$.modalDialog({
+                title : '批量关闭运单',
+                width : 780,
+                height : 220,
+                href : '${pageContext.request.contextPath}/deliverOrderController/closeDeliverOrderBatchPage',
+                buttons : [ {
+                    text : '关闭',
+                    handler : function() {
+                        parent.$.modalDialog.openner_dataGrid = selectDatagrid;//因为添加成功之后，需要刷新这个dataGrid，所以先预定义好
+                        var f = parent.$.modalDialog.handler.find('#form');
+						f.find("input[name= deliverOrderList]").val(JSON.stringify(rows));
+                        f.submit();
+                    }
+                } ]
+            });
+        } else {
+            parent.$.messager.show({
+                title : '提示',
+                msg : '请勾选要关闭的运单！'
+            });
+        }
+    }
 </script>
 </head>
 <body>
@@ -1010,7 +1051,9 @@
 			</form>
 			<iframe id="downloadIframe" name="downloadIframe" style="display: none;"></iframe>
 		</c:if>
-
+		<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/closeDeliverOrderBatch')}">
+			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="closeDeliverOrderBatch();">批量关闭运单</a>
+		</c:if>
 	</div>
     <div id="toolbar01" style="display: none;">
         <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>

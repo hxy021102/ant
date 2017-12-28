@@ -556,4 +556,36 @@ public class DeliverOrderController extends BaseController {
 		j.setSuccess(true);
 		return j;
 	}
+
+	/**
+	 * 跳转到批量关闭运单页面
+	 * @return
+	 */
+	@RequestMapping("/closeDeliverOrderBatchPage")
+	public String closeDeliverOrderBatchPage() {
+		return "/deliverorder/deliverOrderBatchClose";
+	}
+
+	/**
+	 * 批量关闭运单
+	 * @param session
+	 * @param deliverOrderList
+	 * @return
+	 */
+	@RequestMapping("/closeDeliverOrderBatch")
+	@ResponseBody
+	public Json closeDeliverOrderBatch(HttpSession session, String deliverOrderList,String remark) {
+		Json j = new Json();
+		JSONArray json = JSONArray.fromObject(deliverOrderList);
+		//把json字符串转换成对象
+		List<DeliverOrder> deliverOrders = (List<DeliverOrder>) JSONArray.toCollection(json, DeliverOrder.class);
+		for (DeliverOrder deliverOrder : deliverOrders) {
+			deliverOrder.setStatus(DeliverOrderServiceI.STATUS_FAILURE_CLOSED);
+			deliverOrder.setRemark(remark);
+			deliverOrderService.transform(deliverOrder);
+		}
+		j.setMsg("批量关闭运单成功！");
+		j.setSuccess(true);
+		return j;
+	}
 }
