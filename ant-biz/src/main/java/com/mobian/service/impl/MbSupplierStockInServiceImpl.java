@@ -177,7 +177,7 @@ public class MbSupplierStockInServiceImpl extends BaseServiceImpl<MbSupplierStoc
         for (MbSupplierStockInItem mbSupplierStockInItem : mbSupplierStockInItemList) {
             totalAmount += mbSupplierStockInItem.getQuantity() * mbSupplierStockInItem.getPrice();
         }
-        balanceLog.setAmount(totalAmount);
+        balanceLog.setAmount((-1)*totalAmount);
         balanceLog.setReason(String.format("供应商[ID:%1$s]完成入库[ID:%2$s]结算转入", mbSupplierOrder.getSupplierId(), id));
         mbBalanceLogService.addAndUpdateBalance(balanceLog);
     }
