@@ -72,6 +72,7 @@ public class TsupplierInterfaceConfig implements java.io.Serializable, IEntity {
 	private String warehouseCode;
 	//@Length(max=64)
 	private String logisticsCode;
+	private String logisticsName;
 	//@Length(max=512)
 	private String statusMap;
 	//@Length(max=512)
@@ -80,6 +81,7 @@ public class TsupplierInterfaceConfig implements java.io.Serializable, IEntity {
 	private Boolean online;
 	//columns END
 	private Integer supplierId;
+	private Integer freight;
 
 		public TsupplierInterfaceConfig(){
 		}
@@ -242,6 +244,24 @@ public class TsupplierInterfaceConfig implements java.io.Serializable, IEntity {
 
 	public void setSupplierId(Integer supplierId) {
 		this.supplierId = supplierId;
+	}
+
+	@Column(name = "logistics_name", unique = false, nullable = true, insertable = true, updatable = true, length = 64)
+	public String getLogisticsName() {
+		return logisticsName;
+	}
+
+	public void setLogisticsName(String logisticsName) {
+		this.logisticsName = logisticsName;
+	}
+
+	@Column(name = "freight", unique = false, nullable = true, insertable = true, updatable = true, length = 11)
+	public Integer getFreight() {
+		return freight;
+	}
+
+	public void setFreight(Integer freight) {
+		this.freight = freight;
 	}
 
 	/*

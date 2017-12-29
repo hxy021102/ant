@@ -27,6 +27,9 @@ public class SupplierInterfaceConfig implements java.io.Serializable {
 	private Boolean online;
 	private Integer supplierId;
 	private String interfaceTypeName;
+	private String logisticsName;
+	private Integer freight;
+
 
 	public void setId(Integer value) {
 		this.id = value;
@@ -157,5 +160,21 @@ public class SupplierInterfaceConfig implements java.io.Serializable {
 
 	public void setInterfaceTypeName(String interfaceTypeName) {
 		this.interfaceTypeName = interfaceTypeName;
+	}
+
+	public String getLogisticsName() {
+		return logisticsName;
+	}
+
+	public void setLogisticsName(String logisticsName) {
+		this.logisticsName = logisticsName;
+	}
+
+	public Integer getFreight() {
+		return freight;
+	}
+
+	public void setFreight(Integer freight) {
+		this.freight = freight;
 	}
 }
