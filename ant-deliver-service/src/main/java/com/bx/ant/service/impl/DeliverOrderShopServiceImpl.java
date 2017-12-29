@@ -429,12 +429,12 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 
 		//3. 对账单进行添加并进行结算
 		for (ShopOrderBillQuery shopOrderBillQuery : deliverOrderMap.values()) {
-			shopOrderBillService.addAndPayShopOrderBillAndShopPay(shopOrderBillQuery);
 			List<DeliverOrderShop> orderShopList = shopOrderBillQuery.getDeliverOrderShopList();
 			DefaultTransactionDefinition def = new DefaultTransactionDefinition();
 			def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
 			TransactionStatus status = transactionManager.getTransaction(def);
 			try {
+				shopOrderBillService.addAndPayShopOrderBillAndShopPay(shopOrderBillQuery);
 				for (DeliverOrderShop orderShop : orderShopList) {
 					DeliverOrderExt orderExt = new DeliverOrderExt();
 					orderExt.setId(orderShop.getDeliverOrderId());
