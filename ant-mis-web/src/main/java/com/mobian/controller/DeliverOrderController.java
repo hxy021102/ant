@@ -210,17 +210,19 @@ public class DeliverOrderController extends BaseController {
 		if (CollectionUtils.isNotEmpty(deliverOrderQueries)) {
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			for (DeliverOrderQuery orderQuery : deliverOrderQueries) {
-				String addDateStr = formatter.format(orderQuery.getAddtime());
+				String addDateStr = formatter.format(orderQuery.getUpdatetime());
+				String updateDateStr = formatter.format(orderQuery.getUpdatetime());
 				if (orderQuery.getDeliveryRequireTime() != null) {
 					String requiredDateStr = formatter.format(orderQuery.getDeliveryRequireTime());
 					orderQuery.setRequiredDate(requiredDateStr);
 				}
 				orderQuery.setCreateDate(addDateStr);
+				orderQuery.setUpdateDate(updateDateStr);
 				orderQuery.setAmountElement(orderQuery.getAmount() / 100.0);
 			}
 		}
 		downloadFields = downloadFields.replace("&quot;", "\"");
-		downloadFields = downloadFields.substring(1, downloadFields.length() - 1);
+		downloadFields =downloadFields.substring(1, downloadFields.length() - 1).replace("],[",",");
 		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
 		if (CollectionUtils.isNotEmpty(colums)) {
 			for (Colum colum : colums) {
@@ -230,6 +232,9 @@ public class DeliverOrderController extends BaseController {
 						break;
 					case "addtime":
 						colum.setField("createDate");
+						break;
+					case "updatetime":
+						colum.setField("updateDate");
 						break;
 					case "deliveryRequireTime":
 						colum.setField("requiredDate");
