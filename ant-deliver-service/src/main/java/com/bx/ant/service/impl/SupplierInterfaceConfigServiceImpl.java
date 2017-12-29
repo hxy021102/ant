@@ -141,4 +141,15 @@ public class SupplierInterfaceConfigServiceImpl extends BaseServiceImpl<Supplier
 		//supplierInterfaceConfigDao.delete(supplierInterfaceConfigDao.get(TsupplierInterfaceConfig.class, id));
 	}
 
+	@Override
+	public SupplierInterfaceConfig getByCustomerId(String customerId) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("customerId", customerId);
+		TsupplierInterfaceConfig t = supplierInterfaceConfigDao.get("from TsupplierInterfaceConfig t  where t.customerId = :customerId", params);
+		if(t == null) return null;
+		SupplierInterfaceConfig o = new SupplierInterfaceConfig();
+		BeanUtils.copyProperties(t, o);
+		return o;
+	}
+
 }

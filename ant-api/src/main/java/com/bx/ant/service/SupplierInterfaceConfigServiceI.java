@@ -52,4 +52,5 @@ public interface SupplierInterfaceConfigServiceI {
 	 */
 	public void delete(Integer id);
 
+	SupplierInterfaceConfig getByCustomerId(String customerId);
 }
