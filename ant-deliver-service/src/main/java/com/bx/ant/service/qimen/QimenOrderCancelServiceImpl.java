@@ -2,8 +2,10 @@ package com.bx.ant.service.qimen;
 
 import com.alibaba.fastjson.JSON;
 import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.SupplierInterfaceConfig;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.ShopDeliverApplyServiceI;
+import com.bx.ant.service.SupplierInterfaceConfigServiceI;
 import com.mobian.util.ConvertNameUtil;
 import com.qimen.api.QimenRequest;
 import com.qimen.api.QimenResponse;
@@ -24,14 +26,19 @@ public class QimenOrderCancelServiceImpl extends AbstrcatQimenService {
     @Resource
     private DeliverOrderServiceI deliverOrderService;
 
+    @Resource
+    private SupplierInterfaceConfigServiceI supplierInterfaceConfigService;
+
     @Override
     public QimenResponse execute(QimenRequest request) {
         OrderCancelRequest orderCancelRequest = (OrderCancelRequest) request;
+        SupplierInterfaceConfig supplierConfig = supplierInterfaceConfigService.getByCustomerId(orderCancelRequest.getCustomerId());
         OrderCancelResponse response = new OrderCancelResponse();
         response.setFlag("success");
         logger.error("taobao.qimen.order.cancel：" + JSON.toJSONString(orderCancelRequest));
         DeliverOrder deliverOrderReq = new DeliverOrder();
-        Integer supplierId = Integer.parseInt(ConvertNameUtil.getString(QimenRequestService.QIM_06));
+//        Integer supplierId = Integer.parseInt(ConvertNameUtil.getString(QimenRequestService.QIM_06));
+        Integer supplierId = supplierConfig.getSupplierId();
         String orderCode = orderCancelRequest.getOrderCode();
         DeliverOrder deliverOrder = deliverOrderService.getBySupplierOrderIdAndSupplierId(supplierId, orderCode);
         if (deliverOrder != null) {

@@ -22,8 +22,12 @@ public abstract class AbstrcatQimenService extends Objectx implements QimenServi
 
     @Override
     public QimenResponse handle(String method, String customerId, String body) {
-        QimenRequest request = parserRequest(body);
-        if(F.empty(request.getCustomerId())) request.setCustomerId(customerId);
+        QimenRequest request = null;
+        if(!F.empty(body)) {
+            request = parserRequest(body);
+            if(F.empty(request.getCustomerId())) request.setCustomerId(customerId);
+        }
+
         QimenResponse response = execute(request);
         print(response);
         return response;

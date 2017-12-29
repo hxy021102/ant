@@ -1,16 +1,15 @@
 package com.bx.ant.service.qimen;
 
 import com.alibaba.fastjson.JSON;
-import com.bx.ant.pageModel.DeliverOrder;
-import com.bx.ant.pageModel.SupplierItemRelation;
-import com.bx.ant.pageModel.SupplierItemRelationView;
-import com.bx.ant.service.DeliverOrderServiceI;
-import com.bx.ant.service.DeliverOrderYouzanServiceI;
-import com.bx.ant.service.ShopDeliverApplyServiceI;
-import com.bx.ant.service.SupplierItemRelationServiceI;
+import com.bx.ant.pageModel.*;
+import com.bx.ant.service.*;
 import com.mobian.absx.F;
 import com.mobian.exception.ServiceException;
+import com.mobian.pageModel.MbBalance;
 import com.mobian.pageModel.PageHelper;
+import com.mobian.service.MbBalanceServiceI;
+import com.mobian.thirdpart.mns.MNSTemplate;
+import com.mobian.thirdpart.mns.MNSUtil;
 import com.mobian.thirdpart.youzan.YouzanUtil;
 import com.mobian.util.Constants;
 import com.mobian.util.ConvertNameUtil;
@@ -22,9 +21,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by john on 17/11/28.
@@ -42,10 +39,21 @@ public class QimenDeliveryOrderCreateServiceImpl extends AbstrcatQimenService {
     @Resource
     private DeliverOrderYouzanServiceI deliverOrderYouzanService;
 
+    @Resource
+    private SupplierInterfaceConfigServiceI supplierInterfaceConfigService;
+
+    @Resource
+    private MbBalanceServiceI mbBalanceService;
+
+    @Resource
+    private SupplierServiceI supplierService;
+
     @Override
     public QimenResponse execute(QimenRequest request) {
         DeliveryorderCreateRequest req = (DeliveryorderCreateRequest) request;
-        Integer supplierId = Integer.parseInt(ConvertNameUtil.getString(QimenRequestService.QIM_06));
+        SupplierInterfaceConfig supplierConfig = supplierInterfaceConfigService.getByCustomerId(req.getCustomerId());
+//        Integer supplierId = Integer.parseInt(ConvertNameUtil.getString(QimenRequestService.QIM_06));
+        Integer supplierId = supplierConfig.getSupplierId();
         DeliveryorderCreateRequest.DeliveryOrder deliveryOrder = req.getDeliveryOrder();
         logger.error("看看数据："+ JSON.toJSONString(req));
         DeliveryorderCreateResponse response = new DeliveryorderCreateResponse();
@@ -53,6 +61,15 @@ public class QimenDeliveryOrderCreateServiceImpl extends AbstrcatQimenService {
         /*if(!QimenRequestService.JYCK.equals(deliveryOrder.getOrderType())) {
             return response;
         }*/
+
+        MbBalance mbBalance = mbBalanceService.addOrGetAccessSupplierBalance(supplierId);
+        if(mbBalance.getAmount() < 0) {
+            // 发送短信通知
+            sendArrearsMns(supplierId);
+            response.setFlag("failure");
+            logger.error("接入方"+supplierId+"余额欠款", new ServiceException("接入方余额欠款"));
+            return response;
+        }
         DeliverOrder order = new DeliverOrder();
         order.setIsdeleted(true); // 初始化无效
         order.setSupplierId(supplierId);
@@ -103,10 +120,29 @@ public class QimenDeliveryOrderCreateServiceImpl extends AbstrcatQimenService {
         // 添加订单和订单明细
         deliverOrderService.addAndItems(order, supplierItemRelations);
         response.setDeliveryOrderId(order.getId() + "");
-        response.setWarehouseCode(ConvertNameUtil.getString(QimenRequestService.QIM_08));
-        response.setLogisticsCode(ConvertNameUtil.getString(QimenRequestService.QIM_09));
+//        response.setWarehouseCode(ConvertNameUtil.getString(QimenRequestService.QIM_08));
+//        response.setLogisticsCode(ConvertNameUtil.getString(QimenRequestService.QIM_09));
+        response.setWarehouseCode(supplierConfig.getWarehouseCode());
+        response.setLogisticsCode(supplierConfig.getLogisticsCode());
         response.setCreateTime(DateUtil.format(new Date(), Constants.DATE_FORMAT_FOR_ENTITY));
         return response;
+    }
+
+    /**
+     * 发送欠款短信通知
+     * @param supplierId
+     */
+    private void sendArrearsMns(Integer supplierId) {
+        Supplier supplier = supplierService.get(supplierId);
+        if(!F.empty(supplier.getContactPhone())) {
+            MNSTemplate template = new MNSTemplate();
+            Map<String, String> params = new HashMap<String, String>();
+            template.setTemplateCode("SMS_119870125");
+            params.put("supplierName", supplier.getName());
+            template.setParams(params);
+            MNSUtil.sendMns(supplier.getContactPhone(), template);
+        }
+
     }
 
     /*public static void main(String[] args) {

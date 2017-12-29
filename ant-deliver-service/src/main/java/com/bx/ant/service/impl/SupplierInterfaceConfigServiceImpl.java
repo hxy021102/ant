@@ -152,4 +152,15 @@ public class SupplierInterfaceConfigServiceImpl extends BaseServiceImpl<Supplier
 		return o;
 	}
 
+	@Override
+	public SupplierInterfaceConfig getBySupplierId(Integer supplierId) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("supplierId", supplierId);
+		TsupplierInterfaceConfig t = supplierInterfaceConfigDao.get("from TsupplierInterfaceConfig t  where t.supplierId = :supplierId", params);
+		if(t == null) return null;
+		SupplierInterfaceConfig o = new SupplierInterfaceConfig();
+		BeanUtils.copyProperties(t, o);
+		return o;
+	}
+
 }

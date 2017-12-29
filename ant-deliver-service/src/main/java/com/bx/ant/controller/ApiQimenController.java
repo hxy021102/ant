@@ -51,7 +51,7 @@ public class ApiQimenController {
             qimenService = qimenErrorServiceImpl;
         }
 
-        qimenService.handle(method, customerId, result.getRequestBody());
+        qimenService.handle(method, customerId, result == null ? null : result.getRequestBody());
 
     }
 
