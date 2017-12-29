@@ -64,8 +64,7 @@ public class QimenRequestServiceImpl extends Objectx implements QimenRequestServ
             DeliveryorderConfirmRequest.Package _package = new DeliveryorderConfirmRequest.Package();
             packages.add(_package);
             _package.setLogisticsCode(OTHER);
-            // TODO
-            _package.setLogisticsName(ConvertNameUtil.getString(QimenRequestService.QIM_12));
+            _package.setLogisticsName(supplierConfig.getLogisticsName());
             _package.setExpressCode(deliverOrder.getId()+"");
             request.setPackages(packages);
             List<DeliverOrderItem> deliverOrderItemList = deliverOrderItemService.getDeliverOrderItemList(deliverOrder.getId());

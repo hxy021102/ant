@@ -83,8 +83,7 @@ public class QimenSingleitemQimenServiceImpl extends AbstrcatQimenService {
             }
             Double costPrice = new Double(item.getCostPrice()) * 100;
             supplierItemRelation.setInPrice(costPrice.intValue());//成本价
-            // TODO
-            supplierItemRelation.setFreight(Integer.parseInt(ConvertNameUtil.getString(QimenRequestService.QIM_07)));//运费
+            supplierItemRelation.setFreight(supplierConfig.getFreight());//运费
             supplierItemRelation.setPrice(supplierItemRelation.getInPrice() + supplierItemRelation.getFreight());//总价
             supplierItemRelationService.add(supplierItemRelation);
         }
