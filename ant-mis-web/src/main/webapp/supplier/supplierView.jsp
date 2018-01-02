@@ -160,7 +160,7 @@
         fit : true,
         fitColumns : true,
         border : false,
-        pagination : true,
+        pagination : false,
         idField : 'id',
         pageSize : 10,
         pageList : [ 10, 20, 30, 40, 50 ],
@@ -207,15 +207,26 @@
         }, {
             field : 'version',
             title : '版本',
-            width : 50
+            width : 20
         }, {
             field : 'warehouseCode',
             title : '仓库代码',
             width : 50
-        }, {
+        },  {
+            field : 'logisticsName',
+            title : '物流公司',
+            width : 50
+        },{
             field : 'logisticsCode',
             title : '物流公司代码',
             width : 50
+        }, {
+            field : 'freight',
+            title : '运费',
+            width : 20,
+            formatter:function(value){
+                return $.formatMoney(value);
+            }
         }, {
             field : 'statusMap',
             title : '状态映射',
@@ -232,7 +243,7 @@
         }, {
             field : 'action',
             title : '操作',
-            width : 100,
+            width : 40,
             formatter : function(value, row) {
                 var str = '';
                 if ($.canEditConfig) {
@@ -345,7 +356,7 @@
         parent.$.modalDialog({
             title : '修改接入配置',
             width : 780,
-            height : 400,
+            height : 470,
             href : '${pageContext.request.contextPath}/supplierInterfaceConfigController/editPage?id=' + id,
             buttons : [ {
                 text : '编辑',
@@ -366,7 +377,7 @@
         parent.$.modalDialog({
             title : '配置详情',
             width : 780,
-            height : 400,
+            height : 320,
             href : '${pageContext.request.contextPath}/supplierInterfaceConfigController/view?id=' + id
         });
     }
@@ -375,7 +386,7 @@
         parent.$.modalDialog({
             title : '添加接入配置',
             width : 780,
-            height : 400,
+            height : 470,
             href : '${pageContext.request.contextPath}/supplierInterfaceConfigController/addPage?supplierId='+${supplier.id},
             buttons : [ {
                 text : '添加',
@@ -401,7 +412,7 @@
 </head>
 <body>
 <div class="easyui-layout" data-options="fit:true,border:false">
-	<div data-options="region:'north',title:'基本信息',border:false" style="height: 246px; overflow: hidden;">
+	<div data-options="region:'north',title:'基本信息',border:false" style="height: 260px; overflow: hidden;">
 		<table class="table table-hover table-condensed">
 				<tr>	
 					<th style="width:60px;">appKey</th>

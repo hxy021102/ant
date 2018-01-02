@@ -3,7 +3,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <script type="text/javascript">
 	$(function() {
-		parent.$.messager.progress('close');		
+		parent.$.messager.progress('close');
+        $('.money_input').each(function () {
+            $(this).text($.formatMoney($(this).text().trim()));
+        });
 	});
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
@@ -53,15 +56,26 @@
 				<td>
 					${supplierInterfaceConfig.warehouseCode}
 				</td>
+				<th>物流公司</th>
+				<td>
+					${supplierInterfaceConfig.logisticsName}
+				</td>
+			</tr>
+			<tr>
 				<th>物流公司代码</th>
 				<td>
 					${supplierInterfaceConfig.logisticsCode}
 				</td>
-			</tr>
-			<tr>
+
 				<th>状态映射</th>
 				<td>
 					${supplierInterfaceConfig.statusMap}
+				</td>
+			</tr>
+			<tr>
+				<th>运费</th>
+				<td>
+					<font class="money_input">${supplierInterfaceConfig.freight}</font>
 				</td>
 				<th>是否上线</th>
 				<td>

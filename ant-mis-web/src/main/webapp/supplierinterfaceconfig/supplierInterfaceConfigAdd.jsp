@@ -29,6 +29,23 @@
 				}
 			}
 		});
+        $('.money_input').blur(function () {
+            var source = $(this);
+            var target = source.next();
+            if (!/^([1-9]\d*|0)(\.\d{2})?$/.test(source.val())) {
+                source.val("").focus();
+            }
+            var val = source.val().trim();
+            if (val.indexOf('.') > -1) {
+                val = val.replace('.', "");
+            } else if (val != '') {
+                val += "00";
+            }
+            target.val(val);
+        });
+        $('.money_input').each(function(){
+            $(this).val($.formatMoney($(this).val().trim()));
+        });
 	});
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
@@ -67,21 +84,32 @@
 					</td>
 				</tr>
 				<tr>
+					<th>物流公司</th>
+					<td>
+						<input class="easyui-validatebox span2"  required="true" name="logisticsName" type="text"/>
+					</td>
 				<th>物流公司代码</th>
 					<td>
 							<input class="easyui-validatebox span2"  required="true" name="logisticsCode" type="text"/>
 					</td>
+				</tr>
+				<tr>
 					<th>状态映射</th>
 					<td>
 							<input class="easyui-validatebox span2"  required="true" name="statusMap" type="text"/>
 					</td>
-				</tr>
-				<tr>
 				<th>客户ID</th>
 					<td>
 						<input class="easyui-validatebox span2" required="true" name="customerId" type="text"/>
 				    </td>
-				<th>是否上线</th>
+				</tr>
+				<tr>
+					<th>运费</th>
+					<td>
+						<input class="span2 easyui-validatebox money_input" name="priceStr" type="text"  data-options="required:true"/>
+						<input type="hidden" name="freight"  >
+					</td>
+			     	<th>是否上线</th>
 					<td>
 						<select class="easyui-combobox" name="online" data-options="width:140,height:29,editable:false,panelHeight:'auto'">
 							<option value="1">是</option>

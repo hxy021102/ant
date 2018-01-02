@@ -188,10 +188,15 @@ public class UserController extends BaseController {
 	public Json add(User user) {
 		Json j = new Json();
 		try {
-			userService.add(user);
-			j.setSuccess(true);
-			j.setMsg("添加成功！");
-			j.setObj(user);
+			if ("URT02".equals(user.getRefType()) && F.empty(user.getRefId())) {
+				j.setSuccess(false);
+				j.setMsg("添加失败，账号ID不能为空！");
+			} else {
+				userService.add(user);
+				j.setSuccess(true);
+				j.setMsg("添加成功！");
+				j.setObj(user);
+			}
 		} catch (Exception e) {
 			// e.printStackTrace();
 			j.setMsg(e.getMessage());
@@ -222,10 +227,15 @@ public class UserController extends BaseController {
 	public Json edit(User user) {
 		Json j = new Json();
 		try {
-			userService.edit(user);
-			j.setSuccess(true);
-			j.setMsg("编辑成功！");
-			j.setObj(user);
+			if ("URT02".equals(user.getRefType()) && F.empty(user.getRefId())) {
+				j.setSuccess(false);
+				j.setMsg("修改失败，账号ID不能为空！");
+			} else {
+				userService.edit(user);
+				j.setSuccess(true);
+				j.setMsg("编辑成功！");
+				j.setObj(user);
+			}
 		} catch (Exception e) {
 			// e.printStackTrace();
 			j.setMsg(e.getMessage());

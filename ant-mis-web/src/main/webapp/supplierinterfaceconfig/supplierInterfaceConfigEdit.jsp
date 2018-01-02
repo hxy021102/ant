@@ -29,6 +29,23 @@
 				}
 			}
 		});
+        $('.money_input').blur(function () {
+            var source = $(this);
+            var target = source.next();
+            if (!/^([1-9]\d*|0)(\.\d{2})?$/.test(source.val())) {
+                source.val("").focus();
+            }
+            var val = source.val().trim();
+            if (val.indexOf('.') > -1) {
+                val = val.replace('.', "");
+            } else if (val != '') {
+                val += "00";
+            }
+            target.val(val);
+        });
+        $('.money_input').each(function(){
+            $(this).val($.formatMoney($(this).val().trim()));
+        });
 	});
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
@@ -39,7 +56,7 @@
 				<tr>
 					<th>接口类型</th>
 					<td>
-						<input class="easyui-validatebox span2"  required="true" name="interfaceType" type="text" value="${supplierInterfaceConfig.interfaceTypeName}"/>
+						<jb:select dataType="IFT" name="interfaceType" required="true" value="${supplierInterfaceConfig.interfaceTypeName}"></jb:select>
 					</td>
 					<th>appkey</th>
 					<td>
@@ -67,19 +84,31 @@
 					</td>
 				</tr>
 				<tr>
+					<th>物流公司</th>
+					<td>
+						<input class="easyui-validatebox span2"  required="true" name="logisticsName" type="text" value="${supplierInterfaceConfig.logisticsName}"/>
+					</td>
 					<th>物流公司代码</th>
 					<td>
 						<input class="easyui-validatebox span2"  required="true" name="logisticsCode" type="text" value="${supplierInterfaceConfig.logisticsCode}"/>
 					</td>
+				</tr>
+				<tr>
 					<th>状态映射</th>
 					<td>
 						<input class="easyui-validatebox span2"  required="true" name="statusMap" type="text" value="${supplierInterfaceConfig.statusMap}"/>
 					</td>
-				</tr>
-				<tr>
+
 					<th>客户ID</th>
 					<td>
 						<input class="easyui-validatebox span2" required="true" value="${supplierInterfaceConfig.customerId}" name="customerId" type="text"/>
+					</td>
+				</tr>
+				<tr>
+					<th>运费</th>
+					<td>
+						<input class="span2 easyui-validatebox money_input" name="priceStr" type="text"  value="${supplierInterfaceConfig.freight}"  data-options="required:true"/>
+						<input type="hidden" name="freight"  >
 					</td>
 					<th>是否上线</th>
 					<td colspan="3">
