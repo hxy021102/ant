@@ -332,4 +332,42 @@ public class MbBalanceServiceImpl extends BaseServiceImpl<MbBalance> implements 
 	public MbBalance addOrGetDriverBalance(Integer driverAccountId) {
 		return  addOrGetMbBalance(driverAccountId, 50,0);
 	}
+
+	@Override
+	public MbBalance addOrGetAccessSupplierBalance(Integer accessSupplierId) {
+		return addOrGetAccessSupplierBalance(accessSupplierId, 20, 0);
+	}
+
+	@Override
+	public MbBalance addOrGetAccessSupplierBond(Integer accessSupplierId) {
+		return addOrGetAccessSupplierBalance(accessSupplierId, 21, 0);
+	}
+
+	@Override
+	public MbBalance addOrGetAccessSupplierCredit(Integer accessSupplierId) {
+		return addOrGetAccessSupplierBalance(accessSupplierId, 22, 0);
+	}
+
+	@Override
+	public MbBalance addOrGetAccessSupplierBalance(Integer refId, Integer refType, Integer initAmount) {
+		MbBalance o;
+		TmbBalance t = mbBalanceDao.get("from TmbBalance t where t.isdeleted = 0 and t.refType = " + refType + " and refId=" + refId);
+		if (t != null && t.getId() != null) {
+			o = new MbBalance();
+			BeanUtils.copyProperties(t, o);
+		} else {
+			if (refId == null)
+				throw new ServiceException("supplierId 不能为空");
+			if (refType == null)
+				throw new ServiceException("refType 不能为空");
+			if (refType == null)
+				throw new ServiceException("initAmount 不能为空");
+			o = new MbBalance();
+			o.setAmount(initAmount);
+			o.setRefId(refId);
+			o.setRefType(refType);
+			add(o);
+		}
+		return o;
+	}
 }

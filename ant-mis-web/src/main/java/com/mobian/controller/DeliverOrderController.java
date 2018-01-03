@@ -14,6 +14,7 @@ import com.bx.ant.service.SupplierItemRelationServiceI;
 import com.bx.ant.service.SupplierServiceI;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
+import com.mobian.service.*;
 import com.mobian.service.BasedataServiceI;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.service.MbStockOutOrderServiceI;
@@ -70,6 +71,8 @@ public class DeliverOrderController extends BaseController {
 
 	@Autowired
 	private MbStockOutOrderServiceI mbStockOutOrderService;
+	@Autowired
+	private UserServiceI userService;
 
 	/**
 	 * 跳转到DeliverOrder管理页面
@@ -100,7 +103,12 @@ public class DeliverOrderController extends BaseController {
 	 */
 	@RequestMapping("/dataGrid")
 	@ResponseBody
-	public DataGrid dataGrid(DeliverOrderQuery deliverOrderQuery, PageHelper ph) {
+	public DataGrid dataGrid(DeliverOrderQuery deliverOrderQuery, PageHelper ph, HttpSession  session) {
+		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName()) ;
+		User user=userService.get(sessionInfo.getId());
+		if ("URT02".equals(user.getRefType())) {
+			deliverOrderQuery.setSupplierId(Integer.parseInt(user.getRefId()));
+		}
 		if(!F.empty(ph.getSort()) && "shopName".equals(ph.getSort())) ph.setSort("shopId");
 
         if(deliverOrderQuery.getTime()!=null&&deliverOrderQuery.getTime()!=0){
@@ -143,7 +151,12 @@ public class DeliverOrderController extends BaseController {
 	}
 	@RequestMapping("/unPayOrderDataGrid")
 	@ResponseBody
-	public DataGrid unPayOrderDataGrid(DeliverOrder deliverOrder, PageHelper ph) {
+	public DataGrid unPayOrderDataGrid(DeliverOrder deliverOrder, PageHelper ph,HttpSession  session) {
+		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+		User user = userService.get(sessionInfo.getId());
+		if ("URT02".equals(user.getRefType())) {
+			deliverOrder.setSupplierId(Integer.parseInt(user.getRefId()));
+		}
 		DataGrid g = deliverOrderService.unPayOrderDataGrid(deliverOrder, ph);
 		List<DeliverOrder> list = g.getRows();
 		List<DeliverOrderQuery>  deliverOrderQueries = new ArrayList<DeliverOrderQuery>();
@@ -194,21 +207,25 @@ public class DeliverOrderController extends BaseController {
 	 * @throws IOException 
 	 */
 	@RequestMapping("/download")
-	public void download(DeliverOrderQuery deliverOrderQuery, PageHelper ph, String downloadFields, HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-		DataGrid dg = dataGrid(deliverOrderQuery, ph);
+	public void download(DeliverOrderQuery deliverOrderQuery, PageHelper ph, String downloadFields, HttpServletResponse response, HttpSession  session) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
+		DataGrid dg = dataGrid(deliverOrderQuery, ph,session);
 		List<DeliverOrderQuery> deliverOrderQueries = dg.getRows();
 		if (CollectionUtils.isNotEmpty(deliverOrderQueries)) {
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			for (DeliverOrderQuery orderQuery : deliverOrderQueries) {
-				String addDateStr= formatter.format(orderQuery.getAddtime());
-				String requiredDateStr = formatter.format(orderQuery.getDeliveryRequireTime());
+				String addDateStr = formatter.format(orderQuery.getUpdatetime());
+				String updateDateStr = formatter.format(orderQuery.getUpdatetime());
+				if (orderQuery.getDeliveryRequireTime() != null) {
+					String requiredDateStr = formatter.format(orderQuery.getDeliveryRequireTime());
+					orderQuery.setRequiredDate(requiredDateStr);
+				}
 				orderQuery.setCreateDate(addDateStr);
-				orderQuery.setRequiredDate(requiredDateStr);
+				orderQuery.setUpdateDate(updateDateStr);
 				orderQuery.setAmountElement(orderQuery.getAmount() / 100.0);
 			}
 		}
 		downloadFields = downloadFields.replace("&quot;", "\"");
-		downloadFields = downloadFields.substring(1, downloadFields.length() - 1);
+		downloadFields =downloadFields.substring(1, downloadFields.length() - 1).replace("],[",",");
 		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
 		if (CollectionUtils.isNotEmpty(colums)) {
 			for (Colum colum : colums) {
@@ -218,6 +235,9 @@ public class DeliverOrderController extends BaseController {
 						break;
 					case "addtime":
 						colum.setField("createDate");
+						break;
+					case "updatetime":
+						colum.setField("updateDate");
 						break;
 					case "deliveryRequireTime":
 						colum.setField("requiredDate");

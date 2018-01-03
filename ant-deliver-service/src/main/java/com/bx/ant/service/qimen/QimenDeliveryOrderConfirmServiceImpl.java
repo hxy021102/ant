@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service("taobao.qimen.deliveryorder.confirm")
 public class QimenDeliveryOrderConfirmServiceImpl implements QimenService {
     @Override
-    public QimenResponse handle(String method, String body) {
+    public QimenResponse handle(String method, String customerId, String body) {
         return null;
     }
 }

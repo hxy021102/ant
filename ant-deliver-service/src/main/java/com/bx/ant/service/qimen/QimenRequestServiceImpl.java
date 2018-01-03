@@ -3,8 +3,11 @@ package com.bx.ant.service.qimen;
 import com.alibaba.fastjson.JSON;
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.DeliverOrderItem;
+import com.bx.ant.pageModel.SupplierInterfaceConfig;
 import com.bx.ant.service.DeliverOrderItemServiceI;
 import com.bx.ant.service.DeliverOrderServiceI;
+import com.bx.ant.service.SupplierInterfaceConfigServiceI;
+import com.mobian.absx.F;
 import com.mobian.absx.Objectx;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.MbItem;
@@ -38,14 +41,21 @@ public class QimenRequestServiceImpl extends Objectx implements QimenRequestServ
     @Resource
     private MbItemServiceI mbItemService;
 
+    @Resource
+    private SupplierInterfaceConfigServiceI supplierInterfaceConfigService;
+
     @Override
     public void updateDeliveryOrderConfirm(DeliverOrder deliverOrder) {
-        Integer supplierId = deliverOrder.getSupplierId();
-        if (ConvertNameUtil.getString(QimenRequestService.QIM_06).equals(supplierId + "")) {
+//        Integer supplierId = deliverOrder.getSupplierId();
+        SupplierInterfaceConfig supplierConfig = supplierInterfaceConfigService.getBySupplierId(deliverOrder.getSupplierId());
+//        if (ConvertNameUtil.getString(QimenRequestService.QIM_06).equals(supplierId + "")) {
+        if (supplierConfig != null) {
             DeliveryorderConfirmRequest request = new DeliveryorderConfirmRequest();
             DeliveryorderConfirmRequest.DeliveryOrder order = new DeliveryorderConfirmRequest.DeliveryOrder();
-            order.setWarehouseCode(ConvertNameUtil.getString(QimenRequestService.QIM_08));
-            order.setLogisticsCode(ConvertNameUtil.getString(QimenRequestService.QIM_09));
+//            order.setWarehouseCode(ConvertNameUtil.getString(QimenRequestService.QIM_08));
+//            order.setLogisticsCode(ConvertNameUtil.getString(QimenRequestService.QIM_09));
+            order.setWarehouseCode(supplierConfig.getWarehouseCode());
+            order.setLogisticsCode(supplierConfig.getLogisticsCode());
             order.setDeliveryOrderCode(deliverOrder.getSupplierOrderId());
             order.setDeliveryOrderId(deliverOrder.getId() + "");
             order.setOrderType(deliverOrder.getSupplierOrderType() != null ? deliverOrder.getSupplierOrderType() : JYCK);
@@ -54,7 +64,7 @@ public class QimenRequestServiceImpl extends Objectx implements QimenRequestServ
             DeliveryorderConfirmRequest.Package _package = new DeliveryorderConfirmRequest.Package();
             packages.add(_package);
             _package.setLogisticsCode(OTHER);
-            _package.setLogisticsName(ConvertNameUtil.getString(QimenRequestService.QIM_12));
+            _package.setLogisticsName(supplierConfig.getLogisticsName());
             _package.setExpressCode(deliverOrder.getId()+"");
             request.setPackages(packages);
             List<DeliverOrderItem> deliverOrderItemList = deliverOrderItemService.getDeliverOrderItemList(deliverOrder.getId());
@@ -80,51 +90,51 @@ public class QimenRequestServiceImpl extends Objectx implements QimenRequestServ
                 orderLines.add(orderLine);
             }
             request.setOrderLines(orderLines);
-            DeliveryorderConfirmResponse response = execute(request);
+            DeliveryorderConfirmResponse response = execute(request, supplierConfig);
             logger.info(JSON.toJSONString(response));
         }
     }
 
     @Override
     public void updateOrderProcessReportRequest(String status, DeliverOrder deliverOrder) {
-        Integer supplierId = deliverOrder.getSupplierId();
-        if (ConvertNameUtil.getString(QimenRequestService.QIM_06).equals(supplierId + "")) {
+        SupplierInterfaceConfig supplierConfig = supplierInterfaceConfigService.getBySupplierId(deliverOrder.getSupplierId());
+        if (supplierConfig != null) {
             OrderprocessReportRequest request = new OrderprocessReportRequest();
             OrderprocessReportRequest.Order order = new OrderprocessReportRequest.Order();
-            order.setWarehouseCode(ConvertNameUtil.getString(QimenRequestService.QIM_08));
+            order.setWarehouseCode(supplierConfig.getWarehouseCode());
             order.setOrderCode(deliverOrder.getSupplierOrderId());
             order.setOrderId(deliverOrder.getId() + "");
             order.setOrderType(deliverOrder.getSupplierOrderType() != null ? deliverOrder.getSupplierOrderType() : JYCK);
             request.setOrder(order);
             OrderprocessReportRequest.Process process = new OrderprocessReportRequest.Process();
             //process.setProcessStatus(processStatus);
-            String json = ConvertNameUtil.getDesc(QIM_10,"{}");
-            Map<String,Object> statusMap = JSON.parseObject(json, Map.class);
+            String json = supplierConfig.getStatusMap();
+            Map<String,Object> statusMap = JSON.parseObject(!F.empty(json) ? json : "{}", Map.class);
             status = (String)statusMap.get(status);
             if (status != null) {
                 process.setProcessStatus(status);
                 request.setProcess(process);
-                OrderprocessReportResponse response = execute(request);
+                OrderprocessReportResponse response = execute(request, supplierConfig);
                 logger.info(JSON.toJSONString(response));
             }
         }
     }
 
-    private <T> T execute(QimenRequest request) {
-        request.setVersion(ConvertNameUtil.getString(QIM_05));
-        request.setCustomerId(ConvertNameUtil.getString(QIM_04));
+    private <T> T execute(QimenRequest request, SupplierInterfaceConfig supplierConfig) {
+        request.setVersion(supplierConfig.getVersion());
+        request.setCustomerId(supplierConfig.getCustomerId());
         try {
             logger.info("开始发起奇门请求："+JSON.toJSONString(request));
-            return (T) getClient().execute(request);
+            return (T) getClient(supplierConfig).execute(request);
         } catch (ApiException e) {
             throw new ServiceException("调用奇门接口异常", e);
         }
     }
 
-    private DefaultQimenClient getClient() {
-        String serviceUrl = ConvertNameUtil.getString(QIM_03);
-        String appKey = ConvertNameUtil.getString(QIM_01);
-        String appSecret = ConvertNameUtil.getString(QIM_02);
+    private DefaultQimenClient getClient(SupplierInterfaceConfig supplierConfig) {
+        String serviceUrl = supplierConfig.getServiceUrl();
+        String appKey = supplierConfig.getAppKey();
+        String appSecret = supplierConfig.getAppSecret();
         DefaultQimenClient qimenClient = new DefaultQimenClient(serviceUrl, appKey, appSecret);
         return qimenClient;
     }

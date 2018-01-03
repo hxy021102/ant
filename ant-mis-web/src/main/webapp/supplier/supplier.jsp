@@ -179,7 +179,7 @@
         var href = '${pageContext.request.contextPath}/supplierController/view?id=' + id;
         parent.$("#index_tabs").tabs('add', {
             title : '接入方详情：' + id,
-            content : '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            content : '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:97%;"></iframe>',
             closable : true
         });
 	}

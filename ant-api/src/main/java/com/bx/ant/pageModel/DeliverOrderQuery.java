@@ -27,7 +27,7 @@ public class DeliverOrderQuery extends DeliverOrder {
     private String deliveryWayName;
     private String originalOrderStatusName;
     private String agentStatusName;
-
+    private String updateDate;
     private Integer stockOutNum;
 
     public String getStatusName() {
@@ -180,5 +180,13 @@ public class DeliverOrderQuery extends DeliverOrder {
 
     public void setStockOutNum(Integer stockOutNum) {
         this.stockOutNum = stockOutNum;
+    }
+
+    public String getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(String updateDate) {
+        this.updateDate = updateDate;
     }
 }

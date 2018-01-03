@@ -1,6 +1,8 @@
 package com.bx.ant.service.qimen;
 
+import com.bx.ant.pageModel.SupplierInterfaceConfig;
 import com.bx.ant.pageModel.SupplierItemRelation;
+import com.bx.ant.service.SupplierInterfaceConfigServiceI;
 import com.bx.ant.service.SupplierItemRelationServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.MbItem;
@@ -27,6 +29,9 @@ public class QimenSingleitemQimenServiceImpl extends AbstrcatQimenService {
     private MbItemServiceI mbItemService;
     @Resource
     private SupplierItemRelationServiceI supplierItemRelationService;
+
+    @Resource
+    private SupplierInterfaceConfigServiceI supplierInterfaceConfigService;
 
     @Override
     public QimenResponse execute(QimenRequest request) {
@@ -56,7 +61,9 @@ public class QimenSingleitemQimenServiceImpl extends AbstrcatQimenService {
             mbItem.setId(itemId);
             mbItemService.edit(mbItem);
         }
-        Integer supplierId = Integer.parseInt(ConvertNameUtil.getString(QimenRequestService.QIM_06));
+        SupplierInterfaceConfig supplierConfig = supplierInterfaceConfigService.getByCustomerId(req.getCustomerId());
+//        Integer supplierId = Integer.parseInt(ConvertNameUtil.getString(QimenRequestService.QIM_06));
+        Integer supplierId = supplierConfig.getSupplierId();
         SupplierItemRelation supplierItemRelation = new SupplierItemRelation();
         supplierItemRelation.setSupplierId(supplierId);
         supplierItemRelation.setSupplierItemCode(item.getItemCode());
@@ -76,7 +83,7 @@ public class QimenSingleitemQimenServiceImpl extends AbstrcatQimenService {
             }
             Double costPrice = new Double(item.getCostPrice()) * 100;
             supplierItemRelation.setInPrice(costPrice.intValue());//成本价
-            supplierItemRelation.setFreight(Integer.parseInt(ConvertNameUtil.getString(QimenRequestService.QIM_07)));//运费
+            supplierItemRelation.setFreight(supplierConfig.getFreight());//运费
             supplierItemRelation.setPrice(supplierItemRelation.getInPrice() + supplierItemRelation.getFreight());//总价
             supplierItemRelationService.add(supplierItemRelation);
         }

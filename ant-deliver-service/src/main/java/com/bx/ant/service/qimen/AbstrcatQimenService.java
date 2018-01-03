@@ -1,5 +1,6 @@
 package com.bx.ant.service.qimen;
 
+import com.mobian.absx.F;
 import com.mobian.absx.Objectx;
 import com.qimen.api.QimenRequest;
 import com.qimen.api.QimenResponse;
@@ -20,8 +21,13 @@ public abstract class AbstrcatQimenService extends Objectx implements QimenServi
     public static final String RESPONSE = "response";
 
     @Override
-    public QimenResponse handle(String method, String body) {
-        QimenRequest request = parserRequest(body);
+    public QimenResponse handle(String method, String customerId, String body) {
+        QimenRequest request = null;
+        if(!F.empty(body)) {
+            request = parserRequest(body);
+            if(F.empty(request.getCustomerId())) request.setCustomerId(customerId);
+        }
+
         QimenResponse response = execute(request);
         print(response);
         return response;

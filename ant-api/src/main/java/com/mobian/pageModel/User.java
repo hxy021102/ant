@@ -41,6 +41,8 @@ public class User implements java.io.Serializable {
 	private String email;
 	private String orgName;
 	private String phone;
+	private String refType;
+	private String refId;
 	
 	public Date getCreatedatetimeStart() {
 		return createdatetimeStart;
@@ -250,5 +252,21 @@ public class User implements java.io.Serializable {
 
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+
+	public String getRefType() {
+		return refType;
+	}
+
+	public void setRefType(String refType) {
+		this.refType = refType;
+	}
+
+	public String getRefId() {
+		return refId;
+	}
+
+	public void setRefId(String refId) {
+		this.refId = refId;
 	}
 }
