@@ -124,7 +124,7 @@ public class SupplierInterfaceConfigController extends BaseController {
 	}
 
 	/**
-	 * 修改SupplierInterfaceConfig
+	 * 修 改SupplierInterfaceConfig
 	 * 
 	 * @param supplierInterfaceConfig
 	 * @return
