@@ -5,6 +5,7 @@ import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -60,4 +61,5 @@ public interface SupplierServiceI {
 	 */
 	public List<Supplier> query(Supplier supplier);
 
+	List<Map> getSelectMapList(String sql, Map<String, Object> params);
 }

@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.bx.ant.service.SupplierServiceI;
 import com.mobian.absx.F;
 import com.mobian.listener.Application;
 import com.mobian.service.BasedataServiceI;
+import com.mobian.util.BeanUtil;
 import org.apache.log4j.Logger;
 
 import javax.servlet.jsp.JspException;
@@ -56,7 +58,6 @@ public class SelectTagBySql extends TagSupport{
 					out.print("<select name=\"" + name + "\" class=\"easyui-combobox\" data-options=\"width:140,height:29,editable:false,");
 				}
 			}
-			BasedataServiceI service = Application.getBasedataService();
         	String sql = Application.get(dataType).getDescription();
 			Map < String , Object > params = null ;
 			//若onselect中有值,则对则会在select选中某条选项时触发easyUI的onSelect事件,从而执行onselect传递过来的函数体,并将选中的值作为参数
@@ -79,7 +80,15 @@ public class SelectTagBySql extends TagSupport{
 				}
 			}
 
-			List<Map> baseDataList = service.getSelectMapList(sql, params);
+			List<Map> baseDataList = null;
+			if("SQ020".equals(dataType)) {
+				SupplierServiceI service = BeanUtil.getBean(SupplierServiceI.class);
+				baseDataList = service.getSelectMapList(sql, params);
+			} else {
+				BasedataServiceI service = Application.getBasedataService();
+				baseDataList = service.getSelectMapList(sql, params);
+			}
+
         	if(!required)
         	out.print("<option value=\"\">    </option>");
         	String value;

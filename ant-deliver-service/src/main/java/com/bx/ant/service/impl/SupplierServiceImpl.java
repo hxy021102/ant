@@ -164,4 +164,12 @@ public class SupplierServiceImpl extends BaseServiceImpl<Supplier> implements Su
 		return ol;
 	}
 
+	@Override
+	public List<Map> getSelectMapList(String sql, Map<String, Object> params) {
+		if (params != null && !params.isEmpty()){
+			return supplierDao.findBySql2Map(sql,params);
+		}
+		return supplierDao.findBySql2Map(sql);
+	}
+
 }
