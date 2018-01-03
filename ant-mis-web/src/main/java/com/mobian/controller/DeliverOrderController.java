@@ -633,4 +633,35 @@ public class DeliverOrderController extends BaseController {
 		return j;
 	}
 
+	/**
+	 * 跳转到运单状态返回操作页
+	 * @return
+	 */
+	@RequestMapping("/updateOrderReturnBatchPage")
+	public String updateOrderReturnBatchPage() {
+		return "/deliverorder/deliverOrderBatchReturn";
+	}
+
+	/**
+	 * 返回到运单为打单状态
+	 * @param deliverOrderList
+	 * @param content
+	 * @return
+	 */
+	@RequestMapping("/updateOrderReturnBatch")
+	@ResponseBody
+	public Json updateOrderReturnBatch(HttpSession session, String deliverOrderList,String content) {
+		Json j = new Json();
+		JSONArray json = JSONArray.fromObject(deliverOrderList);
+		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+		//把json字符串转换成对象
+		List<DeliverOrder> deliverOrders = (List<DeliverOrder>) JSONArray.toCollection(json, DeliverOrder.class);
+		for (DeliverOrder deliverOrder : deliverOrders) {
+			deliverOrder.setAgentStatus(DeliverOrderServiceI.AGENT_STATUS_DTS01);
+			deliverOrderService.editAndAddLog(deliverOrder, DeliverOrderLogServiceI.TYPE_DLT40, content, sessionInfo.getId());
+		}
+		j.setMsg("批量返回运单状态成功！");
+		j.setSuccess(true);
+		return j;
+	}
 }
