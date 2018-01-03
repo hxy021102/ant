@@ -8,7 +8,7 @@
         parent.$.messager.progress('close');
     })
 		$('#form').form({
-			url :  '${pageContext.request.contextPath}/deliverOrderController/returnOrderBatch',
+			url :  '${pageContext.request.contextPath}/deliverOrderController/updateOrderReturnBatch',
 			onSubmit : function() {
 				parent.$.messager.progress({
 					title : '提示',

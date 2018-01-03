@@ -637,8 +637,8 @@ public class DeliverOrderController extends BaseController {
 	 * 跳转到运单状态返回操作页
 	 * @return
 	 */
-	@RequestMapping("/returnOrderBatchPage")
-	public String returnOrderBatchPage() {
+	@RequestMapping("/updateOrderReturnBatchPage")
+	public String updateOrderReturnBatchPage() {
 		return "/deliverorder/deliverOrderBatchReturn";
 	}
 
@@ -648,9 +648,9 @@ public class DeliverOrderController extends BaseController {
 	 * @param content
 	 * @return
 	 */
-	@RequestMapping("/returnOrderBatch")
+	@RequestMapping("/updateOrderReturnBatch")
 	@ResponseBody
-	public Json returnOrderBatch(HttpSession session, String deliverOrderList,String content) {
+	public Json updateOrderReturnBatch(HttpSession session, String deliverOrderList,String content) {
 		Json j = new Json();
 		JSONArray json = JSONArray.fromObject(deliverOrderList);
 		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
