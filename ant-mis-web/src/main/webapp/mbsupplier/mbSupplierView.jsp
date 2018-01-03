@@ -432,16 +432,12 @@
 					<td>
 						${mbSupplier.warehouseName}
 					</td>
-					<th>余额</th>
-					<td class="money_input">
-						${mbSupplier.balanceAmount+mbSupplier.unPayBalanceAmount}
-					</td>
 					<th>实际余额</th>
 					<td>
-						<a href="javascript:void(0);" onclick="viewBalance('${mbSupplier.id}')" class="money_input">${mbSupplier.balanceAmount}</a>
+						<a href="javascript:void(0);" onclick="viewBalance('${mbSupplier.id}')" class="money_input">${mbSupplier.balanceAmount-mbSupplier.unPayBalanceAmount}</a>
 					</td>
 					<th>应付金额</th>
-					<td>
+					<td colspan="2">
 						<a href="javascript:void(0);" onclick="viewMbSupplierStockIn('${mbSupplier.id}')" class="money_input">${mbSupplier.unPayBalanceAmount}</a>
 					</td>
 				</tr>		

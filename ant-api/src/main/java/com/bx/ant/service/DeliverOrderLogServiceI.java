@@ -29,6 +29,8 @@ public interface DeliverOrderLogServiceI {
 	String TYPE_DLT15 = "DLT15";// 扫码打单
 	String TYPE_DLT16 = "DLT16";// 代送单门店签收
 	String TYPE_CLOSE_ORDER = "DLT30";//关闭订单
+	String TYPE_DLT40= "DLT40";//返回至未打单
+
 
 
 	/**

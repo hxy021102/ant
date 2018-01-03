@@ -15,6 +15,9 @@ import com.bx.ant.service.SupplierServiceI;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
 import com.mobian.service.*;
+import com.mobian.service.BasedataServiceI;
+import com.mobian.service.MbShopServiceI;
+import com.mobian.service.MbStockOutOrderServiceI;
 import com.mobian.util.ConfigUtil;
 import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.DateUtil;
@@ -569,6 +572,115 @@ public class DeliverOrderController extends BaseController {
 			}
 		}
 		j.setMsg("批量发货成功！");
+		j.setSuccess(true);
+		return j;
+	}
+
+	/**
+	 * 跳转到批量关闭运单页面
+	 * @return
+	 */
+	@RequestMapping("/closeDeliverOrderBatchPage")
+	public String closeDeliverOrderBatchPage() {
+		return "/deliverorder/deliverOrderBatchClose";
+	}
+
+	/**
+	 * 批量关闭运单
+	 * @param session
+	 * @param deliverOrderList
+	 * @return
+	 */
+	@RequestMapping("/closeDeliverOrderBatch")
+	@ResponseBody
+	public Json closeDeliverOrderBatch(HttpSession session, String deliverOrderList,String remark) {
+		Json j = new Json();
+		JSONArray json = JSONArray.fromObject(deliverOrderList);
+		//把json字符串转换成对象
+		List<DeliverOrder> deliverOrders = (List<DeliverOrder>) JSONArray.toCollection(json, DeliverOrder.class);
+		for (DeliverOrder deliverOrder : deliverOrders) {
+			deliverOrder.setStatus(DeliverOrderServiceI.STATUS_FAILURE_CLOSED);
+			deliverOrder.setRemark(remark);
+			deliverOrderService.transform(deliverOrder);
+		}
+		j.setMsg("批量关闭运单成功！");
+		j.setSuccess(true);
+		return j;
+	}
+
+	/**
+	 * 跳转到批量运单指派页
+	 *
+	 * @return
+	 */
+	@RequestMapping("/assignOrderBatchPage")
+	public String assignOrderBatchPage() {
+		return "/deliverorder/assignOrderBatchShop";
+	}
+
+	/**
+	 * 指派批量运单给门店
+	 * @param shopId
+	 * @param orderLogRemark
+	 * @param deliverOrderList
+	 * @return
+	 */
+	@RequestMapping("/assignOrderBatchShop")
+	@ResponseBody
+	public Json assignOrderBatchShop(Integer shopId,String orderLogRemark,String deliverOrderList) {
+		Json j = new Json();
+		JSONArray json = JSONArray.fromObject(deliverOrderList);
+		//把json字符串转换成对象
+		List<DeliverOrder> deliverOrders = (List<DeliverOrder>) JSONArray.toCollection(json, DeliverOrder.class);
+		for (DeliverOrder deliverOrder : deliverOrders) {
+			DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+			deliverOrderShop.setDeliverOrderId(deliverOrder.getId());
+			deliverOrderShop.setStatus("DSS02");
+			List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(deliverOrderShop);
+			DeliverOrderShop orderShop = deliverOrderShops.get(0);
+			deliverOrder.setOrderShopId(orderShop.getId());
+			deliverOrder.setShopId(shopId);
+			deliverOrder.setOrderLogRemark(orderLogRemark);
+			Boolean result = deliverOrderService.handleAssignDeliverOrder(deliverOrder);
+			if (!result) {
+				j.setSuccess(false);
+				j.setMsg("运单:" + deliverOrder.getId() + "指派失败，门店商品不足或不存在该商品！");
+				return j;
+			}
+		}
+		j.setSuccess(true);
+		j.setMsg("指派成功！");
+		return j;
+	}
+
+	/**
+	 * 跳转到运单状态返回操作页
+	 * @return
+	 */
+	@RequestMapping("/updateOrderReturnBatchPage")
+	public String updateOrderReturnBatchPage() {
+		return "/deliverorder/deliverOrderBatchReturn";
+	}
+
+	/**
+	 * 返回到运单为打单状态
+	 * @param deliverOrderList
+	 * @param content
+	 * @return
+	 */
+	@RequestMapping("/updateOrderReturnBatch")
+	@ResponseBody
+	public Json updateOrderReturnBatch(HttpSession session, String deliverOrderList,String content) {
+		Json j = new Json();
+		JSONArray json = JSONArray.fromObject(deliverOrderList);
+		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+		//把json字符串转换成对象
+		List<DeliverOrder> deliverOrders = (List<DeliverOrder>) JSONArray.toCollection(json, DeliverOrder.class);
+		for (DeliverOrder deliverOrder : deliverOrders) {
+			deliverOrder.setAgentStatus(DeliverOrderServiceI.AGENT_STATUS_DTS01);
+			deliverOrderService.editAndAddLog(deliverOrder, DeliverOrderLogServiceI.TYPE_DLT40, content, sessionInfo.getId());
+		}
+		j.setMsg("批量返回运单状态成功！");
 		j.setSuccess(true);
 		return j;
 	}
