@@ -197,4 +197,22 @@ public class ShopDeliverApplyController extends BaseController {
         j.setMsg("编辑成功！");
         return j;
     }
+
+	/**
+	 * 修改接入方门店配送范围
+	 * @param id
+	 * @param distributeRange
+	 * @return
+	 */
+	@RequestMapping("/updateDistributeRange")
+	@ResponseBody
+	public Json updateDistributeRange(Integer id, String distributeRange) {
+		Json j = new Json();
+		ShopDeliverApply shopDeliverApply = shopDeliverApplyService.get(id);
+		shopDeliverApply.setDistributeRange(distributeRange);
+		shopDeliverApplyService.edit(shopDeliverApply);
+		j.setSuccess(true);
+		j.setMsg("修改接入方门店配范围成功！");
+		return j;
+	}
 }

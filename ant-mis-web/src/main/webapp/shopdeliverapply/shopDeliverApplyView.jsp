@@ -38,7 +38,6 @@
             new BMap.Point(121.715332,31.19977)
         ], {strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});  //创建多边形
         var map;
-        var overlays = [];
         function renderMap(mapData) {
             // 百度地图API功能
             map = new BMap.Map("allmap");
@@ -50,10 +49,16 @@
             map.addOverlay(marker);               // 将标注添加到地图中
             addClickHandler(content, marker);
             map.addOverlay(polygon);   //增加多边形
+
+            polygon.addEventListener("mousemove",function(e){
+                var rangeArr = polygon.getPath();
+               // alert("获取的数据为："+rangeArr[0].lng+" "+rangeArr[0].lat);
+                 $("#distributeRange").val(JSON.stringify(rangeArr));
+            });
         }
         function addClickHandler(content,marker){
             marker.addEventListener("click",function(e){
-                openInfo(content,e); overlays.push(e.overlay)}
+                openInfo(content,e); }
             );
         }
         function openInfo(content,e){
@@ -67,16 +72,20 @@
             var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
             var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
             map.openInfoWindow(infoWindow,point); //开启信息窗口
-            getPoint()
         }
-        function getPoint(){
-            for(var i = 0; i < overlays.length; i++){
-                var overlay=overlays[i].getPath();
-                for(var j = 0; j < overlay.length; j++){
-                    var grid =overlay[j];
-                    alert("坐标为："+grid.lng+","+grid.lat);
-                }
-            }
+        function  tijiao() {
+            var distributeRangeValue=$("#distributeRange").val();
+			alert("你好"+distributeRangeValue);
+        }
+
+        function updateDistributeRange() {
+            var distributeRangeValue = $("#distributeRange").val();
+            $.post('${pageContext.request.contextPath}/shopDeliverApplyController/updateDistributeRange?id=' + ${shopDeliverApplyQuery.id}+"&distributeRange=" + distributeRangeValue,
+                function (result) {
+                    if (result.success) {
+                        parent.$.messager.alert('提示',result.msg, 'info');
+                    }
+                }, 'JSON');
         }
 	</script>
 </head>
@@ -182,8 +191,9 @@
 	<div data-options="region:'center',border:false">
 		<div id="allmap" style="height: 100%"></div>
 		<div id="control">
-			<button onclick="polygon.enableEditing();">开启线、面编辑功能</button>
-			<button onclick="polygon.disableEditing();">关闭线、面编辑功能</button>
+			<input type="hidden" id="distributeRange" name="distributeRange" />
+			<button onclick="polygon.enableEditing();">开启编辑功能</button>
+			<button onclick="polygon.disableEditing();updateDistributeRange()">关闭编辑并提交</button>
 		</div>
 	</div>
 </div>
