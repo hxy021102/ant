@@ -500,20 +500,19 @@ public class MbRechargeLogController extends BaseController {
     @ResponseBody
     public Json addAccessSupplierMoney(HttpSession session, MbRechargeLog mbRechargeLog,Integer accessSupplierId) {
         Json j = new Json();
-        SessionInfo sessionInfo = (SessionInfo) session.getAttribute("sessionInfo");
-        MbBalance mbBalance =new MbBalance();
-        if("BT300".equals(mbRechargeLog.getRefType())) {
-            mbBalance = mbBalanceService.addOrGetAccessSupplierBalance(accessSupplierId);
-        }else if("BT301".equals(mbRechargeLog.getRefType())){
-            mbBalance = mbBalanceService.addOrGetAccessSupplierBond(accessSupplierId);
-        }else if("BT302".equals(mbRechargeLog.getRefType())){
-            mbBalance = mbBalanceService.addOrGetAccessSupplierCredit(accessSupplierId);
-        }
-        if(mbBalance!=null) {
-            mbRechargeLog.setBalanceId(mbBalance.getId());
-            mbRechargeLog.setApplyLoginId(sessionInfo.getId());
-            mbRechargeLog.setHandleStatus(MbRechargeLogServiceI.HS02);
-            mbRechargeLogService.addAndUpdateBalance(mbRechargeLog);
+        if (!F.empty(mbRechargeLog.getRefType())) {
+            MbBalance mbBalance = mbBalanceService.addOrGetAccessSupplierBalance(accessSupplierId);
+            if (mbBalance != null) {
+                SessionInfo sessionInfo = (SessionInfo) session.getAttribute("sessionInfo");
+                mbRechargeLog.setBalanceId(mbBalance.getId());
+                mbRechargeLog.setApplyLoginId(sessionInfo.getId());
+                mbRechargeLog.setHandleStatus(MbRechargeLogServiceI.HS02);
+                if ("BT300".equals(mbRechargeLog.getRefType())) {
+                    mbRechargeLogService.addAndUpdateBalance(mbRechargeLog);
+                } else {
+                    mbRechargeLogService.addRechargeLogAndBalanceLog(mbRechargeLog);
+                }
+            }
         }
         j.setSuccess(true);
         j.setMsg("添加成功！");
