@@ -31,6 +31,7 @@
     <dubbo:reference id="shopOrderBillService" interface="com.bx.ant.service.ShopOrderBillServiceI" url="${dubbo.direct.url}"/>
     <dubbo:reference id="deliverOrderShopPayService" interface="com.bx.ant.service.DeliverOrderShopPayServiceI" url="${dubbo.direct.url}"/>
     <dubbo:reference id="shopItemService" interface="com.bx.ant.service.ShopItemServiceI" url="${dubbo.direct.url}"/>
+    <dubbo:reference id="supplierInterfaceConfigService" interface="com.bx.ant.service.SupplierInterfaceConfigServiceI" url="${dubbo.direct.url}"/>
 
 
     <dubbo:reference  id="driverAccountService" interface="com.bx.ant.service.DriverAccountServiceI" url="${dubbo.direct.url}"/>

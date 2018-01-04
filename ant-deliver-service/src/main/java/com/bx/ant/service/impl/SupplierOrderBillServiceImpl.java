@@ -1,11 +1,9 @@
 package com.bx.ant.service.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.DeliverOrderPay;
@@ -19,9 +17,13 @@ import com.bx.ant.model.TsupplierOrderBill;
 import com.bx.ant.pageModel.SupplierOrderBill;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.DataGrid;
+import com.mobian.pageModel.MbBalance;
+import com.mobian.pageModel.MbBalanceLog;
 import com.mobian.pageModel.PageHelper;
 import com.bx.ant.service.SupplierOrderBillServiceI;
 
+import com.mobian.service.MbBalanceLogServiceI;
+import com.mobian.service.MbBalanceServiceI;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,6 +42,10 @@ public class SupplierOrderBillServiceImpl extends BaseServiceImpl<SupplierOrderB
 	private DeliverOrderPayServiceI deliverOrderPayService;
 	@Resource
 	private DeliverOrderServiceI deliverOrderService;
+	@Resource
+	private MbBalanceServiceI mbBalanceService;
+	@Resource
+	private MbBalanceLogServiceI mbBalanceLogService;
 
 	@Override
 	public DataGrid dataGrid(SupplierOrderBill supplierOrderBill, PageHelper ph) {
@@ -159,6 +165,15 @@ public class SupplierOrderBillServiceImpl extends BaseServiceImpl<SupplierOrderB
 			if(isAgree) {
 				d.setStatus("DPS02");//已结算
 				deliverOrder.setPayStatus("DPS02");//修改订单状态为已结算
+				//审核通过做余额扣除
+				MbBalance mbBalance=mbBalanceService.addOrGetAccessSupplierBalance(supplierOrderBill.getSupplierId());
+				MbBalanceLog mbBalanceLog=new MbBalanceLog();
+				mbBalanceLog.setBalanceId(mbBalance.getId());
+				mbBalanceLog.setRefId(d.getId()+"");
+				mbBalanceLog.setRefType("BT303");
+				mbBalanceLog.setAmount(supplierOrderBill.getAmount()*(-1));
+				mbBalanceLog.setReason(String.format("门店[ID:%1$s]完成运单[ID:%2$s]正常扣款", deliverOrder.getShopId(), deliverOrder.getId()));
+				mbBalanceLogService.addAndUpdateBalance(mbBalanceLog);
 			}else {
 				d.setStatus("DPS04");//审核拒绝
 				deliverOrder.setPayStatus("DPS01");//订单变成未结算

@@ -54,7 +54,7 @@
                     hidden : true
                 }, {
                     field : 'deliverOrderId',
-                    title : '运单Id',
+                    title : '运单ID',
                     width : 50
                 }, {
                     field : 'statusName',
@@ -85,8 +85,10 @@
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<form id="form" method="post">
 		<input type="hidden" name="id" value="${supplierOrderBill.id}">
+		<input type="hidden" name="supplierId" value="${supplierOrderBill.supplierId}">
+		<input type="hidden" name="amount" value="${supplierOrderBill.amount}">
 		<input type="hidden" name="isAgree">
-	<div data-options="region:'north',border:false" style="height: 170px">
+	<div data-options="region:'north',border:false" style="height: 185px">
 		<table class="table table-hover table-condensed">
 				<tr>	
 					<th style="width: 60px;">供应商名称</th>

@@ -6,5 +6,5 @@ import com.qimen.api.QimenResponse;
  * Created by john on 17/11/28.
  */
 public interface QimenService {
-    QimenResponse handle(String method,String body);
+    QimenResponse handle(String method, String customerId, String body);
 }
