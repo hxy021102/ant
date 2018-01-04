@@ -8,6 +8,8 @@
 <head>
 <jsp:include page="../inc.jsp"></jsp:include>
 <script type="text/javascript" src="${pageContext.request.scheme}://api.map.baidu.com/api?v=2.0&ak=uVkZBmjLC0KGflQtsXRc4rh4&s=1"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
+<link rel="stylesheet" href="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.css" />
 	<script type="text/javascript">
     $(function () {
         $('.money_input').each(function(){
@@ -27,6 +29,56 @@
             }, 'JSON');
     }
 </script>
+	<script type="text/javascript">
+        var polygon = new BMap.Polygon([
+            new BMap.Point(121.700332,31.19777),
+            new BMap.Point(121.719332,31.19877),
+            new BMap.Point(121.707332,31.20777),
+            new BMap.Point(121.713332,31.18777),
+            new BMap.Point(121.715332,31.19977)
+        ], {strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});  //创建多边形
+        var map;
+        var overlays = [];
+        function renderMap(mapData) {
+            // 百度地图API功能
+            map = new BMap.Map("allmap");
+            map.centerAndZoom(new BMap.Point(mapData.longitude, mapData.latitude), 15);
+            map.enableScrollWheelZoom(true);     //开启鼠标滚缩放
+
+            var marker = new BMap.Marker(new BMap.Point(mapData.longitude, mapData.latitude));  // 创建标注
+            var content = mapData.address;
+            map.addOverlay(marker);               // 将标注添加到地图中
+            addClickHandler(content, marker);
+            map.addOverlay(polygon);   //增加多边形
+        }
+        function addClickHandler(content,marker){
+            marker.addEventListener("click",function(e){
+                openInfo(content,e); overlays.push(e.overlay)}
+            );
+        }
+        function openInfo(content,e){
+            var opts = {
+                width: 250,     // 信息窗口宽度
+                height: 95,     // 信息窗口高度
+				/*title : "信息窗口" , // 信息窗口标题*/
+                enableMessage: true//设置允许信息窗发送短息
+            };
+            var p = e.target;
+            var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
+            var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
+            map.openInfoWindow(infoWindow,point); //开启信息窗口
+            getPoint()
+        }
+        function getPoint(){
+            for(var i = 0; i < overlays.length; i++){
+                var overlay=overlays[i].getPath();
+                for(var j = 0; j < overlay.length; j++){
+                    var grid =overlay[j];
+                    alert("坐标为："+grid.lng+","+grid.lat);
+                }
+            }
+        }
+	</script>
 </head>
 <body>
 <div class="easyui-layout" data-options="fit:true,border:false">
@@ -128,57 +180,12 @@
 		</table>
 	</div>
 	<div data-options="region:'center',border:false">
-				<div id="allmap" style="height: 100%"></div>
-				<div id="control">
-					<button onclick = "polygon.enableEditing();">开启线、面编辑功能</button>
-					<button onclick = "polygon.disableEditing();">关闭线、面编辑功能</button>
-				</div>
-				<script type="text/javascript">
-                    var map;
-                    function renderMap(mapData) {
-                        // 百度地图API功能
-                        map = new BMap.Map("allmap");
-                        map.centerAndZoom(new BMap.Point(mapData.longitude, mapData.latitude), 15);
-                        map.enableScrollWheelZoom(true);     //开启鼠标滚缩放
-
-                        var marker = new BMap.Marker(new BMap.Point(mapData.longitude, mapData.latitude));  // 创建标注
-                        var content = mapData.address;
-                        map.addOverlay(marker);               // 将标注添加到地图中
-                        addClickHandler(content, marker);
-
-                        var polygon = new BMap.Polygon([
-                            new BMap.Point(121.700332,31.19777),
-                            new BMap.Point(121.719332,31.19877),
-                            new BMap.Point(121.707332,31.20777),
-                            new BMap.Point(121.713332,31.18777),
-                            new BMap.Point(121.715332,31.19977)
-                        ], {strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});  //创建多边形
-                        map.addOverlay(polygon);   //增加多边形
-                    }
-                    function addClickHandler(content,marker){
-                        marker.addEventListener("click",function(e){
-                            openInfo(content,e)}
-                        );
-                    }
-                    function openInfo(content,e){
-                        var opts = {
-                            width: 250,     // 信息窗口宽度
-                            height: 95,     // 信息窗口高度
-							/*title : "信息窗口" , // 信息窗口标题*/
-                            enableMessage: true//设置允许信息窗发送短息
-                        };
-                        var p = e.target;
-                        var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
-                        var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
-                        map.openInfoWindow(infoWindow,point); //开启信息窗口
-                    }
-				</script>
+		<div id="allmap" style="height: 100%"></div>
+		<div id="control">
+			<button onclick="polygon.enableEditing();">开启线、面编辑功能</button>
+			<button onclick="polygon.disableEditing();">关闭线、面编辑功能</button>
+		</div>
 	</div>
-</div>
-<div id="toolbar">
-	<c:if test="${fn:contains(sessionInfo.resourceList, '/supplierItemRelationController/addPage')}">
-		<a onclick="addFun();" href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true,iconCls:'pencil_add'">添加</a>
-	</c:if>
 </div>
 </body>
 </html>
