@@ -48,6 +48,9 @@ public class DeliverOrder implements java.io.Serializable {
 	private String originalShop;
 	private String originalOrderStatus;
 	private String agentStatus;
+
+	private Boolean checkAmount; // 是否检查余额不足
+
 	public void setId(Long value) {
 		this.id = value;
 	}
@@ -335,5 +338,13 @@ public class DeliverOrder implements java.io.Serializable {
 
 	public void setAgentStatus(String agentStatus) {
 		this.agentStatus = agentStatus;
+	}
+
+	public Boolean getCheckAmount() {
+		return checkAmount;
+	}
+
+	public void setCheckAmount(Boolean checkAmount) {
+		this.checkAmount = checkAmount;
 	}
 }
