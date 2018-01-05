@@ -338,15 +338,6 @@ public class MbBalanceServiceImpl extends BaseServiceImpl<MbBalance> implements 
 		return addOrGetAccessSupplierBalance(accessSupplierId, 20, 0);
 	}
 
-	@Override
-	public MbBalance addOrGetAccessSupplierBond(Integer accessSupplierId) {
-		return addOrGetAccessSupplierBalance(accessSupplierId, 21, 0);
-	}
-
-	@Override
-	public MbBalance addOrGetAccessSupplierCredit(Integer accessSupplierId) {
-		return addOrGetAccessSupplierBalance(accessSupplierId, 22, 0);
-	}
 
 	@Override
 	public MbBalance addOrGetAccessSupplierBalance(Integer refId, Integer refType, Integer initAmount) {

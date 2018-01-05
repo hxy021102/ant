@@ -97,4 +97,12 @@ public interface MbBalanceLogServiceI {
 	 * 骑手按月计算支出
 	 */
 	Map<String,Integer> totalBalanceByMonthDriver(MbBalanceLogDriver mbBalanceLogDriver);
+
+	/**
+	 * 通过余额Id和业务类型获取供应商保证金或者信用
+	 * @param balanceId
+	 * @param refType
+	 * @return
+	 */
+	Integer getSupplierBondOrCredit(Integer balanceId,String refType);
 }

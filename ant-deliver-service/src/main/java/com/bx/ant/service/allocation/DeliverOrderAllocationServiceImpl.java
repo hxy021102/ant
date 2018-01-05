@@ -4,10 +4,7 @@ import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.DeliverOrderExt;
 import com.bx.ant.pageModel.DeliverOrderShop;
 import com.bx.ant.pageModel.ShopDeliverApply;
-import com.bx.ant.service.DeliverOrderAllocationServiceI;
-import com.bx.ant.service.DeliverOrderServiceI;
-import com.bx.ant.service.DeliverOrderShopServiceI;
-import com.bx.ant.service.ShopDeliverApplyServiceI;
+import com.bx.ant.service.*;
 import com.bx.ant.service.qimen.QimenRequestService;
 import com.bx.ant.service.session.TokenServiceI;
 import com.mobian.absx.F;
@@ -38,7 +35,7 @@ import java.util.*;
  */
 @Service
 public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocationServiceI {
-    public static final String REJECT = "REJECT";
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -256,7 +253,7 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
                 if(deliverOrder.getIsdeleted()) {
                     deliverOrder.setOriginalOrderStatus(DeliverOrderServiceI.ORIGINAL_ORDER_STATUS_OTS03);
                     deliverOrderService.edit(deliverOrder);
-                    qimenRequestService.updateOrderProcessReportRequest(REJECT,deliverOrder);
+                    qimenRequestService.updateOrderProcessReportRequest(DeliverOrderState.REJECT,deliverOrder);
                 }
             }
         }

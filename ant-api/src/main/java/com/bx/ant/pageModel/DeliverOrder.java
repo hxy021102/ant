@@ -2,6 +2,7 @@ package com.bx.ant.pageModel;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Map;
 
 @SuppressWarnings("serial")
 public class DeliverOrder implements java.io.Serializable {
@@ -49,6 +50,8 @@ public class DeliverOrder implements java.io.Serializable {
 	private String originalOrderStatus;
 	private String agentStatus;
 
+	private Map<String,Object> extend;
+	
 	private Boolean checkAmount; // 是否检查余额不足
 
 	public void setId(Long value) {
@@ -338,6 +341,14 @@ public class DeliverOrder implements java.io.Serializable {
 
 	public void setAgentStatus(String agentStatus) {
 		this.agentStatus = agentStatus;
+	}
+
+	public Map<String, Object> getExtend() {
+		return extend;
+	}
+
+	public void setExtend(Map<String, Object> extend) {
+		this.extend = extend;
 	}
 
 	public Boolean getCheckAmount() {

@@ -155,6 +155,15 @@ public class SupplierOrderBillServiceImpl extends BaseServiceImpl<SupplierOrderB
 		Integer result = 0;
 		if(isAgree) {
 			supplierOrderBill.setStatus("BAS02");//审核通过
+			//审核通过做余额扣除
+			MbBalance mbBalance=mbBalanceService.addOrGetAccessSupplierBalance(supplierOrderBill.getSupplierId());
+			MbBalanceLog mbBalanceLog=new MbBalanceLog();
+			mbBalanceLog.setBalanceId(mbBalance.getId());
+			mbBalanceLog.setRefId(supplierOrderBill.getId()+"");
+			mbBalanceLog.setRefType("BT303");
+			mbBalanceLog.setAmount(supplierOrderBill.getAmount()*(-1));
+			mbBalanceLog.setReason(String.format("供应商[ID:%1$s]账单[ID:%2$s]审核通过正常扣款", supplierOrderBill.getSupplierId(), supplierOrderBill.getId()));
+			mbBalanceLogService.addAndUpdateBalance(mbBalanceLog);
 		}else {
 			supplierOrderBill.setStatus("BAS03");//审核拒绝
 		}
@@ -165,15 +174,6 @@ public class SupplierOrderBillServiceImpl extends BaseServiceImpl<SupplierOrderB
 			if(isAgree) {
 				d.setStatus("DPS02");//已结算
 				deliverOrder.setPayStatus("DPS02");//修改订单状态为已结算
-				//审核通过做余额扣除
-				MbBalance mbBalance=mbBalanceService.addOrGetAccessSupplierBalance(supplierOrderBill.getSupplierId());
-				MbBalanceLog mbBalanceLog=new MbBalanceLog();
-				mbBalanceLog.setBalanceId(mbBalance.getId());
-				mbBalanceLog.setRefId(d.getId()+"");
-				mbBalanceLog.setRefType("BT303");
-				mbBalanceLog.setAmount(supplierOrderBill.getAmount()*(-1));
-				mbBalanceLog.setReason(String.format("门店[ID:%1$s]完成运单[ID:%2$s]正常扣款", deliverOrder.getShopId(), deliverOrder.getId()));
-				mbBalanceLogService.addAndUpdateBalance(mbBalanceLog);
 			}else {
 				d.setStatus("DPS04");//审核拒绝
 				deliverOrder.setPayStatus("DPS01");//订单变成未结算
