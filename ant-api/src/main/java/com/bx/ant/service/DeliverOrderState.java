@@ -9,6 +9,11 @@ public interface DeliverOrderState {
 
     ThreadLocal<DeliverOrder> deliverOrder = new ThreadLocal();
 
+    String ACTION = "action";
+
+    String REJECT = "REJECT";
+
+
     String prefix = "DOS";
     /**
      * 获取状态

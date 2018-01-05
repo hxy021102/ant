@@ -601,6 +601,9 @@ public class DeliverOrderController extends BaseController {
 		for (DeliverOrder deliverOrder : deliverOrders) {
 			deliverOrder.setStatus(DeliverOrderServiceI.STATUS_FAILURE_CLOSED);
 			deliverOrder.setRemark(remark);
+			Map<String,Object> extend = new HashMap<String,Object>();
+			extend.put(DeliverOrderState.ACTION,DeliverOrderState.REJECT);
+			deliverOrder.setExtend(extend);
 			deliverOrderService.transform(deliverOrder);
 		}
 		j.setMsg("批量关闭运单成功！");

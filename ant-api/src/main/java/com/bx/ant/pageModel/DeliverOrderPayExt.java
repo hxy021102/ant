@@ -1,6 +1,4 @@
-package com.bx.ant.pageModel.session;
-
-import com.bx.ant.pageModel.DeliverOrderPay;
+package com.bx.ant.pageModel;
 
 /**
  * Created by zn on 2017/10/19.

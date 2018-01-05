@@ -42,11 +42,13 @@ public class QimenOrderCancelServiceImpl extends AbstrcatQimenService {
         String orderCode = orderCancelRequest.getOrderCode();
         DeliverOrder deliverOrder = deliverOrderService.getBySupplierOrderIdAndSupplierId(supplierId, orderCode);
         if (deliverOrder != null) {
-            String orderId = orderCode + "_" + new Date().getTime();
+
             String[] status = new String[]{DeliverOrderServiceI.STATUS_NOT_ALLOCATION, DeliverOrderServiceI.STATUS_SHOP_ALLOCATION, DeliverOrderServiceI.STATUS_SHOP_REFUSE, DeliverOrderServiceI.STATUS_SHOP_ACCEPT};
             deliverOrderReq.setId(deliverOrder.getId());
-            deliverOrderReq.setSupplierOrderId(orderId);
+
             if (deliverOrder.getIsdeleted()) {
+                String orderId = orderCode + "_" + new Date().getTime();
+                deliverOrderReq.setSupplierOrderId(orderId);
                 deliverOrderReq.setOriginalOrderStatus(DeliverOrderServiceI.ORIGINAL_ORDER_STATUS_OTS03);
                 deliverOrderService.edit(deliverOrderReq);
             } else if (ArrayUtils.contains(status, deliverOrder.getStatus())) {
