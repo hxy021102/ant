@@ -2,15 +2,14 @@ package com.bx.ant.service.impl.state;
 
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.DeliverOrderShop;
-import com.bx.ant.pageModel.DriverOrderShop;
 import com.bx.ant.service.*;
+import com.bx.ant.service.qimen.QimenRequestService;
 import com.mobian.absx.F;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
+import java.util.Date;
 
 /**
  * 交易关闭
@@ -24,6 +23,9 @@ public class DeliverOrder60StateImpl extends AbstractDeliverOrderState {
 
     @Resource
     private DeliverOrderShopServiceI deliverOrderShopService;
+
+    @Autowired
+    private QimenRequestService qimenRequestService;
 
 
     @Override
@@ -39,8 +41,11 @@ public class DeliverOrder60StateImpl extends AbstractDeliverOrderState {
         DeliverOrder orderNew = new DeliverOrder();
         orderNew.setId(deliverOrder.getId());
         orderNew.setStatus(prefix + getStateName());
-        if (!F.empty(deliverOrder.getSupplierOrderId()))
-            orderNew.setSupplierOrderId(deliverOrder.getSupplierOrderId());
+        String supplierOrderId = DeliverOrderState.deliverOrder.get().getSupplierOrderId();
+        if (!F.empty(supplierOrderId)) {
+            String orderId = supplierOrderId + "_" + new Date().getTime();
+            orderNew.setSupplierOrderId(orderId);
+        }
         deliverOrderService.editAndAddLog(orderNew, DeliverOrderLogServiceI.TYPE_CLOSE_ORDER, String.format("订单已关闭，原因:%s", deliverOrder.getRemark()));
 
         //修改关闭状态
@@ -48,6 +53,16 @@ public class DeliverOrder60StateImpl extends AbstractDeliverOrderState {
         if (deliverOrderShop != null) {
             deliverOrderShop.setStatus(DeliverOrderShopServiceI.STATUS_INACTIVE);
             deliverOrderShopService.edit(deliverOrderShop);
+        }
+    }
+
+    protected void afterCompletion(DeliverOrder deliverOrder) {
+        DeliverOrder deliverOrderOld = DeliverOrderState.deliverOrder.get();
+        if (deliverOrder.getExtend() != null) {
+            String action = (String) deliverOrder.getExtend().get(DeliverOrderState.ACTION);
+            if (DeliverOrderState.REJECT.equals(action)) {
+                qimenRequestService.updateOrderProcessReportRequest(DeliverOrderState.REJECT, deliverOrderOld);
+            }
         }
     }
 

@@ -1,6 +1,5 @@
 package com.bx.ant.service.impl;
 
-import com.bx.ant.pageModel.session.DeliverOrderPayExt;
 import com.mobian.absx.F;
 import com.bx.ant.dao.DeliverOrderPayDaoI;
 import com.bx.ant.model.TdeliverOrderPay;
