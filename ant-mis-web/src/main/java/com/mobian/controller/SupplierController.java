@@ -18,6 +18,7 @@ import com.mobian.pageModel.*;
 import com.bx.ant.service.SupplierServiceI;
 
 import com.bx.ant.pageModel.Supplier;
+import com.mobian.service.MbBalanceLogServiceI;
 import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.UserServiceI;
 import com.mobian.util.ConfigUtil;
@@ -53,6 +54,8 @@ public class SupplierController extends BaseController {
 	private UserServiceI userService;
     @Autowired
 	private MbBalanceServiceI mbBalanceService;
+	@Resource
+	private MbBalanceLogServiceI mbBalanceLogService;
 
 
 	/**
@@ -183,16 +186,20 @@ public class SupplierController extends BaseController {
 	@RequestMapping("/view")
 	public String view(HttpServletRequest request, Integer id) {
 		Supplier supplier = supplierService.get(id);
-		User user = userService.get(supplier.getLoginId());
-		SupplierView supplierView=new SupplierView();
-		BeanUtils.copyProperties(supplier,supplierView);
+		SupplierView supplierView = new SupplierView();
+		BeanUtils.copyProperties(supplier, supplierView);
+		if (!F.empty(supplier.getLoginId())) {
+			User user = userService.get(supplier.getLoginId());
+			supplierView.setLoginName(user.getNickname());
+		}
 		MbBalance mbBalance = mbBalanceService.addOrGetAccessSupplierBalance(id);
-		MbBalance mbBalanceBond = mbBalanceService.addOrGetAccessSupplierBond(id);
-		MbBalance mbBalanceCredit = mbBalanceService.addOrGetAccessSupplierCredit(id);
-		supplierView.setBalance(mbBalance.getAmount());
-		supplierView.setBond(mbBalanceBond.getAmount());
-		supplierView.setCredit(mbBalanceCredit.getAmount());
-		supplier.setLoginName(user.getNickname());
+		if (mbBalance != null) {
+			Integer bondMoney = mbBalanceLogService.getSupplierBondOrCredit(mbBalance.getId(), "BT301");
+			Integer creditMoney = mbBalanceLogService.getSupplierBondOrCredit(mbBalance.getId(), "BT302");
+			supplierView.setBond(bondMoney);
+			supplierView.setCredit(creditMoney);
+			supplierView.setBalance(mbBalance.getAmount());
+		}
 		request.setAttribute("supplier", supplierView);
 		return "/supplier/supplierView";
 	}

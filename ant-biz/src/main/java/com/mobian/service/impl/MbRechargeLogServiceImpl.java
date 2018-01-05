@@ -295,4 +295,15 @@ public class MbRechargeLogServiceImpl extends BaseServiceImpl<MbRechargeLog> imp
 		}
 		return null;
 	}
+
+	@Override
+	public void addRechargeLogAndBalanceLog(MbRechargeLog mbRechargeLog) {
+		add(mbRechargeLog);
+		MbBalanceLog mbBalanceLog = new MbBalanceLog();
+		BeanUtils.copyProperties(mbRechargeLog, mbBalanceLog);
+		mbBalanceLog.setRefId(String.valueOf(mbRechargeLog.getId()));
+		Integer totalMoney = mbBalanceLogService.getSupplierBondOrCredit(mbRechargeLog.getBalanceId(), mbRechargeLog.getRefType());
+		mbBalanceLog.setRemark(String.format(mbRechargeLog.getContent() + "【期末余额:%s分】", totalMoney + mbBalanceLog.getAmount()));
+		mbBalanceLogService.add(mbBalanceLog);
+	}
 }
