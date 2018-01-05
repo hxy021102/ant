@@ -1,13 +1,18 @@
 package com.mobian.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.bx.ant.pageModel.DistributeRangeMap;
 import com.bx.ant.pageModel.ShopDeliverApplyQuery;
 import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.pageModel.*;
 import com.bx.ant.pageModel.ShopDeliverApply;
+import com.mobian.service.MbShopServiceI;
 import com.mobian.util.ConfigUtil;
+import net.sf.json.JSONArray;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
@@ -30,7 +35,8 @@ public class ShopDeliverApplyController extends BaseController {
 
 	@Resource
 	private ShopDeliverApplyServiceI shopDeliverApplyService;
-
+   @Resource
+   private MbShopServiceI mbShopService;
 
 	/**
 	 * 跳转到ShopDeliverApply管理页面
@@ -204,15 +210,23 @@ public class ShopDeliverApplyController extends BaseController {
 	 * @param distributeRange
 	 * @return
 	 */
-	@RequestMapping("/updateDistributeRange")
+	@RequestMapping(value = "/updateDistributeRange", method = RequestMethod.POST)
 	@ResponseBody
-	public Json updateDistributeRange(Integer id, String distributeRange) {
+	public Json updateDistributeRange(Integer id, @RequestBody String distributeRange) {
 		Json j = new Json();
 		ShopDeliverApply shopDeliverApply = shopDeliverApplyService.get(id);
 		shopDeliverApply.setDistributeRange(distributeRange);
 		shopDeliverApplyService.edit(shopDeliverApply);
+		MbShopMap mbShopMap = mbShopService.getShopApplyMapData(1207,id);
+		 JSONArray json = JSONArray.fromObject(distributeRange);
+		//把json字符串转换成对象
+		List<DistributeRangeMap> distributeRangeMaps = (List<DistributeRangeMap>) JSONArray.toCollection(json, DistributeRangeMap.class);
+		DistributeRangeMap distributeRangeMap = new DistributeRangeMap();
+		distributeRangeMap.setLng(mbShopMap.getLongitude().doubleValue());
+		distributeRangeMap.setLat(mbShopMap.getLatitude().doubleValue());
+		Boolean result = shopDeliverApplyService.chechPointInPolygon(distributeRangeMap, distributeRangeMaps);
 		j.setSuccess(true);
-		j.setMsg("修改接入方门店配范围成功！");
+		j.setMsg("修改接入方门店配范围成功！"+result);
 		return j;
 	}
 }

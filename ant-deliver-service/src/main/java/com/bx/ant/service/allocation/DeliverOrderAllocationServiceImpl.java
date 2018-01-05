@@ -91,7 +91,7 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
     //PROPAGATION_REQUIRES_NEW
     public void allocationOrderOwnerShopId(DeliverOrder deliverOrder) {
         //2、查开通了派单功能，且状态开启配送的门店List
-        List<ShopDeliverApply> shopDeliverApplyList = shopDeliverApplyService.getAvailableAndWorkShop();
+        List<ShopDeliverApply> shopDeliverApplyList = shopDeliverApplyService.getAvailableAndWorkShop(deliverOrder.getLongitude(),deliverOrder.getLatitude());
 
         //3、计算待分配订单的数字地址
         if ((deliverOrder.getLongitude() == null || deliverOrder.getLatitude() == null)

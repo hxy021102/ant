@@ -3,8 +3,8 @@ package com.bx.ant.service.impl;
 import com.bx.ant.dao.ShopDeliverApplyDaoI;
 import com.bx.ant.model.TshopDeliverApply;
 import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DistributeRangeMap;
 import com.bx.ant.pageModel.ShopDeliverApplyQuery;
-import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
@@ -16,13 +16,13 @@ import com.mobian.service.MbShopServiceI;
 import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.GeoUtil;
 import com.mobian.util.MyBeanUtils;
+import net.sf.json.JSONArray;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -182,7 +182,7 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 	}
 
 	@Override
-	public List<ShopDeliverApply> getAvailableAndWorkShop() {
+	public List<ShopDeliverApply> getAvailableAndWorkShop(BigDecimal longitude,BigDecimal latitude) {
 		ShopDeliverApply shopDeliverApply = new ShopDeliverApply();
 		PageHelper ph = new PageHelper();
 		ph.setHiddenTotal(true);
@@ -198,8 +198,17 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 			boolean flag = false;
 			if (MbShopServiceI.AS_02.equals(shop.getAuditStatus()) && (MbShopServiceI.ST01.equals(shop.getShopType()) || MbShopServiceI.ST03.equals(shop.getShopType()))) {
 				if (shop.getLatitude() != null && shop.getLongitude() != null) {
-					deliverApply.setMbShop(shop);
-					flag = true;
+                    flag = true;
+                    if (!F.empty(deliverApply.getDistributeRange())) {
+                        DistributeRangeMap distributeRangeMap = new DistributeRangeMap();
+                        distributeRangeMap.setLng(longitude.doubleValue());
+                        distributeRangeMap.setLat(latitude.doubleValue());
+                        JSONArray json = JSONArray.fromObject(deliverApply.getDistributeRange());
+                        //把json字符串转换成对象
+                        List<DistributeRangeMap> distributeRangeMaps = (List<DistributeRangeMap>) JSONArray.toCollection(json, DistributeRangeMap.class);
+                        flag = chechPointInPolygon(distributeRangeMap, distributeRangeMaps);
+                    }
+                    deliverApply.setMbShop(shop);
 				}
 			}
 			//不满足的删除掉
@@ -230,7 +239,7 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 	@Override
 	public List<MbAssignShop> queryAssignShopList(DeliverOrder deliverOrder) {
 		//1、查询开通了派单功能,且为直营或者加盟的门店，包括在线或不在线的门店
-		List<ShopDeliverApply> shopDeliverApplyList = getAvailableAndWorkShop();
+		List<ShopDeliverApply> shopDeliverApplyList = getAvailableAndWorkShop(deliverOrder.getLongitude(),deliverOrder.getLatitude());
 		//2、获取最大配送距离
 		BigDecimal maxDistance = new BigDecimal(ConvertNameUtil.getString("DSV200", "5000"));
 		List<MbAssignShop> mbAssignShopArrayList = new ArrayList<MbAssignShop>();
@@ -265,4 +274,64 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 		Collections.sort(mbAssignShopArrayList);
 		return mbAssignShopArrayList;
 	}
+
+	@Override
+	public Boolean chechPointInPolygon(DistributeRangeMap distributeRangeMap, List<DistributeRangeMap> distributeRangeMaps) {
+        int size = distributeRangeMaps.size();
+        boolean boundOrVertex = true; //如果点位于多边形的顶点或边上，也算做点在多边形内，直接返回true
+        int intersectCount = 0;   //cross points count of x
+        double precision = 2e-10; //浮点类型计算时候与0比较时候的容差
+        DistributeRangeMap pointOne, pointTwo;
+        DistributeRangeMap point = distributeRangeMap;
+        pointOne = distributeRangeMaps.get(0);//left vertex
+        for (int i = 1; i <= size; ++i) {//check all rays
+            if (point.equals(pointOne)) {
+                return boundOrVertex;//p is an vertex
+            }
+            pointTwo = distributeRangeMaps.get(i % size);//right vertex
+            if (point.getLng() < Math.min(pointOne.getLng(), pointTwo.getLng()) || point.getLng() > Math.max(pointOne.getLng(), pointTwo.getLng())) {//ray is outside of our interests
+                pointOne = pointTwo;
+                continue;//next ray left point
+            }
+            if (point.getLng() > Math.min(pointOne.getLng(), pointTwo.getLng()) && point.getLng() < Math.max(pointOne.getLng(), pointTwo.getLng())) {//ray is crossing over by the algorithm (common part of)
+                if (point.getLat() <= Math.max(pointOne.getLat(), pointTwo.getLat())) {//x is before of ray
+                    if (pointOne.getLng() == pointTwo.getLng() && point.getLat() >= Math.min(pointOne.getLat(), pointTwo.getLat())) {//overlies on a horizontal ray
+                        return boundOrVertex;
+                    }
+                    if (pointOne.getLat() == pointTwo.getLat()) {//ray is vertical
+                        if (pointOne.getLat() == point.getLat()) {//overlies on a vertical ray
+                            return boundOrVertex;
+                        } else {//before ray
+                            ++intersectCount;
+                        }
+                    } else {//cross point on the left side
+                        double xinters = (point.getLng() - pointOne.getLng()) * (pointTwo.getLat() - pointOne.getLat()) / (pointTwo.getLng() - pointOne.getLng()) + pointOne.getLat();//cross point of y
+                        if (Math.abs(point.getLat() - xinters) < precision) {//overlies on a ray
+                            return boundOrVertex;
+                        }
+                        if (point.getLat() < xinters) {//before ray
+                            ++intersectCount;
+                        }
+                    }
+                }
+            } else {//special case when ray is crossing through the vertex
+                if (point.getLng() == pointTwo.getLng() && point.getLat() <= pointTwo.getLat()) {//p crossing over p2
+                    DistributeRangeMap pointThree = distributeRangeMaps.get((i + 1) % size); //next vertex
+                    if (point.getLng() >= Math.min(pointOne.getLng(), pointThree.getLng()) && point.getLng() <= Math.max(pointOne.getLng(), pointThree.getLng())) {//p.x lies between p1.x & p3.x
+                        ++intersectCount;
+                    } else {
+                        intersectCount += 2;
+                    }
+                }
+            }
+            pointOne = pointTwo;//next ray left point
+        }
+        if (intersectCount % 2 == 0) {//偶数在多边形外
+            return false;
+        } else { //奇数在多边形内
+            return true;
+        }
+    }
+
+
 }

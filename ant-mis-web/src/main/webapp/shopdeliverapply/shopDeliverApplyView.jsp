@@ -8,8 +8,6 @@
 <head>
 <jsp:include page="../inc.jsp"></jsp:include>
 <script type="text/javascript" src="${pageContext.request.scheme}://api.map.baidu.com/api?v=2.0&ak=uVkZBmjLC0KGflQtsXRc4rh4&s=1"></script>
-<script type="text/javascript" src="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
-<link rel="stylesheet" href="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.css" />
 	<script type="text/javascript">
     $(function () {
         $('.money_input').each(function(){
@@ -19,9 +17,8 @@
     });
 
     function showShopMap() {
-        $('#shopLayout').layout('expand','east');
         var shopId = ${shopDeliverApplyQuery.shopId};
-        $.post('${pageContext.request.contextPath}/mbShopController/getShopApplyMap?shopId='+shopId,
+        $.post('${pageContext.request.contextPath}/mbShopController/getShopApplyMap?shopId='+shopId+"&shopDeliverApplyId="+${shopDeliverApplyQuery.id},
             function (result) {
                 if (result.success) {
                     renderMap(result.obj);
@@ -30,18 +27,27 @@
     }
 </script>
 	<script type="text/javascript">
-        var polygon = new BMap.Polygon([
-            new BMap.Point(121.700332,31.19777),
-            new BMap.Point(121.719332,31.19877),
-            new BMap.Point(121.707332,31.20777),
-            new BMap.Point(121.713332,31.18777),
-            new BMap.Point(121.715332,31.19977)
-        ], {strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});  //创建多边形
+        var polygon;
         var map;
         function renderMap(mapData) {
+            var distributeRanges = mapData.distributeRangeMapList;
+            var pts = [];
+            if (distributeRanges != null && distributeRanges.length > 0) {
+                for (var i = 0; i < distributeRanges.length; i++) {
+                    pts[i] = new BMap.Point(distributeRanges[i].lng, distributeRanges[i].lat);
+                }
+            } else {
+                var pt1 = new BMap.Point(mapData.longitude - 0.009, mapData.latitude + 0.002);
+                var pt2 = new BMap.Point(mapData.longitude + 0.006, mapData.latitude - 0.006);
+                var pt3 = new BMap.Point(mapData.longitude + 0.008, mapData.latitude + 0.005);
+                pts.push(pt1);
+                pts.push(pt2);
+                pts.push(pt3);
+            }
+            polygon = new BMap.Polygon(pts,{strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});
             // 百度地图API功能
             map = new BMap.Map("allmap");
-            map.centerAndZoom(new BMap.Point(mapData.longitude, mapData.latitude), 15);
+            map.centerAndZoom(new BMap.Point(mapData.longitude, mapData.latitude), 16);
             map.enableScrollWheelZoom(true);     //开启鼠标滚缩放
 
             var marker = new BMap.Marker(new BMap.Point(mapData.longitude, mapData.latitude));  // 创建标注
@@ -52,7 +58,6 @@
 
             polygon.addEventListener("mousemove",function(e){
                 var rangeArr = polygon.getPath();
-               // alert("获取的数据为："+rangeArr[0].lng+" "+rangeArr[0].lat);
                  $("#distributeRange").val(JSON.stringify(rangeArr));
             });
         }
@@ -73,19 +78,37 @@
             var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
             map.openInfoWindow(infoWindow,point); //开启信息窗口
         }
-        function  tijiao() {
-            var distributeRangeValue=$("#distributeRange").val();
-			alert("你好"+distributeRangeValue);
-        }
-
         function updateDistributeRange() {
-            var distributeRangeValue = $("#distributeRange").val();
-            $.post('${pageContext.request.contextPath}/shopDeliverApplyController/updateDistributeRange?id=' + ${shopDeliverApplyQuery.id}+"&distributeRange=" + distributeRangeValue,
-                function (result) {
-                    if (result.success) {
-                        parent.$.messager.alert('提示',result.msg, 'info');
+            var distributeRange = $("#distributeRange").val();
+            if(distributeRange!=null){
+            $.ajax({
+                url:  '${pageContext.request.contextPath}/shopDeliverApplyController/updateDistributeRange?id=' + ${shopDeliverApplyQuery.id},
+                data: distributeRange,
+                dataType: "json",
+                type: "POST",
+                contentType: "application/json;charset=UTF-8",
+                beforeSend: function (request) {
+                    parent.$.messager.progress({
+                        title: '提示',
+                        text: '数据处理中，请稍后....'
+                    });
+                },
+                success: function (data) {
+                    parent.$.messager.progress('close');
+                    if(data.success) {
+                        parent.$.messager.alert('提示',data.msg, 'info');
+                    }else{
+                        parent.$.messager.alert('错误', data.msg);
                     }
-                }, 'JSON');
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    parent.$.messager.progress('close');
+                }
+            });
+			}else{
+                parent.$.messager.progress('close');
+                parent.$.messager.alert('错误', "获取多边形顶点失败!");
+            }
         }
 	</script>
 </head>

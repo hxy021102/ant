@@ -186,6 +186,6 @@ public interface MbShopServiceI {
 	 * @param shopId
 	 * @return
 	 */
-	MbShopMap  getShopApplyMapData(Integer shopId);
+	MbShopMap  getShopApplyMapData(Integer shopId,Integer shopDeliverApplyId);
 
 }

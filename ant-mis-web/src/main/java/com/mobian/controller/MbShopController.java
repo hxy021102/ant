@@ -586,9 +586,9 @@ public class MbShopController extends BaseController {
 
     @RequestMapping("/getShopApplyMap")
     @ResponseBody
-    public Json getShopApplyMap(Integer shopId) {
+    public Json getShopApplyMap(Integer shopId,Integer shopDeliverApplyId) {
         Json j = new Json();
-        MbShopMap mbShopMap = mbShopService.getShopApplyMapData(shopId);
+        MbShopMap mbShopMap = mbShopService.getShopApplyMapData(shopId,shopDeliverApplyId);
         if (mbShopMap != null) {
             j.setSuccess(true);
             j.setObj(mbShopMap);

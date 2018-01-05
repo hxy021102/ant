@@ -1,6 +1,8 @@
 package com.mobian.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
+import com.bx.ant.pageModel.DistributeRangeMap;
+import com.bx.ant.pageModel.ShopDeliverApply;
+import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.absx.F;
 import com.mobian.dao.MbShopDaoI;
 import com.mobian.dao.MbUserDaoI;
@@ -13,11 +15,13 @@ import com.mobian.pageModel.*;
 import com.mobian.service.*;
 import com.mobian.util.GeoUtil;
 import com.mobian.util.MyBeanUtils;
+import net.sf.json.JSONArray;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -56,6 +60,8 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
     private MbBalanceLogServiceI mbBalanceLogService;
     @Autowired
     private MbOrderServiceI mbOrderService;
+    @Resource
+    private ShopDeliverApplyServiceI shopDeliverApplyService;
 
     @Override
     public DataGrid dataGrid(MbShop mbShop, PageHelper ph) {
@@ -647,7 +653,7 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
     }
 
     @Override
-    public MbShopMap getShopApplyMapData(Integer shopId) {
+    public MbShopMap getShopApplyMapData(Integer shopId,Integer shopDeliverApplyId) {
         MbShop shop = get(shopId);
         if (shop != null) {
             MbShopMap mbShopMap = new MbShopMap();
@@ -655,6 +661,16 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
             mbShopMap.setLongitude(shop.getLongitude());
             mbShopMap.setLatitude(shop.getLatitude());
             mbShopMap.setShopType(shop.getShopType());
+            ShopDeliverApply shopDeliverApply=shopDeliverApplyService.get(shopDeliverApplyId);
+            if (shopDeliverApply != null) {
+                if (!F.empty(shopDeliverApply.getDistributeRange())) {
+                    JSONArray json = JSONArray.fromObject(shopDeliverApply.getDistributeRange());
+                    List<DistributeRangeMap> distributeRangeMaps = (List<DistributeRangeMap>) JSONArray.toCollection(json, DistributeRangeMap.class);
+                    if (CollectionUtils.isNotEmpty(distributeRangeMaps)) {
+                        mbShopMap.setDistributeRangeMapList(distributeRangeMaps);
+                    }
+                }
+            }
             return mbShopMap;
         }
         return null;
