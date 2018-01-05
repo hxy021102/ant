@@ -10,7 +10,10 @@ import com.bx.ant.model.TdeliverOrder;
 import com.mobian.exception.ServiceException;
 import com.mobian.pageModel.*;
 
+import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.MbShopServiceI;
+import com.mobian.thirdpart.mns.MNSTemplate;
+import com.mobian.thirdpart.mns.MNSUtil;
 import com.mobian.thirdpart.redis.Key;
 import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.thirdpart.redis.RedisUtil;
@@ -76,6 +79,9 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	private ShopItemServiceI shopItemService;
 	@Resource
 	private QimenRequestService qimenRequestService;
+
+	@Resource
+	private MbBalanceServiceI mbBalanceService;
 
 
 	@Override
@@ -695,11 +701,56 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 			}
 			deliverOrderItemService.addAndFill(orderItem,deliverOrder);
 		}
+
+		// 余额不足拦截
+		if(deliverOrder.getCheckAmount() != null && deliverOrder.getCheckAmount()) {
+			MbBalance mbBalance = mbBalanceService.addOrGetAccessSupplierBalance(deliverOrder.getSupplierId());
+
+			int unPayAmount = 0; // 未结算的金额
+			if(mbBalance.getAmount() > 0 && mbBalance.getAmount() >= amount) {
+				// 查询接入方未结算的运单集合
+				DeliverOrder order = new DeliverOrder();
+				order.setSupplierId(deliverOrder.getSupplierId());
+				PageHelper ph = new PageHelper();
+				ph.setHiddenTotal(true);
+				List<DeliverOrder> list = unPayOrderDataGrid(order, ph).getRows();
+				if(CollectionUtils.isNotEmpty(list)) {
+					for(DeliverOrder o : list) {
+						unPayAmount += (o.getAmount() == null ? 0 : o.getAmount());
+					}
+				}
+			}
+
+			// 钱包余额<当前运单金额+未结算运单金额
+			if(mbBalance.getAmount() < amount + unPayAmount) {
+				// 发送短信通知
+				sendArrearsMns(deliverOrder.getSupplierId());
+				throw new ServiceException("接入方余额不足");
+			}
+		}
+
 		DeliverOrder order = new DeliverOrder();
 		order.setId(deliverOrder.getId());
 		order.setAmount(amount);
 		order.setWeight(weight);
 		edit(order);
+	}
+
+	/**
+	 * 发送欠款短信通知
+	 * @param supplierId
+	 */
+	private void sendArrearsMns(Integer supplierId) {
+		Supplier supplier = supplierService.get(supplierId);
+		if(!F.empty(supplier.getContactPhone())) {
+			MNSTemplate template = new MNSTemplate();
+			Map<String, String> params = new HashMap<String, String>();
+			template.setTemplateCode("SMS_119870125");
+			params.put("supplierName", supplier.getName());
+			template.setParams(params);
+			MNSUtil.sendMns(supplier.getContactPhone(), template);
+		}
+
 	}
 
 	@Override
