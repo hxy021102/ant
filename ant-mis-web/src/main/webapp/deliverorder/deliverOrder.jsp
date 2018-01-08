@@ -1121,7 +1121,9 @@
         <c:if test="${fn:contains(sessionInfo.resourceList, '/mbStockOutOrderController/addStockOutPage')}">
             <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="addStockOut();">创建出库单</a>
         </c:if>
+		<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/batchUpdateOrderDeliver')}">
         <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="batchDeliver();">批量确认发货</a>
+		</c:if>
 		<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/updateOrderReturnBatchPage')}">
 			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'resultset_previous',plain:true" onclick="returnOrderBatch();">返回</a>
 		</c:if>
