@@ -6,7 +6,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-<jsp:include page="../inc.jsp"></jsp:include>
+	<!-- 引入jQuery -->
+	<script src="${pageContext.request.contextPath}/jslib/jquery-1.8.3.js"
+			type="text/javascript" charset="utf-8"></script>
+	<!-- 引入EasyUI -->
+	<link id="easyuiTheme" rel="stylesheet"
+		  href="${pageContext.request.contextPath}/jslib/jquery-easyui-1.3.6/themes/<c:out value="${cookie.easyuiThemeName.value}" default="bootstrap"/>/easyui.css"
+		  type="text/css">
+	<script type="text/javascript"
+			src="${pageContext.request.contextPath}/jslib/jquery-easyui-1.3.6/jquery.easyui.min.js"
+			charset="utf-8"></script>
+	<!-- 扩展jQuery -->
+	<script type="text/javascript"
+			src="${pageContext.request.contextPath}/jslib/extJquery.js?v=201305301341"
+			charset="utf-8"></script>
+
 <script type="text/javascript" src="${pageContext.request.scheme}://api.map.baidu.com/api?v=2.0&ak=uVkZBmjLC0KGflQtsXRc4rh4&s=1"></script>
 	<script type="text/javascript">
     $(function () {
@@ -110,27 +124,47 @@
                 parent.$.messager.alert('错误', "获取多边形顶点失败!");
             }
         }
+        function clearEmptyRange() {
+            parent.$.messager.confirm('询问', '您是否要重置配送范围？', function (b) {
+                if (b) {
+                    parent.$.messager.progress({
+                        title: '提示',
+                        text: '数据处理中，请稍后....'
+                    });
+                    $.post('${pageContext.request.contextPath}/shopDeliverApplyController/deleteDistributeRange', {
+                        id: ${shopDeliverApplyQuery.id}
+                    }, function (result) {
+                        if (result.success) {
+                            parent.$.messager.alert('提示', result.msg, 'info');
+                            location.reload()
+
+                        }
+                        parent.$.messager.progress('close');
+                    }, 'JSON');
+                }
+            });
+        }
 	</script>
 </head>
 <body>
 <div class="easyui-layout" data-options="fit:true,border:false">
-	<div data-options="region:'north',border:false,">
+	<div data-options="region:'north',border:false," style="height: 110px; overflow: hidden;">
 		<table class="table table-hover table-condensed">
 			<tr>
-				<th>添加时间</th>
-				<td>
+				<th width="140">添加时间</th>
+				<td width="300">
 					<fmt:formatDate value="${shopDeliverApplyQuery.addtime}" pattern="yyyy-MM-dd HH:mm:ss"/>
 				</td>
-				<th>修改时间</th>
-				<td>
+				<th width="100">修改时间</th>
+				<td width="300">
 					<fmt:formatDate value="${shopDeliverApplyQuery.updatetime}" pattern="yyyy-MM-dd HH:mm:ss"/>
 				</td>
-				<th>门店ID</th>
-				<td>
+				<th width="100">门店ID</th>
+				<td width="200">
 					${shopDeliverApplyQuery.shopId}
 				</td>
-				<th>门店名称</th>
-				<td>
+				<th width="100">门店名称</th>
+				<td  width="200">
 					${shopDeliverApplyQuery.shopName}
 				</td>
 			</tr>
@@ -145,8 +179,11 @@
 				</td>
 				<th>最大配送距离</th>
 				<td>
-					<c:if test="${shopDeliverApplyQuery.maxDeliveryDistance != null}">
-						${shopDeliverApplyQuery.maxDeliveryDistance}米
+					<c:if test="${shopDeliverApplyQuery.maxDeliveryDistance != null && (shopDeliverApplyQuery.distributeRange ==null||empty shopDeliverApplyQuery.distributeRange)}">
+						${shopDeliverApplyQuery.maxDeliveryDistance}米 <font color="red">（有效）</font>
+					</c:if>
+					<c:if test="${shopDeliverApplyQuery.distributeRange !=null}">
+						${shopDeliverApplyQuery.maxDeliveryDistance}<c:if test="${shopDeliverApplyQuery.maxDeliveryDistance != null }">米</c:if><font color="red">（无效）</font>
 					</c:if>
 				</td>
 				<th>是否短信通知</th>
@@ -217,6 +254,7 @@
 			<input type="hidden" id="distributeRange" name="distributeRange" />
 			<button onclick="polygon.enableEditing();">开启编辑功能</button>
 			<button onclick="polygon.disableEditing();updateDistributeRange()">关闭编辑并提交</button>
+			<button onclick="clearEmptyRange()">重置配送范围</button>
 		</div>
 	</div>
 </div>

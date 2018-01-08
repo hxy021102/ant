@@ -217,16 +217,35 @@ public class ShopDeliverApplyController extends BaseController {
 		ShopDeliverApply shopDeliverApply = shopDeliverApplyService.get(id);
 		shopDeliverApply.setDistributeRange(distributeRange);
 		shopDeliverApplyService.edit(shopDeliverApply);
-		MbShopMap mbShopMap = mbShopService.getShopApplyMapData(1207,id);
+		/*MbShopMap mbShopMap = mbShopService.getShopApplyMapData(1207,id);
 		 JSONArray json = JSONArray.fromObject(distributeRange);
 		//把json字符串转换成对象
 		List<DistributeRangeMap> distributeRangeMaps = (List<DistributeRangeMap>) JSONArray.toCollection(json, DistributeRangeMap.class);
 		DistributeRangeMap distributeRangeMap = new DistributeRangeMap();
 		distributeRangeMap.setLng(mbShopMap.getLongitude().doubleValue());
 		distributeRangeMap.setLat(mbShopMap.getLatitude().doubleValue());
-		Boolean result = shopDeliverApplyService.chechPointInPolygon(distributeRangeMap, distributeRangeMaps);
+		Boolean result = shopDeliverApplyService.chechPointInPolygon(distributeRangeMap, distributeRangeMaps);*/
 		j.setSuccess(true);
-		j.setMsg("修改接入方门店配范围成功！"+result);
+		j.setMsg("修改接入方门店配范围成功！");
 		return j;
 	}
+
+	/**
+	 * 重置配送范围
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/deleteDistributeRange")
+	@ResponseBody
+	public Json deleteDistributeRange(Integer id) {
+		Json j = new Json();
+		ShopDeliverApply shopDeliverApply =new ShopDeliverApply();
+		shopDeliverApply.setId(id);
+		shopDeliverApply.setDistributeRange("");
+		shopDeliverApplyService.edit(shopDeliverApply);
+		j.setMsg("重置配送范围！");
+		j.setSuccess(true);
+		return j;
+	}
+
 }
