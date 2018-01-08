@@ -252,9 +252,13 @@
 		<div id="allmap" style="height: 100%"></div>
 		<div id="control">
 			<input type="hidden" id="distributeRange" name="distributeRange" />
-			<button onclick="polygon.enableEditing();">开启编辑功能</button>
-			<button onclick="polygon.disableEditing();updateDistributeRange()">关闭编辑并提交</button>
-			<button onclick="clearEmptyRange()">重置配送范围</button>
+		    <c:if test="${fn:contains(sessionInfo.resourceList, '/shopDeliverApplyController/updateDistributeRange')}">
+				<button onclick="polygon.enableEditing();">开启编辑功能</button>
+				<button onclick="polygon.disableEditing();updateDistributeRange()">关闭编辑并提交</button>
+			</c:if>
+			<c:if test="${fn:contains(sessionInfo.resourceList, '/shopDeliverApplyController/deleteDistributeRange')}">
+				<button onclick="clearEmptyRange()">重置配送范围</button>
+			</c:if>
 		</div>
 	</div>
 </div>
