@@ -91,4 +91,10 @@ public interface MbRechargeLogServiceI {
 	 * @return
 	 */
 	MbRechargeLog checkRechargeLogPayCode(MbRechargeLog mbRechargeLog);
+
+	/**
+	 * 添加充值记录和余额日志
+	 * @param mbRechargeLog
+	 */
+	void addRechargeLogAndBalanceLog(MbRechargeLog mbRechargeLog);
 }

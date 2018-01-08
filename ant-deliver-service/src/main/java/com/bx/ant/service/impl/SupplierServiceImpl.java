@@ -42,10 +42,10 @@ public class SupplierServiceImpl extends BaseServiceImpl<Supplier> implements Su
 		dg.setRows(ol);
 		return dg;
 	}
-	
+
 
 	protected String whereHql(Supplier supplier, Map<String, Object> params) {
-		String whereHql = "";	
+		String whereHql = "";
 		if (supplier != null) {
 			whereHql += " where t.isdeleted = 0 ";
 			if (!F.empty(supplier.getId())) {
@@ -59,39 +59,39 @@ public class SupplierServiceImpl extends BaseServiceImpl<Supplier> implements Su
 			if (!F.empty(supplier.getAppKey())) {
 				whereHql += " and t.appKey = :appKey";
 				params.put("appKey", supplier.getAppKey());
-			}		
+			}
 			if (!F.empty(supplier.getAppSecret())) {
 				whereHql += " and t.appSecret = :appSecret";
 				params.put("appSecret", supplier.getAppSecret());
-			}		
+			}
 			if (!F.empty(supplier.getStatus())) {
 				whereHql += " and t.status = :status";
 				params.put("status", supplier.getStatus());
-			}		
+			}
 			if (!F.empty(supplier.getName())) {
 				whereHql += " and t.name LIKE :name";
 				params.put("name", "%" + supplier.getName() + "%");
-			}		
+			}
 			if (!F.empty(supplier.getAddress())) {
 				whereHql += " and t.address = :address";
 				params.put("address", supplier.getAddress());
-			}		
+			}
 			if (!F.empty(supplier.getCharterUrl())) {
 				whereHql += " and t.charterUrl = :charterUrl";
 				params.put("charterUrl", supplier.getCharterUrl());
-			}		
+			}
 			if (!F.empty(supplier.getContacter())) {
 				whereHql += " and t.contacter = :contacter";
 				params.put("contacter", supplier.getContacter());
-			}		
+			}
 			if (!F.empty(supplier.getContactPhone())) {
 				whereHql += " and t.contactPhone = :contactPhone";
 				params.put("contactPhone", supplier.getContactPhone());
-			}		
+			}
 			if (!F.empty(supplier.getRemark())) {
 				whereHql += " and t.remark = :remark";
 				params.put("remark", supplier.getRemark());
-			}		
+			}
 			if (!F.empty(supplier.getLoginId())) {
 				whereHql += " and t.loginId = :loginId";
 				params.put("loginId", supplier.getLoginId());
@@ -104,7 +104,7 @@ public class SupplierServiceImpl extends BaseServiceImpl<Supplier> implements Su
 				}
 			}
 
-		}	
+		}
 		return whereHql;
 	}
 

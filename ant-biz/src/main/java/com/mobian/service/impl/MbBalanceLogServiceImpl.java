@@ -371,4 +371,19 @@ public class MbBalanceLogServiceImpl extends BaseServiceImpl<MbBalanceLog> imple
 
 		return totalBalance;
 	}
+
+	@Override
+	public Integer getSupplierBondOrCredit(Integer balanceId, String refType) {
+		MbBalanceLog mbBalanceLog = new MbBalanceLog();
+		mbBalanceLog.setRefType(refType);
+		mbBalanceLog.setBalanceId(balanceId);
+		List<MbBalanceLog> mbBalanceLogList = list(mbBalanceLog);
+		Integer totalMoney = 0;
+		if (CollectionUtils.isNotEmpty(mbBalanceLogList)) {
+			for (MbBalanceLog balanceLog : mbBalanceLogList) {
+				totalMoney += balanceLog.getAmount();
+			}
+		}
+		return totalMoney;
+	}
 }
