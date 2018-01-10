@@ -103,6 +103,11 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 				params.put("endDate", shopOrderBill.getEndDate());
 
 			}
+			if (shopOrderBill.getId() != null) {
+				whereHql += " and t.id = :id ";
+				params.put("id", shopOrderBill.getId());
+			}
+
 
 		}	
 		return whereHql;

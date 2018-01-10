@@ -110,6 +110,10 @@ public class SupplierOrderBillServiceImpl extends BaseServiceImpl<SupplierOrderB
 				whereHql += " and t.endDate <= :endDate";
 				params.put("endDate", supplierOrderBill.getEndDate());
 			}
+			if (supplierOrderBill.getId() != null) {
+				whereHql += " and t.id = :id";
+				params.put("id", supplierOrderBill.getId());
+			}
 		}	
 		return whereHql;
 	}

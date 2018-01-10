@@ -114,6 +114,10 @@ public class DriverOrderShopBillServiceImpl extends BaseServiceImpl<DriverOrderS
 					params.put("addtimeEnd", driverOrderShopBillView.getAddtimeEnd());
 				}
 			}
+			if (!F.empty(driverOrderShopBill.getId())) {
+				whereHql += " and t.id = :id";
+				params.put("id", driverOrderShopBill.getId());
+			}
 		}
 		return whereHql;
 	}
