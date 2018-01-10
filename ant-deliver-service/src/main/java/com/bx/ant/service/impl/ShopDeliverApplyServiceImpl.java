@@ -4,13 +4,9 @@ import com.bx.ant.dao.ShopDeliverApplyDaoI;
 import com.bx.ant.model.TshopDeliverApply;
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.ShopDeliverApplyQuery;
-import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.absx.F;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.MbAssignShop;
-import com.mobian.pageModel.MbShop;
-import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.*;
 import com.bx.ant.pageModel.ShopDeliverApply;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.util.ConvertNameUtil;
@@ -22,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -264,5 +259,48 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 		}
 		Collections.sort(mbAssignShopArrayList);
 		return mbAssignShopArrayList;
+	}
+
+	@Override
+	public List<ShopDeliverApply> getAllShopRangeMapData(ShopDeliverApply shopDeliverApply) {
+		List<ShopDeliverApply> shopDeliverApplyList=query(shopDeliverApply);
+		if(CollectionUtils.isNotEmpty(shopDeliverApplyList)){
+			Integer[] shopIds=new Integer[shopDeliverApplyList.size()];
+			Integer i=0;
+			for(ShopDeliverApply shopDeliver :shopDeliverApplyList){
+               shopIds[i++]=shopDeliver.getShopId();
+			}
+			MbShop mbShop=new MbShop();
+			mbShop.setIds(shopIds);
+			List<MbShop> mbShopList=mbShopService.query(mbShop);
+			if(CollectionUtils.isNotEmpty(mbShopList)) {
+				Map<Integer, MbShop> shopMap = new HashMap<Integer, MbShop>();
+				for(MbShop shop:mbShopList){
+					shopMap.put(shop.getId(),shop);
+				}
+				List<MbShopMap> mbShopMaps=new ArrayList<MbShopMap>();
+				for(ShopDeliverApply shopDeliver :shopDeliverApplyList){
+					 MbShop shop=shopMap.get(shopDeliver.getShopId());
+					if (shop != null) {
+						MbShopMap mbShopMap = new MbShopMap();
+						mbShopMap.setAddress("门店名称：" + shop.getName() + "<br/>联系人：" + shop.getContactPeople() + "<br/>联系电话：" + shop.getContactPhone() + "<br/>地址：" + shop.getAddress());
+						mbShopMap.setLongitude(shop.getLongitude());
+						mbShopMap.setLatitude(shop.getLatitude());
+						mbShopMap.setShopType(shop.getShopType());
+							/*if (!F.empty(shopDeliver.getDistributeRange())) {
+								JSONArray json = JSONArray.fromObject(shopDeliverApply.getDistributeRange());
+								List<DistributeRangeMap> distributeRangeMaps = (List<DistributeRangeMap>) JSONArray.toCollection(json, DistributeRangeMap.class);
+								if (CollectionUtils.isNotEmpty(distributeRangeMaps)) {
+									mbShopMap.setDistributeRangeMapList(distributeRangeMaps);
+								}
+							}*/
+						mbShopMaps.add(mbShopMap);
+						}
+				}
+			}
+
+
+		}
+		return null;
 	}
 }

@@ -197,4 +197,14 @@ public class ShopDeliverApplyController extends BaseController {
         j.setMsg("编辑成功！");
         return j;
     }
+
+	@RequestMapping("/getAllShopRangeMap")
+	@ResponseBody
+	public Json getAllShopRangeMap(ShopDeliverApply shopDeliverApply) {
+		Json j = new Json();
+		List<ShopDeliverApply> mbShopMaps = shopDeliverApplyService.getAllShopRangeMapData(shopDeliverApply);
+		j.setSuccess(true);
+		j.setObj(mbShopMaps);
+		return j;
+	}
 }

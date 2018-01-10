@@ -3,9 +3,7 @@ package com.bx.ant.service;
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.ShopDeliverApplyQuery;
 import com.bx.ant.pageModel.ShopDeliverApply;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.MbAssignShop;
-import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.*;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -97,6 +95,13 @@ public interface ShopDeliverApplyServiceI {
 	 * @return
 	 */
 	List<MbAssignShop> queryAssignShopList(DeliverOrder deliverOrder);
+
+	/**
+	 * 获取所有接入门店配送范围数据
+	 * @param shopDeliverApply
+	 * @return
+	 */
+	List<ShopDeliverApply> getAllShopRangeMapData(ShopDeliverApply shopDeliverApply);
 
 
 }

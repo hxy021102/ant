@@ -6,6 +6,7 @@
 <html>
 <head>
 <title>shopdeliverapply管理</title>
+<script type="text/javascript" src="${pageContext.request.scheme}://api.map.baidu.com/api?v=2.0&ak=uVkZBmjLC0KGflQtsXRc4rh4&s=1"></script>
 <jsp:include page="../inc.jsp"></jsp:include>
 	<c:if test="${fn:contains(sessionInfo.resourceList, '/shopDeliverApplyController/examinePage')}">
 		<script type="text/javascript">
@@ -206,10 +207,107 @@
     function searchFun() {
 		dataGrid.datagrid('load', $.serializeObject($('#searchForm')));
 	}
+
 	function cleanFun() {
 		$('#searchForm input').val('');
 		dataGrid.datagrid("reload",{ });
 	}
+
+    function getAllShopRangeMap() {
+        $('#shopLayout').layout('expand','east');
+        var queryParams = $.serializeObject($('#searchForm'));
+        $.post('${pageContext.request.contextPath}/mbShopController/getAllShopRangeMap',queryParams,
+            function (result) {
+                if (result.success) {
+                    renderMap(result.obj);
+                }
+            }, 'JSON');
+     }
+</script>
+<script type="text/javascript">
+        var polygon;
+        var map;
+        function renderMap(mapData) {
+            var distributeRanges = mapData.distributeRangeMapList;
+            var pts = [];
+            if (distributeRanges != null && distributeRanges.length > 0) {
+                for (var i = 0; i < distributeRanges.length; i++) {
+                    pts[i] = new BMap.Point(distributeRanges[i].lng, distributeRanges[i].lat);
+                }
+            } else {
+                var pt1 = new BMap.Point(mapData.longitude - 0.009, mapData.latitude + 0.002);
+                var pt2 = new BMap.Point(mapData.longitude + 0.006, mapData.latitude - 0.006);
+                var pt3 = new BMap.Point(mapData.longitude + 0.008, mapData.latitude + 0.005);
+                pts.push(pt1);
+                pts.push(pt2);
+                pts.push(pt3);
+            }
+            polygon = new BMap.Polygon(pts,{strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});
+            // 百度地图API功能
+            map = new BMap.Map("allmap");
+            map.centerAndZoom(new BMap.Point(mapData.longitude, mapData.latitude), 16);
+            map.enableScrollWheelZoom(true);     //开启鼠标滚缩放
+
+            var marker = new BMap.Marker(new BMap.Point(mapData.longitude, mapData.latitude));  // 创建标注
+            var content = mapData.address;
+            map.addOverlay(marker);               // 将标注添加到地图中
+            addClickHandler(content, marker);
+            map.addOverlay(polygon);   //增加多边形
+
+            polygon.addEventListener("mousemove",function(e){
+                var rangeArr = polygon.getPath();
+                $("#distributeRange").val(JSON.stringify(rangeArr));
+            });
+        }
+        function addClickHandler(content,marker){
+            marker.addEventListener("click",function(e){
+                openInfo(content,e); }
+            );
+        }
+        function openInfo(content,e){
+            var opts = {
+                width: 250,     // 信息窗口宽度
+                height: 95,     // 信息窗口高度
+				/*title : "信息窗口" , // 信息窗口标题*/
+                enableMessage: true//设置允许信息窗发送短息
+            };
+            var p = e.target;
+            var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
+            var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
+            map.openInfoWindow(infoWindow,point); //开启信息窗口
+        }
+        function updateDistributeRange() {
+            var distributeRange = $("#distributeRange").val();
+            if(distributeRange!=null){
+                $.ajax({
+                    url:  '${pageContext.request.contextPath}/shopDeliverApplyController/updateDistributeRange?id=' + ${shopDeliverApplyQuery.id},
+                    data: distributeRange,
+                    dataType: "json",
+                    type: "POST",
+                    contentType: "application/json;charset=UTF-8",
+                    beforeSend: function (request) {
+                        parent.$.messager.progress({
+                            title: '提示',
+                            text: '数据处理中，请稍后....'
+                        });
+                    },
+                    success: function (data) {
+                        parent.$.messager.progress('close');
+                        if(data.success) {
+                            parent.$.messager.alert('提示',data.msg, 'info');
+                        }else{
+                            parent.$.messager.alert('错误', data.msg);
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        parent.$.messager.progress('close');
+                    }
+                });
+            }else{
+                parent.$.messager.progress('close');
+                parent.$.messager.alert('错误', "获取多边形顶点失败!");
+            }
+        }
 </script>
 </head>
 <body>
@@ -236,7 +334,15 @@
 			</form>
 		</div>
 		<div data-options="region:'center',border:false">
-			<table id="dataGrid"></table>
+			<div id="shopLayout" class="easyui-layout" data-options="fit : true,border : false">
+				<div data-options="region:'east',split:true,collapsed:true" >
+					<div id="allmap" style="height: 100%">
+					</div>
+				</div>
+				<div data-options="region:'center'">
+					<table id="dataGrid"></table>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div id="toolbar" style="display: none;">
@@ -247,6 +353,10 @@
 			<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">
 			</form>
 			<iframe id="downloadIframe" name="downloadIframe" style="display: none;"></iframe>
+		</c:if>
+		<c:if test="${fn:contains(sessionInfo.resourceList, '/mbShopController/getAllShopRangeMap')}">
+			<a onclick="getAllShopRangeMap();" href="javascript:void(0);" class="easyui-linkbutton"
+			   data-options="plain:true,iconCls:''">网络大盘</a>
 		</c:if>
 	</div>	
 </body>
