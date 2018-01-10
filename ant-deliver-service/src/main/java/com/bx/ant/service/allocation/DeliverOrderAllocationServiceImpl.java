@@ -1,9 +1,6 @@
 package com.bx.ant.service.allocation;
 
-import com.bx.ant.pageModel.DeliverOrder;
-import com.bx.ant.pageModel.DeliverOrderExt;
-import com.bx.ant.pageModel.DeliverOrderShop;
-import com.bx.ant.pageModel.ShopDeliverApply;
+import com.bx.ant.pageModel.*;
 import com.bx.ant.service.*;
 import com.bx.ant.service.qimen.QimenRequestService;
 import com.bx.ant.service.session.TokenServiceI;
@@ -16,6 +13,7 @@ import com.mobian.thirdpart.mns.MNSTemplate;
 import com.mobian.thirdpart.mns.MNSUtil;
 import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.GeoUtil;
+import net.sf.json.JSONArray;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,7 +86,7 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
     //PROPAGATION_REQUIRES_NEW
     public void allocationOrderOwnerShopId(DeliverOrder deliverOrder) {
         //2、查开通了派单功能，且状态开启配送的门店List
-        List<ShopDeliverApply> shopDeliverApplyList = shopDeliverApplyService.getAvailableAndWorkShop(deliverOrder.getLongitude(),deliverOrder.getLatitude());
+        List<ShopDeliverApply> shopDeliverApplyList = shopDeliverApplyService.getAvailableAndWorkShop();
 
         //3、计算待分配订单的数字地址
         if ((deliverOrder.getLongitude() == null || deliverOrder.getLatitude() == null)
@@ -127,6 +125,7 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
         for (ShopDeliverApply shopDeliverApply : shopDeliverApplyList) {
             MbShop mbShop = shopDeliverApply.getMbShop();
             if (excludeShop.contains(mbShop.getId())) continue;
+
             if(shopDeliverApply.getMaxDeliveryDistance() != null) {
                 maxDistance = shopDeliverApply.getMaxDeliveryDistance().doubleValue();
             }
@@ -134,8 +133,19 @@ public class DeliverOrderAllocationServiceImpl implements DeliverOrderAllocation
             if(deliverOrder.getLongitude() != null && deliverOrder.getLatitude() != null
                     && deliverOrder.getLongitude().doubleValue() != -1 && deliverOrder.getLatitude().doubleValue() != -1) {
                 double distance = GeoUtil.getDistance(deliverOrder.getLongitude().doubleValue(), deliverOrder.getLatitude().doubleValue(), mbShop.getLongitude().doubleValue(), mbShop.getLatitude().doubleValue());
-                // maxDistance=-1距离不限
-                if(maxDistance != -1 && distance > maxDistance) continue;
+
+                if (!F.empty(shopDeliverApply.getDistributeRange())) {
+                    DistributeRangeMap distributeRangeMap = new DistributeRangeMap();
+                    distributeRangeMap.setLng(deliverOrder.getLongitude().doubleValue());
+                    distributeRangeMap.setLat(deliverOrder.getLatitude().doubleValue());
+                    JSONArray json = JSONArray.fromObject(shopDeliverApply.getDistributeRange());
+                    //把json字符串转换成对象
+                    List<DistributeRangeMap> distributeRangeMaps = (List<DistributeRangeMap>) JSONArray.toCollection(json, DistributeRangeMap.class);
+                    if(!shopDeliverApplyService.chechPointInPolygon(distributeRangeMap, distributeRangeMaps)) continue;
+                } else {
+                    // maxDistance=-1距离不限
+                    if(maxDistance != -1 && distance > maxDistance) continue;
+                }
 
                 shopDeliverApply.setDistance(BigDecimal.valueOf(distance));
                 includeShop.add(shopDeliverApply);

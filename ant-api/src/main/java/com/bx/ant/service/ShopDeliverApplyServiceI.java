@@ -2,13 +2,12 @@ package com.bx.ant.service;
 
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.DistributeRangeMap;
-import com.bx.ant.pageModel.ShopDeliverApplyQuery;
 import com.bx.ant.pageModel.ShopDeliverApply;
+import com.bx.ant.pageModel.ShopDeliverApplyQuery;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbAssignShop;
 import com.mobian.pageModel.PageHelper;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -90,7 +89,7 @@ public interface ShopDeliverApplyServiceI {
 	 * 查询到在工作且可用的门店
 	 * @return
 	 */
-	List<ShopDeliverApply> getAvailableAndWorkShop(BigDecimal longitude,BigDecimal latitude);
+	List<ShopDeliverApply> getAvailableAndWorkShop();
 	List<ShopDeliverApply> query(ShopDeliverApply shopDeliverApply);
 
 	/**

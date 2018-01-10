@@ -4,6 +4,7 @@ import com.bx.ant.dao.ShopDeliverApplyDaoI;
 import com.bx.ant.model.TshopDeliverApply;
 import com.bx.ant.pageModel.DeliverOrder;
 import com.bx.ant.pageModel.DistributeRangeMap;
+import com.bx.ant.pageModel.ShopDeliverApply;
 import com.bx.ant.pageModel.ShopDeliverApplyQuery;
 import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.absx.F;
@@ -11,7 +12,6 @@ import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbAssignShop;
 import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.PageHelper;
-import com.bx.ant.pageModel.ShopDeliverApply;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.GeoUtil;
@@ -182,7 +182,7 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 	}
 
 	@Override
-	public List<ShopDeliverApply> getAvailableAndWorkShop(BigDecimal longitude,BigDecimal latitude) {
+	public List<ShopDeliverApply> getAvailableAndWorkShop() {
 		ShopDeliverApply shopDeliverApply = new ShopDeliverApply();
 		PageHelper ph = new PageHelper();
 		ph.setHiddenTotal(true);
@@ -199,15 +199,6 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 			if (MbShopServiceI.AS_02.equals(shop.getAuditStatus()) && (MbShopServiceI.ST01.equals(shop.getShopType()) || MbShopServiceI.ST03.equals(shop.getShopType()))) {
 				if (shop.getLatitude() != null && shop.getLongitude() != null) {
                     flag = true;
-                    if (!F.empty(deliverApply.getDistributeRange())) {
-                        DistributeRangeMap distributeRangeMap = new DistributeRangeMap();
-                        distributeRangeMap.setLng(longitude.doubleValue());
-                        distributeRangeMap.setLat(latitude.doubleValue());
-                        JSONArray json = JSONArray.fromObject(deliverApply.getDistributeRange());
-                        //把json字符串转换成对象
-                        List<DistributeRangeMap> distributeRangeMaps = (List<DistributeRangeMap>) JSONArray.toCollection(json, DistributeRangeMap.class);
-                        flag = chechPointInPolygon(distributeRangeMap, distributeRangeMaps);
-                    }
                     deliverApply.setMbShop(shop);
 				}
 			}
@@ -239,7 +230,7 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 	@Override
 	public List<MbAssignShop> queryAssignShopList(DeliverOrder deliverOrder) {
 		//1、查询开通了派单功能,且为直营或者加盟的门店，包括在线或不在线的门店
-		List<ShopDeliverApply> shopDeliverApplyList = getAvailableAndWorkShop(deliverOrder.getLongitude(),deliverOrder.getLatitude());
+		List<ShopDeliverApply> shopDeliverApplyList = getAvailableAndWorkShop();
 		//2、获取最大配送距离
 		BigDecimal maxDistance = new BigDecimal(ConvertNameUtil.getString("DSV200", "5000"));
 		List<MbAssignShop> mbAssignShopArrayList = new ArrayList<MbAssignShop>();
@@ -251,7 +242,19 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 				if (shopDeliverApply.getMaxDeliveryDistance() != null) {
 					maxDistance = shopDeliverApply.getMaxDeliveryDistance();
 				}
-				if (distance > maxDistance.doubleValue()) continue;
+
+				if (!F.empty(shopDeliverApply.getDistributeRange())) {
+					DistributeRangeMap distributeRangeMap = new DistributeRangeMap();
+					distributeRangeMap.setLng(deliverOrder.getLongitude().doubleValue());
+					distributeRangeMap.setLat(deliverOrder.getLatitude().doubleValue());
+					JSONArray json = JSONArray.fromObject(shopDeliverApply.getDistributeRange());
+					//把json字符串转换成对象
+					List<DistributeRangeMap> distributeRangeMaps = (List<DistributeRangeMap>) JSONArray.toCollection(json, DistributeRangeMap.class);
+					if(!chechPointInPolygon(distributeRangeMap, distributeRangeMaps)) continue;
+				} else {
+					if (distance > maxDistance.doubleValue()) continue;
+				}
+
 				MbAssignShop mbAssignShop = new MbAssignShop();
 				BeanUtils.copyProperties(mbShop, mbAssignShop);
 				mbAssignShop.setDistance(BigDecimal.valueOf(distance));
