@@ -80,5 +80,10 @@
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/jslib/jsencrypt.min.js" charset="utf-8"></script>
 
+<!-- daterangepicker -->
+<script type="text/javascript" src="${pageContext.request.contextPath}/jslib/daterangepicker/moment-2.20.1.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/jslib/daterangepicker/daterangepicker-2.1.30.js"></script>
+
+
 
 
