@@ -80,7 +80,7 @@ public class TshopDeliverApply implements java.io.Serializable,IEntity{
 	private Integer freight;
 	//columns END
     private Boolean transferAuth;
-
+    private String distributeRange;
 
 		public TshopDeliverApply(){
 		}
@@ -247,6 +247,15 @@ public class TshopDeliverApply implements java.io.Serializable,IEntity{
 
 	public void setTransferAuth(Boolean transferAuth) {
 		this.transferAuth = transferAuth;
+	}
+
+	@Column(name = "distribute_range", unique = false, nullable = true, insertable = true, updatable = true, length = 512)
+	public String getDistributeRange() {
+		return distributeRange;
+	}
+
+	public void setDistributeRange(String distributeRange) {
+		this.distributeRange = distributeRange;
 	}
 	/*
 	public String toString() {
