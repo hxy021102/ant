@@ -124,16 +124,16 @@
 	}
 
 	function viewFun(id) {
-		if (id == undefined) {
-			var rows = dataGrid.datagrid('getSelections');
-			id = rows[0].id;
-		}
-		parent.$.modalDialog({
-			title : '派单申请详情',
-			width : 780,
-			height : 400,
-			href : '${pageContext.request.contextPath}/shopDeliverApplyController/view?id=' + id
-		});
+        if (id == undefined) {
+            var rows = dataGrid.datagrid('getSelections');
+            id = rows.id;
+        }
+        var href = '${pageContext.request.contextPath}/shopDeliverApplyController/view?id=' + id;
+        parent.$("#index_tabs").tabs('add', {
+            title : '派单申请详情'+ id,
+            content : '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            closable : true
+        });
 	}
     function examineFun(id) {
         if (id == undefined) {

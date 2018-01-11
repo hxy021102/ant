@@ -19,6 +19,7 @@
        <dubbo:reference id="shopDeliverAccountService" interface="com.bx.ant.service.ShopDeliverAccountServiceI" url="${dubbo.direct.url}"/>
        <dubbo:reference id="deliverOrderShopItemService" interface="com.bx.ant.service.DeliverOrderShopItemServiceI" url="${dubbo.direct.url}"/>
        <dubbo:reference id="deliverOrderShopService" interface="com.bx.ant.service.DeliverOrderShopServiceI" url="${dubbo.direct.url}"/>
+       <dubbo:reference id="shopDeliverApplyService" interface="com.bx.ant.service.ShopDeliverApplyServiceI" url="${dubbo.direct.url}"/>
 
        <!-- 用dubbo协议在20880端口暴露服务 -->
        <dubbo:protocol name="${dubbo.protocol.name}" port="${dubbo.protocol.port}" />

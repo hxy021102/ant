@@ -583,4 +583,20 @@ public class MbShopController extends BaseController {
         }
         return new DataGrid();
     }
+
+    @RequestMapping("/getShopApplyMap")
+    @ResponseBody
+    public Json getShopApplyMap(Integer shopId,Integer shopDeliverApplyId) {
+        Json j = new Json();
+        MbShopMap mbShopMap = mbShopService.getShopApplyMapData(shopId,shopDeliverApplyId);
+        if (mbShopMap != null) {
+            j.setSuccess(true);
+            j.setObj(mbShopMap);
+            return j;
+        } else {
+            j.setSuccess(false);
+            j.setMsg("获取门店数据失败！");
+        }
+        return j;
+    }
 }
