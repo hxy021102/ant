@@ -262,25 +262,25 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 	}
 
 	@Override
-	public List<ShopDeliverApply> getAllShopRangeMapData(ShopDeliverApply shopDeliverApply) {
-		List<ShopDeliverApply> shopDeliverApplyList=query(shopDeliverApply);
-		if(CollectionUtils.isNotEmpty(shopDeliverApplyList)){
-			Integer[] shopIds=new Integer[shopDeliverApplyList.size()];
-			Integer i=0;
-			for(ShopDeliverApply shopDeliver :shopDeliverApplyList){
-               shopIds[i++]=shopDeliver.getShopId();
+	public List<MbShopMap> getAllShopRangeMapData(ShopDeliverApply shopDeliverApply) {
+		List<ShopDeliverApply> shopDeliverApplyList = query(shopDeliverApply);
+		if (CollectionUtils.isNotEmpty(shopDeliverApplyList)) {
+			Integer[] shopIds = new Integer[shopDeliverApplyList.size()];
+			Integer i = 0;
+			for (ShopDeliverApply shopDeliver : shopDeliverApplyList) {
+				shopIds[i++] = shopDeliver.getShopId();
 			}
-			MbShop mbShop=new MbShop();
+			MbShop mbShop = new MbShop();
 			mbShop.setIds(shopIds);
-			List<MbShop> mbShopList=mbShopService.query(mbShop);
-			if(CollectionUtils.isNotEmpty(mbShopList)) {
+			List<MbShop> mbShopList = mbShopService.query(mbShop);
+			if (CollectionUtils.isNotEmpty(mbShopList)) {
 				Map<Integer, MbShop> shopMap = new HashMap<Integer, MbShop>();
-				for(MbShop shop:mbShopList){
-					shopMap.put(shop.getId(),shop);
+				for (MbShop shop : mbShopList) {
+					shopMap.put(shop.getId(), shop);
 				}
-				List<MbShopMap> mbShopMaps=new ArrayList<MbShopMap>();
-				for(ShopDeliverApply shopDeliver :shopDeliverApplyList){
-					 MbShop shop=shopMap.get(shopDeliver.getShopId());
+				List<MbShopMap> mbShopMaps = new ArrayList<MbShopMap>();
+				for (ShopDeliverApply shopDeliver : shopDeliverApplyList) {
+					MbShop shop = shopMap.get(shopDeliver.getShopId());
 					if (shop != null) {
 						MbShopMap mbShopMap = new MbShopMap();
 						mbShopMap.setAddress("门店名称：" + shop.getName() + "<br/>联系人：" + shop.getContactPeople() + "<br/>联系电话：" + shop.getContactPhone() + "<br/>地址：" + shop.getAddress());
@@ -295,11 +295,10 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 								}
 							}*/
 						mbShopMaps.add(mbShopMap);
-						}
+					}
 				}
+				return mbShopMaps;
 			}
-
-
 		}
 		return null;
 	}

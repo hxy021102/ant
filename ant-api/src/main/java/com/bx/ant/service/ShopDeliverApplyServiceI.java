@@ -101,7 +101,7 @@ public interface ShopDeliverApplyServiceI {
 	 * @param shopDeliverApply
 	 * @return
 	 */
-	List<ShopDeliverApply> getAllShopRangeMapData(ShopDeliverApply shopDeliverApply);
+	List<MbShopMap> getAllShopRangeMapData(ShopDeliverApply shopDeliverApply);
 
 
 }

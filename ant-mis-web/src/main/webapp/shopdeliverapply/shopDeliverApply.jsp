@@ -228,36 +228,39 @@
         var polygon;
         var map;
         function renderMap(mapData) {
-            var distributeRanges = mapData.distributeRangeMapList;
-            var pts = [];
-            if (distributeRanges != null && distributeRanges.length > 0) {
-                for (var i = 0; i < distributeRanges.length; i++) {
-                    pts[i] = new BMap.Point(distributeRanges[i].lng, distributeRanges[i].lat);
+            var distributeRanges;
+            for (var i = 0; i < mapData.length; i++) {
+                distributeRanges = mapData[i].distributeRangeMapList;
+                var pts = [];
+                if (distributeRanges != null && distributeRanges.length > 0) {
+                    for (var i = 0; i < distributeRanges.length; i++) {
+                        pts[i] = new BMap.Point(distributeRanges[i].lng, distributeRanges[i].lat);
+                    }
+                } else {
+                    var pt1 = new BMap.Point(mapData[i].longitude - 0.009, mapData[i].latitude + 0.002);
+                    var pt2 = new BMap.Point(mapData[i].longitude + 0.006, mapData[i].latitude - 0.006);
+                    var pt3 = new BMap.Point(mapData[i].longitude + 0.008, mapData[i].latitude + 0.005);
+                    pts.push(pt1);
+                    pts.push(pt2);
+                    pts.push(pt3);
                 }
-            } else {
-                var pt1 = new BMap.Point(mapData.longitude - 0.009, mapData.latitude + 0.002);
-                var pt2 = new BMap.Point(mapData.longitude + 0.006, mapData.latitude - 0.006);
-                var pt3 = new BMap.Point(mapData.longitude + 0.008, mapData.latitude + 0.005);
-                pts.push(pt1);
-                pts.push(pt2);
-                pts.push(pt3);
+                polygon = new BMap.Polygon(pts, {strokeColor: "blue", strokeWeight: 2, strokeOpacity: 0.5});
+                // 百度地图API功能
+                map = new BMap.Map("allmap");
+                map.centerAndZoom(new BMap.Point(mapData[i].longitude, mapData[i].latitude), 16);
+                map.enableScrollWheelZoom(true);     //开启鼠标滚缩放
+
+                var marker = new BMap.Marker(new BMap.Point(mapData[i].longitude, mapData[i].latitude));  // 创建标注
+                var content = mapData.address;
+                map.addOverlay(marker);               // 将标注添加到地图中
+                addClickHandler(content, marker);
+                map.addOverlay(polygon);   //增加多边形
+
+                polygon.addEventListener("mousemove", function (e) {
+                    var rangeArr = polygon.getPath();
+                    $("#distributeRange").val(JSON.stringify(rangeArr));
+                });
             }
-            polygon = new BMap.Polygon(pts,{strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});
-            // 百度地图API功能
-            map = new BMap.Map("allmap");
-            map.centerAndZoom(new BMap.Point(mapData.longitude, mapData.latitude), 16);
-            map.enableScrollWheelZoom(true);     //开启鼠标滚缩放
-
-            var marker = new BMap.Marker(new BMap.Point(mapData.longitude, mapData.latitude));  // 创建标注
-            var content = mapData.address;
-            map.addOverlay(marker);               // 将标注添加到地图中
-            addClickHandler(content, marker);
-            map.addOverlay(polygon);   //增加多边形
-
-            polygon.addEventListener("mousemove",function(e){
-                var rangeArr = polygon.getPath();
-                $("#distributeRange").val(JSON.stringify(rangeArr));
-            });
         }
         function addClickHandler(content,marker){
             marker.addEventListener("click",function(e){
@@ -275,6 +278,11 @@
             var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
             var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象
             map.openInfoWindow(infoWindow,point); //开启信息窗口
+        }
+        function  openEditing() {
+            polygon.addEventListener("click", function (e) {
+                polygon.enableEditing();
+            });
         }
         function updateDistributeRange() {
             var distributeRange = $("#distributeRange").val();
@@ -335,8 +343,17 @@
 		</div>
 		<div data-options="region:'center',border:false">
 			<div id="shopLayout" class="easyui-layout" data-options="fit : true,border : false">
-				<div data-options="region:'east',split:true,collapsed:true" >
-					<div id="allmap" style="height: 100%">
+				<div data-options="region:'east',split:true,collapsed:true" title="地图模式">
+					<div id="allmap" style="height: 100%"></div>
+					<div id="control">
+						<input type="hidden" id="distributeRange" name="distributeRange" />
+						<c:if test="${fn:contains(sessionInfo.resourceList, '/shopDeliverApplyController/updateDistributeRange')}">
+							<button onclick="openEditing();">开启编辑功能</button>
+							<button onclick="polygon.disableEditing();updateDistributeRange()">关闭编辑并提交</button>
+						</c:if>
+						<c:if test="${fn:contains(sessionInfo.resourceList, '/shopDeliverApplyController/deleteDistributeRange')}">
+							<button onclick="clearEmptyRange()">重置配送范围</button>
+						</c:if>
 					</div>
 				</div>
 				<div data-options="region:'center'">

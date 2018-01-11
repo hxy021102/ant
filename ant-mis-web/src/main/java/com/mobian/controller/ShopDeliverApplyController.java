@@ -202,7 +202,7 @@ public class ShopDeliverApplyController extends BaseController {
 	@ResponseBody
 	public Json getAllShopRangeMap(ShopDeliverApply shopDeliverApply) {
 		Json j = new Json();
-		List<ShopDeliverApply> mbShopMaps = shopDeliverApplyService.getAllShopRangeMapData(shopDeliverApply);
+		List<MbShopMap> mbShopMaps = shopDeliverApplyService.getAllShopRangeMapData(shopDeliverApply);
 		j.setSuccess(true);
 		j.setObj(mbShopMaps);
 		return j;
