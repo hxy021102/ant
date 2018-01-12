@@ -70,7 +70,7 @@ public class ApiPrintController extends BaseController {
             String result = Methods.getInstance().init().addPrinter(machineCode, msign);
             JSONObject json = JSONObject.parseObject(result);
             if(json.getInteger("error") != 0) {
-                j.setMsg("添加失败");
+                j.setMsg("绑定失败");
                 return j;
             }
 
@@ -80,7 +80,7 @@ public class ApiPrintController extends BaseController {
             shopDeliverApplyService.edit(apply);
 
             j.success();
-            j.setMsg("添加成功");
+            j.setMsg("绑定成功");
         } catch (Exception e) {
             logger.error("手动添加终端授权接口异常", e);
         }
@@ -120,7 +120,7 @@ public class ApiPrintController extends BaseController {
             String result = Methods.getInstance().init().speedAu(machineCode, qrKey);
             JSONObject json = JSONObject.parseObject(result);
             if(json.getInteger("error") != 0) {
-                j.setMsg("添加失败");
+                j.setMsg("绑定失败");
                 return j;
             }
 
@@ -130,7 +130,7 @@ public class ApiPrintController extends BaseController {
             shopDeliverApplyService.edit(apply);
 
             j.success();
-            j.setMsg("添加成功");
+            j.setMsg("绑定成功");
         } catch (Exception e) {
             logger.error("扫码极速授权接口异常", e);
         }
