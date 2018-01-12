@@ -338,8 +338,6 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
         }
     }
 
-
-
 	@Override
 	public List<MbShopMap> getAllShopRangeMapData(ShopDeliverApply shopDeliverApply) {
 		List<ShopDeliverApply> shopDeliverApplyList = query(shopDeliverApply);
@@ -360,19 +358,20 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 				List<MbShopMap> mbShopMaps = new ArrayList<MbShopMap>();
 				for (ShopDeliverApply shopDeliver : shopDeliverApplyList) {
 					MbShop shop = shopMap.get(shopDeliver.getShopId());
-					if (shop != null) {
+					if (shop != null && shop.getLongitude() != null && shop.getLatitude() != null) {
 						MbShopMap mbShopMap = new MbShopMap();
 						mbShopMap.setAddress("门店名称：" + shop.getName() + "<br/>联系人：" + shop.getContactPeople() + "<br/>联系电话：" + shop.getContactPhone() + "<br/>地址：" + shop.getAddress());
 						mbShopMap.setLongitude(shop.getLongitude());
 						mbShopMap.setLatitude(shop.getLatitude());
 						mbShopMap.setShopType(shop.getShopType());
-							/*if (!F.empty(shopDeliver.getDistributeRange())) {
-								JSONArray json = JSONArray.fromObject(shopDeliverApply.getDistributeRange());
-								List<DistributeRangeMap> distributeRangeMaps = (List<DistributeRangeMap>) JSONArray.toCollection(json, DistributeRangeMap.class);
-								if (CollectionUtils.isNotEmpty(distributeRangeMaps)) {
-									mbShopMap.setDistributeRangeMapList(distributeRangeMaps);
-								}
-							}*/
+						mbShopMap.setShopDeliverApplyId(shopDeliver.getId());
+						if (!F.empty(shopDeliver.getDistributeRange())) {
+							JSONArray json = JSONArray.fromObject(shopDeliver.getDistributeRange());
+							List<DistributeRangeMap> distributeRangeMaps = (List<DistributeRangeMap>) JSONArray.toCollection(json, DistributeRangeMap.class);
+							if (CollectionUtils.isNotEmpty(distributeRangeMaps)) {
+								mbShopMap.setDistributeRangeMapList(distributeRangeMaps);
+							}
+						}
 						mbShopMaps.add(mbShopMap);
 					}
 				}

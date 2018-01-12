@@ -248,7 +248,11 @@ public class ShopDeliverApplyController extends BaseController {
 		return j;
 	}
 
-
+	/**
+	 * 获取所有接入方门店配送范围数据
+	 * @param shopDeliverApply
+	 * @return
+	 */
 	@RequestMapping("/getAllShopRangeMap")
 	@ResponseBody
 	public Json getAllShopRangeMap(ShopDeliverApply shopDeliverApply) {
