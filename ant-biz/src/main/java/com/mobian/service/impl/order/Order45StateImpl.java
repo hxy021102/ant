@@ -48,11 +48,11 @@ public class Order45StateImpl implements OrderState {
             throw new ServiceException("已付款");
         }
         MbBalance balance = mbBalanceService.addOrGetMbBalance(mbOrderOld.getShopId());
-        MbShop mbShop = mbShopService.getFromCache(mbOrderOld.getShopId());
         Integer payAmount = mbOrderOld.getTotalPrice() - mbOrderOld.getTotalRefundAmount();
+        /*MbShop mbShop = mbShopService.getFromCache(mbOrderOld.getShopId());
         if (payAmount > 0 && balance.getAmount() < 0 && mbShop != null && MbShopServiceI.ST01.equals(mbShop.getShopType())) {
             throw new ServiceException("加盟水站，余额不足");
-        }
+        }*/
 
         MbOrder mbOrderNew = new MbOrder();
         mbOrderNew.setId(mbOrder.getId());
