@@ -104,11 +104,13 @@
                         title: '审核状态',
                         width: 30
                     }]],
+                toolbar : '#toolbar',
                 onLoadSuccess : function() {
                     parent.$.messager.progress('close');
                 }
             });
         });
+
         function loadTongDebt() {
             return $('#tongDataGrid').datagrid({
                 url:  '',
@@ -186,6 +188,7 @@
                         title: '审核状态',
                         width: 30
                     }]],
+                toolbar : '#toolbar',
                 onLoadSuccess : function() {
                     parent.$.messager.progress('close');
                 }
@@ -224,7 +227,7 @@
             });
         }
 
-        var gridMap = {};
+        var gridMap = {}, downloadDataGrid;
         $(function() {
             gridMap = {
                 handle: function (obj, clallback) {
@@ -261,6 +264,25 @@
             gridMap[index].invoke();
         }
 
+        function downloadTable(){
+            var options = dataGrid.datagrid("options");
+            var $colums = [];
+            $.merge($colums, options.columns);
+            $.merge($colums, options.frozenColumns);
+            var columsStr = JSON.stringify($colums);
+            $('#downloadTable').form('submit', {
+                url:'${pageContext.request.contextPath}/mbShopController/downloadShopArrears',
+                onSubmit: function(param){
+                    console.log(param);
+                    $.extend(param, $.serializeObject($('#searchForm')));
+                    param.downloadFields = columsStr;
+                    param.page = options.pageNumber;
+                    param.rows = options.pageSize;
+
+                }
+            });
+        }
+
     </script>
 </head>
 <body>
@@ -288,6 +310,12 @@
                 <table id="tongDataGrid"></table>
             </div>
         </div>
+    </div>
+    <div id="toolbar" style="display: none;">
+        <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_go',plain:true" onclick="downloadTable();">导出</a>
+        <form id="downloadTable" target="downloadIframe" method="post" style="display: none;">
+        </form>
+        <iframe id="downloadIframe" name="downloadIframe" style="display: none;"></iframe>
     </div>
 </div>
 </body>
