@@ -72,7 +72,7 @@ public class AccountsPayableController extends BaseController {
                     shopOrderBillQuery.setShopIds(shopIds);
                 }
             }
-        //    shopOrderBillQuery.setStatus("BAS01");
+            shopOrderBillQuery.setStatus("BAS01");
             DataGrid dataGrid = shopOrderBillService.dataGridWithName(shopOrderBillQuery, ph);
             List<ShopOrderBillQuery> shopOrderBills = dataGrid.getRows();
             if (CollectionUtils.isNotEmpty(shopOrderBills)) {
