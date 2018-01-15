@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 
 /**
- * Created by john on 17/11/27.
+ * 易联云打印接口
  */
 @Controller
 @RequestMapping("/api/deliver/print")
@@ -151,17 +151,21 @@ public class ApiPrintController extends BaseController {
         try {
 
             TokenWrap token = getTokenWrap(request);
-            if(token.getShopId().equals(orderId)) {
+            DeliverOrderExt order = deliverOrderService.getDetail(orderId);
+            if(order == null) {
+                j.setMsg("订单号【"+orderId+"】不存在");
+                return j;
+            }
+            if(!token.getShopId().equals(order.getShopId())) {
                 j.setMsg("订单与您身份信息不匹配！");
                 return j;
             }
             ShopDeliverApply shopDeliverApply = shopDeliverApplyService.getByAccountId(Integer.valueOf(token.getUid()));
             if(F.empty(shopDeliverApply.getMachineCode())) {
-                j.setMsg("未添加终端设备");
+                j.setMsg("未绑定终端设备");
                 return j;
             }
 
-            DeliverOrderExt order = deliverOrderService.getDetail(orderId);
             StringBuffer sb = new StringBuffer();
             sb.append("<FH2><FS><FW2> ** 仓蚁管家 **</FW2></FS></FH2>\r\r");
             sb.append("******************************\r");
@@ -237,6 +241,36 @@ public class ApiPrintController extends BaseController {
             j.setMsg("取消成功");
         } catch (Exception e) {
             logger.error("扫码极速授权接口异常", e);
+        }
+
+        return j;
+    }
+
+    /**
+     * 打印机关机重启
+     * @param request
+     * @return
+     */
+    @RequestMapping("shutdownrestart")
+    @ResponseBody
+    public Json shutdownrestart(String responseType, HttpServletRequest request) {
+        Json j = new Json();
+        try {
+
+            TokenWrap token = getTokenWrap(request);
+            ShopDeliverApply shopDeliverApply = shopDeliverApplyService.getByAccountId(Integer.valueOf(token.getUid()));
+
+            String result = Methods.getInstance().init().shutDownRestart(shopDeliverApply.getMachineCode(), responseType);
+            JSONObject json = JSONObject.parseObject(result);
+            if(json.getInteger("error") != 0) {
+                j.setMsg("关机失败");
+                return j;
+            }
+
+            j.success();
+            j.setMsg("关机成功");
+        } catch (Exception e) {
+            logger.error("打印机关机重启接口异常", e);
         }
 
         return j;
