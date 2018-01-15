@@ -837,7 +837,31 @@
         }
 
     }
-
+    function updateBatchOrder() {
+        var rows = selectDatagrid.datagrid('getChecked');
+        var ids = [];
+        if (rows.length > 0) {
+            parent.$.messager.confirm('确认', '是否确认打单？', function (r) {
+                for (var i = 0; i < rows.length; i++) {
+                    ids.push(rows[i].id);
+                }
+                $.post('${pageContext.request.contextPath}/deliverOrderController/updateBatchOrder', {
+                    deliverOrderIds: ids.join(',')
+                }, function (result) {
+                    if (result.success) {
+                        parent.$.messager.alert('提示', result.msg, 'info');
+                        selectDatagrid.datagrid('reload');
+                    }
+                    parent.$.messager.progress('close');
+                }, 'JSON');
+            });
+        } else {
+            parent.$.messager.show({
+                title: '提示',
+                msg: '请勾选要打印的运单！'
+            });
+        }
+    }
     function batchDeliver() {
         var rows = selectDatagrid.datagrid('getChecked');
         var ids = [], nonStockOutIds = [];
@@ -1115,6 +1139,9 @@
         <c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/printView')}">
             <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="batchPrint();">批量打单</a>
         </c:if>
+		<c:if test="${fn:contains(sessionInfo.resourceList, '/deliverOrderController/updateBatchOrder')}">
+			<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="updateBatchOrder();">批量确认打单</a>
+		</c:if>
     </div>
     <div id="toolbar02" style="display: none;">
         <a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a><a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
