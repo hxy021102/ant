@@ -24,7 +24,8 @@ public class SupplierOrderBill implements java.io.Serializable {
 	//
 	private String supplierName;
 	private String payWayName;
-
+    private String createTimeName;
+    private double amountElement;
 	
 
 	public void setId(Long value) {
@@ -131,5 +132,21 @@ public class SupplierOrderBill implements java.io.Serializable {
 
 	public void setPayWayName(String payWayName) {
 		this.payWayName = payWayName;
+	}
+
+	public String getCreateTimeName() {
+		return createTimeName;
+	}
+
+	public void setCreateTimeName(String createTimeName) {
+		this.createTimeName = createTimeName;
+	}
+
+	public double getAmountElement() {
+		return amountElement;
+	}
+
+	public void setAmountElement(double amountElement) {
+		this.amountElement = amountElement;
 	}
 }

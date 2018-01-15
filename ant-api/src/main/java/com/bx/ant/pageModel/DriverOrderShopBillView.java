@@ -14,9 +14,9 @@ public class DriverOrderShopBillView extends DriverOrderShopBill {
     private String payWayName;
     private List<DriverOrderShop> driverOrderShopList;
     private Long[] orderShopIds;
-    private String userName;
     private Date addtimeBegin;
     private Date addtimeEnd;
+
     public String getHandleStatusName() {
         return ConvertNameUtil.getString(super.getHandleStatus());
     }
@@ -57,14 +57,6 @@ public class DriverOrderShopBillView extends DriverOrderShopBill {
         this.orderShopIds = orderShopIds;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
     public Date getAddtimeBegin() {
         return addtimeBegin;
     }
@@ -80,4 +72,5 @@ public class DriverOrderShopBillView extends DriverOrderShopBill {
     public void setAddtimeEnd(Date addtimeEnd) {
         this.addtimeEnd = addtimeEnd;
     }
+
 }

@@ -3,6 +3,7 @@ package com.mobian.controller;
 import com.alibaba.fastjson.JSON;
 import com.bx.ant.pageModel.SupplierOrderBill;
 import com.bx.ant.service.SupplierOrderBillServiceI;
+import com.mobian.absx.F;
 import com.mobian.pageModel.Colum;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.PageHelper;
@@ -15,6 +16,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -70,13 +72,35 @@ public class ReceivablesController extends BaseController {
 	 * @throws InvocationTargetException
 	 * @throws IOException
 	 */
-	@RequestMapping("/dataGrid")
-	@ResponseBody
+	@RequestMapping("/download")
 	public void download(SupplierOrderBill supplierOrderBill, PageHelper ph, String downloadFields, HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
 		DataGrid dg = queryUnReceivableBill(supplierOrderBill, ph);
+		List<SupplierOrderBill> supplierOrderBills = dg.getRows();
+		if (CollectionUtils.isNotEmpty(supplierOrderBills)) {
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			for (SupplierOrderBill orderBill : supplierOrderBills) {
+				String createTimeName = formatter.format(orderBill.getAddtime());
+				orderBill.setCreateTimeName(createTimeName);
+				if (!F.empty(orderBill.getAmount())) {
+					orderBill.setAmountElement(orderBill.getAmount() / 100.0);
+				}
+			}
+		}
 		downloadFields = downloadFields.replace("&quot;", "\"");
 		downloadFields = downloadFields.substring(1, downloadFields.length() - 1);
 		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
+		if (CollectionUtils.isNotEmpty(colums)) {
+			for (Colum colum : colums) {
+				switch (colum.getField()) {
+					case "addtime":
+						colum.setField("createTimeName");
+						break;
+					case "amount":
+						colum.setField("amountElement");
+						break;
+				}
+			}
+		}
 		downloadTable(colums, dg, response);
 	}
 }

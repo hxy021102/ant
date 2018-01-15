@@ -51,7 +51,7 @@
             fitColumns : true,
             border : false,
             idField : 'id',
-            pageSize : 10,
+           // pageSize : 10,
             pageList : [ 10, 20, 30, 40, 50 ],
             sortOrder : 'desc',
             sortName:'updatetime',
@@ -122,8 +122,6 @@
                 $.extend(param, $.serializeObject($('#searchForm')));
                 param.downloadFields = columsStr;
                 param.page = options.pageNumber;
-                param.rows = options.pageSize;
-
             }
         });
     }
@@ -174,8 +172,12 @@
 <div id="toolbar" style="display: none;">
 	<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_add',plain:true" onclick="searchFun();">查询</a>
 	<a href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'brick_delete',plain:true" onclick="cleanFun();">清空条件</a>
+
 	<c:if test="${fn:contains(sessionInfo.resourceList, '/accountsPayableController/download')}">
 		<a onclick="downloadTable();" href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'server_go',plain:true">导出</a>
+		<form id="downloadTable" target="downloadIframe" method="post" style="display: none;">
+		</form>
+		<iframe id="downloadIframe" name="downloadIframe" style="display: none;"></iframe>
 	</c:if>
 </div>
 </body>

@@ -1,8 +1,7 @@
 package com.mobian.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.bx.ant.pageModel.DriverOrderShopBill;
-import com.bx.ant.pageModel.ShopOrderBill;
+import com.bx.ant.pageModel.*;
 import com.bx.ant.service.DriverOrderShopBillServiceI;
 import com.bx.ant.service.ShopOrderBillServiceI;
 import com.mobian.absx.F;
@@ -18,6 +17,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,11 +55,11 @@ public class AccountsPayableController extends BaseController {
 			}
 			//shopOrderBill.setStatus("BAS01");
 			DataGrid dataGrid = shopOrderBillService.dataGridWithName(shopOrderBill, ph);
-			List<ShopOrderBill> shopOrderBills = dataGrid.getRows();
+			List<ShopOrderBillQuery> shopOrderBills = dataGrid.getRows();
 			if (CollectionUtils.isNotEmpty(shopOrderBills)) {
 				ShopOrderBill foot = new ShopOrderBill();
 				foot.setAmount(0);
-				for (ShopOrderBill orderBill : shopOrderBills) {
+				for (ShopOrderBillQuery orderBill : shopOrderBills) {
 					foot.setAmount(foot.getAmount() + orderBill.getAmount());
 				}
 				dataGrid.setFooter(Arrays.asList(foot));
@@ -72,11 +72,11 @@ public class AccountsPayableController extends BaseController {
 				driverOrderShopBill.setId(id);
 			}
 			DataGrid dataGrid = driverOrderShopBillService.dataGridView(driverOrderShopBill, ph);
-			List<DriverOrderShopBill> driverOrderShopBills = dataGrid.getRows();
+			List<DriverOrderShopBillView> driverOrderShopBills = dataGrid.getRows();
 			if (CollectionUtils.isNotEmpty(driverOrderShopBills)) {
 				DriverOrderShopBill foot = new DriverOrderShopBill();
 				foot.setAmount(0);
-				for (DriverOrderShopBill orderShopBill : driverOrderShopBills) {
+				for (DriverOrderShopBillView orderShopBill : driverOrderShopBills) {
 					foot.setAmount(foot.getAmount() + orderShopBill.getAmount());
 				}
 				dataGrid.setFooter(Arrays.asList(foot));
@@ -102,10 +102,51 @@ public class AccountsPayableController extends BaseController {
 	 */
 	@RequestMapping("/download")
 	public void download(String payer, Long id, PageHelper ph, String downloadFields, HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-		DataGrid dg = queryUnShopBillOrUnDriverBill(payer, id, ph);
-		downloadFields = downloadFields.replace("&quot;", "\"");
-		downloadFields = downloadFields.substring(1, downloadFields.length() - 1);
-		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
-		downloadTable(colums, dg, response);
+		payer = payer.substring(0, payer.length() - 1);
+		if (!F.empty(payer)) {
+			DataGrid dg = queryUnShopBillOrUnDriverBill(payer, id, ph);
+			if ("shop".equals(payer)) {
+				List<ShopOrderBillQuery> shopOrderBillQueries = dg.getRows();
+				if (CollectionUtils.isNotEmpty(shopOrderBillQueries)) {
+					SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					for (ShopOrderBillQuery shopOrderBillQuery : shopOrderBillQueries) {
+						String createTimeName = formatter.format(shopOrderBillQuery.getAddtime());
+						shopOrderBillQuery.setCreateTimeName(createTimeName);
+						if (!F.empty(shopOrderBillQuery.getAmount())) {
+							shopOrderBillQuery.setAmountElement(shopOrderBillQuery.getAmount() / 100.0);
+						}
+					}
+
+				}
+			} else if ("rider".equals(payer)) {
+				List<DriverOrderShopBillView> driverOrderShopBillViews = dg.getRows();
+				if (CollectionUtils.isNotEmpty(driverOrderShopBillViews)) {
+					SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					for (DriverOrderShopBillView orderShopBillView : driverOrderShopBillViews) {
+						String createTimeName = formatter.format(orderShopBillView.getAddtime());
+						orderShopBillView.setCreateTimeName(createTimeName);
+						if (!F.empty(orderShopBillView.getAmount())) {
+							orderShopBillView.setAmountElement(orderShopBillView.getAmount() / 100.0);
+						}
+					}
+				}
+			}
+			downloadFields = downloadFields.replace("&quot;", "\"");
+			downloadFields = downloadFields.substring(1, downloadFields.length() - 1);
+			List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
+			if (CollectionUtils.isNotEmpty(colums)) {
+				for (Colum colum : colums) {
+					switch (colum.getField()) {
+						case "addtime":
+							colum.setField("createTimeName");
+							break;
+						case "amount":
+							colum.setField("amountElement");
+							break;
+					}
+				}
+			}
+			downloadTable(colums, dg, response);
+		}
 	}
 }
