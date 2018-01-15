@@ -182,6 +182,13 @@ public interface MbShopServiceI {
 	List<MbAssignShop> queryAssignShopList(DeliverOrder deliverOrder);*/
 
 	/**
+	 * 获取开通运单申请门店地图数据
+	 * @param shopId
+	 * @return
+	 */
+	MbShopMap  getShopApplyMapData(Integer shopId,Integer shopDeliverApplyId);
+
+	/**
 	 * 获取门店信息通过门店名称
 	 * @param name
 	 * @return

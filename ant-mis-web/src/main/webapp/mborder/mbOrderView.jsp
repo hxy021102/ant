@@ -1493,7 +1493,7 @@
     </div>
     </div>
     <div id="mbOrderRefundItemToolbar" style="display: none;">
-        <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderRefundItemController/add') and mbOrder.deliveryStatus=='DS30' and mbOrder.status=='OD35'}">
+        <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderRefundItemController/add') and (mbOrder.status=='OD35'or mbOrder.status=='OD30'or mbOrder.status=='OD20')}">
         <a href="javascript:void(0);" class="easyui-linkbutton"  onclick="addMbOrderRefundItem();" data-options="plain:true,iconCls:'pencil_add'">添加</a>
         </c:if>
         <c:if test="${fn:contains(sessionInfo.resourceList, '/mbOrderRefundItemController/addRefund') and mbOrder.status=='OD40'}">

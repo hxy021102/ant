@@ -15,6 +15,7 @@ import java.util.*;
  */
 @Service("order40StateImpl")
 public class Order40StateImpl implements OrderState {
+    public static final String PS05 = "PS05";
     @Autowired
     private MbOrderServiceI orderService;
     @Autowired
@@ -93,6 +94,14 @@ public class Order40StateImpl implements OrderState {
             if (mbOrderOld.getTotalRefundAmount() == null) mbOrderOld.setTotalRefundAmount(0);
             mbOrder.setTotalRefundAmount(mbOrderOld.getTotalRefundAmount() + refundAmount);
             orderService.edit(mbOrder);
+
+
+            if (!PS05.equals(mbOrderOld.getPayStatus())){
+                mbOrder.setRemark("系统自动操作");
+                //自动支付掉
+                OrderState.order.get().setTotalRefundAmount(mbOrder.getTotalRefundAmount());
+                orderState45.handle(mbOrder);
+            }
 
         }
 
@@ -303,9 +312,9 @@ public class Order40StateImpl implements OrderState {
         return refundAmount;
     }
 
-        public void addRefundAmount(MbOrder mbOrderOld,Integer refundAmount,String loginId){
+    public void addRefundAmount(MbOrder mbOrderOld,Integer refundAmount,String loginId){
         //将退款金额写入退款记录
-        if ("PS05".equals(mbOrderOld.getPayStatus()) && refundAmount != 0) {
+        if (PS05.equals(mbOrderOld.getPayStatus()) && refundAmount != 0) {
             MbPayment mbPayment = mbPaymentService.getByOrderId(mbOrderOld.getId());
             if (mbPayment != null) {
                 List<MbPaymentItem> mbPaymentItems = mbPaymentItemService.getByPaymentId(mbPayment.getId());
