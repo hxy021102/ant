@@ -514,7 +514,7 @@ public class MbShopController extends BaseController {
 
     @RequestMapping("/downloadShopBarrel")
     public void downloadShopBarrel(MbShop mbShop, PageHelper ph, String downloadFields, HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-        DataGrid dg = dataGridShopArrears(mbShop, ph);
+        DataGrid dg = dataGridShopBarrel(mbShop, ph);
         List<MbShopExt> rows = dg.getRows();
         if(CollectionUtils.isNotEmpty(rows)) {
             for(MbShopExt shopExt : rows) {

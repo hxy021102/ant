@@ -13,7 +13,11 @@
         var dataGrid;
         $(function () {
             parent.$.messager.progress('close');
-            dataGrid = $('#dataGrid').datagrid({
+            //dataGrid =
+        });
+
+        function loadBalanceDebt() {
+            return $('#dataGrid').datagrid({
                 url:  '',
                 fit: true,
                 fitColumns: true,
@@ -38,7 +42,7 @@
                         width: 20,
                         formatter: function (value, row, index) {
                             if(value)
-                            return '<a onclick="viewShop(' + row.id + ')">' + row.id + '</a>';
+                                return '<a onclick="viewShop(' + row.id + ')">' + row.id + '</a>';
                         }
                     }, {
                         field: 'name',
@@ -109,7 +113,7 @@
                     parent.$.messager.progress('close');
                 }
             });
-        });
+        }
 
         function loadTongDebt() {
             return $('#tongDataGrid').datagrid({
@@ -227,7 +231,7 @@
             });
         }
 
-        var gridMap = {}, downloadDataGrid;
+        var gridMap = {};
         $(function() {
             gridMap = {
                 handle: function (obj, clallback) {
@@ -243,12 +247,14 @@
                     invoke: function () {
                         gridMap.handle(this);
                     }, grid: loadTongDebt(),
-                    gridUrl: '${pageContext.request.contextPath}/mbShopController/dataGridShopBarrel'
+                    gridUrl: '${pageContext.request.contextPath}/mbShopController/dataGridShopBarrel',
+                    downloadUrl:'${pageContext.request.contextPath}/mbShopController/downloadShopBarrel'
                 }, 0: {
                     invoke: function () {
                         gridMap.handle(this);
-                    }, grid: dataGrid,
-                    gridUrl: '${pageContext.request.contextPath}/mbShopController/dataGridShopArrears'
+                    }, grid: loadBalanceDebt(),
+                    gridUrl: '${pageContext.request.contextPath}/mbShopController/dataGridShopArrears',
+                    downloadUrl:'${pageContext.request.contextPath}/mbShopController/downloadShopArrears'
                 }
             };
             $('#shop_view_tabs').tabs({
@@ -265,15 +271,17 @@
         }
 
         function downloadTable(){
-            var options = dataGrid.datagrid("options");
+            var tab = $('#shop_view_tabs').tabs('getSelected');
+            var index = $('#shop_view_tabs').tabs('getTabIndex',tab);
+
+            var options = gridMap[index].grid.datagrid("options");
             var $colums = [];
             $.merge($colums, options.columns);
             $.merge($colums, options.frozenColumns);
             var columsStr = JSON.stringify($colums);
             $('#downloadTable').form('submit', {
-                url:'${pageContext.request.contextPath}/mbShopController/downloadShopArrears',
+                url:gridMap[index].downloadUrl,
                 onSubmit: function(param){
-                    console.log(param);
                     $.extend(param, $.serializeObject($('#searchForm')));
                     param.downloadFields = columsStr;
                     param.page = options.pageNumber;
