@@ -29,4 +29,6 @@ public interface Namespace {
     String DRIVER_ORDER_SHOP_NEW_ASSIGNMENT_COUNT = "driver_order_shop_new_assignment_count";
     String DRIVER_ORDER_SHOP_REFUSE_CACHE = "driver_order_shop_refuse_cache";
     String DRIVER_ACCOUNT_CACHE = "driver_account_cache";
+
+    String YILIANYUN_CONFIG = "yilianyun_config";
 }

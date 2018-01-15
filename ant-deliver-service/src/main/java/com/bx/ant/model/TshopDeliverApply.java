@@ -81,6 +81,7 @@ public class TshopDeliverApply implements java.io.Serializable,IEntity{
 	//columns END
     private Boolean transferAuth;
     private String distributeRange;
+    private String machineCode;
 
 		public TshopDeliverApply(){
 		}
@@ -257,6 +258,16 @@ public class TshopDeliverApply implements java.io.Serializable,IEntity{
 	public void setDistributeRange(String distributeRange) {
 		this.distributeRange = distributeRange;
 	}
+
+	@Column(name = "machine_code", unique = false, nullable = true, insertable = true, updatable = true, length = 32)
+	public String getMachineCode() {
+		return machineCode;
+	}
+
+	public void setMachineCode(String machineCode) {
+		this.machineCode = machineCode;
+	}
+
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
