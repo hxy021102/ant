@@ -7,6 +7,7 @@ import com.bx.ant.pageModel.ShopDeliverApplyQuery;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbAssignShop;
 import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.*;
 
 import java.util.List;
 
@@ -106,6 +107,13 @@ public interface ShopDeliverApplyServiceI {
 	 * @return               点在多边形内返回true,否则返回false
 	 */
 	Boolean chechPointInPolygon(DistributeRangeMap distributeRangeMap,List<DistributeRangeMap> distributeRangeMaps);
+
+	/**
+	 * 获取所有接入门店配送范围数据
+	 * @param shopDeliverApply
+	 * @return
+	 */
+	List<MbShopMap> getAllShopRangeMapData(ShopDeliverApply shopDeliverApply);
 
 
 }

@@ -19,6 +19,7 @@ public class MbShopMap implements java.io.Serializable {
     private BigDecimal latitude;
     private String shopType;
     private List<DistributeRangeMap> distributeRangeMapList;
+    private Integer shopDeliverApplyId;
     public String getName() {
         return name;
     }
@@ -89,5 +90,13 @@ public class MbShopMap implements java.io.Serializable {
 
     public void setDistributeRangeMapList(List<DistributeRangeMap> distributeRangeMapList) {
         this.distributeRangeMapList = distributeRangeMapList;
+    }
+
+    public Integer getShopDeliverApplyId() {
+        return shopDeliverApplyId;
+    }
+
+    public void setShopDeliverApplyId(Integer shopDeliverApplyId) {
+        this.shopDeliverApplyId = shopDeliverApplyId;
     }
 }
