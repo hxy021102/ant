@@ -107,7 +107,13 @@ public class ShopOrderBillServiceImpl extends BaseServiceImpl<ShopOrderBill> imp
 				whereHql += " and t.id = :id ";
 				params.put("id", shopOrderBill.getId());
 			}
-
+			if (shopOrderBill instanceof ShopOrderBillQuery) {
+				ShopOrderBillQuery shopOrderBillQuery = (ShopOrderBillQuery) shopOrderBill;
+				if (shopOrderBillQuery.getShopIds() != null && shopOrderBillQuery.getShopIds().length > 0) {
+					whereHql += " and t.shopId in(:shopIds) ";
+					params.put("shopIds", shopOrderBillQuery.getShopIds());
+				}
+			}
 
 		}	
 		return whereHql;

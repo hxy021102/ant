@@ -1,6 +1,5 @@
 package com.mobian.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.mobian.absx.F;
 import com.mobian.dao.MbShopDaoI;
 import com.mobian.dao.MbUserDaoI;
@@ -644,5 +643,19 @@ public class MbShopServiceImpl extends BaseServiceImpl<MbShop> implements MbShop
             return mbShopMaps;
         }
         return null;
+    }
+
+    @Override
+    public List<MbShop> getMbshopListByName(String name) {
+        List<TmbShop> tmbShopList = mbShopDao.find("from TmbShop t  where t.isdeleted = 0 and t.name LIKE  '" + name + "'");
+        List<MbShop> mbShopList = new ArrayList<MbShop>();
+        if (CollectionUtils.isNotEmpty(tmbShopList)) {
+            for (TmbShop tmbShop : tmbShopList) {
+                MbShop mbShop = new MbShop();
+                BeanUtils.copyProperties(tmbShop, mbShop);
+                mbShopList.add(mbShop);
+            }
+        }
+        return mbShopList;
     }
 }

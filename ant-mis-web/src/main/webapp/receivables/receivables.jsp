@@ -111,6 +111,8 @@
 		<form id="searchForm">
 			<table class="table table-hover table-condensed" style="display: none;">
 				<tr>
+					<th style="width: 65px">供应商名称:</th>
+					<td><input type="text" id="supplierName" name="supplierName"  class="span2" placeholder="输入供应商名称"></td>
 					<th style="width: 50px">账单ID:</th>
 					<td><input type="text" name="id"  class="span2"/></td>
 				</tr>

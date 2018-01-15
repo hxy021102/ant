@@ -137,6 +137,9 @@
         if ($("#id").val() != null) {
             urls += "&id=" + $("#id").val();
         }
+        if ($("#name").val() != null) {
+            urls += "&name=" + $("#name").val();
+        }
         options.url = urls;
         dataGrid.datagrid(options);
     }
@@ -159,6 +162,7 @@
 						<input id="shop" type="radio" name="payer">门店
 						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="rider" type="radio" name="payer">骑手
 					</td>
+					<td><input  type="text" id="name" name="name" placeholder="输入门店名称或骑手账号"></td>
 					<th style="width: 50px">账单ID:</th>
 					<td><input type="text" name="id"  class="span2" id="id"/></td>
 				</tr>

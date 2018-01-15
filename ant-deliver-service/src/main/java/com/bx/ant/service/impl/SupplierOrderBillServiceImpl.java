@@ -114,6 +114,10 @@ public class SupplierOrderBillServiceImpl extends BaseServiceImpl<SupplierOrderB
 				whereHql += " and t.id = :id";
 				params.put("id", supplierOrderBill.getId());
 			}
+			if (supplierOrderBill.getSupplierIds() != null && supplierOrderBill.getSupplierIds().length > 0) {
+				whereHql += " and t.supplierIds in(:supplierIds)";
+				params.put("supplierIds", supplierOrderBill.getSupplierIds());
+			}
 		}	
 		return whereHql;
 	}

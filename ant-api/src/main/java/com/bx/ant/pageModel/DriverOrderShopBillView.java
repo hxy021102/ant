@@ -16,6 +16,7 @@ public class DriverOrderShopBillView extends DriverOrderShopBill {
     private Long[] orderShopIds;
     private Date addtimeBegin;
     private Date addtimeEnd;
+    private Integer[] accountIds;
 
     public String getHandleStatusName() {
         return ConvertNameUtil.getString(super.getHandleStatus());
@@ -73,4 +74,11 @@ public class DriverOrderShopBillView extends DriverOrderShopBill {
         this.addtimeEnd = addtimeEnd;
     }
 
+    public Integer[] getAccountIds() {
+        return accountIds;
+    }
+
+    public void setAccountIds(Integer[] accountIds) {
+        this.accountIds = accountIds;
+    }
 }
