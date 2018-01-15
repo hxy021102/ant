@@ -50,7 +50,6 @@ public class ReceivablesController extends BaseController {
     @ResponseBody
     public DataGrid queryUnReceivableBill(SupplierOrderBill supplierOrderBill, PageHelper ph) {
         if (!F.empty(supplierOrderBill.getSupplierName())) {
-            supplierOrderBill.setStatus("BAS01");
             List<Supplier> suppliers = supplierService.getSupplierListByName(supplierOrderBill.getSupplierName());
             if (CollectionUtils.isNotEmpty(suppliers)) {
                 Integer[] supplierIds = new Integer[suppliers.size()];
@@ -61,6 +60,7 @@ public class ReceivablesController extends BaseController {
                 supplierOrderBill.setSupplierIds(supplierIds);
             }
         }
+        supplierOrderBill.setStatus("BAS01");
         DataGrid dataGrid = supplierOrderBillService.dataGrid(supplierOrderBill, ph);
         List<SupplierOrderBill> supplierOrderBills = dataGrid.getRows();
         if (CollectionUtils.isNotEmpty(supplierOrderBills)) {

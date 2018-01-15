@@ -320,7 +320,7 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 
 	@Override
 	public List<DriverAccount> getDriverAccountListByName(String name) {
-		List<TdriverAccount> tdriverAccounts = driverAccountDao.find("from TdriverAccount t  where t.isdeleted = 0 and t.userName LIKE  '" + name + "'");
+		List<TdriverAccount> tdriverAccounts = driverAccountDao.find("from TdriverAccount t  where t.isdeleted = 0 and t.userName LIKE   '" + '%' + name + '%' + "'");
 		List<DriverAccount> driverAccounts = new ArrayList<DriverAccount>();
 		if (CollectionUtils.isNotEmpty(tdriverAccounts)) {
 			for (TdriverAccount tdriverAccount : tdriverAccounts) {

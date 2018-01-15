@@ -55,14 +55,13 @@ public class AccountsPayableController extends BaseController {
 
     @RequestMapping("/queryUnShopBillOrUnDriverBill")
     @ResponseBody
-    public DataGrid queryUnShopBillOrUnDriverBill(String payer, Long id, String name, PageHelper ph) throws UnsupportedEncodingException {
+    public DataGrid queryUnShopBillOrUnDriverBill(String payer, Long id, String name, PageHelper ph)  {
         if ("shop".equals(payer)) {
             ShopOrderBillQuery shopOrderBillQuery = new ShopOrderBillQuery();
             if (!F.empty(id)) {
                 shopOrderBillQuery.setId(id);
             }
             if (!F.empty(name)) {
-                name = new String(name.getBytes("iso-8859-1"), "utf-8");
                 List<MbShop> mbShopList = mbShopService.getMbshopListByName(name);
                 if (CollectionUtils.isNotEmpty(mbShopList)) {
                     Integer[] shopIds = new Integer[mbShopList.size()];
@@ -73,7 +72,7 @@ public class AccountsPayableController extends BaseController {
                     shopOrderBillQuery.setShopIds(shopIds);
                 }
             }
-            shopOrderBillQuery.setStatus("BAS01");
+        //    shopOrderBillQuery.setStatus("BAS01");
             DataGrid dataGrid = shopOrderBillService.dataGridWithName(shopOrderBillQuery, ph);
             List<ShopOrderBillQuery> shopOrderBills = dataGrid.getRows();
             if (CollectionUtils.isNotEmpty(shopOrderBills)) {
@@ -85,7 +84,7 @@ public class AccountsPayableController extends BaseController {
                 dataGrid.setFooter(Arrays.asList(foot));
             }
             return dataGrid;
-        } else if ("rider".equals(payer)) {
+        } else if ("driver".equals(payer)) {
             DriverOrderShopBillView driverOrderShopBillView = new DriverOrderShopBillView();
             driverOrderShopBillView.setHandleStatus("DHS01");
             if (!F.empty(id)) {
@@ -150,7 +149,7 @@ public class AccountsPayableController extends BaseController {
                     }
 
                 }
-            } else if ("rider".equals(payer)) {
+            } else if ("driver".equals(payer)) {
                 List<DriverOrderShopBillView> driverOrderShopBillViews = dg.getRows();
                 if (CollectionUtils.isNotEmpty(driverOrderShopBillViews)) {
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

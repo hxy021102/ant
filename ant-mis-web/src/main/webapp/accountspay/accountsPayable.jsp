@@ -14,7 +14,7 @@
         parent.$.messager.progress('close');
     });
     $(function () {
-        if (!$("#rider").attr("checked") && !$("#shop").attr("checked")) {
+        if (!$("#driver").attr("checked") && !$("#shop").attr("checked")) {
             $("#shop").attr("checked", true);
         }
         var column;
@@ -26,7 +26,7 @@
         showDataGrid(column);
         cleanFun();
         $(":radio").click(function () {
-            if ($("#rider").attr("checked")) {
+            if ($("#driver").attr("checked")) {
                 column = {
                     field: 'userName',
                     title: '骑手账号',
@@ -93,7 +93,7 @@
     }
 
     function viewFun(id) {
-        if ($("#rider").attr("checked")) {
+        if ($("#driver").attr("checked")) {
             var href = '${pageContext.request.contextPath}/driverOrderShopBillController/view?id=' + id;
         } else {
             var href = '${pageContext.request.contextPath}/deliverShopArtificialPayController/viewBill?id=' + id;
@@ -111,8 +111,8 @@
         $.merge($colums, options.frozenColumns);
         var columsStr = JSON.stringify($colums);
         var urls;
-        if ($("#rider").attr("checked")) {
-            urls = '${pageContext.request.contextPath}/accountsPayableController/download?payer=' + "rider";
+        if ($("#driver").attr("checked")) {
+            urls = '${pageContext.request.contextPath}/accountsPayableController/download?payer=' + "driver";
         } else if ($("#shop").attr("checked")) {
             urls = '${pageContext.request.contextPath}/accountsPayableController/download?payer=' + "shop";
         }
@@ -129,8 +129,8 @@
     function searchFun() {
         var options = {};
         var urls;
-        if ($("#rider").attr("checked")) {
-            urls = '${pageContext.request.contextPath}/accountsPayableController/queryUnShopBillOrUnDriverBill?payer=' + "rider";
+        if ($("#driver").attr("checked")) {
+            urls = '${pageContext.request.contextPath}/accountsPayableController/queryUnShopBillOrUnDriverBill?payer=' + "driver";
         } else if ($("#shop").attr("checked")) {
             urls = '${pageContext.request.contextPath}/accountsPayableController/queryUnShopBillOrUnDriverBill?payer=' + "shop";
         }
@@ -160,7 +160,7 @@
 					<th style="width: 80px">应付单位:</th>
 					<td>
 						<input id="shop" type="radio" name="payer">门店
-						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="rider" type="radio" name="payer">骑手
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="driver" type="radio" name="payer">骑手
 					</td>
 					<td><input  type="text" id="name" name="name" placeholder="输入门店名称或骑手账号"></td>
 					<th style="width: 50px">账单ID:</th>
