@@ -182,7 +182,7 @@
         <description>
             timeRangePicker
         </description>
-        <name>dateRangePicker</name>
+        <name>timeRangePicker</name>
         <tag-class>com.mobian.tag.TimeRangePicker</tag-class>
         <body-content>JSP</body-content>
         <attribute>
@@ -222,16 +222,22 @@
             <type>java.lang.String</type>
         </attribute>
         <attribute>
-            <name>timeLimt</name>
+            <name>timeLimit</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.Integer</type>
+            <type>java.lang.String</type>
         </attribute>
         <attribute>
             <name>minDate</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
+        </attribute>
+         <attribute>
+            <name>showSeconds</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Boolean</type>
         </attribute>
     </tag>
 </taglib>

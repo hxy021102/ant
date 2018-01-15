@@ -37,7 +37,7 @@
 <link
 	href="${pageContext.request.contextPath}/jslib/bootstrap-2.3.1/css/bootstrap.min.css"
 	rel="stylesheet" media="screen">
-<!-- <script charset="utf-8" src="${pageContext.request.contextPath}/jslib/bootstrap-2.3.1/js/bootstrap.min.js" charset="utf-8"></script> -->
+<script charset="utf-8" src="${pageContext.request.contextPath}/jslib/bootstrap-2.3.1/js/bootstrap.min.js" charset="utf-8"></script>
 
 <!-- 引入EasyUI -->
 <link id="easyuiTheme" rel="stylesheet"
@@ -81,9 +81,17 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/jslib/jsencrypt.min.js" charset="utf-8"></script>
 
 <!-- daterangepicker -->
-<script type="text/javascript" src="${pageContext.request.contextPath}/jslib/daterangepicker/moment-2.20.1.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/jslib/daterangepicker/daterangepicker-2.1.30.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/jslib/daterangepicker/js/moment-2.20.1.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/jslib/daterangepicker/js/daterangepicker-2.1.30.js"></script>
+<%--<link rel="stylesheet" type="text/css" media="all" href="${pageContext.request.contextPath}/jslib/daterangepicker/css/daterangepicker-bs3.css" />--%>
+<link rel="stylesheet" type="text/css" media="all" href="${pageContext.request.contextPath}/jslib/daterangepicker/css/daterangepicker-1.3.7.css" />
+<link href="${pageContext.request.contextPath}/jslib/daterangepicker/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-
+<!-- easyui-daterangepicker -->
+<%--<link rel="stylesheet" type="text/css" href="http://www.jeasyui.com/easyui/themes/default/easyui.css">--%>
+<%--<link rel="stylesheet" type="text/css" href="http://www.jeasyui.com/easyui/themes/icon.css">--%>
+<%--<link rel="stylesheet" type="text/css" href="http://www.jeasyui.com/easyui/themes/color.css">--%>
+<%--<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.min.js"></script>--%>
+<%--<script type="text/javascript" src="http://www.jeasyui.com/easyui/jquery.easyui.min.js"></script>--%>
 
 

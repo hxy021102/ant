@@ -2,7 +2,7 @@
 <%@ page import="com.mobian.model.TmbOrder" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%> 
+<%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -133,6 +133,19 @@
 		});
 	}
 
+//        ,
+//        parser:function(s){
+//            if (!s){return new Date();}
+//            var dt = s.split(' ');
+//            var date = new Date(dt[0][2],dt[0][1],dt[0][0]);
+//            if (dt.length>1){
+//                date.setHours(dt[1][0]);
+//                date.setMinutes(dt[1][1]);
+//                date.setSeconds(dt[1][2]);
+//            }
+//            return date;
+//        }
+//    });
 	function editFun(id) {
 		if (id == undefined) {
 			var rows = dataGrid.datagrid('getSelections');
@@ -210,7 +223,7 @@
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit : true,border : false">
-		<div data-options="region:'north',title:'查询条件',border:false" style="height: 120px; overflow: hidden;">
+		<div data-options="region:'north',title:'查询条件',border:false" style="height: 300px; overflow: hidden;">
 			<form id="searchForm">
 				<table class="table table-hover table-condensed" style="display: none;">
 					<tr>
@@ -257,6 +270,106 @@
 							<jb:select dataType="PW" name="payWay"></jb:select>
 						</td>
 
+					</tr>
+					<%--<tr>--%>
+						<%--<th>111</th>--%>
+						<%--<td>--%>
+							<%--<div>--%>
+								<%--查询时间跨度: &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp--%>
+								<%--<input type="radio" name="timerange" value="0" onclick="myRadioChange(this)">今天&nbsp&nbsp--%>
+								<%--<input type="radio" name="timerange" value="1" onclick="myRadioChange(this)">近7天&nbsp&nbsp--%>
+								<%--<input type="radio" name="timerange" value="2" onclick="myRadioChange(this)" >近30天&nbsp&nbsp--%>
+								<%--<input type="radio" name="timerange" value="3" onclick="myRadioChange(this)">前三个月<br>--%>
+								<%--从&nbsp&nbsp<input name="startTime" type="text" class="easyui-datetimebox myStartTimeClass" data-options="required:true" value="2010/01/05 22:36:55" style="width:140px">--%>
+								<%--到&nbsp&nbsp<input name="endTime" type="text" class="easyui-datetimebox myEndTimeClass" data-options="required:true" value="2010/01/05 22:36:55" style="width:140px">--%>
+							<%--</div>--%>
+							<%--<script type="text/javascript">--%>
+								<%--//输出指定格式的时间格式--%>
+                                <%--Date.prototype.Format = function (fmt) { //author: meizz--%>
+                                    <%--var o = {--%>
+                                        <%--"M+": this.getMonth() + 1, //月份--%>
+                                        <%--"d+": this.getDate(), //日--%>
+                                        <%--"h+": this.getHours(), //小时--%>
+                                        <%--"m+": this.getMinutes(), //分--%>
+                                        <%--"s+": this.getSeconds(), //秒--%>
+                                        <%--"q+": Math.floor((this.getMonth() + 3) / 3), //季度--%>
+                                        <%--"S": this.getMilliseconds() //毫秒--%>
+                                    <%--};--%>
+                                    <%--if (/(Y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));--%>
+                                    <%--for (var k in o)--%>
+                                        <%--if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));--%>
+                                    <%--return fmt;--%>
+                                <%--}--%>
+								<%--//监听选择的radio--%>
+                                <%--function myRadioChange(myRadio) {--%>
+                                     <%--var num, type, value = myRadio.value;--%>
+                                     <%--switch (value) {--%>
+										 <%--case "0": //今日--%>
+                                             <%--num = 0;--%>
+                                             <%--type = 'd';--%>
+										     <%--break;--%>
+										 <%--case "1"://近7日--%>
+                                             <%--num = -6;--%>
+                                             <%--type = 'd';--%>
+                                             <%--break;--%>
+										 <%--case "2"://近30日--%>
+                                             <%--num = -29;--%>
+                                             <%--type = 'd';--%>
+                                             <%--break;--%>
+                                         <%--case "3"://前三个月--%>
+											<%--num = -2;--%>
+                                         	<%--type = 'M';--%>
+									 <%--}--%>
+                                    <%--$('.myStartTimeClass').datetimebox('setValue', moment().add(num, type).format('YYYY-MM-DD'));	// set datetimebox value--%>
+                                    <%--$('.myEndTimeClass').datetimebox('setValue', moment().format('YYYY-MM-DD HH:mm:ss'));	// set datetimebox value--%>
+									<%--//将时间输出转换至目标格式--%>
+                                    <%--var startTemp = $('.myStartTimeClass').datetimebox('getValue');		// get datetimebox value--%>
+                                    <%--var endtTemp = $('.myEndTimeClass').datetimebox('getValue');		// get datetimebox value--%>
+									<%--var startTime = new Date(startTemp.replace(/-/g, '/')).Format("YYYY*MM*dd hh+mm+ss+S");--%>
+                                    <%--var endTime = new Date(endtTemp.replace(/-/g, '/')).Format("YYYY*MM*dd hh+mm+ss+S");--%>
+                                <%--}--%>
+<%--//                                function myParseDate(dateStr) {--%>
+<%--//                                    return moment(dateStr, "YYYY/MM/DD").format("YYYY-MM-DD");--%>
+<%--//								}--%>
+                                <%--$('.easyui-datetimebox').datetimebox({--%>
+                                    <%--min:'2015-10-01',--%>
+                                    <%--max:'2019-11-11',--%>
+                                    <%--formatter:function(date){--%>
+                                        <%--var s1 = [date.getDate(),date.getMonth()+1,date.getFullYear()].join('/');--%>
+                                        <%--var s2 = [date.getHours(),date.getMinutes(),date.getSeconds()].join(':');--%>
+                                        <%--return s1 + s2;--%>
+                                    <%--}--%>
+                                <%--});--%>
+<%--//                                $('.easyui-datetimebox').datebox({--%>
+<%--//                                    min:'2015-10-01',--%>
+<%--//                                    max:'2019-11-11',--%>
+<%--//                                    onShowPanel:function(){--%>
+<%--//                                        var opts = $(this).datebox('options');--%>
+<%--//                                        $(this).datebox('calendar').calendar({--%>
+<%--//                                            validator: function(date){--%>
+<%--//                                                var min = opts.parser(opts.min);--%>
+<%--//                                                var max = opts.parser(opts.max);--%>
+<%--////                                                console.log(min + '----' + date)--%>
+<%--////                                                return true;--%>
+<%--//                                                if (min <= date && date <= max){--%>
+<%--//                                                    return true;--%>
+<%--//                                                } else {--%>
+<%--//                                                    return false;--%>
+<%--//                                                }--%>
+<%--//                                            }--%>
+<%--//                                        });--%>
+<%--//                                    }--%>
+<%--//                                })--%>
+							<%--</script>--%>
+                        <%--</td>--%>
+					<%--</tr>--%>
+                    <tr>
+						<th>sssss</th>
+						<td>
+							<jb:timeRangePicker startTimeName="startAddTime" startTimeValue="2011-11-11 22:22:22"
+												endTimeName="endAddTime" endTimeValue="2013-11-22 11:11:11" minDate="2011-11-11 00:00:00"
+												required="true" format="YYYY-MM-DD HH:mm:ss" showSeconds="false" timeLimit="1"></jb:timeRangePicker>
+						</td>
 					</tr>
 				</table>
 			</form>
