@@ -858,7 +858,7 @@
         } else {
             parent.$.messager.show({
                 title: '提示',
-                msg: '请勾选要打印的运单！'
+                msg: '请勾选要确认打单的运单！'
             });
         }
     }

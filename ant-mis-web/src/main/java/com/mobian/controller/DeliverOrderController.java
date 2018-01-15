@@ -698,14 +698,9 @@ public class DeliverOrderController extends BaseController {
 	@ResponseBody
 	public Json updateBatchOrder(HttpSession session, String deliverOrderIds) {
 		Json j = new Json();
-		if(!F.empty(deliverOrderIds)) {
-			for (String id : deliverOrderIds.split(",")) {
-				if (!F.empty(id)) {
-					updateOrderDeliverGoods(session, Long.valueOf(id));
-				}
-			}
-		}
-		j.setMsg("批量发货成功！");
+		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+		deliverOrderService.updateBatchOrderSan(deliverOrderIds, sessionInfo.getId());
+		j.setMsg("批量打单成功！");
 		j.setSuccess(true);
 		return j;
 	}
