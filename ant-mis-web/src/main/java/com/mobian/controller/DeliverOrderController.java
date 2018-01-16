@@ -687,4 +687,21 @@ public class DeliverOrderController extends BaseController {
 		j.setSuccess(true);
 		return j;
 	}
+
+	/**
+	 * 批量修改运单为已打单
+	 * @param session
+	 * @param deliverOrderIds
+	 * @return
+	 */
+	@RequestMapping("/updateBatchOrder")
+	@ResponseBody
+	public Json updateBatchOrder(HttpSession session, String deliverOrderIds) {
+		Json j = new Json();
+		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+		deliverOrderService.updateBatchOrderSan(deliverOrderIds, sessionInfo.getId());
+		j.setMsg("批量打单成功！");
+		j.setSuccess(true);
+		return j;
+	}
 }
