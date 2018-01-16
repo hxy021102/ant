@@ -226,6 +226,7 @@ public class DeliverOrderController extends BaseController {
 		}
 		downloadFields = downloadFields.replace("&quot;", "\"");
 		downloadFields =downloadFields.substring(1, downloadFields.length() - 1).replace("],[",",");
+		downloadFields=downloadFields.replace("{\"field\":\"checkbox\",\"checkbox\":true,\"width\":30},","");
 		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
 		if (CollectionUtils.isNotEmpty(colums)) {
 			for (Colum colum : colums) {

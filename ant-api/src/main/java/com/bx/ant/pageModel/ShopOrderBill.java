@@ -20,9 +20,9 @@ public class ShopOrderBill implements java.io.Serializable {
 	private Date endDate;			
 	private String payWay;
 	private String reviewerId;
-
-	
-
+	private String shopName;
+	private Double amountElement;
+	private String createTimeName;
 	public void setId(Long value) {
 		this.id = value;
 	}
@@ -118,4 +118,27 @@ public class ShopOrderBill implements java.io.Serializable {
 		this.reviewerId = reviewerId;
 	}
 
+	public String getShopName() {
+		return shopName;
+	}
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
+	}
+
+	public Double getAmountElement() {
+		return amountElement;
+	}
+
+	public void setAmountElement(Double amountElement) {
+		this.amountElement = amountElement;
+	}
+
+	public String getCreateTimeName() {
+		return createTimeName;
+	}
+
+	public void setCreateTimeName(String createTimeName) {
+		this.createTimeName = createTimeName;
+	}
 }

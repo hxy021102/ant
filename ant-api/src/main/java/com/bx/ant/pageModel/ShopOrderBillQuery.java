@@ -6,20 +6,12 @@ import java.util.List;
 
 @SuppressWarnings("serial")
 public class ShopOrderBillQuery extends ShopOrderBill {
-	private String shopName;
 	private String statusName;
 	private String reviewerName;
 	private List<DeliverOrderShop> deliverOrderShopList;
 	private Long[] deliverOrderIds;
 	private String payWayName;
-	public String getShopName() {
-		return shopName;
-	}
-
-	public void setShopName(String shopName) {
-		this.shopName = shopName;
-	}
-
+    private Integer[] shopIds;
 	public String getStatusName() {
 		return ConvertNameUtil.getString(this.statusName);
 	}
@@ -58,5 +50,13 @@ public class ShopOrderBillQuery extends ShopOrderBill {
 
 	public void setDeliverOrderShopList(List<DeliverOrderShop> deliverOrderShopList) {
 		this.deliverOrderShopList = deliverOrderShopList;
+	}
+
+	public Integer[] getShopIds() {
+		return shopIds;
+	}
+
+	public void setShopIds(Integer[] shopIds) {
+		this.shopIds = shopIds;
 	}
 }

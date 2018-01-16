@@ -188,4 +188,11 @@ public interface MbShopServiceI {
 	 */
 	MbShopMap  getShopApplyMapData(Integer shopId,Integer shopDeliverApplyId);
 
+	/**
+	 * 获取门店信息通过门店名称
+	 * @param name
+	 * @return
+	 */
+	List<MbShop> getMbshopListByName(String name);
+
 }

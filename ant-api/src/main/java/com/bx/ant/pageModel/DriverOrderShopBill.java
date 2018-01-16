@@ -21,7 +21,9 @@ public class DriverOrderShopBill implements java.io.Serializable {
 	private Date startDate;			
 	private Date endDate;			
 	private String payWay;
-
+	private String userName;
+	private Double amountElement;
+	private String createTimeName;
 	
 
 	public void setId(Long value) {
@@ -125,4 +127,27 @@ public class DriverOrderShopBill implements java.io.Serializable {
 		return this.payWay;
 	}
 
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public Double getAmountElement() {
+		return amountElement;
+	}
+
+	public void setAmountElement(Double amountElement) {
+		this.amountElement = amountElement;
+	}
+
+	public String getCreateTimeName() {
+		return createTimeName;
+	}
+
+	public void setCreateTimeName(String createTimeName) {
+		this.createTimeName = createTimeName;
+	}
 }
