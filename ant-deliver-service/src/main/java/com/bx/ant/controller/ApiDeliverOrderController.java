@@ -1,10 +1,7 @@
 package com.bx.ant.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.bx.ant.pageModel.DeliverOrder;
-import com.bx.ant.pageModel.DeliverOrderLog;
-import com.bx.ant.pageModel.DeliverOrderShop;
-import com.bx.ant.pageModel.DriverOrderShop;
+import com.bx.ant.pageModel.*;
 import com.bx.ant.pageModel.session.TokenWrap;
 import com.bx.ant.service.*;
 import com.mobian.absx.F;
@@ -85,17 +82,28 @@ public class ApiDeliverOrderController extends BaseController {
      */
     @RequestMapping("/getDetail")
     @ResponseBody
-    public Json getDetail(Long id) {
+    public Json getDetail(HttpServletRequest request, Long id) {
         Json j = new Json();
+        //获取shopId
+        TokenWrap token = getTokenWrap(request);
+        Integer shopId = token.getShopId();
         try {
+            DeliverOrderExt deliverOrder = deliverOrderService.getDetail(id);
+            if (deliverOrder == null) {
+                j.setMsg("该订单不存在");
+                return j;
+            }
+            if (!shopId.equals(deliverOrder.getShopId())) {
+                 j.setMsg("订单与您身份信息不匹配！");
+                 return j;
+            }
             j.setMsg("u know");
-            j.setObj(deliverOrderService.getDetail(id));
+            j.setObj(deliverOrder);
             j.setSuccess(true);
         } catch (Exception e) {
             j.setMsg(ConvertNameUtil.getString(EX_0001));
             logger.error("获取订单详情接口异常", e);
         }
-
         return j;
     }
 
