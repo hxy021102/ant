@@ -230,6 +230,11 @@ public class ApiPrintController extends BaseController {
             TokenWrap token = getTokenWrap(request);
             ShopDeliverApply shopDeliverApply = shopDeliverApplyService.getByAccountId(Integer.valueOf(token.getUid()));
 
+            if(F.empty(shopDeliverApply.getMachineCode())) {
+                j.setMsg("未绑定终端设备");
+                return j;
+            }
+
             String result = Methods.getInstance().init().cancelAll(shopDeliverApply.getMachineCode());
             JSONObject json = JSONObject.parseObject(result);
             if(json.getInteger("error") != 0) {
@@ -259,6 +264,11 @@ public class ApiPrintController extends BaseController {
 
             TokenWrap token = getTokenWrap(request);
             ShopDeliverApply shopDeliverApply = shopDeliverApplyService.getByAccountId(Integer.valueOf(token.getUid()));
+
+            if(F.empty(shopDeliverApply.getMachineCode())) {
+                j.setMsg("未绑定终端设备");
+                return j;
+            }
 
             String result = Methods.getInstance().init().shutDownRestart(shopDeliverApply.getMachineCode(), responseType);
             JSONObject json = JSONObject.parseObject(result);
