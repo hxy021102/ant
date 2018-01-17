@@ -277,7 +277,7 @@ public interface DeliverOrderServiceI {
 	 * @param lo
 	 * @param supplierId
 	 */
-    void addByTableList(List<List<Object>> lo, Integer supplierId);
+    void addByTableList(List<List<Object>> lo, Integer supplierId, String loginId);
 
 	/**
 	 * 处理指派后的订单
