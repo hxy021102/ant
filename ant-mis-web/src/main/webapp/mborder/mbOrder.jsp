@@ -133,19 +133,6 @@
 		});
 	}
 
-//        ,
-//        parser:function(s){
-//            if (!s){return new Date();}
-//            var dt = s.split(' ');
-//            var date = new Date(dt[0][2],dt[0][1],dt[0][0]);
-//            if (dt.length>1){
-//                date.setHours(dt[1][0]);
-//                date.setMinutes(dt[1][1]);
-//                date.setSeconds(dt[1][2]);
-//            }
-//            return date;
-//        }
-//    });
 	function editFun(id) {
 		if (id == undefined) {
 			var rows = dataGrid.datagrid('getSelections');
@@ -223,7 +210,7 @@
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit : true,border : false">
-		<div data-options="region:'north',title:'查询条件',border:false" style="height: 300px; overflow: hidden;">
+		<div data-options="region:'north',title:'查询条件',border:false" style="height: 120px; overflow: hidden;">
 			<form id="searchForm">
 				<table class="table table-hover table-condensed" style="display: none;">
 					<tr>
