@@ -6,6 +6,7 @@ import com.bx.ant.service.AbstractDeliverOrderState;
 import com.bx.ant.service.DeliverOrderLogServiceI;
 import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.DeliverOrderState;
+import com.mobian.absx.F;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +49,10 @@ public class DeliverOrder01StateImpl extends AbstractDeliverOrderState {
         DeliverOrderLog log = new DeliverOrderLog();
         log.setDeliverOrderId(deliverOrder.getId());
         log.setLogType(DeliverOrderLogServiceI.TYPE_ADD_DELIVER_ORDER);
-        log.setContent("添加订单等待分配");
+        log.setContent(F.empty(deliverOrder.getOrderLogRemark()) ?  "添加订单等待分配" : deliverOrder.getOrderLogRemark());
+        if (!F.empty(deliverOrder.getLoginId())) {
+            log.setLoginId(deliverOrder.getLoginId());
+        }
         deliverOrderLogService.add(log);
     }
 

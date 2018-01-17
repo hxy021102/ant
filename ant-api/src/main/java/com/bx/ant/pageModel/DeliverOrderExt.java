@@ -21,6 +21,7 @@ public class DeliverOrderExt extends DeliverOrder {
     private MbShop mbShop;
     private List<DeliverOrderItem> deliverOrderItemList;
     private List<DeliverOrderShopItem> deliverOrderShopItemList;
+    private List<SupplierItemRelationView> supplierItemRelationViewList;
 
     public List<DeliverOrderItem> getDeliverOrderItemList() {
         return deliverOrderItemList;
@@ -100,5 +101,13 @@ public class DeliverOrderExt extends DeliverOrder {
 
     public void setMbShop(MbShop mbShop) {
         this.mbShop = mbShop;
+    }
+
+    public List<SupplierItemRelationView> getSupplierItemRelationViewList() {
+        return supplierItemRelationViewList;
+    }
+
+    public void setSupplierItemRelationViewList(List<SupplierItemRelationView> supplierItemRelationViewList) {
+        this.supplierItemRelationViewList = supplierItemRelationViewList;
     }
 }
