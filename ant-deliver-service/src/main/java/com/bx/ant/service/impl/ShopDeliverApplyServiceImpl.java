@@ -3,26 +3,28 @@ package com.bx.ant.service.impl;
 import com.bx.ant.dao.ShopDeliverApplyDaoI;
 import com.bx.ant.model.TshopDeliverApply;
 import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DistributeRangeMap;
+import com.bx.ant.pageModel.ShopDeliverApply;
 import com.bx.ant.pageModel.ShopDeliverApplyQuery;
-import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.ShopDeliverApplyServiceI;
 import com.mobian.absx.F;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbAssignShop;
 import com.mobian.pageModel.MbShop;
 import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.*;
 import com.bx.ant.pageModel.ShopDeliverApply;
 import com.mobian.service.MbShopServiceI;
 import com.mobian.util.ConvertNameUtil;
 import com.mobian.util.GeoUtil;
 import com.mobian.util.MyBeanUtils;
+import net.sf.json.JSONArray;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -198,8 +200,8 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 			boolean flag = false;
 			if (MbShopServiceI.AS_02.equals(shop.getAuditStatus()) && (MbShopServiceI.ST01.equals(shop.getShopType()) || MbShopServiceI.ST03.equals(shop.getShopType()))) {
 				if (shop.getLatitude() != null && shop.getLongitude() != null) {
-					deliverApply.setMbShop(shop);
-					flag = true;
+                    flag = true;
+                    deliverApply.setMbShop(shop);
 				}
 			}
 			//不满足的删除掉
@@ -242,7 +244,19 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 				if (shopDeliverApply.getMaxDeliveryDistance() != null) {
 					maxDistance = shopDeliverApply.getMaxDeliveryDistance();
 				}
-				if (distance > maxDistance.doubleValue()) continue;
+
+				if (!F.empty(shopDeliverApply.getDistributeRange())) {
+					DistributeRangeMap distributeRangeMap = new DistributeRangeMap();
+					distributeRangeMap.setLng(deliverOrder.getLongitude().doubleValue());
+					distributeRangeMap.setLat(deliverOrder.getLatitude().doubleValue());
+					JSONArray json = JSONArray.fromObject(shopDeliverApply.getDistributeRange());
+					//把json字符串转换成对象
+					List<DistributeRangeMap> distributeRangeMaps = (List<DistributeRangeMap>) JSONArray.toCollection(json, DistributeRangeMap.class);
+					if(!chechPointInPolygon(distributeRangeMap, distributeRangeMaps)) continue;
+				} else {
+					if (distance > maxDistance.doubleValue()) continue;
+				}
+
 				MbAssignShop mbAssignShop = new MbAssignShop();
 				BeanUtils.copyProperties(mbShop, mbAssignShop);
 				mbAssignShop.setDistance(BigDecimal.valueOf(distance));
@@ -264,5 +278,106 @@ public class ShopDeliverApplyServiceImpl extends BaseServiceImpl<ShopDeliverAppl
 		}
 		Collections.sort(mbAssignShopArrayList);
 		return mbAssignShopArrayList;
+	}
+
+	@Override
+	public Boolean chechPointInPolygon(DistributeRangeMap distributeRangeMap, List<DistributeRangeMap> distributeRangeMaps) {
+        int size = distributeRangeMaps.size();
+        boolean boundOrVertex = true; //如果点位于多边形的顶点或边上，也算做点在多边形内，直接返回true
+        int intersectCount = 0;   //cross points count of x
+        double precision = 2e-10; //浮点类型计算时候与0比较时候的容差
+        DistributeRangeMap pointOne, pointTwo;
+        DistributeRangeMap point = distributeRangeMap;
+        pointOne = distributeRangeMaps.get(0);//left vertex
+        for (int i = 1; i <= size; ++i) {//check all rays
+            if (point.equals(pointOne)) {
+                return boundOrVertex;//p is an vertex
+            }
+            pointTwo = distributeRangeMaps.get(i % size);//right vertex
+            if (point.getLng() < Math.min(pointOne.getLng(), pointTwo.getLng()) || point.getLng() > Math.max(pointOne.getLng(), pointTwo.getLng())) {//ray is outside of our interests
+                pointOne = pointTwo;
+                continue;//next ray left point
+            }
+            if (point.getLng() > Math.min(pointOne.getLng(), pointTwo.getLng()) && point.getLng() < Math.max(pointOne.getLng(), pointTwo.getLng())) {//ray is crossing over by the algorithm (common part of)
+                if (point.getLat() <= Math.max(pointOne.getLat(), pointTwo.getLat())) {//x is before of ray
+                    if (pointOne.getLng() == pointTwo.getLng() && point.getLat() >= Math.min(pointOne.getLat(), pointTwo.getLat())) {//overlies on a horizontal ray
+                        return boundOrVertex;
+                    }
+                    if (pointOne.getLat() == pointTwo.getLat()) {//ray is vertical
+                        if (pointOne.getLat() == point.getLat()) {//overlies on a vertical ray
+                            return boundOrVertex;
+                        } else {//before ray
+                            ++intersectCount;
+                        }
+                    } else {//cross point on the left side
+                        double xinters = (point.getLng() - pointOne.getLng()) * (pointTwo.getLat() - pointOne.getLat()) / (pointTwo.getLng() - pointOne.getLng()) + pointOne.getLat();//cross point of y
+                        if (Math.abs(point.getLat() - xinters) < precision) {//overlies on a ray
+                            return boundOrVertex;
+                        }
+                        if (point.getLat() < xinters) {//before ray
+                            ++intersectCount;
+                        }
+                    }
+                }
+            } else {//special case when ray is crossing through the vertex
+                if (point.getLng() == pointTwo.getLng() && point.getLat() <= pointTwo.getLat()) {//p crossing over p2
+                    DistributeRangeMap pointThree = distributeRangeMaps.get((i + 1) % size); //next vertex
+                    if (point.getLng() >= Math.min(pointOne.getLng(), pointThree.getLng()) && point.getLng() <= Math.max(pointOne.getLng(), pointThree.getLng())) {//p.x lies between p1.x & p3.x
+                        ++intersectCount;
+                    } else {
+                        intersectCount += 2;
+                    }
+                }
+            }
+            pointOne = pointTwo;//next ray left point
+        }
+        if (intersectCount % 2 == 0) {//偶数在多边形外
+            return false;
+        } else { //奇数在多边形内
+            return true;
+        }
+    }
+
+	@Override
+	public List<MbShopMap> getAllShopRangeMapData(ShopDeliverApply shopDeliverApply) {
+		List<ShopDeliverApply> shopDeliverApplyList = query(shopDeliverApply);
+		if (CollectionUtils.isNotEmpty(shopDeliverApplyList)) {
+			Integer[] shopIds = new Integer[shopDeliverApplyList.size()];
+			Integer i = 0;
+			for (ShopDeliverApply shopDeliver : shopDeliverApplyList) {
+				shopIds[i++] = shopDeliver.getShopId();
+			}
+			MbShop mbShop = new MbShop();
+			mbShop.setIds(shopIds);
+			List<MbShop> mbShopList = mbShopService.query(mbShop);
+			if (CollectionUtils.isNotEmpty(mbShopList)) {
+				Map<Integer, MbShop> shopMap = new HashMap<Integer, MbShop>();
+				for (MbShop shop : mbShopList) {
+					shopMap.put(shop.getId(), shop);
+				}
+				List<MbShopMap> mbShopMaps = new ArrayList<MbShopMap>();
+				for (ShopDeliverApply shopDeliver : shopDeliverApplyList) {
+					MbShop shop = shopMap.get(shopDeliver.getShopId());
+					if (shop != null && shop.getLongitude() != null && shop.getLatitude() != null) {
+						MbShopMap mbShopMap = new MbShopMap();
+						mbShopMap.setAddress("门店名称：" + shop.getName() + "<br/>联系人：" + shop.getContactPeople() + "<br/>联系电话：" + shop.getContactPhone() + "<br/>地址：" + shop.getAddress());
+						mbShopMap.setLongitude(shop.getLongitude());
+						mbShopMap.setLatitude(shop.getLatitude());
+						mbShopMap.setShopType(shop.getShopType());
+						mbShopMap.setShopDeliverApplyId(shopDeliver.getId());
+						if (!F.empty(shopDeliver.getDistributeRange())) {
+							JSONArray json = JSONArray.fromObject(shopDeliver.getDistributeRange());
+							List<DistributeRangeMap> distributeRangeMaps = (List<DistributeRangeMap>) JSONArray.toCollection(json, DistributeRangeMap.class);
+							if (CollectionUtils.isNotEmpty(distributeRangeMaps)) {
+								mbShopMap.setDistributeRangeMapList(distributeRangeMaps);
+							}
+						}
+						mbShopMaps.add(mbShopMap);
+					}
+				}
+				return mbShopMaps;
+			}
+		}
+		return null;
 	}
 }

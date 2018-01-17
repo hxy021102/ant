@@ -9,10 +9,7 @@ import com.bx.ant.pageModel.*;
 import com.bx.ant.service.DriverAccountServiceI;
 import com.bx.ant.service.DriverOrderShopServiceI;
 import com.mobian.absx.F;
-import com.mobian.pageModel.DataGrid;
-import com.mobian.pageModel.MbBalance;
-import com.mobian.pageModel.PageHelper;
-import com.mobian.pageModel.User;
+import com.mobian.pageModel.*;
 import com.mobian.service.MbBalanceServiceI;
 import com.mobian.service.UserServiceI;
 import com.mobian.thirdpart.redis.Key;
@@ -321,4 +318,17 @@ public class DriverAccountServiceImpl extends BaseServiceImpl<DriverAccount> imp
 		return Key.build(nameSpace, accountId + ":" + today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-" + today.get(Calendar.DAY_OF_MONTH));
 	}
 
+	@Override
+	public List<DriverAccount> getDriverAccountListByName(String name) {
+		List<TdriverAccount> tdriverAccounts = driverAccountDao.find("from TdriverAccount t  where t.isdeleted = 0 and t.userName LIKE  '%" + name + "%'");
+		List<DriverAccount> driverAccounts = new ArrayList<DriverAccount>();
+		if (CollectionUtils.isNotEmpty(tdriverAccounts)) {
+			for (TdriverAccount tdriverAccount : tdriverAccounts) {
+				DriverAccount driverAccount = new DriverAccount();
+				BeanUtils.copyProperties(tdriverAccount, driverAccount);
+				driverAccounts.add(driverAccount);
+			}
+		}
+		return driverAccounts;
+	}
 }

@@ -452,6 +452,43 @@ public class MbShopController extends BaseController {
         dataGrid.setFooter(Arrays.asList(footer));
         return dataGrid;
     }
+
+    @RequestMapping("/downloadShopArrears")
+    public void downloadShopArrears(MbShop mbShop, PageHelper ph, String downloadFields, HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
+        DataGrid dg = dataGridShopArrears(mbShop, ph);
+        List<MbShopExt> rows = dg.getRows();
+        if(CollectionUtils.isNotEmpty(rows)) {
+            for(MbShopExt shopExt : rows) {
+                shopExt.setBalanceAmountD(shopExt.getBalanceAmount() / 100.0);
+                shopExt.setDebtD(shopExt.getDebt() / 100.0);
+                shopExt.setTotalDebtD(shopExt.getTotalDebt() / 100.0);
+                shopExt.setCashBalanceAmountD(shopExt.getCashBalanceAmount() / 100.0);
+            }
+        }
+        downloadFields = downloadFields.replace("&quot;", "\"");
+        downloadFields = downloadFields.substring(1, downloadFields.length() - 1);
+        List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
+        if (CollectionUtils.isNotEmpty(colums)) {
+            for (Colum colum : colums) {
+                switch (colum.getField()) {
+                    case "balanceAmount":
+                        colum.setField("balanceAmountD");
+                        break;
+                    case "debt":
+                        colum.setField("debtD");
+                        break;
+                    case "totalDebt":
+                        colum.setField("totalDebtD");
+                        break;
+                    case "cashBalanceAmount":
+                        colum.setField("cashBalanceAmountD");
+                        break;
+                }
+            }
+        }
+        downloadTable(colums, dg, response);
+    }
+
     /**
      *  获取门店余额欠款列表
      * @param mbShop
@@ -473,6 +510,34 @@ public class MbShopController extends BaseController {
         }
         dataGrid.setFooter(Arrays.asList(footer));
         return dataGrid;
+    }
+
+    @RequestMapping("/downloadShopBarrel")
+    public void downloadShopBarrel(MbShop mbShop, PageHelper ph, String downloadFields, HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
+        DataGrid dg = dataGridShopBarrel(mbShop, ph);
+        List<MbShopExt> rows = dg.getRows();
+        if(CollectionUtils.isNotEmpty(rows)) {
+            for(MbShopExt shopExt : rows) {
+                shopExt.setBalanceAmountD(shopExt.getBalanceAmount() / 100.0);
+                shopExt.setCashBalanceAmountD(shopExt.getCashBalanceAmount() / 100.0);
+            }
+        }
+        downloadFields = downloadFields.replace("&quot;", "\"");
+        downloadFields = downloadFields.substring(1, downloadFields.length() - 1);
+        List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
+        if (CollectionUtils.isNotEmpty(colums)) {
+            for (Colum colum : colums) {
+                switch (colum.getField()) {
+                    case "balanceAmount":
+                        colum.setField("balanceAmountD");
+                        break;
+                    case "cashBalanceAmount":
+                        colum.setField("cashBalanceAmountD");
+                        break;
+                }
+            }
+        }
+        downloadTable(colums, dg, response);
     }
 
     @RequestMapping("/getAllShopLocation")
@@ -582,5 +647,21 @@ public class MbShopController extends BaseController {
             }
         }
         return new DataGrid();
+    }
+
+    @RequestMapping("/getShopApplyMap")
+    @ResponseBody
+    public Json getShopApplyMap(Integer shopId,Integer shopDeliverApplyId) {
+        Json j = new Json();
+        MbShopMap mbShopMap = mbShopService.getShopApplyMapData(shopId,shopDeliverApplyId);
+        if (mbShopMap != null) {
+            j.setSuccess(true);
+            j.setObj(mbShopMap);
+            return j;
+        } else {
+            j.setSuccess(false);
+            j.setMsg("获取门店数据失败！");
+        }
+        return j;
     }
 }

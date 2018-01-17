@@ -322,4 +322,10 @@ public interface DeliverOrderServiceI {
 	 * 通过有赞的订单id 查找本地的订单
 	 */
 	DeliverOrder getOrderByYouZanTid(String tid);
+
+	/**
+	 * 批量修改运单状态为已打单
+	 * @param deliverOrderIds
+	 */
+	void updateBatchOrderSan(String deliverOrderIds,String sessionInfoId);
 }

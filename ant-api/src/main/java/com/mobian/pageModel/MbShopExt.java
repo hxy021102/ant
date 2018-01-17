@@ -21,6 +21,11 @@ public class MbShopExt extends MbShop {
 	private Integer deliver;
 	private String salesLoginName;
 
+	private Double balanceAmountD;
+	private Double debtD;
+	private Double totalDebtD;
+	private Double cashBalanceAmountD;
+
 	public Integer getTotalDebt() {
 		return totalDebt;
 	}
@@ -85,4 +90,35 @@ public class MbShopExt extends MbShop {
 		this.deliver = deliver;
 	}
 
+	public Double getBalanceAmountD() {
+		return balanceAmountD;
+	}
+
+	public void setBalanceAmountD(Double balanceAmountD) {
+		this.balanceAmountD = balanceAmountD;
+	}
+
+	public Double getDebtD() {
+		return debtD;
+	}
+
+	public void setDebtD(Double debtD) {
+		this.debtD = debtD;
+	}
+
+	public Double getTotalDebtD() {
+		return totalDebtD;
+	}
+
+	public void setTotalDebtD(Double totalDebtD) {
+		this.totalDebtD = totalDebtD;
+	}
+
+	public Double getCashBalanceAmountD() {
+		return cashBalanceAmountD;
+	}
+
+	public void setCashBalanceAmountD(Double cashBalanceAmountD) {
+		this.cashBalanceAmountD = cashBalanceAmountD;
+	}
 }

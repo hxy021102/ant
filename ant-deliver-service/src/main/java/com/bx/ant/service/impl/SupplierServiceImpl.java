@@ -172,4 +172,18 @@ public class SupplierServiceImpl extends BaseServiceImpl<Supplier> implements Su
 		return supplierDao.findBySql2Map(sql);
 	}
 
+	@Override
+	public List<Supplier> getSupplierListByName(String name) {
+		List<Tsupplier> tsuppliers = supplierDao.find("from Tsupplier t  where t.isdeleted = 0 and t.name LIKE  '" + name + "'");
+		List<Supplier> suppliers = new ArrayList<Supplier>();
+		if (CollectionUtils.isNotEmpty(tsuppliers)) {
+			for (Tsupplier tsupplier : tsuppliers) {
+				Supplier supplier = new Supplier();
+				BeanUtils.copyProperties(tsupplier, supplier);
+				suppliers.add(supplier);
+			}
+		}
+		return suppliers;
+	}
+
 }

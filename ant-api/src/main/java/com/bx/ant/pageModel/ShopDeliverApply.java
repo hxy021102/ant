@@ -24,6 +24,8 @@ public class ShopDeliverApply implements java.io.Serializable {
 	private String status;
 	private Integer accountId;
 	private String statusName;
+	private String distributeRange;
+	private String machineCode;
 
 	private MbShop mbShop;
 
@@ -204,5 +206,21 @@ public class ShopDeliverApply implements java.io.Serializable {
 
 	public void setShopIds(Integer[] shopIds) {
 		this.shopIds = shopIds;
+	}
+
+	public String getDistributeRange() {
+		return distributeRange;
+	}
+
+	public void setDistributeRange(String distributeRange) {
+		this.distributeRange = distributeRange;
+	}
+
+	public String getMachineCode() {
+		return machineCode;
+	}
+
+	public void setMachineCode(String machineCode) {
+		this.machineCode = machineCode;
 	}
 }

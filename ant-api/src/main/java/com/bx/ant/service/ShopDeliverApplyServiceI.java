@@ -1,13 +1,14 @@
 package com.bx.ant.service;
 
 import com.bx.ant.pageModel.DeliverOrder;
-import com.bx.ant.pageModel.ShopDeliverApplyQuery;
+import com.bx.ant.pageModel.DistributeRangeMap;
 import com.bx.ant.pageModel.ShopDeliverApply;
+import com.bx.ant.pageModel.ShopDeliverApplyQuery;
 import com.mobian.pageModel.DataGrid;
 import com.mobian.pageModel.MbAssignShop;
 import com.mobian.pageModel.PageHelper;
+import com.mobian.pageModel.*;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -85,6 +86,7 @@ public interface ShopDeliverApplyServiceI {
 	ShopDeliverApplyQuery getViewMessage(Integer id);
 
 	/**
+	 * 通过订单地址精度和纬度
 	 * 查询到在工作且可用的门店
 	 * @return
 	 */
@@ -97,6 +99,21 @@ public interface ShopDeliverApplyServiceI {
 	 * @return
 	 */
 	List<MbAssignShop> queryAssignShopList(DeliverOrder deliverOrder);
+
+	/**
+	 * 判断点是否在多边形内
+	 * @param distributeRangeMap  检测点
+	 * @param distributeRangeMaps   多边形的顶点
+	 * @return               点在多边形内返回true,否则返回false
+	 */
+	Boolean chechPointInPolygon(DistributeRangeMap distributeRangeMap,List<DistributeRangeMap> distributeRangeMaps);
+
+	/**
+	 * 获取所有接入门店配送范围数据
+	 * @param shopDeliverApply
+	 * @return
+	 */
+	List<MbShopMap> getAllShopRangeMapData(ShopDeliverApply shopDeliverApply);
 
 
 }

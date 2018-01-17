@@ -1,9 +1,9 @@
 package com.mobian.pageModel;
 
-import com.mobian.util.ConvertNameUtil;
+import com.bx.ant.pageModel.DistributeRangeMap;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class MbShopMap implements java.io.Serializable {
@@ -18,7 +18,8 @@ public class MbShopMap implements java.io.Serializable {
     private BigDecimal longitude;
     private BigDecimal latitude;
     private String shopType;
-
+    private List<DistributeRangeMap> distributeRangeMapList;
+    private Integer shopDeliverApplyId;
     public String getName() {
         return name;
     }
@@ -81,5 +82,21 @@ public class MbShopMap implements java.io.Serializable {
 
     public void setShopType(String shopType) {
         this.shopType = shopType;
+    }
+
+    public List<DistributeRangeMap> getDistributeRangeMapList() {
+        return distributeRangeMapList;
+    }
+
+    public void setDistributeRangeMapList(List<DistributeRangeMap> distributeRangeMapList) {
+        this.distributeRangeMapList = distributeRangeMapList;
+    }
+
+    public Integer getShopDeliverApplyId() {
+        return shopDeliverApplyId;
+    }
+
+    public void setShopDeliverApplyId(Integer shopDeliverApplyId) {
+        this.shopDeliverApplyId = shopDeliverApplyId;
     }
 }
