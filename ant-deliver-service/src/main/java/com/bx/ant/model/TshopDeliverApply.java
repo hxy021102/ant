@@ -82,6 +82,7 @@ public class TshopDeliverApply implements java.io.Serializable,IEntity{
     private Boolean transferAuth;
     private String distributeRange;
     private String machineCode;
+	private Boolean autoPrint;
 
 		public TshopDeliverApply(){
 		}
@@ -268,6 +269,14 @@ public class TshopDeliverApply implements java.io.Serializable,IEntity{
 		this.machineCode = machineCode;
 	}
 
+	@Column(name = "auto_print", unique = false, nullable = true, insertable = true, updatable = true, length = 0)
+	public Boolean getAutoPrint() {
+		return autoPrint;
+	}
+
+	public void setAutoPrint(Boolean autoPrint) {
+		this.autoPrint = autoPrint;
+	}
 	/*
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

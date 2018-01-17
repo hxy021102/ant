@@ -322,4 +322,11 @@ public interface DeliverOrderServiceI {
 	 * 通过有赞的订单id 查找本地的订单
 	 */
 	DeliverOrder getOrderByYouZanTid(String tid);
+
+	/**
+	 * 打印小票
+	 * @param id
+	 */
+	Boolean printOrder(Long id, String machineCode);
+
 }

@@ -17,10 +17,8 @@ import com.mobian.thirdpart.mns.MNSUtil;
 import com.mobian.thirdpart.redis.Key;
 import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.thirdpart.redis.RedisUtil;
-import com.mobian.util.ConvertNameUtil;
-import com.mobian.util.DateUtil;
-import com.mobian.util.GeoUtil;
-import com.mobian.util.MyBeanUtils;
+import com.mobian.thirdpart.yilianyun.Methods;
+import com.mobian.util.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1054,5 +1052,52 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		}
 
 		return null;
+	}
+
+	@Override
+	public Boolean printOrder(Long id, String machineCode) {
+
+		DeliverOrderExt order = getDetail(id);
+
+		StringBuffer sb = new StringBuffer();
+		sb.append("<FH2><FS><FW2> ** 仓蚁管家 **</FW2></FS></FH2>\r\r");
+		sb.append("******************************\r");
+		sb.append("<FH>");
+		sb.append("收货人：" + order.getContactPeople() + "\r");
+		sb.append("收货电话：" + order.getContactPhone() + "\r");
+		sb.append("收货地址：" + order.getDeliveryAddress() + "\r");
+		sb.append("下单时间：" + DateUtil.format(order.getAddtime(), Constants.DATE_FORMAT) + "\r");
+		sb.append("订单号：" + order.getId() + "\r");
+		if(!F.empty(order.getOriginalOrderId())) {
+			sb.append("原订单号：" + order.getOriginalOrderId() + "\r");
+			sb.append("店铺：" + order.getOriginalShop() + "\r");
+		}
+		sb.append("</FH>");
+		sb.append("**************商品*************\r");
+		sb.append("<FH>");
+		sb.append("<table><tr><td>品名</td><td>数量</td><td>单价</td></tr>");
+		if(CollectionUtils.isNotEmpty(order.getDeliverOrderShopItemList())) {
+			for(DeliverOrderShopItem item : order.getDeliverOrderShopItemList()) {
+				DeliverOrderShopItemExt itemExt = (DeliverOrderShopItemExt) item;
+				sb.append("<tr>");
+				sb.append("<td>"+itemExt.getItemName()+"</td>");
+				sb.append("<td>x"+ itemExt.getQuantity()+"</td>");
+				sb.append("<td>"+ BigDecimal.valueOf(itemExt.getPrice()).divide(new BigDecimal(100)).floatValue()+"</td>");
+				sb.append("</tr>");
+			}
+		}
+		sb.append("</table></FH>");
+		sb.append("******************************\r");
+		sb.append("<FH><right>订单总价：￥"+ BigDecimal.valueOf(order.getAmount()).divide(new BigDecimal(100)).floatValue()+"</right></FH>\r\r");
+
+		sb.append("<FH2><FS><FW2>    ** 完 **</FW2></FS></FH2>");
+
+		String result = Methods.getInstance().init().print(machineCode, sb.toString(), id + "");
+		JSONObject json = JSONObject.parseObject(result);
+		if(json.getInteger("error") != 0) {
+			return false;
+		}
+
+		return true;
 	}
 }
