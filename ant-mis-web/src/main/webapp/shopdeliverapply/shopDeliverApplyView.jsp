@@ -148,7 +148,7 @@
 </head>
 <body>
 <div class="easyui-layout" data-options="fit:true,border:false">
-	<div data-options="region:'north',border:false," style="height: 110px; overflow: hidden;">
+	<div data-options="region:'north',border:false," style="height: 130px; overflow: hidden;">
 		<table class="table table-hover table-condensed">
 			<tr>
 				<th width="140">添加时间</th>
@@ -179,12 +179,14 @@
 				</td>
 				<th>最大配送距离</th>
 				<td>
-					<c:if test="${shopDeliverApplyQuery.maxDeliveryDistance != null && (shopDeliverApplyQuery.distributeRange ==null||empty shopDeliverApplyQuery.distributeRange)}">
-						${shopDeliverApplyQuery.maxDeliveryDistance}米 <font color="red">（有效）</font>
-					</c:if>
-					<c:if test="${shopDeliverApplyQuery.distributeRange !=null}">
-						${shopDeliverApplyQuery.maxDeliveryDistance}<c:if test="${shopDeliverApplyQuery.maxDeliveryDistance != null }">米</c:if><font color="red">（无效）</font>
-					</c:if>
+					<c:choose>
+						<c:when test="${shopDeliverApplyQuery.maxDeliveryDistance != null && (shopDeliverApplyQuery.distributeRange ==null||empty shopDeliverApplyQuery.distributeRange)}">
+							${shopDeliverApplyQuery.maxDeliveryDistance}米 <font color="red">（有效）</font>
+						</c:when>
+						<c:otherwise>
+							${shopDeliverApplyQuery.maxDeliveryDistance}米 <font color="red">（无效）</font>
+						</c:otherwise>
+					</c:choose>
 				</td>
 				<th>是否短信通知</th>
 				<td>
@@ -247,12 +249,9 @@
 				</td>
 			</tr>
 		</table>
-	</div>
-	<div data-options="region:'center',border:false">
-		<div id="allmap" style="height: 100%"></div>
 		<div id="control">
 			<input type="hidden" id="distributeRange" name="distributeRange" />
-		    <c:if test="${fn:contains(sessionInfo.resourceList, '/shopDeliverApplyController/updateDistributeRange')}">
+			<c:if test="${fn:contains(sessionInfo.resourceList, '/shopDeliverApplyController/updateDistributeRange')}">
 				<button onclick="polygon.enableEditing();">开启编辑功能</button>
 				<button onclick="polygon.disableEditing();updateDistributeRange()">关闭编辑并提交</button>
 			</c:if>
@@ -260,6 +259,10 @@
 				<button onclick="clearEmptyRange()">重置配送范围</button>
 			</c:if>
 		</div>
+	</div>
+	<div data-options="region:'center',border:false">
+		<div id="allmap" style="height: 100%"></div>
+
 	</div>
 </div>
 </body>
