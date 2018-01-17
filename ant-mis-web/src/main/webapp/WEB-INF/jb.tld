@@ -180,10 +180,10 @@
     </tag>
     <tag>
         <description>
-            timeRangePicker
+            easyUITimeRangePicker
         </description>
-        <name>timeRangePicker</name>
-        <tag-class>com.mobian.tag.TimeRangePicker</tag-class>
+        <name> easyUITimeRangePicker</name>
+        <tag-class>com.mobian.tag.EasyUITimeRangePicker</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <name>startTimeName</name>
@@ -222,6 +222,56 @@
             <type>java.lang.String</type>
         </attribute>
         <attribute>
+            <name>minDate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description>
+            timeRangePicker
+        </description>
+        <name> timeRangePicker</name>
+        <tag-class>com.mobian.tag.TimeRangePicker</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>leftTimeName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <name>rightTimeName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <name>format</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <name>leftTimeValue</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <name>rightTimeValue</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <name>required</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
             <name>timeLimit</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -233,8 +283,8 @@
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
-         <attribute>
-            <name>showSeconds</name>
+        <attribute>
+            <name>onlyDate</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.Boolean</type>
