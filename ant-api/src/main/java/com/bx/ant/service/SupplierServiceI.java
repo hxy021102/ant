@@ -62,4 +62,11 @@ public interface SupplierServiceI {
 	public List<Supplier> query(Supplier supplier);
 
 	List<Map> getSelectMapList(String sql, Map<String, Object> params);
+
+	/**
+	 * 获取供应商信息通过门店名称
+	 * @param name
+	 * @return
+	 */
+	List<Supplier> getSupplierListByName(String name);
 }

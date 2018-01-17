@@ -13,7 +13,7 @@ public class DriverAccountView extends DriverAccount {
     private String createDate;
     private String onlineName;
     private Integer balanceAmount;
-
+    private Integer[] accountIds;
     public String getHandleStatusName() {
         return ConvertNameUtil.getString(super.getHandleStatus());
     }
@@ -68,5 +68,13 @@ public class DriverAccountView extends DriverAccount {
 
     public void setBalanceAmount(Integer balanceAmount) {
         this.balanceAmount = balanceAmount;
+    }
+
+    public Integer[] getAccountIds() {
+        return accountIds;
+    }
+
+    public void setAccountIds(Integer[] accountIds) {
+        this.accountIds = accountIds;
     }
 }

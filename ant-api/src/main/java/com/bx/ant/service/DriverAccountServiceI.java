@@ -127,4 +127,11 @@ public interface DriverAccountServiceI {
 	 * @return
 	 */
 	String buildRefuseOrderKey(Integer accountId);
+
+	/**
+	 * 通过用户名查询骑手用户信息
+	 * @param name
+	 * @return
+	 */
+	List<DriverAccount> getDriverAccountListByName(String name);
 }

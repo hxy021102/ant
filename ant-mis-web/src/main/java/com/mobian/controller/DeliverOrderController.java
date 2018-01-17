@@ -226,6 +226,7 @@ public class DeliverOrderController extends BaseController {
 		}
 		downloadFields = downloadFields.replace("&quot;", "\"");
 		downloadFields =downloadFields.substring(1, downloadFields.length() - 1).replace("],[",",");
+		downloadFields=downloadFields.replace("{\"field\":\"checkbox\",\"checkbox\":true,\"width\":30},","");
 		List<Colum> colums = JSON.parseArray(downloadFields, Colum.class);
 		if (CollectionUtils.isNotEmpty(colums)) {
 			for (Colum colum : colums) {
@@ -684,6 +685,23 @@ public class DeliverOrderController extends BaseController {
 			deliverOrderService.editAndAddLog(deliverOrder, DeliverOrderLogServiceI.TYPE_DLT40, content, sessionInfo.getId());
 		}
 		j.setMsg("批量返回运单状态成功！");
+		j.setSuccess(true);
+		return j;
+	}
+
+	/**
+	 * 批量修改运单为已打单
+	 * @param session
+	 * @param deliverOrderIds
+	 * @return
+	 */
+	@RequestMapping("/updateBatchOrder")
+	@ResponseBody
+	public Json updateBatchOrder(HttpSession session, String deliverOrderIds) {
+		Json j = new Json();
+		SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+		deliverOrderService.updateBatchOrderSan(deliverOrderIds, sessionInfo.getId());
+		j.setMsg("批量打单成功！");
 		j.setSuccess(true);
 		return j;
 	}

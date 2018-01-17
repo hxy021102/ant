@@ -1100,4 +1100,25 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 
 		return true;
 	}
+
+	@Override
+	public void updateBatchOrderSan(String deliverOrderIds, String sessionInfoId) {
+		DeliverOrderQuery deliverOrderQuery = new DeliverOrderQuery();
+		int size = deliverOrderIds.split(",").length;
+		Long[] orderIds = new Long[size];
+		int i = 0;
+		for (String id : deliverOrderIds.split(",")) {
+			orderIds[i++] = Long.valueOf(id);
+		}
+		deliverOrderQuery.setIds(orderIds);
+		List<DeliverOrder> deliverOrderList = query(deliverOrderQuery);
+		if (CollectionUtils.isNotEmpty(deliverOrderList)) {
+			for (DeliverOrder deliverOrder : deliverOrderList) {
+				if (DeliverOrderServiceI.AGENT_STATUS_DTS01.equals(deliverOrder.getAgentStatus()) && (ShopDeliverApplyServiceI.DELIVER_WAY_AGENT.equals(deliverOrder.getDeliveryWay()) || ShopDeliverApplyServiceI.DELIVER_WAY_CUSTOMER_AGENT.equals(deliverOrder.getDeliveryWay()))) {
+					deliverOrder.setAgentStatus(DeliverOrderServiceI.AGENT_STATUS_DTS02);
+					editAndAddLog(deliverOrder, DeliverOrderLogServiceI.TYPE_DLT15, "批量打单成功", sessionInfoId);
+				}
+			}
+		}
+	}
 }

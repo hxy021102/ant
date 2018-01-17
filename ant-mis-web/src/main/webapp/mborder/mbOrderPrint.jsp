@@ -151,7 +151,7 @@
             <td>客户编号</td>
             <td colspan="2">${mbOrder.shopId}</td>
             <td>客户名称</td>
-            <td colspan="6">${mbOrder.shopName}</td>
+            <td colspan="6">【${mbShop.shopTypeName}】${mbOrder.shopName}</td>
             <td>电话</td>
             <td colspan="2">${mbOrder.contactPhone}</td>
         </tr>

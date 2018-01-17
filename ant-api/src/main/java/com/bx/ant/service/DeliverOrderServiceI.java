@@ -324,6 +324,12 @@ public interface DeliverOrderServiceI {
 	DeliverOrder getOrderByYouZanTid(String tid);
 
 	/**
+	 * 批量修改运单状态为已打单
+	 * @param deliverOrderIds
+	 */
+	void updateBatchOrderSan(String deliverOrderIds,String sessionInfoId);
+
+	/**
 	 * 打印小票
 	 * @param id
 	 */
