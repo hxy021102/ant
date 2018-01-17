@@ -414,7 +414,7 @@ public class DeliverOrderController extends BaseController {
 			List<List<Object>> listOb = new ImportExcelUtil().getBankListByExcel(in, file.getOriginalFilename());
 			in.close();
 
-			deliverOrderService.addByTableList(listOb , supplierId, String loginId);
+			deliverOrderService.addByTableList(listOb , supplierId, loginId);
 			json.setSuccess(true);
 			json.setMsg("添加完成");
 			return json;
