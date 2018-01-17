@@ -56,7 +56,7 @@
 				},{
 				field : 'refTypeName',
 				title : '<%=TmbRechargeLog.ALIAS_REF_TYPE%>',
-				width : 40
+				width : 58
 				}, {
 				field : 'shopId',
 				title : '门店ID',
@@ -68,7 +68,7 @@
 				}, {
 				field : 'amount',
 				title : '<%=TmbRechargeLog.ALIAS_AMOUNT%>',
-				width : 60	,
+				width : 40	,
 				align:'right',
 				formatter:function(value){
 					return $.formatMoney(value);
@@ -76,7 +76,7 @@
 				}, {
 				field : 'applyLoginName',
 				title : '<%=TmbRechargeLog.ALIAS_APPLY_LOGIN_ID%>',
-				width : 40
+				width : 30
 				} , {
 				field : 'bankCodeName',
 				title : '<%=TmbRechargeLog.ALIAS_BANK_CODE_NAME%>',
@@ -85,12 +85,12 @@
 
                 field : 'payCode',
                 title : '<%=TmbRechargeLog.ALIAS_PAYCODE%>',
-                width : 60
+                width : 50
             	}, {
 
 				field : 'remitter',
 				title : '<%=TmbRechargeLog.ALIAS_REMITTER%>',
-				width : 40
+				width : 30
 				} , {
 				field : 'remitterTime',
 				title : '<%=TmbRechargeLog.ALIAS_REMITTER_TIME%>',
@@ -102,8 +102,12 @@
 				} , {
 				field : 'handleStatusName',
 				title : '<%=TmbRechargeLog.ALIAS_HANDLE_STATUS%>',
-				width : 50
-				} , {
+				width : 38
+				} ,{
+                field : 'handleRemark',
+                title : '审核备注',
+                width : 80
+                } , {
 				field : 'action',
 				title : '操作',
 				width : 30,
