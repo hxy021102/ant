@@ -12,6 +12,8 @@ import java.util.Date;
 
 /**
  * Created by w9777 on 2018/1/11.
+ * 功能:时间段摄取组件
+ * 依赖:前端moment.js,easyUI框架
  *
  */
 public class EasyUITimeRangePicker extends TagSupport {
@@ -19,7 +21,7 @@ public class EasyUITimeRangePicker extends TagSupport {
     private String endTimeName;//结束时间名
     private String startTimeValue;//开始时间
     private String endTimeValue;//结束时间
-    private String minDate;//最小日期,默认1992-10-09
+    private String minDate;//最小日期,默认1995-10-09
     private Boolean required;//是否必须true/false 默认false
     private String format;//时间格式 默认yyyy-MM-dd hh:mm:ss
 

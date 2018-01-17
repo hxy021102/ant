@@ -14,6 +14,8 @@ import java.util.Date;
  * 具有以下限制:
  * 1.最大时间为当前时间
  * 2.右时间一定会大于左时间,左时间一定会小于右时间
+ * 功能:时间段摄取组件
+ * 依赖:前端moment.js,easyUI框架
  */
 public class TimeRangePicker extends TagSupport {
     private String leftTimeName;//开始时间名,必要

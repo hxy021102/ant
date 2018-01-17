@@ -82,16 +82,9 @@
 
 <!-- daterangepicker -->
 <script type="text/javascript" src="${pageContext.request.contextPath}/jslib/daterangepicker/js/moment-2.20.1.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/jslib/daterangepicker/js/daterangepicker-2.1.30.js"></script>
-<%--<link rel="stylesheet" type="text/css" media="all" href="${pageContext.request.contextPath}/jslib/daterangepicker/css/daterangepicker-bs3.css" />--%>
-<link rel="stylesheet" type="text/css" media="all" href="${pageContext.request.contextPath}/jslib/daterangepicker/css/daterangepicker-1.3.7.css" />
-<link href="${pageContext.request.contextPath}/jslib/daterangepicker/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-<!-- easyui-daterangepicker -->
-<%--<link rel="stylesheet" type="text/css" href="http://www.jeasyui.com/easyui/themes/default/easyui.css">--%>
-<%--<link rel="stylesheet" type="text/css" href="http://www.jeasyui.com/easyui/themes/icon.css">--%>
-<%--<link rel="stylesheet" type="text/css" href="http://www.jeasyui.com/easyui/themes/color.css">--%>
-<%--<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.min.js"></script>--%>
-<%--<script type="text/javascript" src="http://www.jeasyui.com/easyui/jquery.easyui.min.js"></script>--%>
+
+
+
 
 
