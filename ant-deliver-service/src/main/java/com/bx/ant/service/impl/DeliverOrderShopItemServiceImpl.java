@@ -266,14 +266,11 @@ public class DeliverOrderShopItemServiceImpl extends BaseServiceImpl<DeliverOrde
 	}
 
 	@Override
-	public DataGrid dataGridWithName(DeliverOrderShopItem deliverOrderShopItem, PageHelper ph) {
-		DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
-		deliverOrderShop.setDeliverOrderId(deliverOrderShopItem.getDeliverOrderId());
-		//deliverOrderShop.setStatus("DSS02");
-		List<DeliverOrderShop> deliverOrderShops = deliverOrderShopService.query(deliverOrderShop);
+	public DataGrid dataGridView(DeliverOrderShopItem deliverOrderShopItem, PageHelper ph) {
+		DeliverOrderShop deliverOrderShop =deliverOrderShopService.getDeliverOrderShop(deliverOrderShopItem.getDeliverOrderId(),"DSS02,DSS04,DSS06");
 		DataGrid dg = new DataGrid();
-		if (CollectionUtils.isNotEmpty(deliverOrderShops)) {
-			deliverOrderShopItem.setDeliverOrderShopId(deliverOrderShops.get(0).getId());
+		if (deliverOrderShop!=null) {
+			deliverOrderShopItem.setDeliverOrderShopId(deliverOrderShop.getId());
 			DataGrid dataGrid = dataGrid(deliverOrderShopItem, ph);
 			List<DeliverOrderShopItem> deliverOrderShopItems = dataGrid.getRows();
 			if (CollectionUtils.isNotEmpty(deliverOrderShopItems)) {

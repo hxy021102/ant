@@ -75,7 +75,7 @@ public interface DeliverOrderShopItemServiceI {
 	 * @param ph
 	 * @return
 	 */
-	DataGrid dataGridWithName(DeliverOrderShopItem deliverOrderShopItem, PageHelper ph);
+	DataGrid dataGridView(DeliverOrderShopItem deliverOrderShopItem, PageHelper ph);
 
 	/**
 	 * 通过门店订单deliverOrderShopIds获取门店订单商品列表

@@ -17,10 +17,8 @@ import com.mobian.thirdpart.mns.MNSUtil;
 import com.mobian.thirdpart.redis.Key;
 import com.mobian.thirdpart.redis.Namespace;
 import com.mobian.thirdpart.redis.RedisUtil;
-import com.mobian.util.ConvertNameUtil;
-import com.mobian.util.DateUtil;
-import com.mobian.util.GeoUtil;
-import com.mobian.util.MyBeanUtils;
+import com.mobian.thirdpart.yilianyun.Methods;
+import com.mobian.util.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -864,48 +862,79 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	}
 
 	@Override
-	public void addByTableList(List<Object> lo, Integer supplierId) {
-		//1. 填充订单信息
-		DeliverOrder order = new DeliverOrder();
-		order.setSupplierOrderId((String) lo.get(0));
-		order.setContactPeople((String)lo.get(3));
-		order.setDeliveryAddress((String)lo.get(4));
-		order.setContactPhone((String)lo.get(5));
+	public void addByTableList(List<List<Object>> listOb, Integer supplierId, String loginId) {
+		List<DeliverOrder> deliverOrderList = new ArrayList<>();
+		Iterator<List<Object>> listIterator = listOb.iterator();
+		Map<String, DeliverOrderExt> deliverOrderMap = new HashMap<String, DeliverOrderExt>();
+//			listIterator.next();
+		while (listIterator.hasNext()) {
+			List<Object> lo = listIterator.next();
+			if (lo.size() < 8) throw new ServiceException("数据不完整,请确认除备注外是否有空数据");
+			//填充订单明细
+			String supplierOrderId = (String) lo.get(1);
 
-		//1.2 若没有备注则忽略备注
-		if (lo.size() > 6 && lo.get(6) != null ) {
-			order.setRemark(((String) lo.get(6)));
+			if (deliverOrderMap.containsKey(supplierOrderId)) {
+				SupplierItemRelationView itemRelation = new SupplierItemRelationView();
+				itemRelation.setSupplierId(supplierId);
+				itemRelation.setSupplierItemCode((String) lo.get(3));
+
+				List<SupplierItemRelation> itemRelations = supplierItemRelationService.dataGrid(itemRelation, new PageHelper()).getRows();
+				if (CollectionUtils.isEmpty(itemRelations)) throw new ServiceException(
+						String.format("商品编码%1s无法在供应商%2s找到对应商品", itemRelation.getSupplierId(), itemRelation.getSupplierItemCode()));
+				itemRelation.setItemId(itemRelations.get(0).getItemId());
+				itemRelation.setQuantity(Integer.parseInt((String) lo.get(4)));
+
+				deliverOrderMap.get(supplierOrderId).getSupplierItemRelationViewList().add(itemRelation);
+			}else {
+				//1. 填充订单信息
+				DeliverOrderExt order = new DeliverOrderExt();
+				order.setOriginalOrderId((String)lo.get(0));
+				order.setOriginalShop((String)lo.get(2));
+				order.setSupplierOrderId(supplierOrderId);
+				order.setContactPeople((String) lo.get(5));
+				order.setDeliveryAddress((String) lo.get(6));
+				order.setContactPhone((String) lo.get(7));
+
+				//1.2 若没有备注则忽略备注
+				if (lo.size() > 8 && lo.get(8) != null) {
+					order.setRemark(((String) lo.get(8)));
+				}
+				order.setSupplierId(supplierId);
+
+
+				//2. 订单合法性校验
+				//2.1 检测数据是否合理
+				String p = "((\\d{11})|^((\\d{7,8})|(\\d{4}|\\d{3})-(\\d{7,8})|(\\d{4}|\\d{3})-(\\d{7,8})-(\\d{4}|\\d{3}|\\d{2}|\\d{1})|(\\d{7,8})-(\\d{4}|\\d{3}|\\d{2}|\\d{1}))$)";
+				Pattern pattern = Pattern.compile(p);
+				Matcher matcher = pattern.matcher(order.getContactPhone());
+				if (!matcher.find()) throw new ServiceException("电话号码非法");
+
+				//2. 2剔除非上海订单
+
+				List<DeliverOrder> orderList = query(order);
+				//2.3 检测是否重复导入
+				if (CollectionUtils.isNotEmpty(orderList))
+					throw new ServiceException("检测到存在重复订单:" + JSONObject.toJSONString(order));
+				SupplierItemRelationView itemRelation = new SupplierItemRelationView();
+				itemRelation.setSupplierId(supplierId);
+				itemRelation.setSupplierItemCode((String) lo.get(3));
+
+				List<SupplierItemRelation> itemRelations = supplierItemRelationService.dataGrid(itemRelation, new PageHelper()).getRows();
+				if (CollectionUtils.isEmpty(itemRelations)) throw new ServiceException(
+						String.format("商品编码%1s无法在供应商%2s找到对应商品", itemRelation.getSupplierId(), itemRelation.getSupplierItemCode()));
+				itemRelation.setItemId(itemRelations.get(0).getItemId());
+				itemRelation.setQuantity(Integer.parseInt((String) lo.get(4)));
+
+				List<SupplierItemRelationView> itemRelationViews = new ArrayList<SupplierItemRelationView>();
+				itemRelationViews.add(itemRelation);
+				order.setSupplierItemRelationViewList(itemRelationViews);
+				deliverOrderMap.put(supplierOrderId, order);
+			}
 		}
-		order.setSupplierId(supplierId);
-
-
-		//2. 订单合法性校验
-		List<DeliverOrder> orderList = query(order) ;
-		//2.1 检测是否重复导入
-		if (CollectionUtils.isNotEmpty(orderList))  throw new ServiceException("检测到存在重复订单:" + JSONObject.toJSONString(order));
-		//2.2 剔除非上海订单
-
-		//2.3 检测数据是否合理
-		String p = "((\\d{11})|^((\\d{7,8})|(\\d{4}|\\d{3})-(\\d{7,8})|(\\d{4}|\\d{3})-(\\d{7,8})-(\\d{4}|\\d{3}|\\d{2}|\\d{1})|(\\d{7,8})-(\\d{4}|\\d{3}|\\d{2}|\\d{1}))$)";
-		Pattern pattern = Pattern.compile(p);
-		Matcher matcher = pattern.matcher(order.getContactPhone()) ;
-		if (!matcher.find()) throw new  ServiceException("电话号码非法");
-
-		//填充订单明细
-		List<SupplierItemRelationView> supplierItemRelations = new  ArrayList<SupplierItemRelationView>();
-		SupplierItemRelationView itemRelation = new SupplierItemRelationView();
-		itemRelation.setSupplierId(supplierId);
-		itemRelation.setSupplierItemCode((String)lo.get(1));
-
-		List<SupplierItemRelation> itemRelations = supplierItemRelationService.dataGrid(itemRelation, new PageHelper()).getRows();
-		if (CollectionUtils.isNotEmpty(itemRelations)) {
-			itemRelation.setItemId(itemRelations.get(0).getItemId());
-			itemRelation.setQuantity(Integer.parseInt((String)lo.get(2)));
-			supplierItemRelations.add(itemRelation);
-
-			//添加订单和订单明细
-
-			addAndItems(order, supplierItemRelations);
+		for (DeliverOrderExt orderExt : deliverOrderMap.values()) {
+			orderExt.setOrderLogRemark("批量导入");
+			orderExt.setLoginId(loginId);
+			addAndItems(orderExt, orderExt.getSupplierItemRelationViewList());
 		}
 	}
 
@@ -1073,6 +1102,53 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		}
 
 		return null;
+	}
+
+	@Override
+	public Boolean printOrder(Long id, String machineCode) {
+
+		DeliverOrderExt order = getDetail(id);
+
+		StringBuffer sb = new StringBuffer();
+		sb.append("<FH2><FS><FW2> ** 仓蚁管家 **</FW2></FS></FH2>\r\r");
+		sb.append("******************************\r");
+		sb.append("<FH>");
+		sb.append("收货人：" + order.getContactPeople() + "\r");
+		sb.append("收货电话：" + order.getContactPhone() + "\r");
+		sb.append("收货地址：" + order.getDeliveryAddress() + "\r");
+		sb.append("下单时间：" + DateUtil.format(order.getAddtime(), Constants.DATE_FORMAT) + "\r");
+		sb.append("订单号：" + order.getId() + "\r");
+		if(!F.empty(order.getOriginalOrderId())) {
+			sb.append("原订单号：" + order.getOriginalOrderId() + "\r");
+			sb.append("店铺：" + order.getOriginalShop() + "\r");
+		}
+		sb.append("</FH>");
+		sb.append("**************商品*************\r");
+		sb.append("<FH>");
+		sb.append("<table><tr><td>品名</td><td>数量</td><td>单价</td></tr>");
+		if(CollectionUtils.isNotEmpty(order.getDeliverOrderShopItemList())) {
+			for(DeliverOrderShopItem item : order.getDeliverOrderShopItemList()) {
+				DeliverOrderShopItemExt itemExt = (DeliverOrderShopItemExt) item;
+				sb.append("<tr>");
+				sb.append("<td>"+itemExt.getItemName()+"</td>");
+				sb.append("<td>x"+ itemExt.getQuantity()+"</td>");
+				sb.append("<td>"+ BigDecimal.valueOf(itemExt.getPrice()).divide(new BigDecimal(100)).floatValue()+"</td>");
+				sb.append("</tr>");
+			}
+		}
+		sb.append("</table></FH>");
+		sb.append("******************************\r");
+		sb.append("<FH><right>订单总价：￥"+ BigDecimal.valueOf(order.getAmount()).divide(new BigDecimal(100)).floatValue()+"</right></FH>\r\r");
+
+		sb.append("<FH2><FS><FW2>    ** 完 **</FW2></FS></FH2>");
+
+		String result = Methods.getInstance().init().print(machineCode, sb.toString(), id + "");
+		JSONObject json = JSONObject.parseObject(result);
+		if(json.getInteger("error") != 0) {
+			return false;
+		}
+
+		return true;
 	}
 
 	@Override

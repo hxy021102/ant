@@ -277,7 +277,7 @@ public interface DeliverOrderServiceI {
 	 * @param lo
 	 * @param supplierId
 	 */
-    void addByTableList(List<Object> lo, Integer supplierId);
+    void addByTableList(List<List<Object>> lo, Integer supplierId, String loginId);
 
 	/**
 	 * 处理指派后的订单
@@ -327,6 +327,14 @@ public interface DeliverOrderServiceI {
 	 * 批量修改运单状态为已打单
 	 * @param deliverOrderIds
 	 */
+	void updateBatchOrderSan(String deliverOrderIds,String sessionInfoId);
+
+	/**
+	 * 打印小票
+	 * @param id
+	 */
+	Boolean printOrder(Long id, String machineCode);
+
 	void updateBatchOrderSan(String deliverOrderIds, String sessionInfoId);
 
 	/**

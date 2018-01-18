@@ -13,6 +13,7 @@ import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.SupplierItemRelationServiceI;
 import com.bx.ant.service.SupplierServiceI;
 import com.mobian.exception.ServiceException;
+import com.mobian.model.Tuser;
 import com.mobian.pageModel.*;
 import com.mobian.service.*;
 import com.mobian.service.BasedataServiceI;
@@ -56,22 +57,17 @@ public class DeliverOrderController extends BaseController {
 	private DeliverOrderServiceI deliverOrderService;
 	@Resource
 	private SupplierServiceI supplierService;
-	@Resource
-	private DeliverOrderItemServiceI deliverOrderItemService;
 
-	@Resource
-	private SupplierItemRelationServiceI supplierItemRelationService;
-    @Autowired
-	private BasedataServiceI basedataService;
     @Resource
 	private DeliverOrderShopServiceI deliverOrderShopService;
 
 	@Resource
 	private MbShopServiceI mbShopService;
 
-	@Autowired
+	@Resource
 	private MbStockOutOrderServiceI mbStockOutOrderService;
-	@Autowired
+
+	@Resource
 	private UserServiceI userService;
 
 	/**
@@ -382,13 +378,20 @@ public class DeliverOrderController extends BaseController {
 	}
 
 	@RequestMapping("/uploadPage")
-	public String uploadPage(){
+	public String uploadPage(HttpServletRequest request, HttpSession session){
+		SessionInfo sessionInfo = (SessionInfo)session.getAttribute(ConfigUtil.getSessionInfoName());
+		String loginId = sessionInfo.getId();
+		User user = userService.get(loginId);
+		if (user != null) {
+			request.setAttribute("refType", user.getRefType());
+			request.setAttribute("refId", user.getRefId());
+		}
 		return "/deliverorder/deliverOrderUpload";
 	}
 
 	@RequestMapping("/upload")
 	@ResponseBody
-	public Json upload(@RequestParam MultipartFile file, Integer supplierId) throws Exception {
+	public Json upload(@RequestParam MultipartFile file, Integer supplierId, HttpSession session) throws Exception {
 		Json json = new Json();
 		try {
 			if (file.isEmpty()) {
@@ -396,26 +399,24 @@ public class DeliverOrderController extends BaseController {
 				json.setSuccess(false);
 				return json;
 			}
+			if (F.empty(supplierId)) {
+				json.setMsg("请选择供应商ID");
+				json.setSuccess(false);
+				return json;
+			}
+			SessionInfo sessionInfo = (SessionInfo) session.getAttribute(ConfigUtil.getSessionInfoName());
+			String loginId = sessionInfo.getId();
 			InputStream in = file.getInputStream();
 			List<List<Object>> listOb = new ImportExcelUtil().getBankListByExcel(in, file.getOriginalFilename());
 			in.close();
-			List<DeliverOrder> deliverOrderList = new ArrayList<>();
-			Iterator<List<Object>> listIterator = listOb.iterator();
-//			listIterator.next();
-			while (listIterator.hasNext()) {
-				List<Object> lo = listIterator.next();
 
-				if(lo.size() < 6) throw new ServiceException("数据不完整,请确认除备注外是否有空数据");
-				deliverOrderService.addByTableList(lo, supplierId);
-				json.setSuccess(true);
-				json.setMsg("添加完成");
-				return json;
-			}
-		}catch (Exception e) {
-			e.printStackTrace();
+			deliverOrderService.addByTableList(listOb , supplierId, loginId);
+			json.setSuccess(true);
+			json.setMsg("添加完成");
+			return json;
+		}catch (ServiceException e) {
+			json.setMsg(e.getMsg());
 		}
-
-		json.setMsg("error");
 		json.setSuccess(false);
 		return json;
 	}

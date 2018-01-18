@@ -55,7 +55,7 @@ public class DeliverOrderShopItemController extends BaseController {
 		if (!F.empty(deliverOrderShopItem.getDeliverOrderIds())) {
 			return deliverOrderShopItemService.dataGridByDeliverOrderIds(deliverOrderShopItem.getDeliverOrderIds());
 		}
-		return deliverOrderShopItemService.dataGridWithName(deliverOrderShopItem, ph);
+		return deliverOrderShopItemService.dataGridView(deliverOrderShopItem, ph);
 	}
 	/**
 	 * 获取DeliverOrderShopItem数据表格excel

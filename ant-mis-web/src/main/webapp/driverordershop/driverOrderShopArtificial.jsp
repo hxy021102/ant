@@ -219,7 +219,7 @@
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit : true,border : false">
-		<div data-options="region:'north',title:'查询条件',border:false" style="height: 70px; overflow: hidden;">
+		<div data-options="region:'north',title:'查询条件',border:false" style="height: 90px; overflow: hidden;">
 			<form id="searchForm">
 				<table class="table table-hover table-condensed" style="display: none;">
 					    <tr>
@@ -237,8 +237,7 @@
                             </c:choose>
 						    <th>添加时间</th>
 						    <td>
-							 <input type="text"  class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'<%=TmbUser.FORMAT_ADDTIME%>'})" id="addtimeBegin" name="addtimeBegin"/>至
-							 <input type="text"  class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'<%=TmbUser.FORMAT_ADDTIME%>'})" id="addtimeEnd" name="addtimeEnd"/>
+								<jb:timeRangePicker leftTimeName="addtimeBegin" rightTimeName="addtimeEnd" format="<%=TmbUser.FORMAT_UPDATETIME%>" timeLimit="31" ></jb:timeRangePicker>
 						    </td>
 						</tr>
 				</table>
