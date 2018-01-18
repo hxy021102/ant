@@ -66,11 +66,9 @@
 			singleSelect : true,
 			columns : [ [ {
 				field : 'id',
-				title : '派单ID',
+				title : 'ID',
 				width : 50,
-                formatter : function (value, row, index) {
-                    return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
-                }
+                hidden:true
 				}, {
 				field : 'shopId',
 				title : '门店ID',
@@ -94,9 +92,11 @@
                 },  {
 				field : 'action',
 				title : '操作',
-				width : 20,
+				width : 50,
 				formatter : function(value, row, index) {
-					var str = '';
+                    var str = '<a onclick="viewFun(' + row.id + ')">详情</a>';
+
+
 					if ($.canDelete) {
 						str += $.formatString('<img onclick="deleteFun(\'{0}\');" src="{1}" title="删除"/>', row.id, '${pageContext.request.contextPath}/style/images/extjs_icons/cancel.png');
 					}
@@ -116,7 +116,7 @@
 				$('#searchForm table').show();
 				parent.$.messager.progress('close');
 
-				$(this).datagrid('tooltip');
+				//$(this).datagrid('tooltip');
 			}
 		});
 	});

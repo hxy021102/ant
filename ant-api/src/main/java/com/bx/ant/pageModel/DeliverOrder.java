@@ -53,6 +53,7 @@ public class DeliverOrder implements java.io.Serializable {
 	private Map<String,Object> extend;
 	
 	private Boolean checkAmount; // 是否检查余额不足
+	private String loginId;
 
 	public void setId(Long value) {
 		this.id = value;
@@ -357,5 +358,13 @@ public class DeliverOrder implements java.io.Serializable {
 
 	public void setCheckAmount(Boolean checkAmount) {
 		this.checkAmount = checkAmount;
+	}
+
+	public String getLoginId() {
+		return loginId;
+	}
+
+	public void setLoginId(String loginId) {
+		this.loginId = loginId;
 	}
 }

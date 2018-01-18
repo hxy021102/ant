@@ -37,7 +37,7 @@
 <link
 	href="${pageContext.request.contextPath}/jslib/bootstrap-2.3.1/css/bootstrap.min.css"
 	rel="stylesheet" media="screen">
-<!-- <script charset="utf-8" src="${pageContext.request.contextPath}/jslib/bootstrap-2.3.1/js/bootstrap.min.js" charset="utf-8"></script> -->
+<script charset="utf-8" src="${pageContext.request.contextPath}/jslib/bootstrap-2.3.1/js/bootstrap.min.js" charset="utf-8"></script>
 
 <!-- 引入EasyUI -->
 <link id="easyuiTheme" rel="stylesheet"
@@ -79,6 +79,12 @@
 	charset="utf-8"></script>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/jslib/jsencrypt.min.js" charset="utf-8"></script>
+
+<!-- daterangepicker -->
+<script type="text/javascript" src="${pageContext.request.contextPath}/jslib/timerangepicker/js/moment-2.20.1.js"></script>
+
+
+
 
 
 

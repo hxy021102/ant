@@ -34,7 +34,7 @@
                 idField: 'id',
                 pageSize: 10,
                 pageList: [10, 20, 30, 40, 50],
-                sortName: 'addtime',
+                sortName: 'id',
                 sortOrder: 'desc',
                 checkOnSelect: false,
                 selectOnCheck: false,

@@ -153,9 +153,9 @@ public class MbBalanceLogServiceImpl extends BaseServiceImpl<MbBalanceLog> imple
 		if (mbBalanceLog.getAmount() == null) {
 			throw new ServiceException("余额不允许为null");
 		}
-		TmbBalance tmbBalance = mbBalanceDao.get(TmbBalance.class, mbBalanceLog.getBalanceId());
+		Integer amount = mbBalanceDao.getAmountById(mbBalanceLog.getBalanceId());
 		String remark = mbBalanceLog.getRemark() == null ? "" : mbBalanceLog.getRemark();
-		mbBalanceLog.setRemark(String.format(remark + "【期末余额:%s分】", tmbBalance.getAmount() + mbBalanceLog.getAmount()));
+		mbBalanceLog.setRemark(String.format(remark + "【期末余额:%s分】", amount + mbBalanceLog.getAmount()));
 		add(mbBalanceLog);
 
 		int i = mbBalanceDao.executeHql("update TmbBalance t set t.amount=amount+" + mbBalanceLog.getAmount() + " where t.id=" + mbBalanceLog.getBalanceId());

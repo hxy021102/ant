@@ -501,4 +501,18 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 		return query(deliverOrderShop);
 	}
 
+    @Override
+    public DeliverOrderShop getDeliverOrderShop(Long deliverOrderId,String status) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("deliverOrderId", deliverOrderId);
+		params.put("status", status.split(","));
+		List<TdeliverOrderShop> tdeliverOrderShops = deliverOrderShopDao.find("from TdeliverOrderShop t  where t.deliverOrderId = :deliverOrderId and t.status in (:status)", params);
+		if (CollectionUtils.isNotEmpty(tdeliverOrderShops)) {
+			DeliverOrderShop deliverOrderShop = new DeliverOrderShop();
+			BeanUtils.copyProperties(tdeliverOrderShops.get(0), deliverOrderShop);
+			return deliverOrderShop;
+		}
+		return null;
+	}
+
 }

@@ -186,13 +186,13 @@
             alert("您还没有选择订单！")
 		}
         if(rows.length != 0) {
-                parent.$.messager.confirm('询问', '账单总金额为：'+ $.formatMoney(total) +'</br> 开始时间为：'+ $('#startDate').val() +'</br>结束时间为：'+$('#endDate').val()+' </br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;您确认创建账单？', function(b) {
+                parent.$.messager.confirm('询问', '账单总金额为：'+ $.formatMoney(total) +'</br> 开始时间为：'+ $('#addTimeBegin').val() +'</br>结束时间为：'+$('#addTimeEnd').val()+' </br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;您确认创建账单？', function(b) {
                     if (b) {
                         parent.$.messager.progress({
                             title : '提示',
                             text : '数据处理中，请稍后....'
                         });
-                        $.post('${pageContext.request.contextPath}/deliverOrderController/addOrderBill',{supplierId: rows[0].supplierId,unpayDeliverOrders: JSON.stringify(rows),startTime:$('#startDate').val(),endTime:$('#endDate').val()},function (result) {
+                        $.post('${pageContext.request.contextPath}/deliverOrderController/addOrderBill',{supplierId: rows[0].supplierId,unpayDeliverOrders: JSON.stringify(rows),startTime:$('#addTimeBegin').val(),endTime:$('#addTimeBegin').val()},function (result) {
                             if(result.success) {
                                 parent.$.messager.alert('提示', result.msg, 'info');
                                 dataGrid.datagrid('clearChecked');
@@ -213,7 +213,7 @@
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit : true,border : false">
-		<div data-options="region:'north',title:'查询条件',border:false" style="height: 65px; overflow: hidden;">
+		<div data-options="region:'north',title:'查询条件',border:false" style="height: 90px; overflow: hidden;">
 			<form id="searchForm">
 				<table class="table table-hover table-condensed">
 					<tr>
@@ -223,8 +223,12 @@
 						</td>
 						<th style="width: 50px">订单时间</th>
 						<td>
-							<input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'#F{$dp.$D(\'endDate\',{M:-1});}',maxDate:'#F{$dp.$D(\'endDate\',{d:-1});}'})" id="startDate" name="addtimeBegin"/>
-							至	<input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'#F{$dp.$D(\'startDate\',{d:1});}',maxDate:'#F{$dp.$D(\'startDate\',{M:1});}'})" id="endDate" name="addtimeEnd"/>
+							<jb:timeRangePicker leftTimeName="addtimeBegin" rightTimeName="addtimeEnd" format="yyyy-MM-dd HH:mm:ss" timeLimit="31" ></jb:timeRangePicker>
+						</td>
+						<%--<td>--%>
+							<%--<input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'#F{$dp.$D(\'endDate\',{M:-1});}',maxDate:'#F{$dp.$D(\'endDate\',{d:-1});}'})" id="startDate" name="addtimeBegin"/>--%>
+							<%--至	<input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'#F{$dp.$D(\'startDate\',{d:1});}',maxDate:'#F{$dp.$D(\'startDate\',{M:1});}'})" id="endDate" name="addtimeEnd"/>--%>
+						<%--</td>--%>
 					</tr>
 				</table>
 			</form>

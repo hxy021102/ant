@@ -235,8 +235,10 @@
             </td>
         </tr>
         <tr>
-            <td>${mbOrder.payStatusName}</td>
-            <td  >${mbPayment.amount/100.00}</td>
+            <%--<td>${mbOrder.payStatusName}</td>--%>
+            <%--<td  >${mbPayment.amount/100.00}</td>--%>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
 
             <td colspan="2">&nbsp;</td>
             <td>&nbsp;</td>

@@ -56,7 +56,7 @@
 				},{
 				field : 'refTypeName',
 				title : '<%=TmbRechargeLog.ALIAS_REF_TYPE%>',
-				width : 60
+				width : 58
 				}, {
 				field : 'shopId',
 				title : '门店ID',
@@ -107,7 +107,7 @@
                 field : 'handleRemark',
                 title : '审核备注',
                 width : 80
-               } , {
+                } , {
 				field : 'action',
 				title : '操作',
 				width : 30,
