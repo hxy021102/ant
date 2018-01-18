@@ -26,6 +26,7 @@ public class ShopDeliverApply implements java.io.Serializable {
 	private String statusName;
 	private String distributeRange;
 	private String machineCode;
+	private Boolean autoPrint;
 
 	private MbShop mbShop;
 
@@ -222,5 +223,13 @@ public class ShopDeliverApply implements java.io.Serializable {
 
 	public void setMachineCode(String machineCode) {
 		this.machineCode = machineCode;
+	}
+
+	public Boolean getAutoPrint() {
+		return autoPrint;
+	}
+
+	public void setAutoPrint(Boolean autoPrint) {
+		this.autoPrint = autoPrint;
 	}
 }

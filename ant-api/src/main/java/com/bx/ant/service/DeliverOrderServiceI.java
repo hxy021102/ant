@@ -328,4 +328,11 @@ public interface DeliverOrderServiceI {
 	 * @param deliverOrderIds
 	 */
 	void updateBatchOrderSan(String deliverOrderIds,String sessionInfoId);
+
+	/**
+	 * 打印小票
+	 * @param id
+	 */
+	Boolean printOrder(Long id, String machineCode);
+
 }

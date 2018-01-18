@@ -104,7 +104,10 @@ public class DeliverOrder20StateImpl extends AbstractDeliverOrderState{
                     driverOrderShopService.transform(driverOrderShop);
                 }
 
-
+                // 接单自动打印
+                if(!F.empty(apply.getMachineCode()) && apply.getAutoPrint()) {
+                    deliverOrderService.printOrder(deliverOrder.getId(), apply.getMachineCode());
+                }
             }
         }
 
