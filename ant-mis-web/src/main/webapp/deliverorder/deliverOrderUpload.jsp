@@ -39,10 +39,15 @@
 			<input type="hidden" name="id"/>
 			<table class="table table-hover table-condensed">
 				<tr>
-					<th>供应商</th>
-					<td>
-						<jb:selectGrid dataType="deliverSupplierId" name="supplierId" required="true"></jb:selectGrid>
-					</td>
+					<c:if test="${refType == 'URT02'}" >
+						<input type="hidden" name="supplierId"  value="${refId}">
+					</c:if>
+					<c:if test="${refType != 'URT02'}">
+						<th>供应商</th>
+						<td>
+							<jb:selectGrid dataType="deliverSupplierId" name="supplierId" required="true"></jb:selectGrid>
+						</td>
+					</c:if>
 				</tr>
 				<tr>
 					<th>文件</th>

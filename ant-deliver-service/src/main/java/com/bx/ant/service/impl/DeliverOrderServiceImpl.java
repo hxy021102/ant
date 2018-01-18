@@ -845,48 +845,79 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 	}
 
 	@Override
-	public void addByTableList(List<Object> lo, Integer supplierId) {
-		//1. 填充订单信息
-		DeliverOrder order = new DeliverOrder();
-		order.setSupplierOrderId((String) lo.get(0));
-		order.setContactPeople((String)lo.get(3));
-		order.setDeliveryAddress((String)lo.get(4));
-		order.setContactPhone((String)lo.get(5));
+	public void addByTableList(List<List<Object>> listOb, Integer supplierId, String loginId) {
+		List<DeliverOrder> deliverOrderList = new ArrayList<>();
+		Iterator<List<Object>> listIterator = listOb.iterator();
+		Map<String, DeliverOrderExt> deliverOrderMap = new HashMap<String, DeliverOrderExt>();
+//			listIterator.next();
+		while (listIterator.hasNext()) {
+			List<Object> lo = listIterator.next();
+			if (lo.size() < 8) throw new ServiceException("数据不完整,请确认除备注外是否有空数据");
+			//填充订单明细
+			String supplierOrderId = (String) lo.get(1);
 
-		//1.2 若没有备注则忽略备注
-		if (lo.size() > 6 && lo.get(6) != null ) {
-			order.setRemark(((String) lo.get(6)));
+			if (deliverOrderMap.containsKey(supplierOrderId)) {
+				SupplierItemRelationView itemRelation = new SupplierItemRelationView();
+				itemRelation.setSupplierId(supplierId);
+				itemRelation.setSupplierItemCode((String) lo.get(3));
+
+				List<SupplierItemRelation> itemRelations = supplierItemRelationService.dataGrid(itemRelation, new PageHelper()).getRows();
+				if (CollectionUtils.isEmpty(itemRelations)) throw new ServiceException(
+						String.format("商品编码%1s无法在供应商%2s找到对应商品", itemRelation.getSupplierId(), itemRelation.getSupplierItemCode()));
+				itemRelation.setItemId(itemRelations.get(0).getItemId());
+				itemRelation.setQuantity(Integer.parseInt((String) lo.get(4)));
+
+				deliverOrderMap.get(supplierOrderId).getSupplierItemRelationViewList().add(itemRelation);
+			}else {
+				//1. 填充订单信息
+				DeliverOrderExt order = new DeliverOrderExt();
+				order.setOriginalOrderId((String)lo.get(0));
+				order.setOriginalShop((String)lo.get(2));
+				order.setSupplierOrderId(supplierOrderId);
+				order.setContactPeople((String) lo.get(5));
+				order.setDeliveryAddress((String) lo.get(6));
+				order.setContactPhone((String) lo.get(7));
+
+				//1.2 若没有备注则忽略备注
+				if (lo.size() > 8 && lo.get(8) != null) {
+					order.setRemark(((String) lo.get(8)));
+				}
+				order.setSupplierId(supplierId);
+
+
+				//2. 订单合法性校验
+				//2.1 检测数据是否合理
+				String p = "((\\d{11})|^((\\d{7,8})|(\\d{4}|\\d{3})-(\\d{7,8})|(\\d{4}|\\d{3})-(\\d{7,8})-(\\d{4}|\\d{3}|\\d{2}|\\d{1})|(\\d{7,8})-(\\d{4}|\\d{3}|\\d{2}|\\d{1}))$)";
+				Pattern pattern = Pattern.compile(p);
+				Matcher matcher = pattern.matcher(order.getContactPhone());
+				if (!matcher.find()) throw new ServiceException("电话号码非法");
+
+				//2. 2剔除非上海订单
+
+				List<DeliverOrder> orderList = query(order);
+				//2.3 检测是否重复导入
+				if (CollectionUtils.isNotEmpty(orderList))
+					throw new ServiceException("检测到存在重复订单:" + JSONObject.toJSONString(order));
+				SupplierItemRelationView itemRelation = new SupplierItemRelationView();
+				itemRelation.setSupplierId(supplierId);
+				itemRelation.setSupplierItemCode((String) lo.get(3));
+
+				List<SupplierItemRelation> itemRelations = supplierItemRelationService.dataGrid(itemRelation, new PageHelper()).getRows();
+				if (CollectionUtils.isEmpty(itemRelations)) throw new ServiceException(
+						String.format("商品编码%1s无法在供应商%2s找到对应商品", itemRelation.getSupplierId(), itemRelation.getSupplierItemCode()));
+				itemRelation.setItemId(itemRelations.get(0).getItemId());
+				itemRelation.setQuantity(Integer.parseInt((String) lo.get(4)));
+
+				List<SupplierItemRelationView> itemRelationViews = new ArrayList<SupplierItemRelationView>();
+				itemRelationViews.add(itemRelation);
+				order.setSupplierItemRelationViewList(itemRelationViews);
+				deliverOrderMap.put(supplierOrderId, order);
+			}
 		}
-		order.setSupplierId(supplierId);
-
-
-		//2. 订单合法性校验
-		List<DeliverOrder> orderList = query(order) ;
-		//2.1 检测是否重复导入
-		if (CollectionUtils.isNotEmpty(orderList))  throw new ServiceException("检测到存在重复订单:" + JSONObject.toJSONString(order));
-		//2.2 剔除非上海订单
-
-		//2.3 检测数据是否合理
-		String p = "((\\d{11})|^((\\d{7,8})|(\\d{4}|\\d{3})-(\\d{7,8})|(\\d{4}|\\d{3})-(\\d{7,8})-(\\d{4}|\\d{3}|\\d{2}|\\d{1})|(\\d{7,8})-(\\d{4}|\\d{3}|\\d{2}|\\d{1}))$)";
-		Pattern pattern = Pattern.compile(p);
-		Matcher matcher = pattern.matcher(order.getContactPhone()) ;
-		if (!matcher.find()) throw new  ServiceException("电话号码非法");
-
-		//填充订单明细
-		List<SupplierItemRelationView> supplierItemRelations = new  ArrayList<SupplierItemRelationView>();
-		SupplierItemRelationView itemRelation = new SupplierItemRelationView();
-		itemRelation.setSupplierId(supplierId);
-		itemRelation.setSupplierItemCode((String)lo.get(1));
-
-		List<SupplierItemRelation> itemRelations = supplierItemRelationService.dataGrid(itemRelation, new PageHelper()).getRows();
-		if (CollectionUtils.isNotEmpty(itemRelations)) {
-			itemRelation.setItemId(itemRelations.get(0).getItemId());
-			itemRelation.setQuantity(Integer.parseInt((String)lo.get(2)));
-			supplierItemRelations.add(itemRelation);
-
-			//添加订单和订单明细
-
-			addAndItems(order, supplierItemRelations);
+		for (DeliverOrderExt orderExt : deliverOrderMap.values()) {
+			orderExt.setOrderLogRemark("批量导入");
+			orderExt.setLoginId(loginId);
+			addAndItems(orderExt, orderExt.getSupplierItemRelationViewList());
 		}
 	}
 

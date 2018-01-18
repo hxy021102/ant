@@ -99,7 +99,7 @@
                 width : 55
             }, {
                 field : 'supplierOrderId',
-                title : '订单ID',
+                title : '系统订单号',
                 width : 125
             }, {
                 field : 'shopName',
@@ -112,7 +112,7 @@
                 width : 80
             }, {
                 field : 'originalOrderId',
-                title : '订单号',
+                title : '原订单号',
                 width : 170
             },  {
                 field : 'addtime',
