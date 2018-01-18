@@ -148,4 +148,12 @@ public interface DeliverOrderShopServiceI {
 	 * @return
 	 */
 	List<DeliverOrderShop> queryByDeliverOrderShopIds(String deliverOrderShopIds);
+
+	/**
+	 * 获取接单门店订单
+	 * @param deliverOrderId
+	 * @param status
+	 * @return
+	 */
+	DeliverOrderShop getDeliverOrderShop(Long deliverOrderId,String status);
 }
