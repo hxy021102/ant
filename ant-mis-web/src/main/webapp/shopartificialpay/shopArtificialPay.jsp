@@ -155,10 +155,17 @@
 			<form id="searchForm">
 				<table class="table table-hover table-condensed" style="display: none;">
 					<tr>
-						<th style="width: 50px">门店名称</th>
-						<td>
-							<jb:selectGrid dataType="shopId" name="shopId" required="true"></jb:selectGrid>
-						</td>
+                        <c:choose>
+                            <c:when test="${shopId!=null}">
+                                <input type="hidden" name="shopId" value="${shopId}">
+                            </c:when>
+                            <c:otherwise>
+                                <th style="width: 50px">门店名称</th>
+                                <td>
+                                    <jb:selectGrid dataType="shopId" name="shopId" required="true"></jb:selectGrid>
+                                </td>
+                            </c:otherwise>
+                        </c:choose>
 						<th>订单时间</th>
 						<td>
                             <jb:timeRangePicker leftTimeName="startDate" rightTimeName="endDate" format="<%=TmbSupplierOrderItem.FORMAT_UPDATETIME%>" timeLimit="31" ></jb:timeRangePicker>

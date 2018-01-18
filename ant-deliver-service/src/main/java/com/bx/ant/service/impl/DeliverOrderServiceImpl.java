@@ -607,6 +607,25 @@ public class DeliverOrderServiceImpl extends BaseServiceImpl<DeliverOrder> imple
 		return dg;
 	}
 
+	public DataGrid queryUnPayForCount(DeliverOrder deliverOrder) {
+		PageHelper ph = new PageHelper();
+		ph.setHiddenTotal(true);
+		ph.setRows(100000);
+		List<DeliverOrder> ol = unPayOrderDataGrid(deliverOrder, ph).getRows();
+		Map<Integer, DeliverOrder> map = new HashMap<Integer, DeliverOrder>();
+		for (DeliverOrder order : ol) {
+			DeliverOrder dOrder = map.get(order.getSupplierId());
+			if (dOrder == null) {
+				map.put(order.getSupplierId(), order);
+			} else {
+				dOrder.setAmount(dOrder.getAmount() + order.getAmount());
+			}
+		}
+		DataGrid dg = new DataGrid();
+		dg.setRows(Arrays.asList(map.values().toArray()));
+		return dg;
+	}
+
 	@Override
 	public List<DeliverOrderPay> addOrderBill(List<DeliverOrder> list,Integer supplierId,Date startTime,Date endTime) {
 		//先判断数据库是否已经存在这些账单

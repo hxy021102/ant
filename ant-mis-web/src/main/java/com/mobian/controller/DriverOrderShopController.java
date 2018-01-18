@@ -208,7 +208,8 @@ public class DriverOrderShopController extends BaseController {
 	 * @returnA
 	 */
 	@RequestMapping("/managerArtificial")
-	public String managerArtificial(HttpServletRequest request) {
+	public String managerArtificial(HttpServletRequest request,Integer driverAccountId) {
+		request.setAttribute("driverAccountId", driverAccountId);
 		return "/driverordershop/driverOrderShopArtificial";
 	}
 
@@ -221,7 +222,7 @@ public class DriverOrderShopController extends BaseController {
 	@RequestMapping("/dataGridArtificial")
 	@ResponseBody
 	public DataGrid dataGridArtificial(DriverOrderShopView driverOrderShopView, PageHelper ph) {
-		if (!F.empty(driverOrderShopView.getUserName()) && driverOrderShopView.getAddtimeBegin() != null
+		if (driverOrderShopView.getAddtimeBegin() != null
 				&& driverOrderShopView.getAddtimeEnd() != null) {
 			if (!F.empty(driverOrderShopView.getUserName())) {
 				DriverAccount driverAccount = new DriverAccount();

@@ -447,6 +447,28 @@ public class DriverOrderShopServiceImpl extends BaseServiceImpl<DriverOrderShop>
 		return o;
 	}
 
+	@Override
+	public DataGrid queryUnPayForCount(DriverOrderShop driverOrderShop) {
+		PageHelper ph = new PageHelper();
+		ph.setHiddenTotal(true);
+		ph.setRows(100000);
+		driverOrderShop.setStatus("DDSS20");
+		driverOrderShop.setPayStatus("DDPS01");
+		List<DriverOrderShop> ol = dataGrid(driverOrderShop, ph).getRows();
+		Map<Integer, DriverOrderShop> map = new HashMap<Integer, DriverOrderShop>();
+		for (DriverOrderShop order : ol) {
+			DriverOrderShop dOrder = map.get(order.getDriverAccountId());
+			if (dOrder == null) {
+				map.put(order.getDriverAccountId(), order);
+			} else {
+				dOrder.setAmount(dOrder.getAmount() + order.getAmount());
+			}
+		}
+		DataGrid dg = new DataGrid();
+		dg.setRows(Arrays.asList(map.values().toArray()));
+		return dg;
+	}
+
 }
 
 
