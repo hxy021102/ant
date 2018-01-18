@@ -45,7 +45,8 @@ public class DeliverShopArtificialPayController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/manager")
-	public String manager(HttpServletRequest request) {
+	public String manager(HttpServletRequest request,Integer shopId) {
+		request.setAttribute("shopId", shopId);
 		return "shopartificialpay/shopArtificialPay";
 	}
 
@@ -58,9 +59,7 @@ public class DeliverShopArtificialPayController extends BaseController {
 	@RequestMapping("/dataGrid")
 	@ResponseBody
 	public DataGrid dataGrid(DeliverOrderShop deliverOrderShop, PageHelper ph) {
-		//已配送完成,等待用户确认状态
-		deliverOrderShop.setStatus("DSS06");
-		deliverOrderShop.setShopPayStatus("SPS01");
+
 		return deliverOrderShopService.dataGridShopArtificialPay(deliverOrderShop, ph);
 	}
 

@@ -208,7 +208,8 @@ public class DriverOrderShopController extends BaseController {
 	 * @returnA
 	 */
 	@RequestMapping("/managerArtificial")
-	public String managerArtificial(HttpServletRequest request) {
+	public String managerArtificial(HttpServletRequest request,Integer driverAccountId) {
+		request.setAttribute("driverAccountId", driverAccountId);
 		return "/driverordershop/driverOrderShopArtificial";
 	}
 

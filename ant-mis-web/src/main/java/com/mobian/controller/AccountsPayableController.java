@@ -2,9 +2,7 @@ package com.mobian.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.bx.ant.pageModel.*;
-import com.bx.ant.service.DriverAccountServiceI;
-import com.bx.ant.service.DriverOrderShopBillServiceI;
-import com.bx.ant.service.ShopOrderBillServiceI;
+import com.bx.ant.service.*;
 import com.mobian.absx.F;
 import com.mobian.pageModel.Colum;
 import com.mobian.pageModel.DataGrid;
@@ -22,6 +20,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,13 +35,15 @@ public class AccountsPayableController extends BaseController {
 
     @Resource
     private ShopOrderBillServiceI shopOrderBillService;
-    @Resource
-    private DriverOrderShopBillServiceI driverOrderShopBillService;
+
     @Resource
     private MbShopServiceI mbShopService;
     @Resource
     private DriverAccountServiceI driverAccountService;
-
+    @Resource
+    private DriverOrderShopServiceI driverOrderShopService;
+    @Resource
+    private DeliverOrderShopServiceI deliverOrderShopService;
     /**
      * 跳转到应付汇款管理页面
      *
@@ -55,59 +56,54 @@ public class AccountsPayableController extends BaseController {
 
     @RequestMapping("/queryUnShopBillOrUnDriverBill")
     @ResponseBody
-    public DataGrid queryUnShopBillOrUnDriverBill(String payer, Long id, String name, PageHelper ph)  {
+    public DataGrid queryUnShopBillOrUnDriverBill(String payer, String name, PageHelper ph)  {
         if ("shop".equals(payer)) {
-            ShopOrderBillQuery shopOrderBillQuery = new ShopOrderBillQuery();
-            if (!F.empty(id)) {
-                shopOrderBillQuery.setId(id);
-            }
+            DeliverOrderShop shopOrderBillQuery = new DeliverOrderShop();
+
             if (!F.empty(name)) {
                 List<MbShop> mbShopList = mbShopService.getMbshopListByName(name);
                 if (CollectionUtils.isNotEmpty(mbShopList)) {
-                    Integer[] shopIds = new Integer[mbShopList.size()];
-                    int i = 0;
-                    for (MbShop mbShop : mbShopList) {
-                        shopIds[i++] = mbShop.getId();
-                    }
-                    shopOrderBillQuery.setShopIds(shopIds);
+
+                    shopOrderBillQuery.setShopId(mbShopList.get(0).getId());
                 }
             }
-            shopOrderBillQuery.setStatus("BAS01");
-            DataGrid dataGrid = shopOrderBillService.dataGridWithName(shopOrderBillQuery, ph);
-            List<ShopOrderBillQuery> shopOrderBills = dataGrid.getRows();
+            DataGrid dataGrid = deliverOrderShopService.queryUnPayForCount(shopOrderBillQuery);
+            List<DeliverOrderShopQuery> shopOrderBills = dataGrid.getRows();
             if (CollectionUtils.isNotEmpty(shopOrderBills)) {
                 ShopOrderBill foot = new ShopOrderBill();
                 foot.setAmount(0);
-                for (ShopOrderBillQuery orderBill : shopOrderBills) {
+                for (DeliverOrderShopQuery orderBill : shopOrderBills) {
+                    orderBill.setId(new Long(orderBill.getShopId()));
                     foot.setAmount(foot.getAmount() + orderBill.getAmount());
                 }
                 dataGrid.setFooter(Arrays.asList(foot));
             }
             return dataGrid;
         } else if ("driver".equals(payer)) {
-            DriverOrderShopBillView driverOrderShopBillView = new DriverOrderShopBillView();
-            driverOrderShopBillView.setHandleStatus("DHS01");
-            if (!F.empty(id)) {
-                driverOrderShopBillView.setId(id);
-            }
+            DriverOrderShop driverOrderShop = new DriverOrderShop();
             if (!F.empty(name)) {
                 List<DriverAccount> driverAccountList = driverAccountService.getDriverAccountListByName(name);
                 if (CollectionUtils.isNotEmpty(driverAccountList)) {
-                    Integer[] accountIds = new Integer[driverAccountList.size()];
-                    int j = 0;
-                    for (DriverAccount driverAccount : driverAccountList) {
-                        accountIds[j++] = driverAccount.getId();
-                    }
-                    driverOrderShopBillView.setAccountIds(accountIds);
+                    driverOrderShop.setDriverAccountId(driverAccountList.get(0).getId());
                 }
             }
-            DataGrid dataGrid = driverOrderShopBillService.dataGridView(driverOrderShopBillView, ph);
-            List<DriverOrderShopBillView> driverOrderShopBills = dataGrid.getRows();
-            if (CollectionUtils.isNotEmpty(driverOrderShopBills)) {
-                DriverOrderShopBill foot = new DriverOrderShopBill();
+            DataGrid dataGrid = driverOrderShopService.queryUnPayForCount(driverOrderShop);
+            List<DriverOrderShop> driverOrderShops = dataGrid.getRows();
+            List<DriverOrderShopView> driverOrderShopViewList = new ArrayList<DriverOrderShopView>();
+            dataGrid.setRows(driverOrderShopViewList);
+            if (CollectionUtils.isNotEmpty(driverOrderShops)) {
+                DriverOrderShop foot = new DriverOrderShop();
                 foot.setAmount(0);
-                for (DriverOrderShopBillView orderShopBill : driverOrderShopBills) {
-                    foot.setAmount(foot.getAmount() + orderShopBill.getAmount());
+                for (DriverOrderShop dOrder : driverOrderShops) {
+                    DriverOrderShopView view = new DriverOrderShopView();
+                    view.setId(new Long(dOrder.getDriverAccountId()));
+                    foot.setAmount(foot.getAmount() + dOrder.getAmount());
+                    DriverAccount driverAccount = driverAccountService.getFromCache(dOrder.getDriverAccountId());
+                    if (driverAccount != null) {
+                        view.setUserName(driverAccount.getUserName());
+                    }
+                    view.setAmount(dOrder.getAmount());
+                    driverOrderShopViewList.add(view);
                 }
                 dataGrid.setFooter(Arrays.asList(foot));
             }
@@ -135,7 +131,7 @@ public class AccountsPayableController extends BaseController {
     public void download(String payer, Long id, String name, PageHelper ph, String downloadFields, HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
         payer = payer.substring(0, payer.length() - 1);
         if (!F.empty(payer)) {
-            DataGrid dg = queryUnShopBillOrUnDriverBill(payer, id, name, ph);
+            DataGrid dg = queryUnShopBillOrUnDriverBill(payer, name, ph);
             if ("shop".equals(payer)) {
                 List<ShopOrderBillQuery> shopOrderBillQueries = dg.getRows();
                 if (CollectionUtils.isNotEmpty(shopOrderBillQueries)) {

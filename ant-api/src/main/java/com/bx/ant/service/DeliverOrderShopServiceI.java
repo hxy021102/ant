@@ -156,4 +156,12 @@ public interface DeliverOrderShopServiceI {
 	 * @return
 	 */
 	DeliverOrderShop getDeliverOrderShop(Long deliverOrderId,String status);
+
+	/**
+	 * 门店未付款汇总
+	 * @param deliverOrderShop
+	 * @return
+	 */
+	DataGrid queryUnPayForCount(DeliverOrderShop deliverOrderShop);
+
 }

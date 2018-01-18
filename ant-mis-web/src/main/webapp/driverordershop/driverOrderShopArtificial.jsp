@@ -223,10 +223,18 @@
 			<form id="searchForm">
 				<table class="table table-hover table-condensed" style="display: none;">
 					    <tr>
-							<th>骑手账号</th>
-							<td>
-								<input type="text" name="userName" maxlength="15" class="span2 easyui-validatebox" data-options="required:true"/>
-							</td>
+                            <c:choose>
+                                <c:when test="${driverAccountId!=null}">
+                                    <input type="hidden" name="driverAccountId" value="${driverAccountId}">
+                                </c:when>
+                                <c:otherwise>
+                                    <th>骑手账号</th>
+                                    <td>
+                                        <input type="text" name="userName" maxlength="15"
+                                               class="span2 easyui-validatebox" data-options="required:true"/>
+                                    </td>
+                                </c:otherwise>
+                            </c:choose>
 						    <th>添加时间</th>
 						    <td>
 								<jb:timeRangePicker leftTimeName="addtimeBegin" rightTimeName="addtimeEnd" format="<%=TmbUser.FORMAT_UPDATETIME%>" timeLimit="31" ></jb:timeRangePicker>

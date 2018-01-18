@@ -1,8 +1,11 @@
 package com.mobian.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.bx.ant.pageModel.DeliverOrder;
+import com.bx.ant.pageModel.DeliverOrderQuery;
 import com.bx.ant.pageModel.Supplier;
 import com.bx.ant.pageModel.SupplierOrderBill;
+import com.bx.ant.service.DeliverOrderServiceI;
 import com.bx.ant.service.SupplierOrderBillServiceI;
 import com.bx.ant.service.SupplierServiceI;
 import com.mobian.absx.F;
@@ -19,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,7 +36,8 @@ import java.util.List;
 public class ReceivablesController extends BaseController {
 
     @Resource
-    private SupplierOrderBillServiceI supplierOrderBillService;
+    private DeliverOrderServiceI deliverOrderService;
+
     @Resource
     private SupplierServiceI supplierService;
 
@@ -48,36 +53,30 @@ public class ReceivablesController extends BaseController {
 
     @RequestMapping("/queryUnReceivableBill")
     @ResponseBody
-    public DataGrid queryUnReceivableBill(SupplierOrderBill supplierOrderBill, PageHelper ph) {
-        if (!F.empty(supplierOrderBill.getSupplierName())) {
-            List<Supplier> suppliers = supplierService.getSupplierListByName(supplierOrderBill.getSupplierName());
-            if (CollectionUtils.isNotEmpty(suppliers)) {
-                Integer[] supplierIds = new Integer[suppliers.size()];
-                int i = 0;
-                for (Supplier supplier : suppliers) {
-                    supplierIds[i++] = supplier.getId();
-                }
-                supplierOrderBill.setSupplierIds(supplierIds);
-            }
+    public DataGrid queryUnReceivableBill(DeliverOrder deliverOrder) {
+        DataGrid dg = deliverOrderService.queryUnPayForCount(deliverOrder);
+        List<DeliverOrder> rows = dg.getRows();
+        List<DeliverOrderQuery> deliverOrderQueries = new ArrayList<DeliverOrderQuery>();
+        DeliverOrderQuery footer = new DeliverOrderQuery();
+        footer.setAmount(0);
+        dg.setFooter(Arrays.asList(footer));
+        for (DeliverOrder row : rows) {
+            DeliverOrderQuery deliverOrderQuery = new DeliverOrderQuery();
+            Supplier supplier = supplierService.get(row.getSupplierId());
+            if(supplier!=null)
+            deliverOrderQuery.setSupplierName(supplier.getName());
+            deliverOrderQuery.setAmount(row.getAmount());
+            deliverOrderQuery.setSupplierId(row.getSupplierId());
+            deliverOrderQueries.add(deliverOrderQuery);
+            footer.setAmount(deliverOrderQuery.getAmount()+footer.getAmount());
         }
-        supplierOrderBill.setStatus("BAS01");
-        DataGrid dataGrid = supplierOrderBillService.dataGrid(supplierOrderBill, ph);
-        List<SupplierOrderBill> supplierOrderBills = dataGrid.getRows();
-        if (CollectionUtils.isNotEmpty(supplierOrderBills)) {
-            SupplierOrderBill foot = new SupplierOrderBill();
-            foot.setAmount(0);
-            for (SupplierOrderBill orderBill : supplierOrderBills) {
-                foot.setAmount(foot.getAmount() + orderBill.getAmount());
-            }
-            dataGrid.setFooter(Arrays.asList(foot));
-        }
-        return dataGrid;
+        dg.setRows(deliverOrderQueries);
+        return dg;
     }
 
     /**
      * 导出应收汇总报表
      *
-     * @param supplierOrderBill
      * @param ph
      * @param ph
      * @param downloadFields
@@ -90,8 +89,8 @@ public class ReceivablesController extends BaseController {
      * @throws IOException
      */
     @RequestMapping("/download")
-    public void download(SupplierOrderBill supplierOrderBill, PageHelper ph, String downloadFields, HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
-        DataGrid dg = queryUnReceivableBill(supplierOrderBill, ph);
+    public void download(DeliverOrder deliverOrder, PageHelper ph, String downloadFields, HttpServletResponse response) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, IOException {
+        DataGrid dg = queryUnReceivableBill(deliverOrder);
         List<SupplierOrderBill> supplierOrderBills = dg.getRows();
         if (CollectionUtils.isNotEmpty(supplierOrderBills)) {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

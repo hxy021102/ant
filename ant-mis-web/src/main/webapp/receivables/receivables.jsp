@@ -30,22 +30,13 @@
             showFooter : true,
             singleSelect : true,
             columns : [ [ {
-                field : 'id',
-                title : '账单ID',
-                width : 30,
-                formatter: function (value, row) {
-                    if (value == null)
-                        return null;
-                    return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
-                }
-            }, {
-                field : 'addtime',
-                title : '创建时间',
-                width : 50,
-            }, {
                 field : 'supplierName',
                 title : '供应商名称',
-                width : 90
+                width : 90,
+                formatter: function (value, row) {
+                    if(value == undefined)return '';
+                    return '<a onclick="viewFun(' + row.supplierId + ',\''+value+'\')">' + value + '</a>';
+                }
             }, {
                     field : 'amount',
                     title : '应收金额',
@@ -62,16 +53,12 @@
     });
 
 
-    function viewFun(id) {
-        if (id == undefined) {
-            var rows = dataGrid.datagrid('getSelections');
-            id = rows[0].id;
-        }
-        parent.$.modalDialog({
-            title : '查看数据',
-            width : 780,
-            height : 500,
-            href : '${pageContext.request.contextPath}/supplierOrderBillController/view?id=' + id +"&isView="+ 1
+    function viewFun(id,name) {
+        var href = '${pageContext.request.contextPath}/deliverOrderController/unPayOrderManager?supplierId=' + id;
+        parent.$("#index_tabs").tabs('add', {
+            title: name+'-应收明细',
+            content: '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
+            closable: true
         });
     }
     function downloadTable(){
@@ -112,9 +99,7 @@
 			<table class="table table-hover table-condensed" style="display: none;">
 				<tr>
 					<th style="width: 65px">供应商名称:</th>
-					<td><input type="text" id="supplierName" name="supplierName"  class="span2" placeholder="输入供应商名称"></td>
-					<th style="width: 50px">账单ID:</th>
-					<td><input type="text" name="id"  class="span2"/></td>
+					<td><jb:selectSql dataType="SQ020" name="supplierId" ></jb:selectSql></td>
 				</tr>
 			</table>
 		</form>

@@ -46,6 +46,11 @@
         });
     });
     function  showDataGrid(column) {
+        column.formatter = function (value, row) {
+            if (value == null)
+                return null;
+            return '<a onclick="viewFun(' + row.id + ',\''+value+'\')">' + value + '</a>';
+        }
         dataGrid = $('#dataGrid').datagrid({
             fit : true,
             fitColumns : true,
@@ -62,20 +67,7 @@
             rownumbers : true,
             showFooter : true,
             singleSelect : true,
-            columns : [ [ {
-                field : 'id',
-                title : '账单ID',
-                width : 30,
-                formatter: function (value, row) {
-                    if (value == null)
-                        return null;
-                    return '<a onclick="viewFun(' + row.id + ')">' + row.id + '</a>';
-                }
-            }, {
-                field : 'addtime',
-                title : '创建时间',
-                width : 50,
-            },
+            columns : [ [
                 column,
                 {
                     field : 'amount',
@@ -92,14 +84,14 @@
         });
     }
 
-    function viewFun(id) {
+    function viewFun(id,name) {
         if ($("#driver").attr("checked")) {
-            var href = '${pageContext.request.contextPath}/driverOrderShopBillController/view?id=' + id;
+            var href = '${pageContext.request.contextPath}/driverOrderShopController/managerArtificial?driverAccountId=' + id;
         } else {
-            var href = '${pageContext.request.contextPath}/deliverShopArtificialPayController/viewBill?id=' + id;
+            var href = '${pageContext.request.contextPath}/deliverShopArtificialPayController/manager?shopId=' + id;
         }
         parent.$("#index_tabs").tabs('add', {
-            title : '账单详情-' + id,
+            title : name+'-应付明细',
             content : '<iframe src="' + href + '" frameborder="0" scrolling="auto" style="width:100%;height:98%;"></iframe>',
             closable : true
         });
@@ -163,8 +155,6 @@
 						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="driver" type="radio" name="payer">骑手
 					</td>
 					<td><input  type="text" id="name" name="name" placeholder="输入门店名称或骑手账号"></td>
-					<th style="width: 50px">账单ID:</th>
-					<td><input type="text" name="id"  class="span2" id="id"/></td>
 				</tr>
 			</table>
 		</form>
