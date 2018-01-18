@@ -217,10 +217,17 @@
 			<form id="searchForm">
 				<table class="table table-hover table-condensed">
 					<tr>
-						<th style="width: 50px;">接入商</th>
-						<td>
-							<jb:selectGrid  dataType="deliverSupplierId" name="supplierId" required="true"></jb:selectGrid>
-						</td>
+						<c:choose>
+							<c:when test="${supplierId!=null}">
+								<input type="hidden" name="supplierId" value="${supplierId}">
+							</c:when>
+							<c:otherwise>
+								<th style="width: 50px;">接入商</th>
+								<td>
+									<jb:selectGrid  dataType="deliverSupplierId" name="supplierId" required="true"></jb:selectGrid>
+								</td>
+							</c:otherwise>
+						</c:choose>
 						<th style="width: 50px">订单时间</th>
 						<td>
 							<input type="text" class="span2 easyui-validatebox" data-options="required:true" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'#F{$dp.$D(\'endDate\',{M:-1});}',maxDate:'#F{$dp.$D(\'endDate\',{d:-1});}'})" id="startDate" name="addtimeBegin"/>

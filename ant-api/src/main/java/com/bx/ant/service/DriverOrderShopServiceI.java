@@ -174,4 +174,11 @@ public interface DriverOrderShopServiceI {
 	 * @return
 	 */
 	DriverOrderShop getByDeliverOrderShopId(Long deliverOrderShopId);
+
+	/**
+	 * 未结算汇总
+	 * @param driverOrderShop
+	 * @return
+	 */
+	DataGrid queryUnPayForCount(DriverOrderShop driverOrderShop);
 }

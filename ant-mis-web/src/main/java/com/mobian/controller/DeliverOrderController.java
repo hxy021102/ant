@@ -91,7 +91,8 @@ public class DeliverOrderController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping("/unPayOrderManager")
-	public String unPayOrdermanager(HttpServletRequest request) {
+	public String unPayOrderManager(HttpServletRequest request,Integer supplierId) {
+		request.setAttribute("supplierId", supplierId);
 		return "/deliverorder/unPayDeliverOrder";
 	}
 

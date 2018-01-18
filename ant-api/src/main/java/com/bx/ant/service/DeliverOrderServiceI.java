@@ -10,9 +10,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 
+ *
  * @author John
- * 
+ *
  */
 public interface DeliverOrderServiceI {
 
@@ -80,45 +80,45 @@ public interface DeliverOrderServiceI {
 	DeliverOrderState getCurrentState(Long id);
 	/**
 	 * 获取DeliverOrder数据表格
-	 * 
+	 *
 	 * @param deliverOrder
 	 *            参数
 	 * @param ph
 	 *            分页帮助类
 	 * @return
 	 */
-	public DataGrid dataGrid(DeliverOrder deliverOrder, PageHelper ph);
+	DataGrid dataGrid(DeliverOrder deliverOrder, PageHelper ph);
 	DataGrid unPayOrderDataGrid(DeliverOrder deliverOrder,PageHelper ph);
 
 
 	/**
 	 * 添加DeliverOrder
-	 * 
+	 *
 	 * @param deliverOrder
 	 */
-	public void add(DeliverOrder deliverOrder);
+	void add(DeliverOrder deliverOrder);
 
 	/**
 	 * 获得DeliverOrder对象
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
-	public DeliverOrder get(Long id);
+	DeliverOrder get(Long id);
 
 	/**
 	 * 修改DeliverOrder
-	 * 
+	 *
 	 * @param deliverOrder
 	 */
-	public void edit(DeliverOrder deliverOrder);
+	void edit(DeliverOrder deliverOrder);
 
 	/**
 	 * 删除DeliverOrder
-	 * 
+	 *
 	 * @param id
 	 */
-	public void delete(Long id);
+	void delete(Long id);
 
 	/**
 	 * 填充信息
@@ -327,5 +327,13 @@ public interface DeliverOrderServiceI {
 	 * 批量修改运单状态为已打单
 	 * @param deliverOrderIds
 	 */
-	void updateBatchOrderSan(String deliverOrderIds,String sessionInfoId);
+	void updateBatchOrderSan(String deliverOrderIds, String sessionInfoId);
+
+	/**
+	 * 未结算运单汇总
+	 * @param deliverOrder
+	 * @return
+	 */
+	DataGrid queryUnPayForCount(DeliverOrder deliverOrder);
+
 }

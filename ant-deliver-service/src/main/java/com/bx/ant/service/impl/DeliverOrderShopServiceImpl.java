@@ -305,16 +305,19 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 
 	@Override
 	public DataGrid dataGridShopArtificialPay(DeliverOrderShop deliverOrderShop, PageHelper ph) {
+		//已配送完成,等待用户确认状态
+		deliverOrderShop.setStatus("DSS06");
+		deliverOrderShop.setShopPayStatus("SPS01");
 		DeliverOrderShopPay deliverOrderShopPay = new DeliverOrderShopPay();
 		deliverOrderShopPay.setStatus("SPS01");
-		List<DeliverOrderShopPay> deliverOrderShopPays=deliverOrderShopPayService.query(deliverOrderShopPay);
-		if(CollectionUtils.isNotEmpty(deliverOrderShopPays)){
-			Long[] deliverOrderShopIds=new Long[deliverOrderShopPays.size()];
-			int i=0;
-			for(DeliverOrderShopPay shopPay:deliverOrderShopPays){
-				deliverOrderShopIds[i++]=shopPay.getDeliverOrderShopId();
+		List<DeliverOrderShopPay> deliverOrderShopPays = deliverOrderShopPayService.query(deliverOrderShopPay);
+		if (CollectionUtils.isNotEmpty(deliverOrderShopPays)) {
+			Long[] deliverOrderShopIds = new Long[deliverOrderShopPays.size()];
+			int i = 0;
+			for (DeliverOrderShopPay shopPay : deliverOrderShopPays) {
+				deliverOrderShopIds[i++] = shopPay.getDeliverOrderShopId();
 			}
- 		  deliverOrderShop.setIds(deliverOrderShopIds);
+			deliverOrderShop.setIds(deliverOrderShopIds);
 		}
 		DataGrid dataGrid = dataGrid(deliverOrderShop, ph);
 		List<DeliverOrderShop> deliverOrderShops = dataGrid.getRows();
@@ -325,7 +328,7 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 				BeanUtils.copyProperties(order, deliverOrderShopQuery);
 				deliverOrderShopQuery.setStatusName(order.getStatus());
 				deliverOrderShopQuery.setShopPayStatusName(order.getShopPayStatus());
-				MbShop shop = mbShopService.get(order.getShopId());
+				MbShop shop = mbShopService.getFromCache(order.getShopId());
 				if (shop != null) {
 					deliverOrderShopQuery.setShopName(shop.getName());
 				}
@@ -337,6 +340,25 @@ public class DeliverOrderShopServiceImpl extends BaseServiceImpl<DeliverOrderSho
 			return dg;
 		}
 		return dataGrid;
+	}
+
+	public DataGrid queryUnPayForCount(DeliverOrderShop deliverOrderShop) {
+		PageHelper ph = new PageHelper();
+		ph.setHiddenTotal(true);
+		ph.setRows(100000);
+		List<DeliverOrderShopQuery> ol = dataGridShopArtificialPay(deliverOrderShop, ph).getRows();
+		Map<Integer, DeliverOrderShopQuery> map = new HashMap<Integer, DeliverOrderShopQuery>();
+		for (DeliverOrderShopQuery order : ol) {
+			DeliverOrderShopQuery dOrder = map.get(order.getShopId());
+			if (dOrder == null) {
+				map.put(order.getShopId(), order);
+			} else {
+				dOrder.setAmount(dOrder.getAmount() + order.getAmount());
+			}
+		}
+		DataGrid dg = new DataGrid();
+		dg.setRows(Arrays.asList(map.values().toArray()));
+		return dg;
 	}
 	@Override
 	public DeliverOrderShopView getView(Long id) {
