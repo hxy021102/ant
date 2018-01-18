@@ -14,7 +14,6 @@ import java.util.Date;
  * Created by w9777 on 2018/1/11.
  * 功能:时间段摄取组件
  * 依赖:前端moment.js,easyUI框架
- *
  */
 public class EasyUITimeRangePicker extends TagSupport {
     private String startTimeName;//开始时间名
@@ -65,10 +64,10 @@ public class EasyUITimeRangePicker extends TagSupport {
             if (!F.empty(startTimeName) && !F.empty(endTimeName)) {
                 buffer.append(
                         "                                查询时间跨度: &nbsp&nbsp\n" +
-                                "                                <input type=\"radio\" name=\"timerange\" value=\"0\" onclick=\"myRadioChange(this)\">今天&nbsp\n" +
-                                "                                <input type=\"radio\" name=\"timerange\" value=\"1\" onclick=\"myRadioChange(this)\">近7天&nbsp\n" +
-                                "                                <input type=\"radio\" name=\"timerange\" value=\"2\" onclick=\"myRadioChange(this)\" >近30天&nbsp\n" +
-                                "                                <input type=\"radio\" name=\"timerange\" value=\"3\" onclick=\"myRadioChange(this)\">近3个月<br>\n"
+                                "                                <input type=\"radio\" name=\"easyUITimeRangePickerTagRadio\"  value=\"0\" onclick=\"myRadioChange(this)\">今天&nbsp\n" +
+                                "                                <input type=\"radio\" name=\"easyUITimeRangePickerTagRadio\" value=\"1\" onclick=\"myRadioChange(this)\">近7天&nbsp\n" +
+                                "                                <input type=\"radio\" name=\"easyUITimeRangePickerTagRadio\" value=\"2\" onclick=\"myRadioChange(this)\" >近30天&nbsp\n" +
+                                "                                <input type=\"radio\" name=\"easyUITimeRangePickerTagRadio\" value=\"3\" onclick=\"myRadioChange(this)\">近3个月<br>\n"
                 );
             }
             if (!F.empty(startTimeValue)) {
@@ -82,7 +81,7 @@ public class EasyUITimeRangePicker extends TagSupport {
             if (!F.empty(startTimeName)) {
                 buffer.append(
                         "从&nbsp<input id=\"" + startTimeName + "\" name=\"" + startTimeName + "\" type=\"text\" class=\"easyui-datetimebox myStartTimeClass\" data-options=\"required:" +
-                                required  + "\"  value=\"" + sds + "\" style=\"width:135px\" onkeydown=\"console.log('from onkeydown : ' + event.keyCode);\" onchange=\"console.log('from onchange : ' + this.value);\">"
+                                required + "\"  value=\"" + sds + "\" style=\"width:135px\" onkeydown=\"console.log('from onkeydown : ' + event.keyCode);\" onchange=\"console.log('from onchange : ' + this.value);\">"
                 );
             }
             if (!F.empty(endTimeValue)) {
@@ -96,7 +95,7 @@ public class EasyUITimeRangePicker extends TagSupport {
             if (!F.empty(endTimeName)) {
                 buffer.append(
                         "到&nbsp<input id=\"" + endTimeName + "\" name=\"" + endTimeName + "\"  type=\"text\" class=\"easyui-datetimebox myEndTimeClass\" data-options=\"required:" +
-                                required  + "\"    value=\"" + eds + "\" style=\"width:135px\">\n"
+                                required + "\"    value=\"" + eds + "\" style=\"width:135px\">\n"
                 );
             }
             buffer.append("</div>\n" +
@@ -145,19 +144,19 @@ public class EasyUITimeRangePicker extends TagSupport {
             } else {
                 minDateStr = "1995-10-09 00:00:00";
             }
-                buffer.append("" +
-                        "$('.easyui-datetimebox').datetimebox({\n" +
-                        "        formatter:function(date){\n" +
-                        "           var minDate = moment(\"" + minDateStr + "\").toDate();\n" +
-                        "       if( minDate <= date){\n" +
-                        "              dt =  date;\n" +
-                        "           }else{\n" +
-                        "               alert(\"最小日期:" + minDateStr + "，请重新选择！\");\n" +
-                        "               dt = minDate;\n" +
-                        "           }\n" +
-                        "return dt.Format('" + format + "');" +
-                        "        }\n" +
-                        "});\n");
+            buffer.append("" +
+                    "$('.easyui-datetimebox').datetimebox({\n" +
+                    "        formatter:function(date){\n" +
+                    "           var minDate = moment(\"" + minDateStr + "\").toDate();\n" +
+                    "       if( minDate <= date){\n" +
+                    "              dt =  date;\n" +
+                    "           }else{\n" +
+                    "               alert(\"最小日期:" + minDateStr + "，请重新选择！\");\n" +
+                    "               dt = minDate;\n" +
+                    "           }\n" +
+                    "return dt.Format('" + format + "');" +
+                    "        }\n" +
+                    "});\n");
             buffer.append(
                     "                            </script>");
             out.print(buffer.toString());

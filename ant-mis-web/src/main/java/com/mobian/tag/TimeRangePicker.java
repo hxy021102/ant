@@ -40,18 +40,18 @@ public class TimeRangePicker extends TagSupport {
             if (F.empty(timeLimit)) timeLimit = "180";
             Integer timeLimitInteger = Integer.parseInt(timeLimit);
             buffer.append("                            查询时间跨度: &nbsp&nbsp&nbsp&nbsp\n" +
-                    "                            <input type=\"radio\"  value=\"0\" onclick=\"myRadioChange(this)\">今天&nbsp\n");
+                    "                            <input type=\"radio\" name=\"timeRangePickerTagRadio\" value=\"0\" onclick=\"myRadioChange(this)\">今天&nbsp\n");
             if (timeLimitInteger >= 7) {
                 buffer.append(
-                    "                            <input type=\"radio\"  value=\"1\" onclick=\"myRadioChange(this)\">近7天&nbsp\n");
+                    "                            <input type=\"radio\"  name=\"timeRangePickerTagRadio\"  value=\"1\" onclick=\"myRadioChange(this)\">近7天&nbsp\n");
             }
             if (timeLimitInteger >= 30) {
                 buffer.append(
-                    "                            <input type=\"radio\"  value=\"2\" onclick=\"myRadioChange(this)\">近30天&nbsp\n");
+                    "                            <input type=\"radio\" name=\"timeRangePickerTagRadio\"  value=\"2\" onclick=\"myRadioChange(this)\">近30天&nbsp\n");
             }
             if (timeLimitInteger >= 90 ) {
                 buffer.append(
-                    "                            <input type=\"radio\"  value=\"3\" onclick=\"myRadioChange(this)\">近3个月\n");
+                    "                            <input type=\"radio\" name=\"timeRangePickerTagRadio\"  value=\"3\" onclick=\"myRadioChange(this)\">近3个月\n");
             }
                 buffer.append(
                     "                            <br>从&nbsp<input class=\"span2 leftTimeClass easyui-validatebox\" data-options=\"required:" + required +"\" id=\""+ leftTimeName +"\" name=\"" + leftTimeName + "\" type=\"text\" onclick=\"WdatePicker({\n" +
