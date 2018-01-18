@@ -335,7 +335,6 @@ public interface DeliverOrderServiceI {
 	 */
 	Boolean printOrder(Long id, String machineCode);
 
-	void updateBatchOrderSan(String deliverOrderIds, String sessionInfoId);
 
 	/**
 	 * 未结算运单汇总
