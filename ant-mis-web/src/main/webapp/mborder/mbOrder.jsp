@@ -2,7 +2,7 @@
 <%@ page import="com.mobian.model.TmbOrder" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%> 
+<%@ taglib prefix="jb" uri="http://www.jb.cn/jbtag"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -256,7 +256,6 @@
 						<td>
 							<jb:select dataType="PW" name="payWay"></jb:select>
 						</td>
-
 					</tr>
 				</table>
 			</form>

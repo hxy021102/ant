@@ -57,22 +57,17 @@ public class DeliverOrderController extends BaseController {
 	private DeliverOrderServiceI deliverOrderService;
 	@Resource
 	private SupplierServiceI supplierService;
-	@Resource
-	private DeliverOrderItemServiceI deliverOrderItemService;
 
-	@Resource
-	private SupplierItemRelationServiceI supplierItemRelationService;
-    @Autowired
-	private BasedataServiceI basedataService;
     @Resource
 	private DeliverOrderShopServiceI deliverOrderShopService;
 
 	@Resource
 	private MbShopServiceI mbShopService;
 
-	@Autowired
+	@Resource
 	private MbStockOutOrderServiceI mbStockOutOrderService;
-	@Autowired
+
+	@Resource
 	private UserServiceI userService;
 
 	/**
