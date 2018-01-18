@@ -65,10 +65,10 @@ public class EasyUITimeRangePicker extends TagSupport {
             if (!F.empty(startTimeName) && !F.empty(endTimeName)) {
                 buffer.append(
                         "                                查询时间跨度: &nbsp&nbsp\n" +
-                                "                                <input type=\"radio\" name=\"timerange\" value=\"0\" onclick=\"myRadioChange(this)\">今天&nbsp\n" +
-                                "                                <input type=\"radio\" name=\"timerange\" value=\"1\" onclick=\"myRadioChange(this)\">近7天&nbsp\n" +
-                                "                                <input type=\"radio\" name=\"timerange\" value=\"2\" onclick=\"myRadioChange(this)\" >近30天&nbsp\n" +
-                                "                                <input type=\"radio\" name=\"timerange\" value=\"3\" onclick=\"myRadioChange(this)\">近3个月<br>\n"
+                                "                                <input type=\"radio\" name=\"easyUITimeRangePickerTagRadio\"  value=\"0\" onclick=\"myRadioChange(this)\">今天&nbsp\n" +
+                                "                                <input type=\"radio\" name=\"easyUITimeRangePickerTagRadio\" value=\"1\" onclick=\"myRadioChange(this)\">近7天&nbsp\n" +
+                                "                                <input type=\"radio\" name=\"easyUITimeRangePickerTagRadio\" value=\"2\" onclick=\"myRadioChange(this)\" >近30天&nbsp\n" +
+                                "                                <input type=\"radio\" name=\"easyUITimeRangePickerTagRadio\" value=\"3\" onclick=\"myRadioChange(this)\">近3个月<br>\n"
                 );
             }
             if (!F.empty(startTimeValue)) {
