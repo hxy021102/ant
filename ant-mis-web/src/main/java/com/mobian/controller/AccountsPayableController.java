@@ -73,6 +73,7 @@ public class AccountsPayableController extends BaseController {
                 ShopOrderBill foot = new ShopOrderBill();
                 foot.setAmount(0);
                 for (DeliverOrderShopQuery orderBill : shopOrderBills) {
+                    orderBill.setId(new Long(orderBill.getShopId()));
                     foot.setAmount(foot.getAmount() + orderBill.getAmount());
                 }
                 dataGrid.setFooter(Arrays.asList(foot));
@@ -95,6 +96,7 @@ public class AccountsPayableController extends BaseController {
                 foot.setAmount(0);
                 for (DriverOrderShop dOrder : driverOrderShops) {
                     DriverOrderShopView view = new DriverOrderShopView();
+                    view.setId(new Long(dOrder.getDriverAccountId()));
                     foot.setAmount(foot.getAmount() + dOrder.getAmount());
                     DriverAccount driverAccount = driverAccountService.getFromCache(dOrder.getDriverAccountId());
                     if (driverAccount != null) {
